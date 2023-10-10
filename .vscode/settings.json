@@ -1,0 +1,30 @@
+{
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true,
+		"README.md": true,
+		"package-lock.json": true,
+		"tsconfig.json": true,
+		".gitignore": true,
+		".env": true,
+		"next-env.d.ts": true,
+		"node_modules": true,
+		".next": true,
+		"postcss.config.js": true
+	},
+	"hide-files.files": [
+		"README.md",
+		"package-lock.json",
+		"tsconfig.json",
+		".gitignore",
+		".env",
+		"next-env.d.ts",
+		"node_modules",
+		".next",
+		"postcss.config.js"
+	]
+}
