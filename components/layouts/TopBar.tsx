@@ -8,6 +8,8 @@ import NotifIcon from "@/components/icons/NotifIcon";
 import LightIcon from "@/components/icons/LightIcon";
 import DarkIcon from "@/components/icons/DarkIcon";
 import ArrowDownIcon from "@/components/icons/ArrowDownIcon";
+import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import LogoutIcon from "@/components/icons/LogoutIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
 import ProfileRoundIcon from "@/components/icons/ProfileRoundIcon";
@@ -91,9 +93,11 @@ const User = () => {
 	)
 }
 
-const TopBar = () => {
+const TopBar = ({ onViewModeChange }) => {
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [userId, setUserId] = useState<string | null>(null);
+	const supabase = createClientComponentClient();
+	const [homepageView, setHomepageView] = useState(1);
 
 	useEffect(() => {
 		const storedUserId = localStorage.getItem('concatenatedID');
@@ -101,6 +105,26 @@ const TopBar = () => {
 			setUserId(storedUserId);
 		}
 	}, []);
+
+	useEffect(() => {
+		fetchHomepageView();
+	})
+
+	const fetchHomepageView = async () => {
+		const { data, error } = await supabase
+			.from('accounts')
+			.select('accHomeView')
+			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58'); // Use the appropriate accID
+
+		if (error) {
+			console.error('Error fetching homepageView:', error);
+			return;
+		}
+
+		// Set the homepageView based on the fetched value
+		setHomepageView(data[0].accHomeView);
+	}
+	fetchHomepageView();
 
 	const toggleDarkMode = () => {
 		setIsDarkMode(!isDarkMode);
@@ -112,6 +136,21 @@ const TopBar = () => {
 
 		// Redirect to the login page after logout
 		window.location.href = '/login'; // You can replace with the actual login page URL
+	};
+
+	const updateHomepageView = async (id: number) => {
+		const { data, error } = await supabase
+			.from('accounts')
+			.update({ accHomeView: id })
+			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58');
+
+		if (error) {
+			console.error('Update failed:', error);
+			return;
+		} else {
+			fetchHomepageView();
+			onViewModeChange(id);
+		}
 	};
 
 	return (
@@ -126,6 +165,20 @@ const TopBar = () => {
 				</div>
 				<Notification />
 				<User />
+				<div className="cursor-pointer">
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+								<ThreeDotIcon />
+							</div>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuItem onClick={() => updateHomepageView(1)} className={homepageView === 1 ? 'text-blue-500' : ''}>Card View</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem onClick={() => updateHomepageView(2)} className={homepageView === 2 ? 'text-blue-500' : ''}>Grid View</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
 				<div className="flex items-center justify-center">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>

@@ -88,9 +88,10 @@ type subEvents = {
 	sub_eventsName: string;
 }
 
-export default function Homepage() {
+export default function Homepage({ viewMode }: { viewMode: number }) {
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
+	console.log('viewMode in HomePage:', viewMode);
 
 	const [info, setInfo] = useState<Info>({} as Info);
 	const [infos, setInfos] = useState<Info[]>([] as Info[]);
@@ -1314,405 +1315,649 @@ export default function Homepage() {
 				</div>
 			</div>
 
-			<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_35%] pb-28 gap-4">
-				<div className="grid grid-auto-fit-lg gap-4">
-					{latestEvent[0] && (
-						<div
-							className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-							onClick={() =>
-								openModal(
-									"https://source.unsplash.com/600x300?party",
-									latestEvent[0].intFID,
-									latestEvent[0]?.intFEventName,
-									latestEvent[0]?.intFDescription,
-									latestEvent[0]?.intFStartDate,
-									latestEvent[0]?.intFStartTime,
-									latestEvent[0]?.intFEndTime,
-									latestEvent[0]?.intFVenue,
-									latestEvent[0]?.intFMaximumSeats,
-									latestEvent[0].intFOrganizer,
-									latestEvent[0].intFFaculty,
-								)
-							}>
-							<div className="w-full h-[300px] mb-4 relative">
-								<div className="absolute -inset-6">
-									<img
-										src="https://source.unsplash.com/600x300?party"
-										alt="Random"
-										className="w-full h-full object-cover"
-									/>
+			{viewMode === undefined ? (
+				<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_35%] pb-28 gap-4">
+					<div className="grid grid-auto-fit-lg gap-4">
+						{latestEvent[0] && (
+							<div
+								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?party",
+										latestEvent[0].intFID,
+										latestEvent[0]?.intFEventName,
+										latestEvent[0]?.intFDescription,
+										latestEvent[0]?.intFStartDate,
+										latestEvent[0]?.intFStartTime,
+										latestEvent[0]?.intFEndTime,
+										latestEvent[0]?.intFVenue,
+										latestEvent[0]?.intFMaximumSeats,
+										latestEvent[0].intFOrganizer,
+										latestEvent[0].intFFaculty,
+									)
+								}>
+								<div className="w-full h-[300px] mb-4 relative">
+									<div className="absolute -inset-6">
+										<img
+											src="https://source.unsplash.com/600x300?party"
+											alt="Random"
+											className="w-full h-full object-cover"
+										/>
+									</div>
 								</div>
+								{latestEvent[0] && (
+									<div className="mt-6">
+										{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+											{latestEvent[0].intFEventName}
+										</h2>
+										<p className="text-gray-500 mb-4">
+											{latestEvent[0].intFDescription}
+										</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatDate(latestEvent[0].intFStartDate)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[0].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[0].intFVenue}
+											</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[0].intFMaximumSeats}
+											</span>
+										</div>
+
+										<div className="flex justify-between items-end mt-5">
+											<div
+												className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+												onClick={e => {
+													e.stopPropagation(); // This line prevents the event from propagating
+													openAttendanceModal(
+														latestEvent[0].intFID,
+													);
+													fetchAttendanceList(latestEvent[0].intFID);
+												}}>
+												Attendance List
+											</div>
+
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span
+													aria-hidden
+													className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">
+													Upcoming
+												</span>
+											</span>
+										</div>
+									</div>
+								)}
 							</div>
+						)}
+
+						{latestEvent[1] && (
+							<div
+								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?birthday",
+										latestEvent[1].intFID,
+										latestEvent[1].intFEventName,
+										latestEvent[1]?.intFDescription,
+										latestEvent[1]?.intFStartDate,
+										latestEvent[1]?.intFStartTime,
+										latestEvent[1]?.intFEndTime,
+										latestEvent[1]?.intFVenue,
+										latestEvent[1]?.intFMaximumSeats,
+										latestEvent[1].intFOrganizer,
+										latestEvent[1].intFFaculty,
+									)
+								}>
+								<div className="w-full h-[300px] mb-4 relative">
+									<div className="absolute -inset-6">
+										<img
+											src="https://source.unsplash.com/600x300?birthday"
+											alt="Random"
+											className="w-full h-full object-cover"
+										/>
+									</div>
+								</div>
+
+								{latestEvent[1] && (
+									<div className="mt-6">
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+											{latestEvent[1].intFEventName}
+										</h2>
+										<p className="text-gray-500">
+											{latestEvent[1].intFDescription}
+										</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatDate(latestEvent[1].intFStartDate)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[1].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[1].intFVenue}
+											</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees: 23
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[1].intFMaximumSeats}
+											</span>
+										</div>
+
+										<div className="flex justify-between items-end mt-5">
+											<div
+												className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+												onClick={e => {
+													e.stopPropagation(); // This line prevents the event from propagating
+													openAttendanceModal(
+														latestEvent[1].intFID,
+													);
+													fetchAttendanceList(latestEvent[1].intFID);
+												}}>
+												Attendance List
+											</div>
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span
+													aria-hidden
+													className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">
+													Upcoming
+												</span>
+											</span>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+
+						{latestEvent[2] && (
+							<div
+								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?new+year",
+										latestEvent[2].intFID,
+										latestEvent[2].intFEventName,
+										latestEvent[2]?.intFDescription,
+										latestEvent[2]?.intFStartDate,
+										latestEvent[2]?.intFStartTime,
+										latestEvent[2]?.intFEndTime,
+										latestEvent[2]?.intFVenue,
+										latestEvent[2]?.intFMaximumSeats,
+										latestEvent[2].intFOrganizer,
+										latestEvent[2].intFFaculty,
+									)
+								}>
+								<div className="w-full h-[300px] mb-4 relative">
+									<div className="absolute -inset-6">
+										<img
+											src="https://source.unsplash.com/600x300?new+year"
+											alt="Random"
+											className="w-full h-full object-cover"
+										/>
+									</div>
+								</div>
+
+								{latestEvent[2] && (
+									<div className="mt-6">
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+											{latestEvent[2].intFEventName}
+										</h2>
+										<p className="text-gray-500">
+											{latestEvent[2].intFDescription}
+										</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
+											<p className="text-slate-600 text-sm">
+												{formatDate(latestEvent[2].intFStartDate)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[2].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[2].intFVenue}
+											</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees: 23
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[2].intFMaximumSeats}
+											</span>
+										</div>
+
+										<div className="flex justify-between items-end mt-5">
+											<div
+												className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+												onClick={e => {
+													e.stopPropagation(); // This line prevents the event from propagating
+													openAttendanceModal(
+														latestEvent[2].intFID,
+													);
+													fetchAttendanceList(latestEvent[2].intFID);
+												}}>
+												Attendance List
+											</div>
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span
+													aria-hidden
+													className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">
+													Upcoming
+												</span>
+											</span>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+
+						{latestEvent[3] && (
+							<div
+								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?events",
+										latestEvent[3].intFID,
+										latestEvent[3]?.intFEventName,
+										latestEvent[3]?.intFDescription,
+										latestEvent[3]?.intFStartDate,
+										latestEvent[3]?.intFStartTime,
+										latestEvent[3]?.intFEndTime,
+										latestEvent[3]?.intFVenue,
+										latestEvent[3]?.intFMaximumSeats,
+										latestEvent[3]?.intFOrganizer,
+										latestEvent[3]?.intFFaculty,
+									)
+								}>
+								<div className="w-full h-[300px] mb-4 relative">
+									<div className="absolute -inset-6">
+										<img
+											src="https://source.unsplash.com/600x300?events"
+											alt="Random"
+											className="w-full h-full object-cover"
+										/>
+									</div>
+								</div>
+
+								{latestEvent[3] && (
+									<div className="mt-6">
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+											{latestEvent[3].intFEventName}
+										</h2>
+										<p className="text-gray-500">
+											{latestEvent[3].intFDescription}
+										</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
+											<p className="text-slate-600 text-sm">
+												{formatDate(latestEvent[3].intFStartDate)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[3].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{latestEvent[3].intFVenue}</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees: 23
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[3].intFMaximumSeats}
+											</span>
+										</div>
+
+										<div className="flex justify-between items-end mt-5">
+											<div
+												className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+												onClick={e => {
+													e.stopPropagation();
+													openAttendanceModal(
+														latestEvent[3].intFID,
+													);
+													fetchAttendanceList(latestEvent[3].intFID);
+												}}>
+												Attendance List
+											</div>
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span
+													aria-hidden
+													className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">
+													Upcoming
+												</span>
+											</span>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+
+					<div className="w-full bg-white border border-slate-200 rounded-lg p-6 h-[500px] transition transform hover:scale-105">
+						<h2 className="text-2xl font-semibold mb-2">Calendar</h2>
+						{/* <Calendar /> */}
+					</div>
+				</div>
+			) : (
+				<div className="w-full bg-slate-100 flex pb-28">
+					<div className="w-full pr-6 bg-slate-100">
+						<div className="w-full bg-slate-100">
+							<div className="ml-6 font-bold text-lg">
+								Today's Event(s)
+							</div>
+							<div className="border-t border-gray-300 my-4 ml-6"></div>
 							{latestEvent[0] && (
-								<div className="mt-6">
-									{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-									<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-										{latestEvent[0].intFEventName}
-									</h2>
-									<p className="text-gray-500 mb-4">
-										{latestEvent[0].intFDescription}
-									</p>
-									<div className="flex items-center mt-4">
-										<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{formatDate(latestEvent[0].intFStartDate)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FiClock className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{formatTime(latestEvent[0].intFStartTime)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{latestEvent[0].intFVenue}
-										</p>
-									</div>
-									<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-										<div
-											className="h-full bg-orange-300 rounded-full"
-											style={{
-												width: `${(20 / 60) * 100}%`,
-											}}></div>
-									</div>
-									<div className="text-xs text-gray-600 mt-2 flex justify-between">
-										<span className="ml-[2px]">
-											Current Attendees:{" "}
-										</span>
-										<span className="mr-[2px]">
-											Max Attendees:{" "}
-											{latestEvent[0].intFMaximumSeats}
-										</span>
-									</div>
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 ml-5 w-full relative transition transform hover:scale-105 z-[50]"
+									onClick={() =>
+										openModal(
+											"https://source.unsplash.com/600x300?party",
+											latestEvent[0].intFID,
+											latestEvent[0]?.intFEventName,
+											latestEvent[0]?.intFDescription,
+											latestEvent[0]?.intFStartDate,
+											latestEvent[0]?.intFStartTime,
+											latestEvent[0]?.intFEndTime,
+											latestEvent[0]?.intFVenue,
+											latestEvent[0]?.intFMaximumSeats,
+											latestEvent[0].intFOrganizer,
+											latestEvent[0].intFFaculty,
+										)
+									}>
+									{latestEvent[0] && (
+										<div className="ml-2 mr-2">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+												{latestEvent[0].intFEventName}
+											</h2>
+											<div className="border-t border-gray-300 my-4"></div>
+											<p className="text-gray-500 mb-4">
+												{latestEvent[0].intFDescription}
+											</p>
+											<div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+												<p className="text-slate-600 text-sm">
+													{formatDate(latestEvent[0].intFStartDate)}
+												</p>
+											</div>
+											<div className="flex items-center mt-3">
+												<FiClock className="text-2xl mr-2 text-slate-800" />
+												<p className="text-slate-600 text-sm">
+													{formatTime(latestEvent[0].intFStartTime)}
+												</p>
+											</div>
+											<div className="flex items-center mt-3">
+												<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+												<p className="text-slate-600 text-sm">
+													{latestEvent[0].intFVenue}
+												</p>
+											</div>
+											<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+												<div
+													className="h-full bg-orange-300 rounded-full"
+													style={{
+														width: `${(20 / 60) * 100}%`,
+													}}></div>
+											</div>
+											<div className="text-xs text-gray-600 mt-2 flex justify-between">
+												<span className="ml-[2px]">
+													Current Attendees:{" "}
+												</span>
+												<span className="mr-[2px]">
+													Max Attendees:{" "}
+													{latestEvent[0].intFMaximumSeats}
+												</span>
+											</div>
 
-									<div className="flex justify-between items-end mt-5">
-										<div
-											className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-											onClick={e => {
-												e.stopPropagation(); // This line prevents the event from propagating
-												openAttendanceModal(
-													latestEvent[0].intFID,
-												);
-												fetchAttendanceList(latestEvent[0].intFID);
-											}}>
-											Attendance List
+											<div className="flex justify-between items-end mt-5">
+												<div
+													className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+													onClick={e => {
+														e.stopPropagation(); // This line prevents the event from propagating
+														openAttendanceModal(
+															latestEvent[0].intFID,
+														);
+													}}>
+													Attendance List
+												</div>
+
+												<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+													<span
+														aria-hidden
+														className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+													<span className="relative mt-[1px] leading-3 tracking-wider">
+														Upcoming
+													</span>
+												</span>
+											</div>
 										</div>
-
-										<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-											<span
-												aria-hidden
-												className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-											<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-											<span className="relative mt-[1px] leading-3 tracking-wider">
-												Upcoming
-											</span>
-										</span>
-									</div>
+									)}
 								</div>
 							)}
-						</div>
-					)}
 
-					{latestEvent[1] && (
-						<div
-							className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-							onClick={() =>
-								openModal(
-									"https://source.unsplash.com/600x300?birthday",
-									latestEvent[1].intFID,
-									latestEvent[1].intFEventName,
-									latestEvent[1]?.intFDescription,
-									latestEvent[1]?.intFStartDate,
-									latestEvent[1]?.intFStartTime,
-									latestEvent[1]?.intFEndTime,
-									latestEvent[1]?.intFVenue,
-									latestEvent[1]?.intFMaximumSeats,
-									latestEvent[1].intFOrganizer,
-									latestEvent[1].intFFaculty,
-								)
-							}>
-							<div className="w-full h-[300px] mb-4 relative">
-								<div className="absolute -inset-6">
-									<img
-										src="https://source.unsplash.com/600x300?birthday"
-										alt="Random"
-										className="w-full h-full object-cover"
-									/>
-								</div>
+
+							<div className="ml-6 mt-5 font-bold text-lg">
+								Tomorrow's Event(s)
 							</div>
-
-							{latestEvent[1] && (
-								<div className="mt-6">
-									<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-										{latestEvent[1].intFEventName}
-									</h2>
-									<p className="text-gray-500">
-										{latestEvent[1].intFDescription}
-									</p>
-									<div className="flex items-center mt-4">
-										<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{formatDate(latestEvent[1].intFStartDate)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FiClock className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{formatTime(latestEvent[1].intFStartTime)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{latestEvent[1].intFVenue}
-										</p>
-									</div>
-									<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-										<div
-											className="h-full bg-orange-300 rounded-full"
-											style={{
-												width: `${(20 / 60) * 100}%`,
-											}}></div>
-									</div>
-									<div className="text-xs text-gray-600 mt-2 flex justify-between">
-										<span className="ml-[2px]">
-											Current Attendees: 23
-										</span>
-										<span className="mr-[2px]">
-											Max Attendees:{" "}
-											{latestEvent[1].intFMaximumSeats}
-										</span>
-									</div>
-
-									<div className="flex justify-between items-end mt-5">
-										<div
-											className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-											onClick={e => {
-												e.stopPropagation(); // This line prevents the event from propagating
-												openAttendanceModal(
-													latestEvent[1].intFID,
-												);
-												fetchAttendanceList(latestEvent[1].intFID);
-											}}>
-											Attendance List
+							<div className="border-t border-gray-300 my-4 ml-6"></div>
+							{latestEvent[1] && <div className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 ml-5 w-full relative transition transform hover:scale-105 z-[50]" onClick={() => openModal("https://source.unsplash.com/600x300?birthday", latestEvent[1].intFID, latestEvent[1].intFEventName, latestEvent[1]?.intFDescription, latestEvent[1]?.intFStartDate, latestEvent[1]?.intFStartTime, latestEvent[1]?.intFEndTime, latestEvent[1]?.intFVenue, latestEvent[1]?.intFMaximumSeats, latestEvent[1].intFOrganizer, latestEvent[1].intFFaculty)}>
+								{latestEvent[1] && (
+									<div className="ml-2 mr-2">
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">{latestEvent[1].intFEventName}</h2>
+										<div className="border-t border-gray-300 my-4"></div>
+										<p className="text-gray-500">{latestEvent[1].intFDescription}</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{formatDate(latestEvent[1].intFStartDate)}</p>
 										</div>
-										<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-											<span
-												aria-hidden
-												className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-											<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-											<span className="relative mt-[1px] leading-3 tracking-wider">
-												Upcoming
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{latestEvent[1].intFVenue}</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">Current Attendees: 23</span>
+											<span className="mr-[2px]">Max Attendees: {latestEvent[1].intFMaximumSeats}</span>
+										</div>
+										<div className="flex justify-between items-end mt-5">
+											<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(latestEvent[1].intFID); }}>Attendance List</div>
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
 											</span>
-										</span>
+										</div>
 									</div>
-								</div>
-							)}
-						</div>
-					)}
+								)}
+							</div>}
 
-					{latestEvent[2] && (
-						<div
-							className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-							onClick={() =>
-								openModal(
-									"https://source.unsplash.com/600x300?new+year",
-									latestEvent[2].intFID,
-									latestEvent[2].intFEventName,
-									latestEvent[2]?.intFDescription,
-									latestEvent[2]?.intFStartDate,
-									latestEvent[2]?.intFStartTime,
-									latestEvent[2]?.intFEndTime,
-									latestEvent[2]?.intFVenue,
-									latestEvent[2]?.intFMaximumSeats,
-									latestEvent[2].intFOrganizer,
-									latestEvent[2].intFFaculty,
-								)
-							}>
-							<div className="w-full h-[300px] mb-4 relative">
-								<div className="absolute -inset-6">
-									<img
-										src="https://source.unsplash.com/600x300?new+year"
-										alt="Random"
-										className="w-full h-full object-cover"
-									/>
-								</div>
+							<div className="ml-6 mt-5 font-bold text-lg">
+								Upcoming Event(s)
 							</div>
-
+							<div className="border-t border-gray-300 my-4 ml-6"></div>
 							{latestEvent[2] && (
-								<div className="mt-6">
-									<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-										{latestEvent[2].intFEventName}
-									</h2>
-									<p className="text-gray-500">
-										{latestEvent[2].intFDescription}
-									</p>
-									<div className="flex items-center mt-4">
-										<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
-										<p className="text-slate-600 text-sm">
-											{formatDate(latestEvent[2].intFStartDate)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FiClock className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{formatTime(latestEvent[2].intFStartTime)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{latestEvent[2].intFVenue}
-										</p>
-									</div>
-									<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-										<div
-											className="h-full bg-orange-300 rounded-full"
-											style={{
-												width: `${(20 / 60) * 100}%`,
-											}}></div>
-									</div>
-									<div className="text-xs text-gray-600 mt-2 flex justify-between">
-										<span className="ml-[2px]">
-											Current Attendees: 23
-										</span>
-										<span className="mr-[2px]">
-											Max Attendees:{" "}
-											{latestEvent[2].intFMaximumSeats}
-										</span>
-									</div>
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 ml-5 w-full relative transition transform hover:scale-105 z-[50]"
+									onClick={() =>
+										openModal(
+											"https://source.unsplash.com/600x300?new+year",
+											latestEvent[2].intFID,
+											latestEvent[2].intFEventName,
+											latestEvent[2]?.intFDescription,
+											latestEvent[2]?.intFStartDate,
+											latestEvent[2]?.intFStartTime,
+											latestEvent[2]?.intFEndTime,
+											latestEvent[2]?.intFVenue,
+											latestEvent[2]?.intFMaximumSeats,
+											latestEvent[2].intFOrganizer,
+											latestEvent[2].intFFaculty,
+										)
+									}>
 
-									<div className="flex justify-between items-end mt-5">
-										<div
-											className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-											onClick={e => {
-												e.stopPropagation(); // This line prevents the event from propagating
-												openAttendanceModal(
-													latestEvent[2].intFID,
-												);
-												fetchAttendanceList(latestEvent[2].intFID);
-											}}>
-											Attendance List
+									{latestEvent[2] && (
+										<div className="ml-2 mr-2">
+											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+												{latestEvent[2].intFEventName}
+											</h2>
+											<div className="border-t border-gray-300 my-4"></div>
+											<p className="text-gray-500">
+												{latestEvent[2].intFDescription}
+											</p>
+											<div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
+												<p className="text-slate-600 text-sm">
+													{formatDate(latestEvent[2].intFStartDate)}
+												</p>
+											</div>
+											<div className="flex items-center mt-3">
+												<FiClock className="text-2xl mr-2 text-slate-800" />
+												<p className="text-slate-600 text-sm">
+													{formatTime(latestEvent[2].intFStartTime)}
+												</p>
+											</div>
+											<div className="flex items-center mt-3">
+												<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+												<p className="text-slate-600 text-sm">
+													{latestEvent[2].intFVenue}
+												</p>
+											</div>
+											<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+												<div
+													className="h-full bg-orange-300 rounded-full"
+													style={{
+														width: `${(20 / 60) * 100}%`,
+													}}></div>
+											</div>
+											<div className="text-xs text-gray-600 mt-2 flex justify-between">
+												<span className="ml-[2px]">
+													Current Attendees: 23
+												</span>
+												<span className="mr-[2px]">
+													Max Attendees:{" "}
+													{latestEvent[2].intFMaximumSeats}
+												</span>
+											</div>
+
+											<div className="flex justify-between items-end mt-5">
+												<div
+													className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+													onClick={e => {
+														e.stopPropagation(); // This line prevents the event from propagating
+														openAttendanceModal(
+															latestEvent[2].intFID,
+														);
+													}}>
+													Attendance List
+												</div>
+												<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+													<span
+														aria-hidden
+														className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+													<span className="relative mt-[1px] leading-3 tracking-wider">
+														Upcoming
+													</span>
+												</span>
+											</div>
 										</div>
-										<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-											<span
-												aria-hidden
-												className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-											<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-											<span className="relative mt-[1px] leading-3 tracking-wider">
-												Upcoming
-											</span>
-										</span>
-									</div>
+									)}
 								</div>
 							)}
 						</div>
-					)}
+					</div>
 
-					{latestEvent[3] && (
-						<div
-							className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-							onClick={() =>
-								openModal(
-									"https://source.unsplash.com/600x300?events",
-									latestEvent[3].intFID,
-									latestEvent[3]?.intFEventName,
-									latestEvent[3]?.intFDescription,
-									latestEvent[3]?.intFStartDate,
-									latestEvent[3]?.intFStartTime,
-									latestEvent[3]?.intFEndTime,
-									latestEvent[3]?.intFVenue,
-									latestEvent[3]?.intFMaximumSeats,
-									latestEvent[3]?.intFOrganizer,
-									latestEvent[3]?.intFFaculty,
-								)
-							}>
-							<div className="w-full h-[300px] mb-4 relative">
-								<div className="absolute -inset-6">
-									<img
-										src="https://source.unsplash.com/600x300?events"
-										alt="Random"
-										className="w-full h-full object-cover"
-									/>
-								</div>
-							</div>
-
-							{latestEvent[3] && (
-								<div className="mt-6">
-									<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-										{latestEvent[3].intFEventName}
-									</h2>
-									<p className="text-gray-500">
-										{latestEvent[3].intFDescription}
-									</p>
-									<div className="flex items-center mt-4">
-										<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
-										<p className="text-slate-600 text-sm">
-											{formatDate(latestEvent[3].intFStartDate)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FiClock className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">
-											{formatTime(latestEvent[3].intFStartTime)}
-										</p>
-									</div>
-									<div className="flex items-center mt-3">
-										<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-										<p className="text-slate-600 text-sm">{latestEvent[3].intFVenue}</p>
-									</div>
-									<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-										<div
-											className="h-full bg-orange-300 rounded-full"
-											style={{
-												width: `${(20 / 60) * 100}%`,
-											}}></div>
-									</div>
-									<div className="text-xs text-gray-600 mt-2 flex justify-between">
-										<span className="ml-[2px]">
-											Current Attendees: 23
-										</span>
-										<span className="mr-[2px]">
-											Max Attendees:{" "}
-											{latestEvent[3].intFMaximumSeats}
-										</span>
-									</div>
-
-									<div className="flex justify-between items-end mt-5">
-										<div
-											className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-											onClick={e => {
-												e.stopPropagation();
-												openAttendanceModal(
-													latestEvent[3].intFID,
-												);
-												fetchAttendanceList(latestEvent[3].intFID);
-											}}>
-											Attendance List
-										</div>
-										<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-											<span
-												aria-hidden
-												className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-											<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-											<span className="relative mt-[1px] leading-3 tracking-wider">
-												Upcoming
-											</span>
-										</span>
-									</div>
-								</div>
-							)}
-						</div>
-					)}
+					{/* <div className="w-1/4 pl-5">
+					<div className="bg-white border border-slate-200 rounded-lg p-6 h-[470px] transition transform hover:scale-105">
+						<h2 className="text-2xl font-semibold mb-2">Calendar</h2>
+						{/* <Calendar /> 
+					</div>
+				</div> */}
 				</div>
-
-				<div className="w-full bg-white border border-slate-200 rounded-lg p-6 h-[500px] transition transform hover:scale-105">
-					<h2 className="text-2xl font-semibold mb-2">Calendar</h2>
-					{/* <Calendar /> */}
-				</div>
-			</div>
+			)}
 		</div>
 	);
 }
