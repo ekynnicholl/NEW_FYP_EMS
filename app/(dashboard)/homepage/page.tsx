@@ -26,6 +26,7 @@ import { MdPeople } from "react-icons/md";
 import { MdAirlineSeatReclineNormal } from "react-icons/md";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
+import useViewModeStore from '@/components/zustand/viewModeStorage';
 
 // import {Calendar} from "@/components/layouts/calendar";
 
@@ -88,10 +89,9 @@ type subEvents = {
 	sub_eventsName: string;
 }
 
-export default function Homepage({ viewMode }: { viewMode: number }) {
+export default function Homepage() {
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
-	console.log('viewMode in HomePage:', viewMode);
 
 	const [info, setInfo] = useState<Info>({} as Info);
 	const [infos, setInfos] = useState<Info[]>([] as Info[]);
@@ -143,6 +143,8 @@ export default function Homepage({ viewMode }: { viewMode: number }) {
 	const chartContainer = useRef<HTMLCanvasElement | null>(null);
 	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
+	const viewMode = useViewModeStore((state) => state.viewMode);
+	console.log(viewMode);
 
 	// Function to fetch the 6 latest events
 	useEffect(() => {
@@ -1315,7 +1317,7 @@ export default function Homepage({ viewMode }: { viewMode: number }) {
 				</div>
 			</div>
 
-			{viewMode === undefined ? (
+			{viewMode === 1 ? (
 				<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_35%] pb-28 gap-4">
 					<div className="grid grid-auto-fit-lg gap-4">
 						{latestEvent[0] && (

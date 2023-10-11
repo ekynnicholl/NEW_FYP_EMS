@@ -10,9 +10,11 @@ import DarkIcon from "@/components/icons/DarkIcon";
 import ArrowDownIcon from "@/components/icons/ArrowDownIcon";
 import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import useViewModeStore from '@/components/zustand/viewModeStorage';
 import LogoutIcon from "@/components/icons/LogoutIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
 import ProfileRoundIcon from "@/components/icons/ProfileRoundIcon";
+import PropTypes from 'prop-types';
 import { useRouter } from "next/navigation";
 
 import {
@@ -93,7 +95,11 @@ const User = () => {
 	)
 }
 
-const TopBar = ({ onViewModeChange }) => {
+interface TopBarProps {
+	onViewModeChange: (id: number) => void; // Define the type as a function
+}
+
+const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [userId, setUserId] = useState<string | null>(null);
 	const supabase = createClientComponentClient();
@@ -123,8 +129,8 @@ const TopBar = ({ onViewModeChange }) => {
 
 		// Set the homepageView based on the fetched value
 		setHomepageView(data[0].accHomeView);
+		useViewModeStore.setState({ viewMode: data[0].accHomeView });
 	}
-	fetchHomepageView();
 
 	const toggleDarkMode = () => {
 		setIsDarkMode(!isDarkMode);

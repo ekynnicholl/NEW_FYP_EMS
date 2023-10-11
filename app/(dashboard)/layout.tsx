@@ -3,11 +3,16 @@
 import SideBarDesktop from "@/components/layouts/SideBarDesktop"
 import SideBarMobile from "@/components/layouts/SideBarMobile"
 import TopBar from "@/components/layouts/TopBar"
-import React from "react";
-import { useState } from "react";
+import React, { useEffect } from "react";
+import useViewModeStore from '@/components/zustand/viewModeStorage';
+// npm install zustand
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const [viewMode, setViewMode] = useState(1);
+    const setViewMode = useViewModeStore((state) => state.setViewMode);
+
+    useEffect(() => {
+        console.log('Current viewMode:', useViewModeStore.getState().viewMode);
+    }, []);
 
     // Define a function to change the view mode
     const handleViewModeChange = (newViewMode: number) => {
@@ -28,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="hidden sm:block">
                     <TopBar onViewModeChange={handleViewModeChange} />
                 </div>
-                {React.cloneElement(children as React.ReactElement, { viewMode })}
+                {children}
             </div>
         </div>
     );
