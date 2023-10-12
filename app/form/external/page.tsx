@@ -114,7 +114,6 @@ export default function ExternalFormPage() {
 										id="email_address"
 										placeholder="Email"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -133,7 +132,6 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Full name"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -150,7 +148,6 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Staff ID"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -169,7 +166,6 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Designation / Course"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -186,7 +182,6 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Faculty / School / Unit"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -244,7 +239,6 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Name of other staff"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -261,7 +255,6 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Number of total staffs"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
