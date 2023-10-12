@@ -27,6 +27,8 @@ import { MdAirlineSeatReclineNormal } from "react-icons/md";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
+import cookie from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 // import {Calendar} from "@/components/layouts/calendar";
 
@@ -146,6 +148,9 @@ export default function Homepage() {
 	const viewMode = useViewModeStore((state) => state.viewMode);
 	console.log(viewMode);
 
+	// This is for checking login and redirecting with router,
+	const router = useRouter();
+
 	// Function to fetch the 6 latest events
 	useEffect(() => {
 		const fetchLatestEvent = async () => {
@@ -171,6 +176,18 @@ export default function Homepage() {
 
 		fetchLatestEvent();
 	}, [supabase]);
+
+	useEffect(() => {
+		const checkIsUserLoggedIn = () => {
+			const authToken = cookie.get('authToken');
+			const accountRank = cookie.get('accountRank');
+			if (!authToken && accountRank != "99") {
+				router.push("/error-404");
+			}
+		};
+
+		checkIsUserLoggedIn();
+	})
 
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {

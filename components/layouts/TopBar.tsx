@@ -16,6 +16,7 @@ import SettingsIcon from "@/components/icons/SettingsIcon";
 import ProfileRoundIcon from "@/components/icons/ProfileRoundIcon";
 import PropTypes from 'prop-types';
 import { useRouter } from "next/navigation";
+import cookie from 'js-cookie';
 
 import {
 	DropdownMenu,
@@ -139,6 +140,10 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 	const handleLogoutClick = () => {
 		// Clear user data from localStorage
 		localStorage.removeItem('concatenatedID');
+
+		// Remove the cookies,
+		cookie.remove('authToken');
+		cookie.remove('accountRank');
 
 		// Redirect to the login page after logout
 		window.location.href = '/login'; // You can replace with the actual login page URL
