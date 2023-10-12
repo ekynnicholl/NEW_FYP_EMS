@@ -177,17 +177,17 @@ export default function Homepage() {
 		fetchLatestEvent();
 	}, [supabase]);
 
-	useEffect(() => {
-		const checkIsUserLoggedIn = () => {
-			const authToken = cookie.get('authToken');
-			const accountRank = cookie.get('accountRank');
-			if (!authToken && accountRank != "99") {
-				router.push("/error-404");
-			}
-		};
+	// useEffect(() => {
+	// 	const checkIsUserLoggedIn = () => {
+	// 		const authToken = cookie.get('authToken');
+	// 		const accountRank = cookie.get('accountRank');
+	// 		if (!authToken && accountRank != "99") {
+	// 			router.push("/error-404");
+	// 		}
+	// 	};
 
-		checkIsUserLoggedIn();
-	})
+	// 	checkIsUserLoggedIn();
+	// })
 
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
