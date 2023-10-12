@@ -319,7 +319,6 @@ export default function ExternalFormPage() {
 											type="date"
 											id="commencement_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -948,7 +947,6 @@ export default function ExternalFormPage() {
 											id="hos_verification_name"
 											placeholder="Name"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -965,7 +963,6 @@ export default function ExternalFormPage() {
 											id="hos_verification_position_title"
 											placeholder="Position title"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -981,7 +978,6 @@ export default function ExternalFormPage() {
 									type="date"
 									id="hos_verification_date"
 									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-									required
 								/>
 							</div>
 						</div>
@@ -1010,7 +1006,6 @@ export default function ExternalFormPage() {
 											id="hmu_dean_approval_name"
 											placeholder="Name"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -1027,7 +1022,6 @@ export default function ExternalFormPage() {
 											id="hmu_dean_approval_position_title"
 											placeholder="Position title"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -1043,7 +1037,6 @@ export default function ExternalFormPage() {
 									type="date"
 									id="hmu_dean_approval_date"
 									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-									required
 								/>
 							</div>
 						</div>
