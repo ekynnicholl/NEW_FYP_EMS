@@ -14,6 +14,15 @@ export default function ExternalFormPage() {
 		sigCanvas.current.clear();
 	};
 
+	const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+
+	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target?.files?.[0];
+		if (file) {
+			setUploadedFileName(file.name);
+		}
+	}
+
 	// Initialize state variables for each input field
 	const [courseFee, setCourseFee] = useState(0);
 	const [airfareFee, setAirfareFee] = useState(0);
@@ -76,14 +85,17 @@ export default function ExternalFormPage() {
 					<a href="#travel_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Travel Details</a>
 					<a href="#logistic_arrangement" className="cursor-pointer hover:text-lg hover:font-semibold block">Logistic Arrangement</a>
 					<a href="#funding" className="cursor-pointer hover:text-lg hover:font-semibold block">Funding</a>
+					<a href="#additional_files" className="cursor-pointer hover:text-lg hover:font-semibold block">Additional Files</a>
 					<a href="#applicant_declaration" className="cursor-pointer hover:text-lg hover:font-semibold block">Applicant Declaration</a>
-					<a href="#aao_verification" className="cursor-pointer hover:text-lg hover:font-semibold block">Verification</a>
+					<a href="#hos_verification" className="cursor-pointer hover:text-lg hover:font-semibold block">Verification</a>
 					<a href="#hmu_dean_approval" className="cursor-pointer hover:text-lg hover:font-semibold block">Approval</a>
 				</div>
 
 
 
 				<form className="mt-6 w-full ml-[45px]">
+
+					{/* 1. Personal Details */}
 					<div>
 						<div>
 							<a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900">
@@ -255,6 +267,7 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
+					{/* 2. Travel Details */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="travel_details" className="text-2xl font-bold mb-5 block">
@@ -407,6 +420,7 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
+					{/* 3. Logistic Arrangement */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="logistic_arrangement" className="text-2xl font-bold mb-5 block text-slate-900">
@@ -422,7 +436,6 @@ export default function ExternalFormPage() {
 										id="flight_number"
 										placeholder="Flight number"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -438,7 +451,6 @@ export default function ExternalFormPage() {
 											type="date"
 											id="flight_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -451,7 +463,6 @@ export default function ExternalFormPage() {
 											type="time"
 											id="flight_time"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -471,7 +482,6 @@ export default function ExternalFormPage() {
 												id="from"
 												placeholder="From"
 												className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-												required
 											/>
 										</div>
 									</div>
@@ -485,7 +495,6 @@ export default function ExternalFormPage() {
 												id="to"
 												placeholder="To"
 												className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-												required
 											/>
 										</div>
 									</div>
@@ -501,7 +510,6 @@ export default function ExternalFormPage() {
 										id="hotel"
 										placeholder="Hotel"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -515,7 +523,6 @@ export default function ExternalFormPage() {
 											type="date"
 											id="check_in_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -528,7 +535,6 @@ export default function ExternalFormPage() {
 											type="date"
 											id="check_out_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -536,6 +542,7 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
+					{/* 4. Funding */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="funding" className="text-2xl font-bold mb-5 block text-slate-900">
@@ -671,9 +678,9 @@ export default function ExternalFormPage() {
 
 									<div>
 										<input
-											type="number"
+											type="text"
 											id="staff_development_fund"
-											placeholder="Amount (RM)"
+											placeholder="Staff development fund"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 										/>
 									</div>
@@ -685,9 +692,9 @@ export default function ExternalFormPage() {
 
 									<div>
 										<input
-											type="number"
+											type="text"
 											id="consolidated_pool_fund"
-											placeholder="Amount (RM)"
+											placeholder="Consolidated pool fund"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 										/>
 									</div>
@@ -701,9 +708,9 @@ export default function ExternalFormPage() {
 
 									<div>
 										<input
-											type="number"
+											type="text"
 											id="research_fund"
-											placeholder="Amount (RM)"
+											placeholder="Research fund"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 										/>
 									</div>
@@ -715,9 +722,9 @@ export default function ExternalFormPage() {
 
 									<div>
 										<input
-											type="number"
+											type="text"
 											id="travel_fund"
-											placeholder="Amount (RM)"
+											placeholder="Travel fund"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 										/>
 									</div>
@@ -731,9 +738,9 @@ export default function ExternalFormPage() {
 
 									<div>
 										<input
-											type="number"
+											type="text"
 											id="student_welfare_fund"
-											placeholder="Amount (RM)"
+											placeholder="Student welfare fund"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 										/>
 									</div>
@@ -745,9 +752,9 @@ export default function ExternalFormPage() {
 
 									<div>
 										<input
-											type="number"
+											type="text"
 											id="other_fund"
-											placeholder="Amount (RM)"
+											placeholder="Other funds"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 										/>
 									</div>
@@ -800,10 +807,58 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
+					{/* 5. Additional Files */}
+					<div className="mt-[45px]">
+						<p id="additional_files" className="text-2xl font-bold block text-slate-900">
+							5. Additional Files
+						</p>
+
+						<p className="text-[15px] text-slate-800 font-normal text-base ml-[1px] mt-4">Additional files to be upload (if have).
+						</p>
+
+						<div className="flex items-center justify-center w-full mt-3">
+							<label
+								htmlFor="dropzone-file"
+								className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+							>
+								<div className="flex flex-col items-center justify-center pt-5 pb-6">
+									<svg
+										className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 20 16"
+									>
+										<path
+											stroke="currentColor"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+										/>
+									</svg>
+									<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
+										<span className="font-semibold">Click to upload</span> or drag and drop
+									</p>
+									<p className="text-sm text-gray-500 dark:text-gray-400">PDF or Word (maximum 2MB)</p>
+									{uploadedFileName && <p className="mt-2 text-xl text-slate-700">{uploadedFileName}</p>}
+								</div>
+								<input
+									id="dropzone-file"
+									type="file"
+									className="hidden"
+									onChange={handleFileUpload}
+									accept=".pdf,.doc,.docx"
+								/>
+							</label>
+						</div>
+					</div>
+
+					{/* 6. Applicant Declaration */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
-								5. Applicant Declaration
+								6. Applicant Declaration
 							</p>
 
 							<p className="text-slate-800 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
@@ -870,10 +925,11 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
+					{/* 7. Verification (by HOS) */}
 					<div className="mt-[45px]">
 						<div>
-							<p id="aao_verification" className="text-2xl font-bold mb-4 block text-slate-900">
-								6. Verification
+							<p id="hos_verification" className="text-2xl font-bold mb-4 block text-slate-900">
+								7. Verification (HOS)
 							</p>
 
 							<p className="text-slate-800 text-base font-normal ml-[1px]">I have verified and support of this application.
@@ -889,7 +945,7 @@ export default function ExternalFormPage() {
 									<div>
 										<input
 											type="text"
-											id="aao_verification_name"
+											id="hos_verification_name"
 											placeholder="Name"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 											required
@@ -906,7 +962,7 @@ export default function ExternalFormPage() {
 									<div>
 										<input
 											type="text"
-											id="aao_verification_position_title"
+											id="hos_verification_position_title"
 											placeholder="Position title"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 											required
@@ -923,7 +979,7 @@ export default function ExternalFormPage() {
 							<div>
 								<input
 									type="date"
-									id="aao_verification_date"
+									id="hos_verification_date"
 									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
 									required
 								/>
@@ -931,10 +987,11 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
+					{/* 8. Approval (by HMU or Dean ) */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="hmu_dean_approval" className="text-2xl font-bold mb-4 block text-slate-900">
-								7. Approval
+								8. Approval (HMU / Dean / Director / DVC & CEO)
 							</p>
 
 							<p className="text-slate-800 text-base font-normal ml-[1px]">I have reviewed, and approve this application.
@@ -992,31 +1049,10 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-
-					<div className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4s">
+					{/* Submit Button */}
+					<button className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[125px] mt-6 text-center">
 						Submit
-					</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+					</button>
 				</form>
 			</div >
 		</div >

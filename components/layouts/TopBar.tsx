@@ -175,7 +175,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 					)}
 				</div>
 				<Notification />
-				<User />
 				<div className="cursor-pointer">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -190,6 +189,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
+				<User />
 				<div className="flex items-center justify-center">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
