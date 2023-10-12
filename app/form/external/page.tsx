@@ -5,7 +5,142 @@ import Image from "next/image";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import SignatureCanvas from 'react-signature-canvas';
 
+type FormData = {
+	// Section 1: Personal Details
+	email: string;
+	full_name: string;
+	staff_id: string;
+	course: string;
+	faculty: string;
+	transport: string;
+	travelling: string;
+	other_members: string;
+	total_members: number;
+
+	// Section 2: Travel Details
+	program_title: string;
+	program_description: string;
+	commencement_date: string;
+	completion_date: string;
+	organiser: string;
+	venue: string;
+	hrdf_claimable: string;
+
+	// Section 3: Logistic Arrangement
+	// flight_number: string;
+	// flight_date: string;
+	// flight_time: string;
+	// destination_from: string;
+	// destination_to: string;
+	// hotel_name: string;
+	// check_in_date: string;
+	// check_out_date: string;
+
+	// Section 4: Funding
+	// course_fee: number;
+	// airfare_fee: number;
+	// accommodation_fee: number;
+	// per_diem_fee: number;
+	// transportation_fee: number;
+	// travel_insurance_fee: number;
+	// other_fees: number;
+	// grand_total_fees: number;
+
+	// staff_development_fund: string;
+	// consolidated_pool_fund: string;
+	// research_fund: string;
+	// travel_fund: string;
+	// student_council_fund: string;
+	// other_funds: string;
+	// expenditure_cap: string;
+	// expenditure_cap_amount: number;
+
+	// Section 5: Applicant Declaration
+	// applicant_declaration_name: string;
+	// applicant_declaration_position_title: string;
+	// applicant_declaration_date: string;
+	// applicant_declaration_signature: string;
+
+	// Section 6: Verification
+	// verification_name: string;
+	// verification_position_title: string;
+	// verification_date: string;
+	// verification_signature: string;
+
+	// Section 7: Approval
+	// approval_name: string;
+	// approval_position_title: string;
+	// approval_date: string;
+	// approval_signature: string;
+};
+
 export default function ExternalFormPage() {
+	const supabase = createClientComponentClient();
+	const [formData, setFormData] = useState<FormData>({} as FormData);
+	const [formDatas, setFormDatas] = useState<FormData[]>([] as FormData[]);
+
+	const submitForm = async (e) => {
+		e.preventDefault();
+
+		const { data, error } = await supabase.from("external_forms").insert({
+			// Section 1: Personal Details
+			email: formData.email || null,
+			full_name: formData.full_name || null,
+			staff_id: formData.staff_id || null,
+			course: formData.course || null,
+			faculty: formData.faculty || null,
+			transport: formData.transport || null,
+			travelling: formData.travelling || null,
+			other_members: formData.other_members || null,
+			total_members: formData.total_members || null,
+
+			// Section 2: Travel Details
+			program_title: formData.program_title,
+			program_description: formData.program_description,
+			commencement_date: formData.commencement_date,
+			completion_date: formData.completion_date,
+			organiser: formData.organiser,
+			venue: formData.venue,
+			hrdf_claimable: formData.hrdf_claimable
+		});
+
+		if (error) {
+			console.error(error);
+			return;
+		}
+
+		console.log(data);
+
+		setFormDatas([...formDatas, {
+			// Section 1: Personal Details
+			email: formData.email,
+			full_name: formData.full_name,
+			staff_id: formData.staff_id,
+			course: formData.course,
+			faculty: formData.faculty,
+			transport: formData.transport,
+			travelling: formData.travelling,
+			other_members: formData.other_members,
+			total_members: formData.total_members,
+
+			// Section 2: Travel Details
+			program_title: formData.program_title,
+			program_description: formData.program_description,
+			commencement_date: formData.commencement_date,
+			completion_date: formData.completion_date,
+			organiser: formData.organiser,
+			venue: formData.venue,
+			hrdf_claimable: formData.hrdf_claimable
+		}]);
+
+		setFormData({} as FormData);
+	};
+
+
+
+
+
+
 
 	// Create a reference to the signature canvas
 	const sigCanvas = React.useRef({});
@@ -93,7 +228,6 @@ export default function ExternalFormPage() {
 				</div>
 
 
-
 				<form className="mt-6 w-full ml-[45px]">
 
 					{/* 1. Personal Details */}
@@ -111,9 +245,10 @@ export default function ExternalFormPage() {
 								<div>
 									<input
 										type="email"
-										id="email_address"
+										id="email"
 										placeholder="Email"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, email: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -132,6 +267,7 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Full name"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, full_name: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -148,6 +284,7 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Staff ID"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, staff_id: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -166,6 +303,7 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Designation / Course"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, course: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -182,6 +320,7 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Faculty / School / Unit"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, faculty: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -198,6 +337,7 @@ export default function ExternalFormPage() {
 									<select
 										id="transportation"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[6px]  hover:bg-slate-100 text-slate-800"
+										onChange={(event) => setFormData({ ...formData, transport: event.target.value })}
 									>
 										<option value="" className="text-slate-800">Please select an option</option>
 										<option value="aeroplane" className="text-slate-800">Aeroplane</option>
@@ -217,6 +357,7 @@ export default function ExternalFormPage() {
 									<select
 										id="transportation"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[10px]  hover:bg-slate-100 text-slate-800"
+										onChange={(event) => setFormData({ ...formData, travelling: event.target.value })}
 									>
 										<option value="" className="text-slate-800">Choose an item</option>
 										<option value="alone" className="text-slate-800">Alone</option>
@@ -239,6 +380,7 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Name of other staff"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, other_members: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -255,6 +397,7 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Number of total staffs"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, total_members: Number(event.target.value) })}
 									/>
 								</div>
 							</div>
@@ -279,6 +422,7 @@ export default function ExternalFormPage() {
 										id="program_title"
 										placeholder="Program title"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, program_title: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -295,6 +439,7 @@ export default function ExternalFormPage() {
 										id="description"
 										placeholder="Description"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(event) => setFormData({ ...formData, program_description: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -311,6 +456,7 @@ export default function ExternalFormPage() {
 											type="date"
 											id="commencement_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(event) => setFormData({ ...formData, commencement_date: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -326,6 +472,7 @@ export default function ExternalFormPage() {
 											type="date"
 											id="completion_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(event) => setFormData({ ...formData, completion_date: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -344,6 +491,7 @@ export default function ExternalFormPage() {
 											id="organizer"
 											placeholder="Organizer"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(event) => setFormData({ ...formData, organiser: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -360,6 +508,7 @@ export default function ExternalFormPage() {
 											id="venue"
 											placeholder="Venue"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(event) => setFormData({ ...formData, venue: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -378,6 +527,7 @@ export default function ExternalFormPage() {
 											name="hdrf_claimable"
 											value="yes"
 											className="form-checkbox h-4 w-4 text-slate-800"
+											onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
 										/>
 										<span className="text-slate-800 text-[15px]">Yes</span>
 									</label>
@@ -389,6 +539,7 @@ export default function ExternalFormPage() {
 											name="hdrf_claimable"
 											value="no"
 											className="form-checkbox h-4 w-4 text-slate-800"
+											onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
 										/>
 										<span className="text-slate-800 text-[15px]">No</span>
 									</label>
@@ -400,6 +551,7 @@ export default function ExternalFormPage() {
 											name="hdrf_claimable"
 											value="not_indicated"
 											className="form-checkbox h-4 w-4 text-slate-800"
+											onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
 										/>
 										<span className="text-slate-800 text-[15px]">Not indicated in event brochure / registration form</span>
 									</label>
@@ -1029,7 +1181,7 @@ export default function ExternalFormPage() {
 					</div>
 
 					{/* Submit Button */}
-					<button className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[125px] mt-6 text-center">
+					<button className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[125px] mt-6 text-center" onClick={submitForm}>
 						Submit
 					</button>
 				</form>
