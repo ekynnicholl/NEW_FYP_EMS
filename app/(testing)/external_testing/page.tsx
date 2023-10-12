@@ -79,6 +79,36 @@ export default function page() {
                 </div>
             </fieldset>
 
+            <div className="grid grid-cols-2 gap-5">
+                <div>
+                    <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">HOS Email
+                    </p>
+                    <div>
+                        <select
+                            id="hos"
+                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[6px]  hover:bg-slate-100 text-slate-800"
+                        >
+                            <option value="" className="text-slate-800">Please select an option</option>
+                            <option value="aeroplane" className="text-slate-800">testing@gmail.com</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Dean Email
+                    </p>
+                    <div>
+                        <select
+                            id="dean"
+                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[10px]  hover:bg-slate-100 text-slate-800"
+                        >
+                            <option value="" className="text-slate-800">Choose an item</option>
+                            <option value="alone" className="text-slate-800">testing@gmail.com</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <button className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5">
                 Submit
             </button>
