@@ -66,6 +66,7 @@
 	},
 	"devDependencies": {
 		"@shrutibalasa/tailwind-grid-auto-fit": "^1.1.0",
+		"@types/react-signature-canvas": "^1.0.3",
 		"encoding": "^0.1.13",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "5.2.2",
