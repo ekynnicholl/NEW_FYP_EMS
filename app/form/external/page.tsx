@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useState } from 'react'
-import Image from "next/image"
+import React, { useState } from 'react';
+import Image from "next/image";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import SignatureCanvas from 'react-signature-canvas';
 
 export default function ExternalFormPage() {
@@ -285,7 +286,6 @@ export default function ExternalFormPage() {
 										id="program_title"
 										placeholder="Program title"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -302,7 +302,6 @@ export default function ExternalFormPage() {
 										id="description"
 										placeholder="Description"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
 									/>
 								</div>
 							</div>
@@ -334,7 +333,6 @@ export default function ExternalFormPage() {
 											type="date"
 											id="completion_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -353,7 +351,6 @@ export default function ExternalFormPage() {
 											id="organizer"
 											placeholder="Organizer"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -370,7 +367,6 @@ export default function ExternalFormPage() {
 											id="venue"
 											placeholder="Venue"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -876,7 +872,6 @@ export default function ExternalFormPage() {
 											id="applicant_declaration_name"
 											placeholder="Name"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -893,7 +888,6 @@ export default function ExternalFormPage() {
 											id="applicant_declaration_position_title"
 											placeholder="Position title"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											required
 										/>
 									</div>
 								</div>
@@ -909,7 +903,6 @@ export default function ExternalFormPage() {
 									type="date"
 									id="applicant_declaration_date"
 									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-									required
 								/>
 							</div>
 
