@@ -29,6 +29,8 @@ import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
 import cookie from 'js-cookie';
 import { useRouter } from "next/navigation";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+//npm install chartjs-plugin-datalabels
 
 // import {Calendar} from "@/components/layouts/calendar";
 
@@ -203,6 +205,7 @@ export default function Homepage() {
 				return;
 			}
 			setAttendanceMainEventID(event_id);
+			fetchAttendanceList(event_id)
 			setSubEvents(subEvents);
 
 			// Extract the subEventID values from the fetched sub_events
@@ -344,6 +347,8 @@ export default function Homepage() {
 					chartInstanceRef.current.destroy();
 				}
 
+				Chart.register(ChartDataLabels);
+
 				chartInstanceRef.current = new Chart(ctx, {
 					type: 'pie',
 					data: {
@@ -381,7 +386,19 @@ export default function Homepage() {
 						plugins: {
 							legend: {
 								position: 'bottom',
-							}
+							},
+							datalabels: {
+								color: '#000000',
+								font: {
+									weight: 'bold'
+								},
+								formatter: (value: number, context: any) => {
+									const total = context.dataset.data.reduce((acc: number, current: number) => acc + current, 0);
+									const percentage = ((value / total) * 100).toFixed(2);
+
+									return `${percentage}%\n(${value}/${total})`;
+								},
+							},
 						},
 					},
 				});
@@ -955,7 +972,7 @@ export default function Homepage() {
 						isVisible={showAttendanceModal}
 						onClose={() => setShowAttendanceModal(false)}>
 						<div className="flex">
-							<div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} h-[500px]`}>
+							<div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} h-[700px]`}>
 								<div className="flex items-center justify-center">
 									<div className="flex items-center justify-center text-text text-[20px] text-center -mt-8">
 										<PencilNoteIcon />{" "}
@@ -1005,8 +1022,9 @@ export default function Homepage() {
 										</div>
 									))}
 								</div>
+								{/* This is to loop through the attendance data. */}
 								{attendanceData && attendanceData.length > 0 ? (
-									<div className="overflow-y-auto max-h-[375px]">
+									<div className="overflow-y-auto max-h-[600px]">
 										<table className="w-full">
 											<thead>
 												<tr>
@@ -1048,7 +1066,7 @@ export default function Homepage() {
 							{attendanceData && attendanceData.length > 0 ? (
 								<div className="w-1/2 flex flex-col items-center justify-center">
 									<div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
-									<div className="w-[300px] h-[300px] flex items-center justify-center mt-5">
+									<div className="w-[500px] h-[500px] flex items-center justify-center mt-5">
 										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
 									</div>
 								</div>
