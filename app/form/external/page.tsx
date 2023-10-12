@@ -216,7 +216,7 @@ export default function ExternalFormPage() {
 			<hr className="my-8" />
 
 			<div className="flex justify-between -mt-6">
-				<div className="space-y-8 h-[150vh] top-0 px-8 py-8 whitespace-nowrap text-slate-800">
+				<div className="space-y-8 h-[150vh] top-0 px-8 py-8 whitespace-nowrap text-slate-800 hidden lg:inline">
 					<a href="#personal_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Personal Details</a>
 					<a href="#travel_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Travel Details</a>
 					<a href="#logistic_arrangement" className="cursor-pointer hover:text-lg hover:font-semibold block">Logistic Arrangement</a>
@@ -254,7 +254,7 @@ export default function ExternalFormPage() {
 							</div>
 						</div>
 
-						<div className="grid grid-cols-2 gap-5">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 							<div>
 								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Full name (as per I.C. / Passport)
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
