@@ -6,13 +6,13 @@ import SignatureCanvas from 'react-signature-canvas';
 
 export default function ExternalFormPage() {
 
-	// // Create a reference to the signature canvas
-	// const sigCanvas = React.useRef({});
+	// Create a reference to the signature canvas
+	const sigCanvas = React.useRef({});
 
-	// // Function to clear the signature
-	// const clearSignature = () => {
-	// 	sigCanvas.current.clear();
-	// };
+	// Function to clear the signature
+	const clearSignature = () => {
+		sigCanvas.current.clear();
+	};
 
 	// Initialize state variables for each input field
 	const [courseFee, setCourseFee] = useState(0);
@@ -73,10 +73,12 @@ export default function ExternalFormPage() {
 			<div className="flex justify-between -mt-6">
 				<div className="space-y-8 h-[150vh] top-0 px-8 py-8 whitespace-nowrap text-slate-800">
 					<a href="#personal_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Personal Details</a>
-					<a href="#" className="cursor-pointer hover:text-lg hover:font-semibold block">Travel Details</a>
-					<a href="#" className="cursor-pointer hover:text-lg hover:font-semibold block">Logistic Arrangement</a>
-					<a href="#" className="cursor-pointer hover:text-lg hover:font-semibold block">Funding</a>
-					<a href="" className="cursor-pointer hover:text-lg hover:font-semibold block">Applicant Declaration</a>
+					<a href="#travel_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Travel Details</a>
+					<a href="#logistic_arrangement" className="cursor-pointer hover:text-lg hover:font-semibold block">Logistic Arrangement</a>
+					<a href="#funding" className="cursor-pointer hover:text-lg hover:font-semibold block">Funding</a>
+					<a href="#applicant_declaration" className="cursor-pointer hover:text-lg hover:font-semibold block">Applicant Declaration</a>
+					<a href="#aao_verification" className="cursor-pointer hover:text-lg hover:font-semibold block">Verification</a>
+					<a href="#hmu_dean_approval" className="cursor-pointer hover:text-lg hover:font-semibold block">Approval</a>
 				</div>
 
 
@@ -84,11 +86,11 @@ export default function ExternalFormPage() {
 				<form className="mt-6 w-full ml-[45px]">
 					<div>
 						<div>
-							<a href="#personal_details" className="text-2xl font-bold mb-5 block">
+							<a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900">
 								1. Personal Details
 							</a>
 							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Email
+								<p className="text-sm text-slate-800 font-medium ml-[1px]">Email
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -107,7 +109,7 @@ export default function ExternalFormPage() {
 
 						<div className="grid grid-cols-2 gap-5">
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Full name (as per I.C. / Passport)
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Full name (as per I.C. / Passport)
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -124,7 +126,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Staff ID / Student No.
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Staff ID / Student No.
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -143,7 +145,7 @@ export default function ExternalFormPage() {
 
 						<div className="grid grid-cols-2 gap-5">
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Designation / Course
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Designation / Course
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -160,7 +162,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Faculty / School / Unit
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Faculty / School / Unit
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -179,7 +181,7 @@ export default function ExternalFormPage() {
 
 						<div className="grid grid-cols-2 gap-5">
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Type of Transportation
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Type of Transportation
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -187,9 +189,9 @@ export default function ExternalFormPage() {
 								<div>
 									<select
 										id="transportation"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[6px]  hover:bg-slate-100 text-slate-500"
+										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[6px]  hover:bg-slate-100 text-slate-800"
 									>
-										<option value="" className="text-slate-500">Please select an option</option>
+										<option value="" className="text-slate-800">Please select an option</option>
 										<option value="aeroplane" className="text-slate-800">Aeroplane</option>
 										<option value="company_vehicle" className="text-slate-800">Company Vehicle</option>
 										<option value="own_transport" className="text-slate-800">Own Transport</option>
@@ -198,7 +200,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Travelling in
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Travelling in
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -206,9 +208,9 @@ export default function ExternalFormPage() {
 								<div>
 									<select
 										id="transportation"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[10px]  hover:bg-slate-100 text-slate-500"
+										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[10px]  hover:bg-slate-100 text-slate-800"
 									>
-										<option value="" className="text-slate-500">Choose an item</option>
+										<option value="" className="text-slate-800">Choose an item</option>
 										<option value="alone" className="text-slate-800">Alone</option>
 										<option value="group" className="text-slate-800">Group</option>
 									</select>
@@ -218,7 +220,7 @@ export default function ExternalFormPage() {
 
 						<div className="grid grid-cols-2 gap-5">
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Name of other staff / student travelling together in group
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name of other staff / student travelling together in group
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -235,7 +237,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div>
-								<p className="text-sm text-slate-500 font-medium mt-5 ml-[1px]">Number of total staffs
+								<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Number of total staffs
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -255,11 +257,11 @@ export default function ExternalFormPage() {
 
 					<div className="mt-[45px]">
 						<div>
-							<a href="#personal_details" className="text-2xl font-bold mb-5 block">
+							<p id="travel_details" className="text-2xl font-bold mb-5 block">
 								2. Travel Details
-							</a>
+							</p>
 							<div>
-								<p className="text-sm text-slate-500 font-medium">Program title / Event
+								<p className="text-sm text-slate-800 font-medium">Program title / Event
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -276,7 +278,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div className="mt-5">
-								<p className="text-sm text-slate-500 font-medium">Description
+								<p className="text-sm text-slate-800 font-medium">Description
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -294,7 +296,7 @@ export default function ExternalFormPage() {
 
 							<div className="grid grid-cols-2 gap-5">
 								<div>
-									<p className="text-sm text-slate-500 font-medium mt-5">Commencement date of event
+									<p className="text-sm text-slate-800 font-medium mt-5">Commencement date of event
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
 										</span>
@@ -310,7 +312,7 @@ export default function ExternalFormPage() {
 								</div>
 
 								<div>
-									<p className="text-sm text-slate-500 font-medium mt-5">Completion date of event
+									<p className="text-sm text-slate-800 font-medium mt-5">Completion date of event
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
 										</span>
@@ -328,7 +330,7 @@ export default function ExternalFormPage() {
 
 							<div className="grid grid-cols-2 gap-5">
 								<div>
-									<p className="text-sm text-slate-500 font-medium mt-5">Organiser
+									<p className="text-sm text-slate-800 font-medium mt-5">Organiser
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
 										</span>
@@ -345,7 +347,7 @@ export default function ExternalFormPage() {
 								</div>
 
 								<div>
-									<p className="text-sm text-slate-500 font-medium mt-5">Venue
+									<p className="text-sm text-slate-800 font-medium mt-5">Venue
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
 										</span>
@@ -363,7 +365,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div className="mt-5">
-								<p className="text-sm text-slate-500 font-medium">HDRF Claimable
+								<p className="text-sm text-slate-800 font-medium">HDRF Claimable
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 										*
 									</span>
@@ -407,12 +409,12 @@ export default function ExternalFormPage() {
 
 					<div className="mt-[45px]">
 						<div>
-							<a href="#personal_details" className="text-2xl font-bold mb-5 block">
+							<p id="logistic_arrangement" className="text-2xl font-bold mb-5 block text-slate-900">
 								3. Logistic Arrangement
-							</a>
+							</p>
 
 							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Flight Number
+								<p className="text-sm text-slate-800 font-medium ml-[1px]">Flight Number
 								</p>
 								<div>
 									<input
@@ -427,7 +429,7 @@ export default function ExternalFormPage() {
 
 							<div className="grid grid-cols-2 gap-5 mt-5">
 								<div>
-									<p className="text-sm text-slate-500 font-medium ml-[1px]">
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">
 										Flight date
 									</p>
 
@@ -442,7 +444,7 @@ export default function ExternalFormPage() {
 								</div>
 
 								<div>
-									<p className="text-sm text-slate-500 font-medium">Flight time
+									<p className="text-sm text-slate-800 font-medium">Flight time
 									</p>
 									<div>
 										<input
@@ -461,7 +463,7 @@ export default function ExternalFormPage() {
 
 								<div className="grid grid-cols-2 gap-5 mt-3">
 									<div>
-										<p className="text-sm text-slate-500 font-medium ml-[1px]">From
+										<p className="text-sm text-slate-800 font-medium ml-[1px]">From
 										</p>
 										<div>
 											<input
@@ -475,7 +477,7 @@ export default function ExternalFormPage() {
 									</div>
 
 									<div>
-										<p className="text-sm text-slate-500 font-medium ml-[1px]">To
+										<p className="text-sm text-slate-800 font-medium ml-[1px]">To
 										</p>
 										<div>
 											<input
@@ -491,7 +493,7 @@ export default function ExternalFormPage() {
 							</div>
 
 							<div className="mt-5">
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Hotel
+								<p className="text-sm text-slate-800 font-medium ml-[1px]">Hotel
 								</p>
 								<div>
 									<input
@@ -506,7 +508,7 @@ export default function ExternalFormPage() {
 
 							<div className="grid grid-cols-2 gap-5">
 								<div>
-									<p className="text-sm text-slate-500 font-medium mt-5">Check-in
+									<p className="text-sm text-slate-800 font-medium mt-5">Check-in
 									</p>
 									<div>
 										<input
@@ -519,7 +521,7 @@ export default function ExternalFormPage() {
 								</div>
 
 								<div>
-									<p className="text-sm text-slate-500 font-medium mt-5">Check-out
+									<p className="text-sm text-slate-800 font-medium mt-5">Check-out
 									</p>
 									<div>
 										<input
@@ -535,163 +537,464 @@ export default function ExternalFormPage() {
 					</div>
 
 					<div className="mt-[45px]">
-
-						<a href="#personal_details" className="text-2xl font-bold mb-5 block">
-							4. Funding
-						</a>
-
-						<p className="text-[15px] text-slate-800 font-medium ml-[1px]">Please indicate estimated cost.
-						</p>
-
-						<div className="grid grid-cols-2 gap-5 mt-4">
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Course Fee
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="course_fee"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
-							</div>
-
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Airfare Fee
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="airfare_fee"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div className="grid grid-cols-2 gap-5 mt-5">
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Accomodation
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="accomodation"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setAccomodation(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
-							</div>
-
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Per Diem
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="per_diem"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setPerDiem(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div className="grid grid-cols-2 gap-5 mt-5">
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Transportation
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="transportation"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setTransportation(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
-							</div>
-
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Travel Insurance
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="travel_insurance"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setTravelInsurance(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div className="mt-5">
-							<p className="text-sm text-slate-500 font-medium ml-[1px]">Others
+						<div>
+							<p id="funding" className="text-2xl font-bold mb-5 block text-slate-900">
+								4. Funding
 							</p>
 
+							<p className="text-[15px] text-slate-800 font-medium ml-[1px]">Please indicate estimated cost.
+							</p>
+
+							<div className="grid grid-cols-2 gap-5 mt-4">
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Course Fee
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="course_fee"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Airfare Fee
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="airfare_fee"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="grid grid-cols-2 gap-5 mt-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Accomodation
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="accomodation"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(e) => setAccomodation(parseFloat(e.target.value) || 0)}
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Per Diem
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="per_diem"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(e) => setPerDiem(parseFloat(e.target.value) || 0)}
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="grid grid-cols-2 gap-5 mt-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Transportation
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="transportation"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(e) => setTransportation(parseFloat(e.target.value) || 0)}
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Travel Insurance
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="travel_insurance"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											onChange={(e) => setTravelInsurance(parseFloat(e.target.value) || 0)}
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="mt-5">
+								<p className="text-sm text-slate-800 font-medium ml-[1px]">Others
+								</p>
+
+								<div>
+									<input
+										type="number"
+										id="others"
+										placeholder="Amount (RM)"
+										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										onChange={(e) => setOthers(parseFloat(e.target.value) || 0)}
+									/>
+								</div>
+							</div>
+
+							<p className="text-base text-slate-800 font-medium ml-[1px] mt-3">
+								Grand Total: <span className="text-red-500">RM{grandTotal.toFixed(2)}</span>
+							</p>
+
+
+							<p className="text-[15px] text-slate-800 font-medium ml-[1px] mt-8">Source of Fund <br></br><span className="text-slate-800 text-sm font-normal">Details of account(s) to be debited. (It is encouraged to have a single source of funding)</span>.
+							</p>
+
+							<div className="grid grid-cols-2 gap-5 mt-4">
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Staff Development Fund
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="staff_development_fund"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Consolidated Pool Fund
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="consolidated_pool_fund"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="grid grid-cols-2 gap-5 mt-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Research Fund
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="research_fund"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Travel Fund
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="travel_fund"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="grid grid-cols-2 gap-5 mt-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Student Welfare Fund
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="student_welfare_fund"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium ml-[1px]">Other Funds
+									</p>
+
+									<div>
+										<input
+											type="number"
+											id="other_fund"
+											placeholder="Amount (RM)"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<fieldset disabled>
+								<div className="mt-5 cursor-not-allowed">
+									<p className="text-sm text-slate-800 font-medium">Any Expenditure Cap?
+									</p>
+									<div className="mt-2">
+										<label className="flex items-center space-x-2">
+											<input
+												type="checkbox"
+												name="expenditure_cap"
+												value="yes"
+												className="form-checkbox h-4 w-4 text-slate-800 cursor-not-allowed"
+											/>
+											<span className="text-slate-800 text-[15px]">Yes</span>
+										</label>
+									</div>
+									<div className="mt-2">
+										<label className="flex items-center space-x-2">
+											<input
+												type="checkbox"
+												name="expenditure_cap"
+												value="no"
+												className="form-checkbox h-4 w-4 text-slate-800 cursor-not-allowed"
+											/>
+											<span className="text-slate-800 text-[15px]">No</span>
+										</label>
+									</div>
+
+									<div className="mt-5 cursor-not-allowed">
+										<p className="text-sm text-slate-800 font-medium ml-[1px]">Capped Amount
+										</p>
+
+										<div>
+											<input
+												type="number"
+												id="capped_amount"
+												placeholder="Amount (RM)"
+												className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] cursor-not-allowed"
+											/>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+
+						</div>
+					</div>
+
+					<div className="mt-[45px]">
+						<div>
+							<p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
+								5. Applicant Declaration
+							</p>
+
+							<p className="text-slate-800 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
+							</p>
+
+							<div className="grid grid-cols-2 gap-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+											*
+										</span>
+									</p>
+									<div>
+										<input
+											type="text"
+											id="applicant_declaration_name"
+											placeholder="Name"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											required
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+											*
+										</span>
+									</p>
+									<div>
+										<input
+											type="text"
+											id="applicant_declaration_position_title"
+											placeholder="Position title"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											required
+										/>
+									</div>
+								</div>
+							</div>
+
+							<p className="text-sm text-slate-800 font-medium mt-5">Declaration Date
+								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+									*
+								</span>
+							</p>
 							<div>
 								<input
-									type="number"
-									id="others"
-									placeholder="Amount (RM)"
+									type="date"
+									id="applicant_declaration_date"
 									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-									onChange={(e) => setOthers(parseFloat(e.target.value) || 0)}
+									required
+								/>
+							</div>
+
+							<div style={{ border: '1px solid #000', padding: '10px' }}>
+								<SignatureCanvas
+									ref={sigCanvas}
+									canvasProps={{ width: 400, height: 200, className: 'signature-canvas' }}
+								/>
+								<button onClick={clearSignature}>Clear Signature</button>
+							</div>
+
+						</div>
+					</div>
+
+					<div className="mt-[45px]">
+						<div>
+							<p id="aao_verification" className="text-2xl font-bold mb-4 block text-slate-900">
+								6. Verification
+							</p>
+
+							<p className="text-slate-800 text-base font-normal ml-[1px]">I have verified and support of this application.
+							</p>
+
+							<div className="grid grid-cols-2 gap-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+											*
+										</span>
+									</p>
+									<div>
+										<input
+											type="text"
+											id="aao_verification_name"
+											placeholder="Name"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											required
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+											*
+										</span>
+									</p>
+									<div>
+										<input
+											type="text"
+											id="aao_verification_position_title"
+											placeholder="Position title"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											required
+										/>
+									</div>
+								</div>
+							</div>
+
+							<p className="text-sm text-slate-800 font-medium mt-5">Verification Date
+								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+									*
+								</span>
+							</p>
+							<div>
+								<input
+									type="date"
+									id="aao_verification_date"
+									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+									required
 								/>
 							</div>
 						</div>
+					</div>
 
-						<p className="text-base text-slate-800 font-medium ml-[1px] mt-3">
-							Grand Total: <span className="text-red-500">RM{grandTotal.toFixed(2)}</span>
-						</p>
+					<div className="mt-[45px]">
+						<div>
+							<p id="hmu_dean_approval" className="text-2xl font-bold mb-4 block text-slate-900">
+								7. Approval
+							</p>
 
-						<p className="text-[15px] text-slate-800 font-medium ml-[1px] mt-8">Source of Fund <br></br><span className="text-slate-500 text-sm font-normal">Details of account(s) to be debited. (It is encouraged to have a single source of funding)</span>.
-						</p>
+							<p className="text-slate-800 text-base font-normal ml-[1px]">I have reviewed, and approve this application.
+							</p>
 
-						<div className="grid grid-cols-2 gap-5 mt-4">
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">
-								</p>
+							<div className="grid grid-cols-2 gap-5">
+								<div>
+									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+											*
+										</span>
+									</p>
+									<div>
+										<input
+											type="text"
+											id="hmu_dean_approval_name"
+											placeholder="Name"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											required
+										/>
+									</div>
+								</div>
 
 								<div>
-									<input
-										type="number"
-										id="course_fee"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
-									/>
+									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+											*
+										</span>
+									</p>
+									<div>
+										<input
+											type="text"
+											id="hmu_dean_approval_position_title"
+											placeholder="Position title"
+											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+											required
+										/>
+									</div>
 								</div>
 							</div>
 
+							<p className="text-sm text-slate-800 font-medium mt-5">Approval Date
+								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+									*
+								</span>
+							</p>
 							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Airfare Fee
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="airfare_fee"
-										placeholder="Amount (RM)"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
-									/>
-								</div>
+								<input
+									type="date"
+									id="hmu_dean_approval_date"
+									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+									required
+								/>
 							</div>
 						</div>
+					</div>
+
+
+					<div className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4s">
+						Submit
 					</div>
 
 
@@ -700,50 +1003,6 @@ export default function ExternalFormPage() {
 
 
 
-
-
-
-
-					{/*	<div className="grid grid-cols-2 gap-5 mt-4">
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Course Fee
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="course_fee"
-										placeholder="Amount (RM)"
-										value="0"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
-									/>
-								</div>
-							</div>
-
-							<div>
-								<p className="text-sm text-slate-500 font-medium ml-[1px]">Airfare Fee
-								</p>
-
-								<div>
-									<input
-										type="number"
-										id="airfare_fee"
-										placeholder="Amount (RM)"
-										value="0"
-										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										required
-									/>
-								</div>
-							</div>
-						</div>
-					    <div style={{ border: '1px solid #000', padding: '10px' }}>
-						<SignatureCanvas
-							ref={sigCanvas}
-							canvasProps={{ width: 400, height: 200, className: 'signature-canvas' }}
-						/>
-						<button onClick={clearSignature}>Clear Signature</button>
-						</div> */}
 
 
 
