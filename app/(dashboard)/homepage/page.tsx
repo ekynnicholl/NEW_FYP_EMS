@@ -192,6 +192,7 @@ export default function Homepage() {
 	// })
 
 	// This is for attendance modal,
+
 	const openAttendanceModal = async (event_id: string) => {
 		try {
 			// Fetch sub-events for the given event
@@ -644,7 +645,7 @@ export default function Homepage() {
 						</div>
 					</div>
 
-					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 ml-[50px] lg:ml-0">
+					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden lg:inline">
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 
                         -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
@@ -1297,7 +1298,7 @@ export default function Homepage() {
 								alt="tick_mark"
 								width={200}
 								height={250}
-								className="mx-auto -mt-[39px] lg:-mt-[45px]"
+								className="-mt-[39px] lg:-mt-[45px] ml-[121.5px]"
 							/>
 							<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
 								Success!
@@ -1353,8 +1354,8 @@ export default function Homepage() {
 			</div>
 
 			{viewMode === 1 ? (
-				<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_35%] pb-28 gap-4">
-					<div className="grid grid-auto-fit-lg gap-4">
+				<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4">
+					<div className="grid grid-auto-fit-lg gap-4 ml-1">
 						{latestEvent[0] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
@@ -1728,6 +1729,198 @@ export default function Homepage() {
 														latestEvent[3].intFID,
 													);
 													fetchAttendanceList(latestEvent[3].intFID);
+												}}>
+												Attendance List
+											</div>
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span
+													aria-hidden
+													className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">
+													Upcoming
+												</span>
+											</span>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+
+						{latestEvent[4] && (
+							<div
+								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?balloon",
+										latestEvent[4].intFID,
+										latestEvent[4]?.intFEventName,
+										latestEvent[4]?.intFDescription,
+										latestEvent[4]?.intFStartDate,
+										latestEvent[4]?.intFStartTime,
+										latestEvent[4]?.intFEndTime,
+										latestEvent[4]?.intFVenue,
+										latestEvent[4]?.intFMaximumSeats,
+										latestEvent[4]?.intFOrganizer,
+										latestEvent[4]?.intFFaculty,
+									)
+								}>
+								<div className="w-full h-[300px] mb-4 relative">
+									<div className="absolute -inset-6">
+										<img
+											src="https://source.unsplash.com/600x300?balloon"
+											alt="Random"
+											className="w-full h-full object-cover"
+										/>
+									</div>
+								</div>
+
+								{latestEvent[4] && (
+									<div className="mt-6">
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+											{latestEvent[4].intFEventName}
+										</h2>
+										<p className="text-gray-500">
+											{latestEvent[4].intFDescription}
+										</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
+											<p className="text-slate-600 text-sm">
+												{formatDate(latestEvent[4].intFStartDate)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[4].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{latestEvent[4].intFVenue}</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees: 23
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[4].intFMaximumSeats}
+											</span>
+										</div>
+
+										<div className="flex justify-between items-end mt-5">
+											<div
+												className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+												onClick={e => {
+													e.stopPropagation();
+													openAttendanceModal(
+														latestEvent[4].intFID,
+													);
+													fetchAttendanceList(latestEvent[4].intFID);
+												}}>
+												Attendance List
+											</div>
+											<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span
+													aria-hidden
+													className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+												<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+												<span className="relative mt-[1px] leading-3 tracking-wider">
+													Upcoming
+												</span>
+											</span>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+
+						{latestEvent[5] && (
+							<div
+								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?celebration",
+										latestEvent[5].intFID,
+										latestEvent[5]?.intFEventName,
+										latestEvent[5]?.intFDescription,
+										latestEvent[5]?.intFStartDate,
+										latestEvent[5]?.intFStartTime,
+										latestEvent[5]?.intFEndTime,
+										latestEvent[5]?.intFVenue,
+										latestEvent[5]?.intFMaximumSeats,
+										latestEvent[5]?.intFOrganizer,
+										latestEvent[5]?.intFFaculty,
+									)
+								}>
+								<div className="w-full h-[300px] mb-4 relative">
+									<div className="absolute -inset-6">
+										<img
+											src="https://source.unsplash.com/600x300?celebration"
+											alt="Random"
+											className="w-full h-full object-cover"
+										/>
+									</div>
+								</div>
+
+								{latestEvent[5] && (
+									<div className="mt-6">
+										<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+											{latestEvent[5].intFEventName}
+										</h2>
+										<p className="text-gray-500">
+											{latestEvent[5].intFDescription}
+										</p>
+										<div className="flex items-center mt-4">
+											<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 -mt-[2px]" />
+											<p className="text-slate-600 text-sm">
+												{formatDate(latestEvent[5].intFStartDate)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[5].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{latestEvent[5].intFVenue}</p>
+										</div>
+										<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees: 23
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[5].intFMaximumSeats}
+											</span>
+										</div>
+
+										<div className="flex justify-between items-end mt-5">
+											<div
+												className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+												onClick={e => {
+													e.stopPropagation();
+													openAttendanceModal(
+														latestEvent[5].intFID,
+													);
+													fetchAttendanceList(latestEvent[5].intFID);
 												}}>
 												Attendance List
 											</div>
