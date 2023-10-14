@@ -178,8 +178,7 @@ export default function Homepage() {
 	// Function to fetch the 6 latest events
 	useEffect(() => {
 		const fetchLatestEvent = async () => {
-			// Fetch data from internal_events table
-			const { data: mainEventData, error: internalError } = await supabase
+			const { data: internalData, error: internalError } = await supabase
 				.from("internal_events")
 				.select(
 					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate",
@@ -197,27 +196,25 @@ export default function Homepage() {
 				return;
 			}
 
-			setLatestEvent(mainEventData);
+			setLatestEvent(internalData);
 
-			// Fetch data from sub_events table where sub_eventsMainID equals intFID
-			const subEventQuery = await supabase
+			// Fetch data from the sub_events table
+			const { data: subEventData, error: subEventError } = await supabase
 				.from("sub_events")
 				.select(
 					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime",
-				)
-				.eq("sub_eventsMainID", mainEventData.map(event => event.intFID));
+				);
 
-			if (subEventQuery.error) {
-				console.error("Error fetching sub_events:", subEventQuery.error);
+			if (subEventError) {
+				console.error("Error fetching sub_events:", subEventError);
 				return;
 			}
 
-			setSubEvents(subEventQuery.data);
+			setSubEvents(subEventData);
 		};
 
 		fetchLatestEvent();
 	}, [supabase]);
-
 
 
 

@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
       <div className="w-[400px] lg:w-[550px] flex flex-col relative p-10 lg:p-0">
         <div>
           <button className="text-slate-500 text-md md:text-lg lg:text-xl absolute top-1 right-3 hover:font-medium hidden lg:inline" onClick={() => onClose()}>x</button>
-          <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-md">
+          <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-md max-h-[90vh] overflow-y-auto">
             {children}
           </div>
         </div>

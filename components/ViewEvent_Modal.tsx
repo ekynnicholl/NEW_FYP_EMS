@@ -28,4 +28,6 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
   )
 }
 
+{/* <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-md max-h-[90vh] overflow-y-auto"> */}
+
 export default Modal;
