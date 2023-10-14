@@ -105,6 +105,9 @@ type subEvents = {
 	sub_eventsEndDate: string;
 	sub_eventsStartTime: string;
 	sub_eventsEndTime: string;
+	sub_eventsOrganizer: string;
+	sub_eventsFaculty: string;
+	sub_eventsMaxSeats: number;
 }
 
 export default function Homepage() {
@@ -170,7 +173,13 @@ export default function Homepage() {
 	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const viewMode = useViewModeStore((state) => state.viewMode);
-	console.log(viewMode);
+
+
+
+
+
+
+
 
 	// This is for checking login and redirecting with router,
 	const router = useRouter();
@@ -203,9 +212,9 @@ export default function Homepage() {
 			const subEventQuery = await supabase
 				.from("sub_events")
 				.select(
-					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime",
+					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsMaxSeats, sub_eventsOrganizer, sub_eventsFaculty",
 				)
-				.eq("sub_eventsMainID", mainEventData.map(event => event.intFID));
+				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
 
 			if (subEventQuery.error) {
 				console.error("Error fetching sub_events:", subEventQuery.error);
@@ -213,6 +222,13 @@ export default function Homepage() {
 			}
 
 			setSubEvents(subEventQuery.data);
+			console.log("SubEvents:", subEventQuery.data)
+
+			console.log(
+				"Matching Sub Events:",
+				subEvents.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+			);
+
 		};
 
 		fetchLatestEvent();
@@ -1527,34 +1543,57 @@ export default function Homepage() {
 												{formatDate(latestEvent[0].intFEventStartDate)}
 											</p>
 										</div>
-										{/* <div className="flex items-center mt-3">
-											<FiClock className="text-2xl mr-2 text-slate-800" />
-											<p className="text-slate-600 text-sm">
-												{formatTime(latestEvent[0].intFStartTime)}
-											</p>
-										</div>
-										<div className="flex items-center mt-3">
-											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-											<p className="text-slate-600 text-sm">
-												{latestEvent[0].intFVenue}
-											</p>
-										</div> */}
-										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-											<div
-												className="h-full bg-orange-300 rounded-full"
-												style={{
-													width: `${(20 / 60) * 100}%`,
-												}}></div>
-										</div>
-										<div className="text-xs text-gray-600 mt-2 flex justify-between">
-											<span className="ml-[2px]">
-												Current Attendees:{" "}
-											</span>
-											<span className="mr-[2px]">
-												Max Attendees:{" "}
-												{latestEvent[0].intFMaximumSeats}
-											</span>
-										</div> */}
+
+										{subEvents.length > 0 && (
+											subEvents
+												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+												.map((subEvent, index) => (
+													<div key={index} className="flex items-center mt-3">
+														<FiClock className="text-2xl mr-2 text-slate-800" />
+														<p className="text-slate-600 text-sm">
+															{formatTime(subEvent.sub_eventsStartTime)}
+														</p>
+													</div>
+												))
+										)}
+
+										{subEvents.length > 0 && (
+											subEvents
+												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+												.map((subEvent, index) => (
+													<div key={index} className="flex items-center mt-3">
+														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+														<p className="text-slate-600 text-sm">
+															{subEvent.sub_eventsVenue}
+														</p>
+													</div>
+												))
+										)}
+
+										{subEvents.length > 0 && (
+											subEvents
+												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+												.map((subEvent, index) => (
+													<div key={index}>
+														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+															<div
+																className="h-full bg-orange-300 rounded-full"
+																style={{
+																	width: `${(20 / 60) * 100}%`,
+																}}>
+															</div>
+														</div>
+														<div className="text-xs text-gray-600 mt-2 flex justify-between">
+															<span className="ml-[2px]">
+																Current Attendees: {" "}
+															</span>
+															<span className="mr-[2px]">
+																Max Attendees: {subEvent.sub_eventsMaxSeats}
+															</span>
+														</div>
+													</div>
+												))
+										)}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
