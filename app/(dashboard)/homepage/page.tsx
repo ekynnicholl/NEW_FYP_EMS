@@ -163,6 +163,9 @@ export default function Homepage() {
 	const [selectedEventImage, setSelectedEventImage] = useState("");
 	const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 
+	const [subEvents2, setSubEvents2] = useState<subEvents[]>([]);
+
+
 	// Success Modal and Confirmation Modal
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
 	const [showModalConfirmation, setShowModalConfirmation] = useState(false);
@@ -665,7 +668,7 @@ export default function Homepage() {
 				}
 
 				if (subEventData && subEventData.length > 0) {
-					setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
+					setSubEvents2(prevSubEvents => [...prevSubEvents, subEventData[0]]);
 				}
 			}
 		}
