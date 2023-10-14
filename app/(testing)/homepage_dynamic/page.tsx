@@ -67,18 +67,18 @@ const formatTime = (timeString: string): string => {
 	return formattedTime.replace(" ", "").toLowerCase();
 };
 
-// type Info = {
-// 	intFID: string;
-// 	intFEventName: string;
-// 	intFDescription: string;
-// 	intFVenue: string;
-// 	intFMaximumSeats: string;
-// 	intFStartDate: string;
-// 	intFStartTime: string;
-// 	intFEndTime: string;
-// 	intFOrganizer: string;
-// 	intFFaculty: string;
-// };
+type Info = {
+	intFID: string;
+	intFEventName: string;
+	intFDescription: string;
+	intFVenue: string;
+	intFMaximumSeats: string;
+	intFStartDate: string;
+	intFStartTime: string;
+	intFEndTime: string;
+	intFOrganizer: string;
+	intFFaculty: string;
+};
 
 type mainEvent = {
 	intFID: string;
@@ -105,17 +105,14 @@ type subEvents = {
 	sub_eventsEndDate: string;
 	sub_eventsStartTime: string;
 	sub_eventsEndTime: string;
-	sub_eventsOrganizer: string;
-	sub_eventsFaculty: string;
-	sub_eventsMaxSeats: string;
 }
 
 export default function Homepage() {
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
 
-	// const [info, setInfo] = useState<Info>({} as Info);
-	// const [infos, setInfos] = useState<Info[]>([] as Info[]);
+	const [info, setInfo] = useState<Info>({} as Info);
+	const [infos, setInfos] = useState<Info[]>([] as Info[]);
 
 	const [mainEvent, setMainEvent] = useState<mainEvent>({} as mainEvent);
 	const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
@@ -123,24 +120,21 @@ export default function Homepage() {
 	// const [latestEvent, setLatestEvent] = useState<Info | null>(null);
 	const [latestEvent, setLatestEvent] = useState<mainEvent[]>([]);
 
+
+
+
 	const [numberOfAttendees, setNumberOfAttendees] = useState<number>(0);
 	const [selectedEvent, setSelectedEvent] = useState({
 		intFID: "",
-		intFEventName: "",
-		intFEventDescription: "",
-		intFEventStartDate: "",
-		intFEventEndDate: "",
-		sub_eventsID: "",
-		sub_eventsMainID: "",
-		sub_eventsName: "",
-		sub_eventsVenue: "",
-		sub_eventsStartDate: "",
-		sub_eventsEndDate: "",
-		sub_eventsStartTime: "",
-		sub_eventsEndTime: "",
-		sub_eventsMaxSeats: "",
-		sub_eventsOrganizer: "",
-		sub_eventsFaculty: "",
+		intFName: "",
+		intFDescription: "",
+		intFStartDate: "",
+		intFStartTime: "",
+		intFEndTime: "",
+		intFVenue: "",
+		intFMaximumSeats: "",
+		intFOrganizer: "",
+		intFFaculty: "",
 	});
 
 	const [editEventInfo, setEditEventInfo] = useState({
@@ -156,22 +150,18 @@ export default function Homepage() {
 		intFFaculty: "",
 	});
 
-	// Create, View, Edit Modal + Selected Event Image
 	const [showModalCreateEvent, setShowModalCreateEvent] = useState(false);
 	const [showModalViewEvent, setShowModalViewEvent] = useState(false);
 	const [showModalEditEvent, setShowModalEditEvent] = useState(false);
 	const [selectedEventImage, setSelectedEventImage] = useState("");
-	const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 
-
-
-	// Success Modal and Confirmation Modal
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
 	const [showModalConfirmation, setShowModalConfirmation] = useState(false);
 
 	// This is for attendance modal,
 	const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
 	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+	const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 	const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
 
 	// This is for the pie chart,
@@ -180,7 +170,7 @@ export default function Homepage() {
 	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const viewMode = useViewModeStore((state) => state.viewMode);
-
+	console.log(viewMode);
 
 	// This is for checking login and redirecting with router,
 	const router = useRouter();
@@ -188,8 +178,7 @@ export default function Homepage() {
 	// Function to fetch the 6 latest events
 	useEffect(() => {
 		const fetchLatestEvent = async () => {
-			// Fetch data from internal_events table
-			const { data: mainEventData, error: internalError } = await supabase
+			const { data: internalData, error: internalError } = await supabase
 				.from("internal_events")
 				.select(
 					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate",
@@ -207,33 +196,29 @@ export default function Homepage() {
 				return;
 			}
 
-			setLatestEvent(mainEventData);
+			setLatestEvent(internalData);
 
-			// Fetch data from sub_events table where sub_eventsMainID equals intFID
-			const subEventQuery = await supabase
+			// Fetch data from the sub_events table
+			const { data: subEventData, error: subEventError } = await supabase
 				.from("sub_events")
 				.select(
-					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsMaxSeats, sub_eventsOrganizer, sub_eventsFaculty",
-				)
-				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
+					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime",
+				);
 
-			if (subEventQuery.error) {
-				console.error("Error fetching sub_events:", subEventQuery.error);
+			if (subEventError) {
+				console.error("Error fetching sub_events:", subEventError);
 				return;
 			}
 
-			setSubEvents(subEventQuery.data);
-			console.log("SubEvents:", subEventQuery.data)
-
-			console.log(
-				"Matching Sub Events:",
-				subEvents.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
-			);
-
+			setSubEvents(subEventData);
 		};
 
 		fetchLatestEvent();
-	}, [supabase, latestEvent, subEvents]);
+	}, [supabase]);
+
+
+
+
 
 	// useEffect(() => {
 	// 	const checkIsUserLoggedIn = () => {
@@ -250,57 +235,57 @@ export default function Homepage() {
 	// This is for attendance modal,
 
 	const openAttendanceModal = async (event_id: string) => {
-		// try {
-		// 	// Fetch sub-events for the given event
-		// 	const { data: subEvents, error: subEventsError } = await supabase
-		// 		.from("sub_events")
-		// 		.select("sub_eventsID, sub_eventsName")
-		// 		.eq("sub_eventsMainID", event_id);
+		try {
+			// Fetch sub-events for the given event
+			const { data: subEvents, error: subEventsError } = await supabase
+				.from("sub_events")
+				.select("sub_eventsID, sub_eventsName")
+				.eq("sub_eventsMainID", event_id);
 
-		// 	if (subEventsError) {
-		// 		console.error("Error fetching sub_events:", subEventsError);
-		// 		return;
-		// 	}
-		// 	setAttendanceMainEventID(event_id);
-		// 	fetchAttendanceList(event_id)
-		// 	setSubEvents(subEvents);
+			if (subEventsError) {
+				console.error("Error fetching sub_events:", subEventsError);
+				return;
+			}
+			setAttendanceMainEventID(event_id);
+			fetchAttendanceList(event_id)
+			setSubEvents(subEvents);
 
-		// 	// Extract the subEventID values from the fetched sub_events
-		// 	const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
+			// Extract the subEventID values from the fetched sub_events
+			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
 
-		// 	// Fetch all attendance_forms related to those sub_events
-		// 	const { data: attendanceForms, error: formsError } = await supabase
-		// 		.from("attendance_forms")
-		// 		.select()
-		// 		.in("attFSubEventID", subEventIDs);
+			// Fetch all attendance_forms related to those sub_events
+			const { data: attendanceForms, error: formsError } = await supabase
+				.from("attendance_forms")
+				.select()
+				.in("attFSubEventID", subEventIDs);
 
-		// 	if (formsError) {
-		// 		console.error("Error fetching attendance forms:", formsError);
-		// 		return;
-		// 	}
+			if (formsError) {
+				console.error("Error fetching attendance forms:", formsError);
+				return;
+			}
 
-		// 	// Set the attendance data for the main event
-		// 	setAttendanceData(attendanceForms);
-		// 	setSelectedEvent({
-		// 		intFID: event_id,
-		// 		intFName: "",
-		// 		intFDescription: "",
-		// 		intFStartDate: "",
-		// 		intFStartTime: "",
-		// 		intFEndTime: "",
-		// 		intFVenue: "",
-		// 		intFMaximumSeats: "",
-		// 		intFOrganizer: "",
-		// 		intFFaculty: "",
-		// 	});
+			// Set the attendance data for the main event
+			setAttendanceData(attendanceForms);
+			setSelectedEvent({
+				intFID: event_id,
+				intFName: "",
+				intFDescription: "",
+				intFStartDate: "",
+				intFStartTime: "",
+				intFEndTime: "",
+				intFVenue: "",
+				intFMaximumSeats: "",
+				intFOrganizer: "",
+				intFFaculty: "",
+			});
 
-		// 	console.log("Attendance forms data:", attendanceForms);
-		// } catch (error) {
-		// 	const typedError = error as Error;
-		// 	console.error("Error:", typedError.message);
-		// }
+			console.log("Attendance forms data:", attendanceForms);
+		} catch (error) {
+			const typedError = error as Error;
+			console.error("Error:", typedError.message);
+		}
 
-		// setShowAttendanceModal(true);
+		setShowAttendanceModal(true);
 	};
 
 	const handleSubEventClick = async (subEvent: subEvents) => {
@@ -469,37 +454,25 @@ export default function Homepage() {
 		event_name: string,
 		event_description: string,
 		event_start_date: string,
-		event_end_date: string,
-		sub_event_id: string,
-		sub_eventMain_id: string,
-		sub_event_name: string,
-		sub_event_venue: string,
-		sub_event_start_date: string,
-		sub_event_end_date: string,
-		sub_event_start_time: string,
-		sub_event_end_time: string,
-		sub_event_maximum_seats: string,
-		sub_event_organizer: string,
-		sub_event_faculty: string,
+		event_start_time: string,
+		event_end_time: string,
+		event_venue: string,
+		event_maximum_seats: string,
+		event_organizer: string,
+		event_faculty: string,
 	) => {
 		setSelectedEventImage(imageSrc);
 		setSelectedEvent({
 			intFID: event_id,
-			intFEventName: event_name,
-			intFEventDescription: event_description,
-			intFEventStartDate: event_start_date,
-			intFEventEndDate: event_end_date,
-			sub_eventsID: sub_event_id,
-			sub_eventsMainID: sub_eventMain_id,
-			sub_eventsName: sub_event_name,
-			sub_eventsVenue: sub_event_venue,
-			sub_eventsStartDate: sub_event_start_date,
-			sub_eventsEndDate: sub_event_end_date,
-			sub_eventsStartTime: sub_event_start_time,
-			sub_eventsEndTime: sub_event_end_time,
-			sub_eventsMaxSeats: sub_event_maximum_seats,
-			sub_eventsOrganizer: sub_event_organizer,
-			sub_eventsFaculty: sub_event_faculty,
+			intFName: event_name,
+			intFDescription: event_description,
+			intFStartDate: event_start_date,
+			intFStartTime: event_start_time,
+			intFEndTime: event_end_time,
+			intFVenue: event_venue,
+			intFMaximumSeats: event_maximum_seats,
+			intFOrganizer: event_organizer,
+			intFFaculty: event_faculty,
 		});
 
 		// Fetch the attendance list for that event,
@@ -509,67 +482,18 @@ export default function Homepage() {
 	};
 
 
-	// Create event + sub events dynamic textbox
 	const [eventDetails, setEventDetails] = useState([
-		{ event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''], faculties: [''] },
+		{ venue: '', maximum_seats: '', date: '', start_time: '', end_time: '', organizer: '', faculty: '' },
 	]);
 
+	const handleInputChange = (index, field, value) => {
+		const updatedDetails = [...eventDetails];
+		updatedDetails[index][field] = value;
+		setEventDetails(updatedDetails);
+	};
+
 	const addEventDetails = () => {
-		setEventDetails([...eventDetails, { event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''], faculties: [''] }]);
-	};
-
-	const handleEventNameInputChange = (eventIndex: number, eventNameIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].event_names[eventNameIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventVenueInputChange = (eventIndex: number, venueIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].venues[venueIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventStartDatesInputChange = (eventIndex: number, startDatesIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].start_dates[startDatesIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventEndDatesInputChange = (eventIndex: number, endDatesIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].end_dates[endDatesIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventStartTimesInputChange = (eventIndex: number, startTimesIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].start_times[startTimesIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventEndTimesInputChange = (eventIndex: number, endTimesIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].end_times[endTimesIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventMaximumSeatsInputChange = (eventIndex: number, maximumSeatsIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].maximum_seats[maximumSeatsIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventOrganizersInputChange = (eventIndex: number, organizersIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].organizers[organizersIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
-	const handleEventFacultiesInputChange = (eventIndex: number, facultiesIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].faculties[facultiesIndex] = value;
-		setEventDetails(updatedDetails);
+		setEventDetails([...eventDetails, { venue: '', maximum_seats: '', date: '', start_time: '', end_time: '', organizer: '', faculty: '' }]);
 	};
 
 
@@ -578,7 +502,6 @@ export default function Homepage() {
 		e.preventDefault();
 		console.log(eventDetails);
 
-		// MAIN EVENT
 		const { data, error } = await supabase
 			.from("internal_events")
 			.upsert({
@@ -591,32 +514,32 @@ export default function Homepage() {
 
 		console.log(data);
 
-		// // This attendance list will be created x times based on how many days (sub-events spread out across multiple days), x the event has.
-		// if (error) {
-		// 	console.error("Error inserting event data:", error);
-		// } else {
-		// 	// Extract the generated UUID from the event data
-		// 	const generatedEventID = data[0].intFID;
+		// This attendance list will be created x times based on how many days (sub-events spread out across multiple days), x the event has.
+		if (error) {
+			console.error("Error inserting event data:", error);
+		} else {
+			// Extract the generated UUID from the event data
+			const generatedEventID = data[0].intFID;
 
-		// 	const { data: attendanceData, error: attendanceError } = await supabase
-		// 		.from("attendance_list")
-		// 		.upsert({
-		// 			attListEventID: generatedEventID,
-		// 			attListDayCount: 0,
-		// 			attListEventDate: info.intFStartDate,
-		// 		});
+			const { data: attendanceData, error: attendanceError } = await supabase
+				.from("attendance_list")
+				.upsert({
+					attListEventID: generatedEventID,
+					attListDayCount: 0,
+					attListEventDate: info.intFStartDate,
+				});
 
-		// 	if (attendanceError) {
-		// 		console.error("Error inserting attendance data:", attendanceError);
-		// 	} else {
-		// 		console.log("Attendance data inserted successfully:", attendanceData);
-		// 	}
-		// }
+			if (attendanceError) {
+				console.error("Error inserting attendance data:", attendanceError);
+			} else {
+				console.log("Attendance data inserted successfully:", attendanceData);
+			}
+		}
 
-		// if (error) {
-		// 	console.error(error);
-		// 	return;
-		// }
+		if (error) {
+			console.error(error);
+			return;
+		}
 
 		setMainEvents([
 			...mainEvents,
@@ -625,148 +548,65 @@ export default function Homepage() {
 				intFEventName: mainEvent.intFEventName,
 				intFEventDescription: mainEvent.intFEventDescription,
 				intFEventStartDate: mainEvent.intFEventStartDate,
-				intFEventEndDate: mainEvent.intFEventEndDate,
 			},
 		]);
 
 		setMainEvent({} as mainEvent);
-
-		// THIS IS THE OLD ONE WITH RED RED
-		// { event_names: [''], venues: [''], maximum_seats: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], organizers: [''], faculties: [''] },
-		// SUB EVENTS
-		// for (const [index, detail] of eventDetails.entries()) {
-		// 	for (let i = 0; i < detail.venues.length; i++) {
-		// 		console.log("Index: " + index)
-		// 		console.log("Length" + detail.venues.length)
-
-		// 		const sub_eventsName = detail.event_names[i];
-		// 		const sub_eventsVenue = detail.venues[i];
-		// 		const sub_eventsStartDate = detail.start_dates[i];
-		// 		const sub_eventsEndDate = detail.end_dates[i];
-		// 		const sub_eventsStartTime = detail.start_times[i];
-		// 		const sub_eventsEndTime = detail.end_times[i];
-		// 		const sub_eventsMaxSeats = detail.maximum_seats[i];
-		// 		const sub_eventsOrganizer = detail.organizers[i];
-		// 		const sub_eventsFaculty = detail.faculties[i];
-
-		// 		const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
-		// 			sub_eventsMainID: mainEvent.intFID,
-		// 			sub_eventsName,
-		// 			sub_eventsVenue,
-		// 			sub_eventsStartDate,
-		// 			sub_eventsEndDate,
-		// 			sub_eventsStartTime,
-		// 			sub_eventsEndTime,
-		// 			sub_eventsMaxSeats,
-		// 			sub_eventsOrganizer,
-		// 			sub_eventsFaculty,
-		// 		});
-
-		// 		if (subEventError) {
-		// 			console.error(subEventError);
-		// 			return;
-		// 		}
-
-		// 		if (subEventData && subEventData.length > 0) {
-		// 			setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
-		// 		}
-		// 	}
-		// }
-
-		for (let index = 0; index < eventDetails.length; index++) {
-			const detail = eventDetails[index];
-			for (let i = 0; i < detail.venues.length; i++) {
-				const sub_eventsName = detail.event_names[i];
-				const sub_eventsVenue = detail.venues[i];
-				const sub_eventsStartDate = detail.start_dates[i];
-				const sub_eventsEndDate = detail.end_dates[i];
-				const sub_eventsStartTime = detail.start_times[i];
-				const sub_eventsEndTime = detail.end_times[i];
-				const sub_eventsMaxSeats = detail.maximum_seats[i];
-				const sub_eventsOrganizer = detail.organizers[i];
-				const sub_eventsFaculty = detail.faculties[i];
-
-				const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
-					sub_eventsMainID: mainEvent.intFID,
-					sub_eventsName,
-					sub_eventsVenue,
-					sub_eventsStartDate,
-					sub_eventsEndDate,
-					sub_eventsStartTime,
-					sub_eventsEndTime,
-					sub_eventsMaxSeats,
-					sub_eventsOrganizer,
-					sub_eventsFaculty,
-				});
-
-				if (subEventError) {
-					console.error(subEventError);
-					return;
-				}
-
-				// if (Array.isArray(subEventData) && subEventData.length > 0) {
-				// 	setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
-				// } else {
-				// 	console.error(['subEventData is not an array or has no length']);
-				// }
-			}
-		}
-
 	};
 
-	// const handleEditEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
-	// 	e.preventDefault();
-	// 	setShowModalEditEvent(true);
-	// 	setShowModalViewEvent(false);
+	const handleEditEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		setShowModalEditEvent(true);
+		setShowModalViewEvent(false);
 
-	// 	// Check if selectedEvent has a value
-	// 	if (selectedEvent) {
-	// 		setShowModalEditEvent(true);
-	// 		setShowModalViewEvent(false);
+		// Check if selectedEvent has a value
+		if (selectedEvent) {
+			setShowModalEditEvent(true);
+			setShowModalViewEvent(false);
 
-	// 		setEditEventInfo({
-	// 			intFID: selectedEvent.intFID,
-	// 			intFEventName: selectedEvent.intFName,
-	// 			intFDescription: selectedEvent.intFDescription,
-	// 			intFStartDate: selectedEvent.intFStartDate,
-	// 			intFStartTime: selectedEvent.intFStartTime,
-	// 			intFEndTime: selectedEvent.intFEndTime,
-	// 			intFVenue: selectedEvent.intFVenue,
-	// 			intFMaximumSeats: selectedEvent.intFMaximumSeats,
-	// 			intFOrganizer: selectedEvent.intFOrganizer,
-	// 			intFFaculty: selectedEvent.intFFaculty,
-	// 		});
-	// 		console.log("testing edit");
-	// 		console.log(selectedEvent.intFName);
-	// 		console.log(selectedEvent.intFOrganizer);
-	// 	}
-	// };
+			setEditEventInfo({
+				intFID: selectedEvent.intFID,
+				intFEventName: selectedEvent.intFName,
+				intFDescription: selectedEvent.intFDescription,
+				intFStartDate: selectedEvent.intFStartDate,
+				intFStartTime: selectedEvent.intFStartTime,
+				intFEndTime: selectedEvent.intFEndTime,
+				intFVenue: selectedEvent.intFVenue,
+				intFMaximumSeats: selectedEvent.intFMaximumSeats,
+				intFOrganizer: selectedEvent.intFOrganizer,
+				intFFaculty: selectedEvent.intFFaculty,
+			});
+			console.log("testing edit");
+			console.log(selectedEvent.intFName);
+			console.log(selectedEvent.intFOrganizer);
+		}
+	};
 
-	// const handleEditEventSubmit = async (e: React.FormEvent) => {
-	// 	e.preventDefault();
+	const handleEditEventSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-	// 	const { data, error } = await supabase
-	// 		.from("internal_events")
-	// 		.update({
-	// 			intFEventName: editEventInfo.intFEventName,
-	// 			intFDescription: editEventInfo.intFDescription,
-	// 			intFStartDate: editEventInfo.intFStartDate,
-	// 			intFStartTime: editEventInfo.intFStartTime,
-	// 			intFEndTime: editEventInfo.intFEndTime,
-	// 			intFVenue: editEventInfo.intFVenue,
-	// 			intFMaximumSeats: editEventInfo.intFMaximumSeats,
-	// 			intFOrganizer: editEventInfo.intFOrganizer,
-	// 			intFFaculty: editEventInfo.intFFaculty,
-	// 		})
-	// 		.eq("intFID", editEventInfo.intFID);
+		const { data, error } = await supabase
+			.from("internal_events")
+			.update({
+				intFEventName: editEventInfo.intFEventName,
+				intFDescription: editEventInfo.intFDescription,
+				intFStartDate: editEventInfo.intFStartDate,
+				intFStartTime: editEventInfo.intFStartTime,
+				intFEndTime: editEventInfo.intFEndTime,
+				intFVenue: editEventInfo.intFVenue,
+				intFMaximumSeats: editEventInfo.intFMaximumSeats,
+				intFOrganizer: editEventInfo.intFOrganizer,
+				intFFaculty: editEventInfo.intFFaculty,
+			})
+			.eq("intFID", editEventInfo.intFID);
 
-	// 	if (error) {
-	// 		console.error("Error updating event:", error);
-	// 		return;
-	// 	}
+		if (error) {
+			console.error("Error updating event:", error);
+			return;
+		}
 
-	// 	setShowModalSuccess(true);
-	// };
+		setShowModalSuccess(true);
+	};
 
 	const handleOK = () => {
 		setShowModalSuccess(false);
@@ -865,155 +705,161 @@ export default function Homepage() {
 					<CreateEvent_Modal isVisible={showModalCreateEvent}
 						onClose={() => setShowModalCreateEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
-							<div className="ml-[7px] lg:ml-4 mb-[70px]">
+							<div className="ml-[7px] lg:ml-4 mb-[100px]">
 								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px]">
 									Create Event
 								</h3>
-
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px]" />
 
-								<div>
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px]">
-										Event Name
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
-										type="text"
-										placeholder="Event name"
-										id="event_name"
-										name="event_name"
-										required
-										onChange={e =>
-											setMainEvent({
-												...mainEvent,
-												intFEventName: e.target.value,
-											})
-										}
-									/>
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[1px]">
+									Name
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+										*
+									</span>
+								</p>
+								<input
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
+									type="text"
+									placeholder="Event name"
+									id="event_name"
+									name="event_name"
+									required
+									onChange={e =>
+										setMainEvent({
+											...mainEvent,
+											intFEventName: e.target.value,
+										})
+									}
+								/>
 
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-										Description
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-										type="text"
-										placeholder="Description"
-										name="event_description"
-										required
-										onChange={e =>
-											setMainEvent({
-												...mainEvent,
-												intFEventDescription: e.target.value,
-											})
-										}
-									/>
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+									Description
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+										*
+									</span>
+								</p>
+								<input
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									type="text"
+									placeholder="Description"
+									name="event_description"
+									required
+									onChange={e =>
+										setMainEvent({
+											...mainEvent,
+											intFEventDescription: e.target.value,
+										})
+									}
+								/>
 
-									<div className="flex flex-col mt-[10px]">
-										<div className="flex">
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
-												Start Date
-												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-													*
-												</span>
-											</p>
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[10px] mb-[2px]">
-												End Date
-												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-													*
-												</span>
-											</p>
-										</div>
-										<div className="flex">
-											<input
-												className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
-												type="date"
-												name="event_start_date"
-												required
-												onChange={e =>
-													setMainEvent({
-														...mainEvent,
-														intFEventStartDate: e.target.value,
-													})
-												}
-											/>
-											<input
-												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
-												type="date"
-												name="event_end_date"
-												required
-												onChange={e =>
-													setMainEvent({
-														...mainEvent,
-														intFEventEndDate: e.target.value,
-													})
-												}
-											/>
-
-										</div>
+								<div className="flex flex-col mt-[10px]">
+									<div className="flex">
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
+											Start Date
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[10px] mb-[2px]">
+											End Date
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
 									</div>
+									<div className="flex">
+										<input
+											className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+											type="date"
+											name="event_start_date"
+											required
+											onChange={e =>
+												setMainEvent({
+													...mainEvent,
+													intFEventStartDate: e.target.value,
+												})
+											}
+										/>
+										<input
+											className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
+											type="date"
+											name="event_end_date"
+											required
+											onChange={e =>
+												setMainEvent({
+													...mainEvent,
+													intFEventEndDate: e.target.value,
+												})
+											}
+										/>
 
+									</div>
 								</div>
 
-								{eventDetails.map((detail, index) => (
-									<div key={index} className="mb-7">
+								{/* {eventDetails.map((detail, index) => (
+									<div key={index} className="mb-10">
 										<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
 
-										{detail.event_names.map((event_name, eventNameIndex) => (
-											<div key={eventNameIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Event Name
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Event name"
-													value={event_name}
-													onChange={(e) => handleEventNameInputChange(index, eventNameIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
+										<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[1px]">
+											Name
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<input
+											className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
+											type="text"
+											placeholder="Event name"
+											id="event_name"
+											name="event_name"
+											required
+											onChange={e =>
+												setInfo({
+													...info,
+													intFEventName: e.target.value,
+												})
+											}
+										/>
 
-										{detail.venues.map((venue, venueIndex) => (
-											<div key={venueIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Venue
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Venue"
-													value={venue}
-													onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
+										<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+											Venue
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<input
+											className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+											type="text"
+											placeholder="Venue"
+											name="event_venue"
+											required
+											onChange={e =>
+												setInfo({
+													...info,
+													intFVenue: e.target.value,
+												})
+											}
+										/>
 
-										{detail.maximum_seats.map((maximum_seats, maximumSeatsIndex) => (
-											<div key={maximumSeatsIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-													Maximum Seats
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Maximum seats"
-													value={maximum_seats}
-													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
+										<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+											Maximum Seats
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<input
+											className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+											type="number"
+											placeholder="Maximum seats"
+											name="event_maximum_seats"
+											required
+											onChange={e =>
+												setInfo({
+													...info,
+													intFMaximumSeats: e.target.value,
+												})
+											}
+										/>
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
@@ -1031,31 +877,31 @@ export default function Homepage() {
 												</p>
 											</div>
 											<div className="flex">
-												{detail.start_dates.map((start_dates, startDatesIndex) => (
-													<div key={startDatesIndex}>
-														<input
-															className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
-															type="date"
-															name="event_start_date"
+												<input
+													className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+													type="date"
+													name="event_start_date"
+													required
+													onChange={e =>
+														setInfo({
+															...info,
+															intFStartDate: e.target.value,
+														})
+													}
+												/>
+												<input
+													className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
+													type="date"
+													name="event_end_date"
+													required
+												// onChange={e =>
+												// 	setInfo({
+												// 		...info,
+												// 		intFStartDate: e.target.value,
+												// 	})
+												// }
+												/>
 
-															onChange={(e) => handleEventStartDatesInputChange(index, startDatesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
-
-												{detail.end_dates.map((end_dates, endDatesIndex) => (
-													<div key={endDatesIndex}>
-														<input
-															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
-															type="date"
-															name="event_end_date"
-
-															onChange={(e) => handleEventEndDatesInputChange(index, endDatesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
 											</div>
 										</div>
 
@@ -1075,70 +921,75 @@ export default function Homepage() {
 												</p>
 											</div>
 											<div className="flex">
-												{detail.start_times.map((start_times, startTimesIndex) => (
-													<div key={startTimesIndex}>
-														<input
-															className="lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
-															type="time"
-															name="event_start_time"
-
-															onChange={(e) => handleEventStartTimesInputChange(index, startTimesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
-
-												{detail.end_times.map((end_times, endTimesIndex) => (
-													<div key={endTimesIndex}>
-														<input
-															className="lg:pr-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
-															type="time"
-															name="event_end_time"
-
-															onChange={(e) => handleEventEndTimesInputChange(index, endTimesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
+												<input
+													className="lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
+													type="time"
+													name="event_start_time"
+													required
+												// onChange={e =>
+												// 	setInfo({
+												// 		...info,
+												// 		intFStartDate: e.target.value,
+												// 	})
+												// }
+												/>
+												<input
+													className="lg:pr-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
+													type="time"
+													name="event_end_time"
+													required
+												// onChange={e =>
+												// 	setInfo({
+												// 		...info,
+												// 		intFStartDate: e.target.value,
+												// 	})
+												// }
+												/>
 
 											</div>
 										</div>
 
-										{detail.organizers.map((organizers, organizersIndex) => (
-											<div key={organizersIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Organizer
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Organizer"
-													value={organizers}
-													onChange={(e) => handleEventOrganizersInputChange(index, organizersIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
+										<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+											Organizer
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<input
+											className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+											type="text"
+											placeholder="Organizer"
+											name="event_organizer"
+											required
+											onChange={e =>
+												setInfo({
+													...info,
+													intFOrganizer: e.target.value,
+												})
+											}
+										/>
 
-										{detail.faculties.map((faculties, facultiesIndex) => (
-											<div key={facultiesIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Faculty
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Faculty"
-													value={faculties}
-													onChange={(e) => handleEventFacultiesInputChange(index, facultiesIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
+										<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+											Faculty
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<input
+											className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[5px]"
+											type="text"
+											placeholder="Faculty"
+											name="event_faculty"
+											required
+											onChange={e =>
+												setInfo({
+													...info,
+													intFFaculty: e.target.value,
+												})
+											}
+										/>
 									</div>
-								))}
+								))} */}
 
 								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
@@ -1147,16 +998,16 @@ export default function Homepage() {
 
 									<button
 										className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-									// onClick={() => {
-									// 	if (
-									// 		mainEvent.intFEventName &&
-									// 		mainEvent.intFEventDescription &&
-									// 		mainEvent.intFEventStartDate &&
-									// 		mainEvent.intFEventEndDate
-									// 	) {
-									// 		setShowModalSuccess(true);
-									// 	}
-									// }}
+										onClick={() => {
+											if (
+												mainEvent.intFEventName &&
+												mainEvent.intFEventDescription &&
+												mainEvent.intFEventStartDate &&
+												mainEvent.intFEventEndDate
+											) {
+												setShowModalSuccess(true);
+											}
+										}}
 									>
 										Submit
 									</button>
@@ -1172,7 +1023,7 @@ export default function Homepage() {
 							<img
 								src={selectedEventImage}
 								alt="Random"
-								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 hover:rotate-1 scale-[1.063] lg:scale-[1.070] transition duration-300 shadow-sm"
+								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 hover:rotate-1 scale-[1.063] lg:scale-[1.068] transition duration-300 shadow-sm"
 							/>
 
 							<div className="ml-[7px] lg:ml-[9px]">
@@ -1180,32 +1031,32 @@ export default function Homepage() {
 									About this event
 								</h3>
 								<p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[10px]">
-									{selectedEvent.intFEventDescription}
+									{selectedEvent.intFDescription}
 								</p>
 
 								<div className="flex items-center mt-4">
 									<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
 									<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[0.5px]">
-										{formatDate(selectedEvent.intFEventStartDate)}
+										{formatDate(selectedEvent.intFStartDate)}
 									</p>
 									<span className="mx-2 text-slate-800 ml-[15px] lg:ml-[57px] mr-6">
 										|
 									</span>
 									<FiClock className="text-[30px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
 									<p className="text-slate-600 text-[12px] lg:text-[13px]">
-										{formatTime(selectedEvent.sub_eventsStartTime)}
+										{formatTime(selectedEvent.intFStartTime)}
 									</p>
 									<span className="mx-2 text-slate-800 -mt-[2px]">
 										-
 									</span>
 									<p className="text-slate-600 text-[12px] lg:text-[13px]">
-										{formatTime(selectedEvent.sub_eventsEndTime)}
+										{formatTime(selectedEvent.intFEndTime)}
 									</p>
 								</div>
 								<div className="flex items-center mt-[10px] lg:mt-[14px]">
 									<FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800" />
 									<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px]">
-										{selectedEvent.sub_eventsVenue}
+										{selectedEvent.intFVenue}
 									</p>
 								</div>
 								<div className="flex items-center mt-[11px] lg:mt-[14px]">
@@ -1217,7 +1068,7 @@ export default function Homepage() {
 								<div className="flex items-center mt-[15px] lg:mb-0 mb-[3px]">
 									<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px]" />
 									<p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] lg:-ml-[1px]">
-										{selectedEvent.sub_eventsMaxSeats} Seats
+										{selectedEvent.intFMaximumSeats} Seats
 									</p>
 								</div>
 
@@ -1231,10 +1082,17 @@ export default function Homepage() {
 											Cancel Event
 										</button>
 
+										{/* <Link to={`/attendance/table/${selectedEvent.intFID}`}>
+                                        <button
+                                            className="rounded-lg py-[9px] px-[15px] bg-slate-800 text-slate-100 text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+                                        >
+                                            Attendance
+                                        </button>
+                                    </Link> */}
+
 										<button
 											className="rounded-lg px-[20px] py-[6px] lg:px-[25px] lg:py-[9px] bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-										// onClick={handleEditEventButton}
-										>
+											onClick={handleEditEventButton}>
 											Edit Event
 										</button>
 									</div>
@@ -1349,7 +1207,7 @@ export default function Homepage() {
 						</div>
 					</ViewAttendance_Modal>
 
-					{/* <EditEvent_Modal
+					<EditEvent_Modal
 						isVisible={showModalEditEvent}
 						onClose={() => setShowModalEditEvent(false)}>
 						<form>
@@ -1554,16 +1412,14 @@ export default function Homepage() {
 									<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center">
 										<button
 											className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-											// onClick={handleEditEventSubmit}
-											
-											>
+											onClick={handleEditEventSubmit}>
 											Submit
 										</button>
 									</div>
 								</div>
 							</div>
 						</form>
-					</EditEvent_Modal> */}
+					</EditEvent_Modal>
 
 					<Success_Modal
 						isVisible={showModalSuccess}
@@ -1635,31 +1491,15 @@ export default function Homepage() {
 						{latestEvent[0] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-								onClick={() => {
-									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
-
-									if (filteredSubEvent) {
-										openModal(
-											"https://source.unsplash.com/600x300?party",
-											latestEvent[0]?.intFID,
-											latestEvent[0]?.intFEventName,
-											latestEvent[0]?.intFEventDescription,
-											latestEvent[0]?.intFEventStartDate,
-											latestEvent[0]?.intFEventEndDate,
-											filteredSubEvent.sub_eventsID,
-											filteredSubEvent.sub_eventsMainID,
-											filteredSubEvent.sub_eventsName,
-											filteredSubEvent.sub_eventsVenue,
-											filteredSubEvent.sub_eventsStartDate,
-											filteredSubEvent.sub_eventsEndDate,
-											filteredSubEvent.sub_eventsStartTime,
-											filteredSubEvent.sub_eventsEndTime,
-											filteredSubEvent.sub_eventsMaxSeats,
-											filteredSubEvent.sub_eventsOrganizer,
-											filteredSubEvent.sub_eventsFaculty
-										);
-									}
-								}}>
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?party",
+										latestEvent[0].intFID,
+										latestEvent[0]?.intFEventName,
+										latestEvent[0]?.intFDescription,
+										latestEvent[0]?.intFStartDate,
+									)
+								}>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
 										<img
@@ -1684,59 +1524,34 @@ export default function Homepage() {
 												{formatDate(latestEvent[0].intFEventStartDate)}
 											</p>
 										</div>
-
-										{subEvents.length > 0 && (
-											subEvents.length > 0 &&
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FiClock className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{formatTime(subEvent.sub_eventsStartTime)}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{subEvent.sub_eventsVenue}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index}>
-														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-															<div
-																className="h-full bg-orange-300 rounded-full"
-																style={{
-																	width: `${(20 / 60) * 100}%`,
-																}}
-															></div>
-														</div>
-														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
-														</div>
-													</div>
-												))
-										)}
+										{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[0].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[0].intFVenue}
+											</p>
+										</div> */}
+										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[0].intFMaximumSeats}
+											</span>
+										</div> */}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
@@ -1769,31 +1584,15 @@ export default function Homepage() {
 						{latestEvent[1] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-								onClick={() => {
-									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID);
-
-									if (filteredSubEvent) {
-										openModal(
-											"https://source.unsplash.com/600x300?birthday",
-											latestEvent[1]?.intFID,
-											latestEvent[1]?.intFEventName,
-											latestEvent[1]?.intFEventDescription,
-											latestEvent[1]?.intFEventStartDate,
-											latestEvent[1]?.intFEventEndDate,
-											filteredSubEvent.sub_eventsID,
-											filteredSubEvent.sub_eventsMainID,
-											filteredSubEvent.sub_eventsName,
-											filteredSubEvent.sub_eventsVenue,
-											filteredSubEvent.sub_eventsStartDate,
-											filteredSubEvent.sub_eventsEndDate,
-											filteredSubEvent.sub_eventsStartTime,
-											filteredSubEvent.sub_eventsEndTime,
-											filteredSubEvent.sub_eventsMaxSeats,
-											filteredSubEvent.sub_eventsOrganizer,
-											filteredSubEvent.sub_eventsFaculty
-										);
-									}
-								}}>
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?birthday",
+										latestEvent[1].intFID,
+										latestEvent[1].intFEventName,
+										latestEvent[1]?.intFEventDescription,
+										latestEvent[1]?.intFEventStartDate,
+									)
+								}>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
 										<img
@@ -1803,6 +1602,7 @@ export default function Homepage() {
 										/>
 									</div>
 								</div>
+
 								{latestEvent[1] && (
 									<div className="mt-6">
 										{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
@@ -1818,59 +1618,34 @@ export default function Homepage() {
 												{formatDate(latestEvent[1].intFEventStartDate)}
 											</p>
 										</div>
-
-										{subEvents.length > 0 && (
-											subEvents.length > 0 &&
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FiClock className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{formatTime(subEvent.sub_eventsStartTime)}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{subEvent.sub_eventsVenue}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index}>
-														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-															<div
-																className="h-full bg-orange-300 rounded-full"
-																style={{
-																	width: `${(20 / 60) * 100}%`,
-																}}
-															></div>
-														</div>
-														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
-														</div>
-													</div>
-												))
-										)}
+										{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[1].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[1].intFVenue}
+											</p>
+										</div> */}
+										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[1].intFMaximumSeats}
+											</span>
+										</div> */}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
@@ -1903,31 +1678,21 @@ export default function Homepage() {
 						{latestEvent[2] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-								onClick={() => {
-									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID);
-
-									if (filteredSubEvent) {
-										openModal(
-											"https://source.unsplash.com/600x300?new+year",
-											latestEvent[2]?.intFID,
-											latestEvent[2]?.intFEventName,
-											latestEvent[2]?.intFEventDescription,
-											latestEvent[2]?.intFEventStartDate,
-											latestEvent[2]?.intFEventEndDate,
-											filteredSubEvent.sub_eventsID,
-											filteredSubEvent.sub_eventsMainID,
-											filteredSubEvent.sub_eventsName,
-											filteredSubEvent.sub_eventsVenue,
-											filteredSubEvent.sub_eventsStartDate,
-											filteredSubEvent.sub_eventsEndDate,
-											filteredSubEvent.sub_eventsStartTime,
-											filteredSubEvent.sub_eventsEndTime,
-											filteredSubEvent.sub_eventsMaxSeats,
-											filteredSubEvent.sub_eventsOrganizer,
-											filteredSubEvent.sub_eventsFaculty
-										);
-									}
-								}}>
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?new+year",
+										latestEvent[2].intFID,
+										latestEvent[2].intFEventName,
+										latestEvent[2]?.intFDescription,
+										latestEvent[2]?.intFStartDate,
+										latestEvent[2]?.intFStartTime,
+										latestEvent[2]?.intFEndTime,
+										latestEvent[2]?.intFVenue,
+										latestEvent[2]?.intFMaximumSeats,
+										latestEvent[2].intFOrganizer,
+										latestEvent[2].intFFaculty,
+									)
+								}>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
 										<img
@@ -1937,6 +1702,7 @@ export default function Homepage() {
 										/>
 									</div>
 								</div>
+
 								{latestEvent[2] && (
 									<div className="mt-6">
 										{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
@@ -1952,59 +1718,34 @@ export default function Homepage() {
 												{formatDate(latestEvent[2].intFEventStartDate)}
 											</p>
 										</div>
-
-										{subEvents.length > 0 && (
-											subEvents.length > 0 &&
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FiClock className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{formatTime(subEvent.sub_eventsStartTime)}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{subEvent.sub_eventsVenue}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index}>
-														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-															<div
-																className="h-full bg-orange-300 rounded-full"
-																style={{
-																	width: `${(20 / 60) * 100}%`,
-																}}
-															></div>
-														</div>
-														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
-														</div>
-													</div>
-												))
-										)}
+										{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[2].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[2].intFVenue}
+											</p>
+										</div> */}
+										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[2].intFMaximumSeats}
+											</span>
+										</div> */}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
@@ -2037,31 +1778,15 @@ export default function Homepage() {
 						{latestEvent[3] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-								onClick={() => {
-									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID);
-
-									if (filteredSubEvent) {
-										openModal(
-											"https://source.unsplash.com/600x300?events",
-											latestEvent[3]?.intFID,
-											latestEvent[3]?.intFEventName,
-											latestEvent[3]?.intFEventDescription,
-											latestEvent[3]?.intFEventStartDate,
-											latestEvent[3]?.intFEventEndDate,
-											filteredSubEvent.sub_eventsID,
-											filteredSubEvent.sub_eventsMainID,
-											filteredSubEvent.sub_eventsName,
-											filteredSubEvent.sub_eventsVenue,
-											filteredSubEvent.sub_eventsStartDate,
-											filteredSubEvent.sub_eventsEndDate,
-											filteredSubEvent.sub_eventsStartTime,
-											filteredSubEvent.sub_eventsEndTime,
-											filteredSubEvent.sub_eventsMaxSeats,
-											filteredSubEvent.sub_eventsOrganizer,
-											filteredSubEvent.sub_eventsFaculty
-										);
-									}
-								}}>
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?events",
+										latestEvent[3].intFID,
+										latestEvent[3]?.intFEventName,
+										latestEvent[3]?.intFEventDescription,
+										latestEvent[3]?.intFEventStartDate,
+									)
+								}>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
 										<img
@@ -2071,6 +1796,7 @@ export default function Homepage() {
 										/>
 									</div>
 								</div>
+
 								{latestEvent[3] && (
 									<div className="mt-6">
 										{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
@@ -2086,59 +1812,34 @@ export default function Homepage() {
 												{formatDate(latestEvent[3].intFEventStartDate)}
 											</p>
 										</div>
-
-										{subEvents.length > 0 && (
-											subEvents.length > 0 &&
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FiClock className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{formatTime(subEvent.sub_eventsStartTime)}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{subEvent.sub_eventsVenue}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index}>
-														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-															<div
-																className="h-full bg-orange-300 rounded-full"
-																style={{
-																	width: `${(20 / 60) * 100}%`,
-																}}
-															></div>
-														</div>
-														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
-														</div>
-													</div>
-												))
-										)}
+										{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[3].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[3].intFVenue}
+											</p>
+										</div> */}
+										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[3].intFMaximumSeats}
+											</span>
+										</div> */}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
@@ -2171,31 +1872,15 @@ export default function Homepage() {
 						{latestEvent[4] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-								onClick={() => {
-									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID);
-
-									if (filteredSubEvent) {
-										openModal(
-											"https://source.unsplash.com/600x300?balloon",
-											latestEvent[4]?.intFID,
-											latestEvent[4]?.intFEventName,
-											latestEvent[4]?.intFEventDescription,
-											latestEvent[4]?.intFEventStartDate,
-											latestEvent[4]?.intFEventEndDate,
-											filteredSubEvent.sub_eventsID,
-											filteredSubEvent.sub_eventsMainID,
-											filteredSubEvent.sub_eventsName,
-											filteredSubEvent.sub_eventsVenue,
-											filteredSubEvent.sub_eventsStartDate,
-											filteredSubEvent.sub_eventsEndDate,
-											filteredSubEvent.sub_eventsStartTime,
-											filteredSubEvent.sub_eventsEndTime,
-											filteredSubEvent.sub_eventsMaxSeats,
-											filteredSubEvent.sub_eventsOrganizer,
-											filteredSubEvent.sub_eventsFaculty
-										);
-									}
-								}}>
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?balloon",
+										latestEvent[4].intFID,
+										latestEvent[4]?.intFEventName,
+										latestEvent[4]?.intFEventDescription,
+										latestEvent[4]?.intFEventStartDate,
+									)
+								}>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
 										<img
@@ -2205,6 +1890,7 @@ export default function Homepage() {
 										/>
 									</div>
 								</div>
+
 								{latestEvent[4] && (
 									<div className="mt-6">
 										{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
@@ -2220,59 +1906,34 @@ export default function Homepage() {
 												{formatDate(latestEvent[4].intFEventStartDate)}
 											</p>
 										</div>
-
-										{subEvents.length > 0 && (
-											subEvents.length > 0 &&
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FiClock className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{formatTime(subEvent.sub_eventsStartTime)}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{subEvent.sub_eventsVenue}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index}>
-														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-															<div
-																className="h-full bg-orange-300 rounded-full"
-																style={{
-																	width: `${(20 / 60) * 100}%`,
-																}}
-															></div>
-														</div>
-														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
-														</div>
-													</div>
-												))
-										)}
+										{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[4].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[4].intFVenue}
+											</p>
+										</div> */}
+										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[4].intFMaximumSeats}
+											</span>
+										</div> */}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
@@ -2305,40 +1966,25 @@ export default function Homepage() {
 						{latestEvent[5] && (
 							<div
 								className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
-								onClick={() => {
-									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID);
-
-									if (filteredSubEvent) {
-										openModal(
-											"https://source.unsplash.com/600x300?beers",
-											latestEvent[5]?.intFID,
-											latestEvent[5]?.intFEventName,
-											latestEvent[5]?.intFEventDescription,
-											latestEvent[5]?.intFEventStartDate,
-											latestEvent[5]?.intFEventEndDate,
-											filteredSubEvent.sub_eventsID,
-											filteredSubEvent.sub_eventsMainID,
-											filteredSubEvent.sub_eventsName,
-											filteredSubEvent.sub_eventsVenue,
-											filteredSubEvent.sub_eventsStartDate,
-											filteredSubEvent.sub_eventsEndDate,
-											filteredSubEvent.sub_eventsStartTime,
-											filteredSubEvent.sub_eventsEndTime,
-											filteredSubEvent.sub_eventsMaxSeats,
-											filteredSubEvent.sub_eventsOrganizer,
-											filteredSubEvent.sub_eventsFaculty
-										);
-									}
-								}}>
+								onClick={() =>
+									openModal(
+										"https://source.unsplash.com/600x300?celebration",
+										latestEvent[5].intFID,
+										latestEvent[5]?.intFEventName,
+										latestEvent[5]?.intFEventDescription,
+										latestEvent[5]?.intFEventStartDate,
+									)
+								}>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
 										<img
-											src="https://source.unsplash.com/600x300?beers"
+											src="https://source.unsplash.com/600x300?celebration"
 											alt="Random"
 											className="w-full h-full object-cover"
 										/>
 									</div>
 								</div>
+
 								{latestEvent[5] && (
 									<div className="mt-6">
 										{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
@@ -2354,59 +2000,34 @@ export default function Homepage() {
 												{formatDate(latestEvent[5].intFEventStartDate)}
 											</p>
 										</div>
-
-										{subEvents.length > 0 && (
-											subEvents.length > 0 &&
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FiClock className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{formatTime(subEvent.sub_eventsStartTime)}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index} className="flex items-center mt-3">
-														<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-														<p className="text-slate-600 text-sm">
-															{subEvent.sub_eventsVenue}
-														</p>
-													</div>
-												))
-										)}
-
-										{subEvents.length > 0 && (
-											subEvents
-												.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID)
-												.slice(0, 1) // Take only the first sub event
-												.map((subEvent, index) => (
-													<div key={index}>
-														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-															<div
-																className="h-full bg-orange-300 rounded-full"
-																style={{
-																	width: `${(20 / 60) * 100}%`,
-																}}
-															></div>
-														</div>
-														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
-														</div>
-													</div>
-												))
-										)}
+										{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{formatTime(latestEvent[5].intFStartTime)}
+											</p>
+										</div>
+										<div className="flex items-center mt-3">
+											<FaLocationDot className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">
+												{latestEvent[5].intFVenue}
+											</p>
+										</div> */}
+										{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div
+												className="h-full bg-orange-300 rounded-full"
+												style={{
+													width: `${(20 / 60) * 100}%`,
+												}}></div>
+										</div>
+										<div className="text-xs text-gray-600 mt-2 flex justify-between">
+											<span className="ml-[2px]">
+												Current Attendees:{" "}
+											</span>
+											<span className="mr-[2px]">
+												Max Attendees:{" "}
+												{latestEvent[5].intFMaximumSeats}
+											</span>
+										</div> */}
 
 										<div className="flex justify-between items-end mt-5">
 											<div
@@ -2447,7 +2068,7 @@ export default function Homepage() {
 					<div className="w-full pr-6 bg-slate-100">
 						<div className="w-full bg-slate-100">
 							<div className="ml-6 font-bold text-lg">
-								Today&aposs Event(s)
+								Today's Event(s)
 							</div>
 							<div className="border-t border-gray-300 my-4 ml-6"></div>
 							{latestEvent[0] && (
@@ -2542,7 +2163,7 @@ export default function Homepage() {
 
 
 							<div className="ml-6 mt-5 font-bold text-lg">
-								Tomorrow&aposs Event(s)
+								Tomorrow's Event(s)
 							</div>
 							<div className="border-t border-gray-300 my-4 ml-6"></div>
 							{latestEvent[1] && <div className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 ml-5 w-full relative transition transform hover:scale-105 z-[50]" onClick={() => openModal("https://source.unsplash.com/600x300?birthday", latestEvent[1].intFID, latestEvent[1].intFEventName, latestEvent[1]?.intFDescription, latestEvent[1]?.intFStartDate, latestEvent[1]?.intFStartTime, latestEvent[1]?.intFEndTime, latestEvent[1]?.intFVenue, latestEvent[1]?.intFMaximumSeats, latestEvent[1].intFOrganizer, latestEvent[1].intFFaculty)}>
