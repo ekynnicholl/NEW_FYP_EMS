@@ -74,7 +74,7 @@ const EditEventDialog = ({ event }: { event: InternalEvent }) => {
 			.update({
 				intFEventName: values.name,
 				intFDescription: values.description,
-				intFStartDate: values.date!,
+				intFStartDate: values.date!.toString(),
 				intFStartTime: values.startTime,
 				intFEndTime: values.endTime,
 				intFVenue: values.venue,

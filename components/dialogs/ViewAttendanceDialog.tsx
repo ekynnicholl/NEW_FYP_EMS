@@ -41,7 +41,7 @@ const ViewAttendanceListDialog = ({ event }: { event: InternalEvent }) => {
 			setAttendanceList(data);
 		};
 		fetchAttendanceList();
-	}, []);
+	}, [supabase, event.intFID]);
 
 	attendanceList.forEach(async (entry: AttendanceList) => {
 		const { data, count, error } = await supabase

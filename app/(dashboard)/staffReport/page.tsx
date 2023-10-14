@@ -47,7 +47,7 @@ export default function Home() {
 			setInfos(data || []);
 		};
 		fetchInfos();
-	}, []);
+	}, [supabase]);
 
 	// Refresh data from database
 	const refreshData = async () => {
@@ -185,9 +185,11 @@ export default function Home() {
 				<SideBarDesktop />
 			</div>
 			<div className="flex-1">
-				<div className="hidden sm:block">
+
+				{/* Got red red one */}
+				{/* <div className="hidden sm:block">
 					<TopBar />
-				</div>
+				</div> */}
 			<div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
 				<div className="bg-white rounded p-8">
 					<div className="inline-flex">

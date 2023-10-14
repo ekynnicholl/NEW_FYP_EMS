@@ -44,7 +44,7 @@ export default function Home() {
 			setInfos(data || []);
 		};
 		fetchInfos();
-	}, []);
+	}, [supabase]);
 
 	// Refresh data from database
 	const refreshData = async () => {

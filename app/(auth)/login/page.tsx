@@ -43,7 +43,7 @@ export default function Login() {
 			}
 		};
 		fetchInfos();
-	}, []);
+	}, [supabase]);
 
 	const handleGoogleSignIn = (info: Info) => {
 		signInWithPopup(auth, provider)

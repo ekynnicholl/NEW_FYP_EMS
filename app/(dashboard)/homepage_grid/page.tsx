@@ -1139,7 +1139,7 @@ export default function Homepage() {
 				<div className="w-full pr-6 bg-slate-100">
 					<div className="w-full bg-slate-100">
 						<div className="ml-6 font-bold text-lg">
-							Today's Event(s)
+							Today&aposs Event(s)
 						</div>
 						<div className="border-t border-gray-300 my-4 ml-6"></div>
 						{latestEvent[0] && (
@@ -1234,7 +1234,7 @@ export default function Homepage() {
 
 
 						<div className="ml-6 mt-5 font-bold text-lg">
-							Tomorrow's Event(s)
+							Tomorrow&aposs Event(s)
 						</div>
 						<div className="border-t border-gray-300 my-4 ml-6"></div>
 						{latestEvent[1] && <div className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 ml-5 w-full relative transition transform hover:scale-105 z-[50]" onClick={() => openModal("https://source.unsplash.com/600x300?birthday", latestEvent[1].intFID, latestEvent[1].intFEventName, latestEvent[1]?.intFDescription, latestEvent[1]?.intFStartDate, latestEvent[1]?.intFStartTime, latestEvent[1]?.intFEndTime, latestEvent[1]?.intFVenue, latestEvent[1]?.intFMaximumSeats, latestEvent[1].intFOrganizer, latestEvent[1].intFFaculty)}>

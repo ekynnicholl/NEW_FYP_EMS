@@ -51,7 +51,7 @@ export default function Login() {
 			}
 		};
 		fetchInfos();
-	}, []);
+	}, [supabase, router]);
 
 	const handleGoogleSignIn = (info: Info) => {
 		signInWithPopup(auth, provider)

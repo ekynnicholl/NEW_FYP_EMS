@@ -91,7 +91,7 @@ export default function Home() {
 			setInfos(attendanceFormsData);
 		};
 		fetchInfos();
-	}, [event_id]);
+	}, [event_id, router, supabase]);
 
 	useEffect(() => {
 		// Fetch sub_events with the same event_id
@@ -114,7 +114,7 @@ export default function Home() {
 		}
 
 		fetchSubEvents();
-	}, [event_id]);
+	}, [event_id, supabase]);
 
 	// Refresh data from database
 	const refreshData = async () => {
