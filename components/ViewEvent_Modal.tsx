@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[999]" id="wrapper" onClick={handleClose}>
       <div className="w-[400px] lg:w-[550px] flex flex-col relative p-10 lg:p-0">
         <div>
-          <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-md">
+          <div className="bg-white p-2 rounded-lg shadow-md max-h-[90vh] overflow-y-auto">
             {children}
           </div>
         </div>
