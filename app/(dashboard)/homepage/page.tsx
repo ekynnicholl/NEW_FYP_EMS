@@ -634,48 +634,13 @@ export default function Homepage() {
 		// THIS IS THE OLD ONE WITH RED RED
 		// { event_names: [''], venues: [''], maximum_seats: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], organizers: [''], faculties: [''] },
 		// SUB EVENTS
-		// for (const [index, detail] of eventDetails.entries()) {
-		// 	for (let i = 0; i < detail.venues.length; i++) {
-		// 		console.log("Index: " + index)
-		// 		console.log("Length" + detail.venues.length)
 
-		// 		const sub_eventsName = detail.event_names[i];
-		// 		const sub_eventsVenue = detail.venues[i];
-		// 		const sub_eventsStartDate = detail.start_dates[i];
-		// 		const sub_eventsEndDate = detail.end_dates[i];
-		// 		const sub_eventsStartTime = detail.start_times[i];
-		// 		const sub_eventsEndTime = detail.end_times[i];
-		// 		const sub_eventsMaxSeats = detail.maximum_seats[i];
-		// 		const sub_eventsOrganizer = detail.organizers[i];
-		// 		const sub_eventsFaculty = detail.faculties[i];
 
-		// 		const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
-		// 			sub_eventsMainID: mainEvent.intFID,
-		// 			sub_eventsName,
-		// 			sub_eventsVenue,
-		// 			sub_eventsStartDate,
-		// 			sub_eventsEndDate,
-		// 			sub_eventsStartTime,
-		// 			sub_eventsEndTime,
-		// 			sub_eventsMaxSeats,
-		// 			sub_eventsOrganizer,
-		// 			sub_eventsFaculty,
-		// 		});
-
-		// 		if (subEventError) {
-		// 			console.error(subEventError);
-		// 			return;
-		// 		}
-
-		// 		if (subEventData && subEventData.length > 0) {
-		// 			setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
-		// 		}
-		// 	}
-		// }
-
-		for (let index = 0; index < eventDetails.length; index++) {
-			const detail = eventDetails[index];
+		for (const [index, detail] of eventDetails.entries()) {
 			for (let i = 0; i < detail.venues.length; i++) {
+				console.log("Index: " + index)
+				console.log("Length" + detail.venues.length)
+
 				const sub_eventsName = detail.event_names[i];
 				const sub_eventsVenue = detail.venues[i];
 				const sub_eventsStartDate = detail.start_dates[i];
@@ -704,11 +669,9 @@ export default function Homepage() {
 					return;
 				}
 
-				// if (Array.isArray(subEventData) && subEventData.length > 0) {
-				// 	setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
-				// } else {
-				// 	console.error(['subEventData is not an array or has no length']);
-				// }
+				if (subEventData && subEventData.length > 0) {
+					setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
+				}
 			}
 		}
 
@@ -1349,7 +1312,7 @@ export default function Homepage() {
 						</div>
 					</ViewAttendance_Modal>
 
-					{/* <EditEvent_Modal
+					<EditEvent_Modal
 						isVisible={showModalEditEvent}
 						onClose={() => setShowModalEditEvent(false)}>
 						<form>
@@ -1554,16 +1517,16 @@ export default function Homepage() {
 									<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center">
 										<button
 											className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-											// onClick={handleEditEventSubmit}
-											
-											>
+										// onClick={handleEditEventSubmit}
+
+										>
 											Submit
 										</button>
 									</div>
 								</div>
 							</div>
 						</form>
-					</EditEvent_Modal> */}
+					</EditEvent_Modal>
 
 					<Success_Modal
 						isVisible={showModalSuccess}
@@ -2539,7 +2502,6 @@ export default function Homepage() {
 									)}
 								</div>
 							)}
-
 
 							<div className="ml-6 mt-5 font-bold text-lg">
 								Tomorrow&aposs Event(s)
