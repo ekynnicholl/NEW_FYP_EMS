@@ -631,11 +631,11 @@ export default function Homepage() {
 
 		setMainEvent({} as mainEvent);
 
-		// THIS IS THE OLD ONE WITH RED RED
+
 		// { event_names: [''], venues: [''], maximum_seats: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], organizers: [''], faculties: [''] },
 		// SUB EVENTS
 
-
+		// THIS IS THE OLD ONE WITH RED RED
 		for (const [index, detail] of eventDetails.entries()) {
 			for (let i = 0; i < detail.venues.length; i++) {
 				console.log("Index: " + index)
