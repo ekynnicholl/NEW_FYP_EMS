@@ -217,10 +217,10 @@ export default function Homepage() {
 				)
 				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
 
-			// if (subEventQuery.error) {
-			// 	console.error("Error fetching sub_events:", subEventQuery.error);
-			// 	return;
-			// }
+			if (subEventQuery.error) {
+				console.error("Error fetching sub_events:", subEventQuery.error);
+				return;
+			}
 
 			setSubEvents(subEventQuery.data);
 			// console.log("SubEvents:", subEventQuery.data)
