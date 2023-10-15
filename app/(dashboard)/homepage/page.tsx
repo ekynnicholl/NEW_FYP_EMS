@@ -576,7 +576,7 @@ export default function Homepage() {
 	// Handle data submission
 	const handleSubmitCreateEvent = async (e: SyntheticEvent) => {
 		e.preventDefault();
-		console.log(eventDetails);
+		// console.log(eventDetails);
 
 		// MAIN EVENT
 		const { data, error } = await supabase
@@ -589,7 +589,8 @@ export default function Homepage() {
 			})
 			.select();
 
-		console.log("DATA"+ data);
+		console.log("DATAWEEEEEEE"+ data[0].intFID);
+		const generatedEventID = data[0].intFID;
 
 		// // This attendance list will be created x times based on how many days (sub-events spread out across multiple days), x the event has.
 		// if (error) {
@@ -636,6 +637,7 @@ export default function Homepage() {
 		// SUB EVENTS
 
 		// THIS IS THE OLD ONE WITH RED RED
+
 		for (const [index, detail] of eventDetails.entries()) {
 			for (let i = 0; i < detail.venues.length; i++) {
 				console.log("Index: " + index)
@@ -652,7 +654,7 @@ export default function Homepage() {
 				const sub_eventsFaculty = detail.faculties[i];
 
 				const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
-					sub_eventsMainID: mainEvent.intFID,
+					sub_eventsMainID: generatedEventID,
 					sub_eventsName,
 					sub_eventsVenue,
 					sub_eventsStartDate,
