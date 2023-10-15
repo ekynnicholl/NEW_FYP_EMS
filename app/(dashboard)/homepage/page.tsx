@@ -217,18 +217,18 @@ export default function Homepage() {
 				)
 				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
 
-			if (subEventQuery.error) {
-				console.error("Error fetching sub_events:", subEventQuery.error);
-				return;
-			}
+			// if (subEventQuery.error) {
+			// 	console.error("Error fetching sub_events:", subEventQuery.error);
+			// 	return;
+			// }
 
 			setSubEvents(subEventQuery.data);
-			console.log("SubEvents:", subEventQuery.data)
+			// console.log("SubEvents:", subEventQuery.data)
 
-			console.log(
-				"Matching Sub Events:",
-				subEvents.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
-			);
+			// console.log(
+			// 	"Matching Sub Events:",
+			// 	subEvents.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+			// );
 
 		};
 
@@ -815,7 +815,7 @@ export default function Homepage() {
 						</div>
 					</div>
 
-					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden lg:inline">
+					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5">
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 
                         -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
@@ -843,7 +843,7 @@ export default function Homepage() {
 										</span>
 									</p>
 									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
+										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
 										type="text"
 										placeholder="Event name"
 										id="event_name"
@@ -864,7 +864,7 @@ export default function Homepage() {
 										</span>
 									</p>
 									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 										type="text"
 										placeholder="Description"
 										name="event_description"
@@ -894,7 +894,7 @@ export default function Homepage() {
 										</div>
 										<div className="flex">
 											<input
-												className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+												className="lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px]"
 												type="date"
 												name="event_start_date"
 												required
@@ -906,7 +906,7 @@ export default function Homepage() {
 												}
 											/>
 											<input
-												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
+												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-2 lg:pl-3 -ml-[71.5px] pr-2 py-[5px]"
 												type="date"
 												name="event_end_date"
 												required
@@ -938,7 +938,7 @@ export default function Homepage() {
 													placeholder="Event name"
 													value={event_name}
 													onChange={(e) => handleEventNameInputChange(index, eventNameIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 													required
 												/>
 											</div>
@@ -955,7 +955,7 @@ export default function Homepage() {
 													placeholder="Venue"
 													value={venue}
 													onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 													required
 												/>
 											</div>
@@ -972,7 +972,7 @@ export default function Homepage() {
 													placeholder="Maximum seats"
 													value={maximum_seats}
 													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 													required
 												/>
 											</div>
@@ -997,7 +997,7 @@ export default function Homepage() {
 												{detail.start_dates.map((start_dates, startDatesIndex) => (
 													<div key={startDatesIndex}>
 														<input
-															className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+															className="lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
 															type="date"
 															name="event_start_date"
 
@@ -1010,7 +1010,7 @@ export default function Homepage() {
 												{detail.end_dates.map((end_dates, endDatesIndex) => (
 													<div key={endDatesIndex}>
 														<input
-															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
+															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:py-2"
 															type="date"
 															name="event_end_date"
 
@@ -1054,7 +1054,7 @@ export default function Homepage() {
 												{detail.end_times.map((end_times, endTimesIndex) => (
 													<div key={endTimesIndex}>
 														<input
-															className="lg:pr-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2"
+															className="lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2 "
 															type="time"
 															name="event_end_time"
 
