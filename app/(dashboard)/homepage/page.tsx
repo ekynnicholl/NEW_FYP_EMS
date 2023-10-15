@@ -213,7 +213,7 @@ export default function Homepage() {
 			const subEventQuery = await supabase
 				.from("sub_events")
 				.select(
-					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsMaxSeats, sub_eventsOrganizer, sub_eventsFaculty",
+					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsMaxSeats, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer, sub_eventsFaculty",
 				)
 				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
 
@@ -233,7 +233,7 @@ export default function Homepage() {
 		};
 
 		fetchLatestEvent();
-	}, [supabase, latestEvent, subEvents]);
+	}, [supabase]);
 
 	// useEffect(() => {
 	// 	const checkIsUserLoggedIn = () => {
@@ -589,7 +589,7 @@ export default function Homepage() {
 			})
 			.select();
 
-		console.log(data);
+		console.log("DATA"+ data);
 
 		// // This attendance list will be created x times based on how many days (sub-events spread out across multiple days), x the event has.
 		// if (error) {
@@ -640,7 +640,7 @@ export default function Homepage() {
 			for (let i = 0; i < detail.venues.length; i++) {
 				console.log("Index: " + index)
 				console.log("Length" + detail.venues.length)
-
+ 
 				const sub_eventsName = detail.event_names[i];
 				const sub_eventsVenue = detail.venues[i];
 				const sub_eventsStartDate = detail.start_dates[i];
@@ -741,21 +741,21 @@ export default function Homepage() {
 	};
 
 	// TODO: TEST WHETHER DELETE EVENT WORKS, INTFID CHANGED FROM NUMBER TO STRING.
-	const handleDeleteEvent = async (intFID: string) => {
-		const { data, error } = await supabase
-			.from("internal_events")
-			.delete()
-			.eq("intFID", intFID);
+	// const handleDeleteEvent = async (intFID: string) => {
+	// 	const { data, error } = await supabase
+	// 		.from("internal_events")
+	// 		.delete()
+	// 		.eq("intFID", intFID);
 
-		if (error) {
-			console.error("Error deleting event:", error);
-			return;
-		}
+	// 	if (error) {
+	// 		console.error("Error deleting event:", error);
+	// 		return;
+	// 	}
 
-		console.log("Event deleted successfully:", data);
+	// 	console.log("Event deleted successfully:", data);
 
-		window.location.reload();
-	};
+	// 	window.location.reload();
+	// };
 
 	return (
 		<div className="p-5 bg-slate-100 space-y-4">
@@ -817,8 +817,7 @@ export default function Homepage() {
 
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5">
 						<button
-							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 
-                        -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
+							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
 							onClick={() => setShowModalCreateEvent(true)}>
 							<IoIosAddCircleOutline className="text-3xl text-slate-100 -ml-1 mr-1" />
 							<span className="text-slate-100 ml-1">Add Events</span>
