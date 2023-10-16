@@ -639,6 +639,14 @@ export default function Homepage() {
 	};
 
 
+	// Remove the session expanded (dynamic textboxes)
+	const handleRemoveEventClick = (eventIndex) => {
+		const updatedDetails = [...eventDetails];
+		updatedDetails.splice(eventIndex);
+		setEventDetails(updatedDetails);
+	};
+
+
 	// Handle data submission
 	const handleSubmitCreateEvent = async (e: SyntheticEvent) => {
 		e.preventDefault();
@@ -992,7 +1000,19 @@ export default function Homepage() {
 
 								{eventDetails.map((detail, index) => (
 									<div key={index} className="mb-7">
-										<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
+										<div className="flex items-center">
+											<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
+
+											{eventDetails.length > 1 && (
+												<button
+													type="button"
+													onClick={() => handleRemoveEventClick(index)}
+													className="text-sm text-slate-800 hover:underline hover:font-medium ml-3 mt-[13.5px]"
+												>
+													Remove
+												</button>
+											)}
+										</div>
 
 										{detail.event_names.map((event_name, eventNameIndex) => (
 											<div key={eventNameIndex}>
