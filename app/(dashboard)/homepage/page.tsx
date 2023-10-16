@@ -240,7 +240,7 @@ export default function Homepage() {
 	const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
 
 	// Function to compare dates (ignores time)
-	function isSameDate(date1, date2) {
+	function isSameDate(date1: string, date2: string) {
 		const d1 = new Date(date1);
 		const d2 = new Date(date2);
 		return (
@@ -251,7 +251,7 @@ export default function Homepage() {
 	}
 
 	// Function to get tomorrow's date
-	function getTomorrowDate(date) {
+	function getTomorrowDate(date: string) {
 		const today = new Date(date);
 		today.setDate(today.getDate() + 1);
 		return today.toISOString();
