@@ -24,6 +24,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { MdPeople } from "react-icons/md";
 import { MdAirlineSeatReclineNormal } from "react-icons/md";
+import { BsFillTrash3Fill } from "react-icons/bs"
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
@@ -960,7 +961,7 @@ export default function Homepage() {
 													*
 												</span>
 											</p>
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[10px] mb-[2px]">
+											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px]">
 												End Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
@@ -969,7 +970,7 @@ export default function Homepage() {
 										</div>
 										<div className="flex">
 											<input
-												className="lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px]"
+												className="pr-2 lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px]"
 												type="date"
 												name="event_start_date"
 												required
@@ -1007,9 +1008,9 @@ export default function Homepage() {
 												<button
 													type="button"
 													onClick={() => handleRemoveEventClick(index)}
-													className="text-sm text-slate-800 hover:underline hover:font-medium ml-3 mt-[13.5px]"
+													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[10px] lg:mt-[12.25px]"
 												>
-													Remove
+													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500"/>
 												</button>
 											)}
 										</div>
@@ -1067,13 +1068,13 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[1px] mb-[2px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
 													Start Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
 													</span>
 												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[9px] mb-[2px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
 													End Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1084,7 +1085,7 @@ export default function Homepage() {
 												{detail.start_dates.map((start_dates, startDatesIndex) => (
 													<div key={startDatesIndex}>
 														<input
-															className="lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+															className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
 															type="date"
 															name="event_start_date"
 
@@ -1097,7 +1098,7 @@ export default function Homepage() {
 												{detail.end_dates.map((end_dates, endDatesIndex) => (
 													<div key={endDatesIndex}>
 														<input
-															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:py-2"
+															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
 															type="date"
 															name="event_end_date"
 
@@ -1111,13 +1112,13 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
 													Start Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
 													</span>
 												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[38.5px] mb-[2px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1128,7 +1129,7 @@ export default function Homepage() {
 												{detail.start_times.map((start_times, startTimesIndex) => (
 													<div key={startTimesIndex}>
 														<input
-															className="lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
+															className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
 															type="time"
 															name="event_start_time"
 
@@ -1141,7 +1142,7 @@ export default function Homepage() {
 												{detail.end_times.map((end_times, endTimesIndex) => (
 													<div key={endTimesIndex}>
 														<input
-															className="lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 -ml-[71.5px] pr-2 "
+															className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
 															type="time"
 															name="event_end_time"
 
