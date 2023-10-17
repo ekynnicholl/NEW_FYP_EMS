@@ -10,16 +10,18 @@ import Modal from "@/components/Modal";
 import { BiCalendar } from "react-icons/bi";
 import { useParams, useRouter } from "next/navigation";
 
-type Info = {
-	attFormsAttendanceID: string;
-	attFormsStaffName: string;
-	attFormsStaffID: string;
-	attFormsFacultyUnit: string;
+type FeedbackForms = {
+	feedbackSubEventID: string,
+	feedbackbackStaffName: string,
+	feedbackStaffFacultyUnit: string,
+	feedbackStaffComment: string,
+	feedbackRating: number,
+	feedbackStaffID: string
 };
 
 export default function AttendanceForm() {
 	const supabase = createClientComponentClient();
-	const [info, setInfo] = useState<Info>({} as Info);
+	const [info, setInfo] = useState<FeedbackForms>({} as FeedbackForms);
 	const [eventData, setEventData] = useState<any>(null);
 
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
@@ -27,103 +29,80 @@ export default function AttendanceForm() {
 	// const [attendance_id, setAttendanceID] = useState("");
 
 	// Get the Event ID from the link,
-	// const { sub_id } = useParams();
+	const { sub_id } = useParams();
 	const router = useRouter();
 
-	// useEffect(() => {
-	// 	const fetchEventData = async () => {
-	// Fetch the event_id associated with the given attendance_list ID
-	// const { data: attendanceListData, error: attendanceListError } = await supabase
-	// 	.from('sub_events')
-	// 	.select('sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime')
-	// 	.eq('sub_eventsID', sub_id);
+	useEffect(() => {
+		const fetchEventData = async () => {
+			// Fetch the event_id associated with the given attendance_list ID
+			const { data: attendanceListData, error: attendanceListError } = await supabase
+				.from('sub_events')
+				.select('sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime')
+				.eq('sub_eventsID', sub_id);
 
-	// if (attendanceListError) {
-	// 	console.error('Error fetching attendance list data:', attendanceListError);
-	// 	router.push('/error-404');
-	// 	return;
-	// }
+			if (attendanceListError) {
+				console.error('Error fetching attendance list data:', attendanceListError);
+				router.push('/error-404');
+				return;
+			}
 
-	// const eventEndTime = new Date(attendanceListData[0].sub_eventsEndTime);
-	// const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
-	// const currentTime = new Date();
+			setEventData(attendanceListData);
 
-	// // Check if the event end date has passed
-	// if (currentTime > eventEndDate) {
-	// 	// Event has already ended, redirect or display a message
-	// 	router.push('/error-404'); // Redirect to a page indicating that the event has passed
-	// 	return;
-	// }
+			const event_id = attendanceListData[0]?.sub_eventsMainID;
 
-	// // Check if the event end date is today and the event end time has passed
-	// if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
-	// 	// Event has already ended today, redirect or display a message
-	// 	router.push('/error-404'); // Redirect to a page indicating that the event has passed
-	// 	return;
-	// }
+			if (event_id) {
+				// Fetch the event details based on the event_id,
+				const { data: eventDetails, error: eventError } = await supabase
+					.from('internal_events')
+					.select('intFEventName')
+					.eq('intFID', event_id);
 
-	// Check if the event start time has already passed
-	// if (currentTime > eventEndTime) {
-	// Event has already started, redirect or display a message
-	// router.push('/error-404'); // Redirect to a page indicating that the event has passed
-	// return;
-	// }
+				if (eventError) {
+					console.error('Error fetching event details:', eventError);
+				} else {
+					const combinedData = {
+						...attendanceListData[0],
+						intFEventName: eventDetails[0]?.intFEventName
+					};
 
-	// setEventData(attendanceListData);
+					setEventData(combinedData);
+				}
+			}
+		};
 
-	// const event_id = attendanceListData[0]?.sub_eventsMainID;
-
-	// 		if (event_id) {
-	// 			// Fetch the event details based on the event_id
-	// 			const { data: eventDetails, error: eventError } = await supabase
-	// 				.from('internal_events')
-	// 				.select('intFEventName')
-	// 				.eq('intFID', event_id);
-
-	// 			if (eventError) {
-	// 				console.error('Error fetching event details:', eventError);
-	// 			} else {
-	// 				const combinedData = {
-	// 					...attendanceListData[0],
-	// 					intFEventName: eventDetails[0]?.intFEventName
-	// 				};
-
-	// 				setEventData(combinedData);
-	// 			}
-	// 		}
-	// 	};
-
-	// 	fetchEventData();
-	// }, [sub_id, supabase]);
+		fetchEventData();
+	}, [sub_id, supabase]);
 
 	// Handle data submission
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		// if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit) {
-		// 	return;
-		// }
+		if (!info.feedbackbackStaffName || !info.feedbackStaffID || !info.feedbackStaffFacultyUnit || !info.feedbackRating) {
+			return;
+		}
 
-		// const { data, error } = await supabase
-		// 	.from("attendance_forms")
-		// 	.upsert([
-		// 		{
-		// 			attFSubEventID: sub_id,
-		// 			attFormsStaffName: info.attFormsStaffName,
-		// 			attFormsStaffID: info.attFormsStaffID,
-		// 			attFormsFacultyUnit: info.attFormsFacultyUnit,
-		// 		},
-		// 	]);
+		const { data, error } = await supabase
+			.from("feedback_forms")
+			.upsert([
+				{
+					feedbackSubEventID: sub_id,
+					feedbackStaffName: info.feedbackbackStaffName,
+					feedbackStaffID: info.feedbackStaffID,
+					feedbackStaffFacultyUnit: info.feedbackStaffFacultyUnit,
+					feedbackStaffRating: info.feedbackRating,
+					feedbackStaffComment: info.feedbackStaffComment
+				},
+			]);
 
-		// if (error) {
-		// 	console.error("Error inserting data:", error);
-		// } else {
-		// 	console.log("Data inserted successfully:", data);
-		// 	setInfo({} as Info);
-		// 	setShowModalSuccess(true);
-		// }
+		if (error) {
+			console.error("Error inserting data:", error);
+		} else {
+			console.log("Data inserted successfully:", data);
+			setInfo({} as FeedbackForms);
+			setShowModalSuccess(true);
+		}
 
-		// setInfo({} as Info);
+		setInfo({} as FeedbackForms);
 	};
 
 
@@ -156,10 +135,10 @@ export default function AttendanceForm() {
 						<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
 							{eventData && (
 								<div>
-									{/* <p>Event Name: <span className="font-bold">{eventData.intFEventName}</span></p>
+									<p>Event Name: <span className="font-bold">{eventData.intFEventName}</span></p>
 									<p>Date: <span className="font-bold">{eventData.sub_eventsStartDate} - {eventData.sub_eventsEndDate}</span></p>
 									<p>Time: <span className="font-bold">{eventData.sub_eventsStartTime} - {eventData.sub_eventsEndTime}</span></p>
-									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p> */}
+									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
 								</div>
 							)}
 							<p>Contact us at <span className="font-bold">(123) 456-7890</span> or <span className="font-bold">no_reply@example.com</span></p>
@@ -185,7 +164,7 @@ export default function AttendanceForm() {
 							placeholder="Your answer"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
-								setInfo({ ...info, attFormsStaffName: event.target.value })
+								setInfo({ ...info, feedbackbackStaffName: event.target.value })
 							}
 						/>
 					</div>
@@ -208,7 +187,7 @@ export default function AttendanceForm() {
 							placeholder="Your answer"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
-								setInfo({ ...info, attFormsStaffID: event.target.value })
+								setInfo({ ...info, feedbackStaffID: event.target.value })
 							}
 						/>
 					</div>
@@ -219,7 +198,7 @@ export default function AttendanceForm() {
 						<label
 							htmlFor="facultyUnit"
 							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Faculty/Unit
+							Faculty/ Unit
 							<span className="text-red-500"> *</span>
 						</label>
 						<select
@@ -228,7 +207,7 @@ export default function AttendanceForm() {
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base pl-[2px]"
 							required
 							onChange={event =>
-								setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+								setInfo({ ...info, feedbackStaffFacultyUnit: event.target.value })
 							}
 						>
 							<option value="" disabled selected>Select Faculty/Unit</option>
@@ -272,7 +251,7 @@ export default function AttendanceForm() {
 										name="rating"
 										value={index + 1}
 										onChange={event =>
-											setInfo({ ...info, attFormsStaffID: event.target.value })
+											setInfo({ ...info, feedbackRating: parseInt(event.target.value) })
 										}
 										className="form-radio h-5 w-5 text-slate-800"
 									/>
@@ -290,18 +269,17 @@ export default function AttendanceForm() {
 							htmlFor="name"
 							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Feedback
-							<span className="text-red-500"> *</span>
+							{/* <span className="text-red-500"> *</span> */}
 						</label>
 						<input
 							type="text"
 							name="name"
 							id="name"
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
 							placeholder="Your answer"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
-								setInfo({ ...info, attFormsStaffID: event.target.value })
+								setInfo({ ...info, feedbackStaffComment: event.target.value })
 							}
 						/>
 					</div>
@@ -312,11 +290,11 @@ export default function AttendanceForm() {
 						type="submit"
 						className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
 						onClick={() => {
-							if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
+							if (info.feedbackbackStaffName && info.feedbackStaffID && info.feedbackStaffFacultyUnit && info.feedbackRating) {
 								setShowModalSuccess(true);
 							}
 						}}
-						disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
+						disabled={!info.feedbackbackStaffName || !info.feedbackStaffID || !info.feedbackStaffFacultyUnit || !info.feedbackRating}>
 						Submit
 					</button>
 				</Fragment>
