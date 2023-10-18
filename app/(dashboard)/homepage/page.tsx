@@ -105,7 +105,7 @@ type AttendanceDataType = {
 };
 
 type subEvents = {
-	sub_eventsID: string;
+	// sub_eventsID: string;
 	sub_eventsMainID: string;
 	sub_eventsName: string;
 	sub_eventsVenue: string;
@@ -127,6 +127,11 @@ export default function Homepage() {
 
 	const [mainEvent, setMainEvent] = useState<mainEvent>({} as mainEvent);
 	const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
+
+	const [subEventz, setSubEventz] = useState<subEvents>({} as subEvents);
+	const [subEventzs, setSubEventzs] = useState<subEvents[]>([] as subEvents[]);
+
+	const [intFID, setIntFID] = useState(""); // pass the intFID to handleAddSubEvent
 
 	// const [latestEvent, setLatestEvent] = useState<Info | null>(null);
 	const [latestEvent, setLatestEvent] = useState<mainEvent[]>([]);
@@ -871,13 +876,53 @@ export default function Homepage() {
 		setShowModalEditSubEventSuccess(true);
 	};
 
-
-
-	const handleAddSubEvent = (e: React.MouseEvent<HTMLButtonElement>, intFID: string) => {
+	const openAddSubEventModal = (e: React.MouseEvent<HTMLButtonElement>, intFID: string) => {
 		e.preventDefault();
 		setShowModalAddEvent(true);
 		setShowModalViewEvent(false);
 
+		setIntFID(intFID);
+	}
+
+	const handleAddSubEvent = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+
+		const { data, error } = await supabase.from("sub_events").insert({
+			sub_eventsMainID: intFID,
+			sub_eventsName: subEventz.sub_eventsName,
+			sub_eventsVenue: subEventz.sub_eventsVenue,
+			sub_eventsMaxSeats: subEventz.sub_eventsMaxSeats,
+			sub_eventsStartDate: subEventz.sub_eventsStartDate,
+			sub_eventsEndDate: subEventz.sub_eventsEndDate,
+			sub_eventsStartTime: subEventz.sub_eventsStartTime,
+			sub_eventsEndTime: subEventz.sub_eventsEndTime,
+			sub_eventsOrganizer: subEventz.sub_eventsOrganizer,
+			sub_eventsFaculty: subEventz.sub_eventsFaculty,
+		});
+
+		if (error) {
+			console.error(error);
+			return;
+		}
+
+		console.log(data);
+
+		setSubEventzs([...subEventzs, {
+			sub_eventsMainID: intFID,
+			sub_eventsName: subEventz.sub_eventsName,
+			sub_eventsVenue: subEventz.sub_eventsVenue,
+			sub_eventsMaxSeats: subEventz.sub_eventsMaxSeats,
+			sub_eventsStartDate: subEventz.sub_eventsStartDate,
+			sub_eventsEndDate: subEventz.sub_eventsEndDate,
+			sub_eventsStartTime: subEventz.sub_eventsStartTime,
+			sub_eventsEndTime: subEventz.sub_eventsEndTime,
+			sub_eventsOrganizer: subEventz.sub_eventsOrganizer,
+			sub_eventsFaculty: subEventz.sub_eventsFaculty,
+		}]);
+
+		setSubEventz({} as subEvents);
+
+		setShowModalSuccess(true);
 	};
 
 	const handleOK = () => {
@@ -1457,7 +1502,7 @@ export default function Homepage() {
 												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ {subEvent.sub_eventsName}</p>
 												<button
 													type="button"
-													onClick={(e) => handleAddSubEvent(e, selectedEvent.intFID)}
+													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
 													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
 												>
 													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105" />
@@ -1665,12 +1710,12 @@ export default function Homepage() {
 									type="text"
 									placeholder="Event name"
 									required
-									// onChange={e =>
-									// 	setEditSubEventInfo({
-									// 		...editSubEventInfo,
-									// 		sub_eventsName: e.target.value,
-									// 	})
-									// }
+									onChange={e =>
+										setSubEventz({
+											...subEventz,
+											sub_eventsName: e.target.value,
+										})
+									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
@@ -1682,12 +1727,12 @@ export default function Homepage() {
 									type="text"
 									placeholder="Venue"
 									required
-									// onChange={e =>
-									// 	setEditSubEventInfo({
-									// 		...editSubEventInfo,
-									// 		sub_eventsVenue: e.target.value,
-									// 	})
-									// }
+									onChange={e =>
+										setSubEventz({
+											...subEventz,
+											sub_eventsVenue: e.target.value,
+										})
+									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
@@ -1699,12 +1744,12 @@ export default function Homepage() {
 									type="number"
 									placeholder="Maximum seats"
 									required
-									// onChange={e =>
-									// 	setEditSubEventInfo({
-									// 		...editSubEventInfo,
-									// 		sub_eventsMaxSeats: e.target.value,
-									// 	})
-									// }
+									onChange={e =>
+										setSubEventz({
+											...subEventz,
+											sub_eventsMaxSeats: e.target.value,
+										})
+									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
@@ -1731,12 +1776,12 @@ export default function Homepage() {
 											type="date"
 											name="event_start_date"
 											required
-										// onChange={e =>
-										// 	setEditSubEventInfo({
-										// 		...editSubEventInfo,
-										// 		sub_eventsStartDate: e.target.value,
-										// 	})
-										// }
+											onChange={e =>
+												setSubEventz({
+													...subEventz,
+													sub_eventsStartDate: e.target.value,
+												})
+											}
 										/>
 
 										<input
@@ -1744,12 +1789,12 @@ export default function Homepage() {
 											type="date"
 											name="event_end_date"
 											required
-										// onChange={e =>
-										// 	setEditSubEventInfo({
-										// 		...editSubEventInfo,
-										// 		sub_eventsEndDate: e.target.value,
-										// 	})
-										// }
+											onChange={e =>
+												setSubEventz({
+													...subEventz,
+													sub_eventsEndDate: e.target.value,
+												})
+											}
 										/>
 									</div>
 								</div>
@@ -1775,12 +1820,12 @@ export default function Homepage() {
 											type="time"
 											name="event_start_time"
 											required
-										// onChange={e =>
-										// 	setEditSubEventInfo({
-										// 		...editSubEventInfo,
-										// 		sub_eventsStartTime: e.target.value,
-										// 	})
-										// }
+											onChange={e =>
+												setSubEventz({
+													...subEventz,
+													sub_eventsStartTime: e.target.value,
+												})
+											}
 										/>
 
 										<input
@@ -1788,12 +1833,12 @@ export default function Homepage() {
 											type="time"
 											name="event_end_time"
 											required
-										// onChange={e =>
-										// 	setEditSubEventInfo({
-										// 		...editSubEventInfo,
-										// 		sub_eventsEndTime: e.target.value,
-										// 	})
-										// }
+											onChange={e =>
+												setSubEventz({
+													...subEventz,
+													sub_eventsEndTime: e.target.value,
+												})
+											}
 										/>
 									</div>
 								</div>
@@ -1806,12 +1851,12 @@ export default function Homepage() {
 									type="text"
 									placeholder="Organizer"
 									required
-									// onChange={e =>
-									// 	setEditSubEventInfo({
-									// 		...editSubEventInfo,
-									// 		sub_eventsOrganizer: e.target.value,
-									// 	})
-									// }
+									onChange={e =>
+										setSubEventz({
+											...subEventz,
+											sub_eventsOrganizer: e.target.value,
+										})
+									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
@@ -1823,19 +1868,19 @@ export default function Homepage() {
 									type="text"
 									placeholder="Faculty"
 									required
-									// onChange={e =>
-									// 	setEditSubEventInfo({
-									// 		...editSubEventInfo,
-									// 		sub_eventsFaculty: e.target.value,
-									// 	})
-									// }
+									onChange={e =>
+										setSubEventz({
+											...subEventz,
+											sub_eventsFaculty: e.target.value,
+										})
+									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 							</div>
 
 							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 
-								<button
+								<button onClick={handleAddSubEvent}
 									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
 								>
 									Save Changes
