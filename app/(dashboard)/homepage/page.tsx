@@ -760,59 +760,59 @@ export default function Homepage() {
 
 	};
 
-	// const handleEditEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
-	// 	e.preventDefault();
-	// 	setShowModalEditEvent(true);
-	// 	setShowModalViewEvent(false);
+	const handleEditEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		setShowModalEditEvent(true);
+		setShowModalViewEvent(false);
 
-	// 	// Check if selectedEvent has a value
-	// 	if (selectedEvent) {
-	// 		setShowModalEditEvent(true);
-	// 		setShowModalViewEvent(false);
+		// Check if selectedEvent has a value
+		if (selectedEvent) {
+			setShowModalEditEvent(true);
+			setShowModalViewEvent(false);
 
-	// 		setEditEventInfo({
-	// 			intFID: selectedEvent.intFID,
-	// 			intFEventName: selectedEvent.intFName,
-	// 			intFDescription: selectedEvent.intFDescription,
-	// 			intFStartDate: selectedEvent.intFStartDate,
-	// 			intFStartTime: selectedEvent.intFStartTime,
-	// 			intFEndTime: selectedEvent.intFEndTime,
-	// 			intFVenue: selectedEvent.intFVenue,
-	// 			intFMaximumSeats: selectedEvent.intFMaximumSeats,
-	// 			intFOrganizer: selectedEvent.intFOrganizer,
-	// 			intFFaculty: selectedEvent.intFFaculty,
-	// 		});
-	// 		console.log("testing edit");
-	// 		console.log(selectedEvent.intFName);
-	// 		console.log(selectedEvent.intFOrganizer);
-	// 	}
-	// };
+			setEditEventInfo({
+				intFID: selectedEvent.intFID,
+				intFEventName: selectedEvent.intFName,
+				intFDescription: selectedEvent.intFDescription,
+				intFStartDate: selectedEvent.intFStartDate,
+				intFStartTime: selectedEvent.intFStartTime,
+				intFEndTime: selectedEvent.intFEndTime,
+				intFVenue: selectedEvent.intFVenue,
+				intFMaximumSeats: selectedEvent.intFMaximumSeats,
+				intFOrganizer: selectedEvent.intFOrganizer,
+				intFFaculty: selectedEvent.intFFaculty,
+			});
+			console.log("testing edit");
+			console.log(selectedEvent.intFName);
+			console.log(selectedEvent.intFOrganizer);
+		}
+	};
 
-	// const handleEditEventSubmit = async (e: React.FormEvent) => {
-	// 	e.preventDefault();
+	const handleEditEventSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-	// 	const { data, error } = await supabase
-	// 		.from("internal_events")
-	// 		.update({
-	// 			intFEventName: editEventInfo.intFEventName,
-	// 			intFDescription: editEventInfo.intFDescription,
-	// 			intFStartDate: editEventInfo.intFStartDate,
-	// 			intFStartTime: editEventInfo.intFStartTime,
-	// 			intFEndTime: editEventInfo.intFEndTime,
-	// 			intFVenue: editEventInfo.intFVenue,
-	// 			intFMaximumSeats: editEventInfo.intFMaximumSeats,
-	// 			intFOrganizer: editEventInfo.intFOrganizer,
-	// 			intFFaculty: editEventInfo.intFFaculty,
-	// 		})
-	// 		.eq("intFID", editEventInfo.intFID);
+		const { data, error } = await supabase
+			.from("internal_events")
+			.update({
+				intFEventName: editEventInfo.intFEventName,
+				intFDescription: editEventInfo.intFDescription,
+				intFStartDate: editEventInfo.intFStartDate,
+				intFStartTime: editEventInfo.intFStartTime,
+				intFEndTime: editEventInfo.intFEndTime,
+				intFVenue: editEventInfo.intFVenue,
+				intFMaximumSeats: editEventInfo.intFMaximumSeats,
+				intFOrganizer: editEventInfo.intFOrganizer,
+				intFFaculty: editEventInfo.intFFaculty,
+			})
+			.eq("intFID", editEventInfo.intFID);
 
-	// 	if (error) {
-	// 		console.error("Error updating event:", error);
-	// 		return;
-	// 	}
+		if (error) {
+			console.error("Error updating event:", error);
+			return;
+		}
 
-	// 	setShowModalSuccess(true);
-	// };
+		setShowModalSuccess(true);
+	};
 
 
 	const handleOK = () => {
@@ -1360,7 +1360,7 @@ export default function Homepage() {
 												<button
 													type="button"
 													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
-													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[10px] lg:mt-[12.25px]"
+													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[10px] lg:mt-[12.5px]"
 												>
 													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500" />
 												</button>
@@ -1417,7 +1417,7 @@ export default function Homepage() {
 
 										<button
 											className="rounded-lg px-[20px] py-[6px] lg:px-[25px] lg:py-[9px] bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-										// onClick={handleEditEventButton}
+											onClick={handleEditEventButton}
 										>
 											Edit Event
 										</button>
