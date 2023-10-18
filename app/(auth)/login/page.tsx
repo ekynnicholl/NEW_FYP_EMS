@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import login_bg from "@/public/images/event_manager.png";
+import swin_logo from "@/public/swinburne_logo.png"
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { auth, provider } from "../../../google_config";
@@ -140,6 +141,7 @@ export default function Login() {
 				</div>
 
 				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-4">
+					<Image src={swin_logo} alt="logo" width={260} height={280} className="mb-5 lg:w-[280px] mx-auto lg:hidden" />
 					<h1 className="text-2xl lg:text-3xl font-extrabold mb-6 lg:mb-8 text-center">
 						Sign In
 					</h1>
@@ -200,7 +202,7 @@ export default function Login() {
 							{/* Password Input*/}
 							<div className="relative">
 								<input
-									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-5 mt-6"
+									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6"
 									type={showPassword ? "password" : "text"}
 									placeholder="Password"
 									id="password"
@@ -223,13 +225,15 @@ export default function Login() {
 							</div>
 
 							{/* Forgot Password*/}
-							<p className="-mt-5 lg:-mt-4 text-right mr-1">
-								<a
-									href="/forgotPassword"
-									className="text-xs lg:text-sm text-slate-700 font-semibold">
-									Forgot password
-								</a>
-							</p>
+							<div className="-mt-[10px] lg:-mt-3 mr-1">
+								<p className="text-right">
+									<a
+										href="/forgotPassword"
+										className="text-xs lg:text-sm text-slate-700 font-semibold">
+										Forgot password
+									</a>
+								</p>
+							</div>
 
 							{/* Submit Button */}
 							<button
