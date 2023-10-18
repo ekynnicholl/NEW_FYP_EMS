@@ -403,47 +403,47 @@ export default function Homepage() {
 		setShowAttendanceModal(true);
 	};
 
-	// const handleSubEventClick = async (subEvent: subEvents) => {
-	// 	try {
-	// 		// Fetch attendance data for the selected sub-event
-	// 		setSelectedSubEvent(subEvent.sub_eventsID);
-	// 		const { data: attendanceForms, error: formsError } = await supabase
-	// 			.from("attendance_forms")
-	// 			.select()
-	// 			.eq("attFSubEventID", subEvent.sub_eventsID);
+	const handleSubEventClick = async (subEvent: subEvents) => {
+		try {
+			// Fetch attendance data for the selected sub-event
+			setSelectedSubEvent(subEvent.sub_eventsID);
+			const { data: attendanceForms, error: formsError } = await supabase
+				.from("attendance_forms")
+				.select()
+				.eq("attFSubEventID", subEvent.sub_eventsID);
 
-	// 		if (formsError) {
-	// 			console.error("Error fetching attendance forms:", formsError);
-	// 			return;
-	// 		}
+			if (formsError) {
+				console.error("Error fetching attendance forms:", formsError);
+				return;
+			}
 
-	// 		// Set the attendance data for the selected sub-event
-	// 		setAttendanceData(attendanceForms);
+			// Set the attendance data for the selected sub-event
+			setAttendanceData(attendanceForms);
 
-	// 		// Calculate labels (faculty/unit) and label data (counts)
-	// 		const facultyCounts: { [key: string]: number } = {};
+			// Calculate labels (faculty/unit) and label data (counts)
+			const facultyCounts: { [key: string]: number } = {};
 
-	// 		attendanceForms.forEach(attendanceItem => {
-	// 			const faculty = attendanceItem.attFormsFacultyUnit;
-	// 			if (facultyCounts[faculty]) {
-	// 				facultyCounts[faculty]++;
-	// 			} else {
-	// 				facultyCounts[faculty] = 1;
-	// 			}
-	// 		});
+			attendanceForms.forEach(attendanceItem => {
+				const faculty = attendanceItem.attFormsFacultyUnit;
+				if (facultyCounts[faculty]) {
+					facultyCounts[faculty]++;
+				} else {
+					facultyCounts[faculty] = 1;
+				}
+			});
 
-	// 		const facultyLabels = Object.keys(facultyCounts);
-	// 		const facultyData = facultyLabels.map(label => facultyCounts[label]);
+			const facultyLabels = Object.keys(facultyCounts);
+			const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
-	// 		const canvas = chartContainer.current;
-	// 		createPieChart(canvas, facultyLabels, facultyData);
+			const canvas = chartContainer.current;
+			createPieChart(canvas, facultyLabels, facultyData);
 
-	// 		console.log("Attendance forms data for selected sub-event:", attendanceForms);
-	// 	} catch (error) {
-	// 		const typedError = error as Error;
-	// 		console.error("Error:", typedError.message);
-	// 	}
-	// };
+			console.log("Attendance forms data for selected sub-event:", attendanceForms);
+		} catch (error) {
+			const typedError = error as Error;
+			console.error("Error:", typedError.message);
+		}
+	};
 
 	const fetchAttendanceList = async (event_id: string) => {
 		const { data: subEvents, error: subEventsError } = await supabase
@@ -1672,7 +1672,7 @@ export default function Homepage() {
 												onClick={() => {
 													setIsAllButtonActive(false);
 													// COMMENT HERE
-													// handleSubEventClick(subEvent);
+													handleSubEventClick(subEvent);
 												}}
 											>
 												{subEvent.sub_eventsName}
