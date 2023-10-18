@@ -5,3 +5,16 @@
 @layer components {
 	@import "components/form";
 }
+
+::-webkit-scrollbar {
+	width: 10px; /* Width of the scrollbar */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+	background-color: #848484; /* Color of the thumb */
+	border-radius: 5px; /* Roundness of the thumb */
+  }
+  
+  ::-webkit-scrollbar-track {
+	background-color: #ccc; /* Color of the track */
+  }

@@ -7,7 +7,10 @@ import CreateEvent_Modal from "@/components/CreateEvent_Modal";
 import ViewEvent_Modal from "@/components/ViewEvent_Modal";
 import EditEvent_Modal from "@/components/EditEvent_Modal";
 import EditSubEvent_Modal from "@/components/EditSubEvent_Modal";
+import AddSubEvent_Modal from "@/components/EditSubEvent_Modal";
 import Success_Modal from "@/components/Modal";
+import Success_EditEventModal from "@/components/Modal";
+import Success_EditSubEventModal from "@/components/Modal";
 import Success_DeleteSubEventModal from "@/components/Modal";
 import Delete_Event_Confirmation_Modal from "@/components/Modal";
 import { Chart } from 'chart.js/auto';
@@ -28,6 +31,7 @@ import { MdPeople } from "react-icons/md";
 import { MdAirlineSeatReclineNormal } from "react-icons/md";
 import { BsFillTrash3Fill } from "react-icons/bs"
 import { HiPencilAlt } from "react-icons/hi"
+import { IoMdAddCircleOutline } from "react-icons/io"
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
@@ -153,26 +157,26 @@ export default function Homepage() {
 		intFEventDescription: "",
 		intFEventStartDate: "",
 		intFEventEndDate: "",
-
-		intFStartTime: "",
-		intFEndTime: "",
-		intFVenue: "",
-		intFMaximumSeats: "",
-		intFOrganizer: "",
-		intFFaculty: "",
 	});
 
-	const [editingIndex, setEditingIndex] = useState(null);
-
-	// Function to open the edit modal
-	const handleEditClick = (index) => {
-		setEditingIndex(index);
-	};
+	const [editSubEventInfo, setEditSubEventInfo] = useState({
+		sub_eventsID: "",
+		sub_eventsName: "",
+		sub_eventsVenue: "",
+		sub_eventsMaxSeats: "",
+		sub_eventsStartDate: "",
+		sub_eventsEndDate: "",
+		sub_eventsStartTime: "",
+		sub_eventsEndTime: "",
+		sub_eventsOrganizer: "",
+		sub_eventsFaculty: "",
+	});
 
 
 	// Create, View, Edit Modal + Selected Event Image
 	const [showModalCreateEvent, setShowModalCreateEvent] = useState(false);
 	const [showModalViewEvent, setShowModalViewEvent] = useState(false);
+	const [showModalAddEvent, setShowModalAddEvent] = useState(false);
 	const [showModalEditEvent, setShowModalEditEvent] = useState(false);
 	const [showModalEditSubEvent, setShowModalEditSubEvent] = useState(false);
 	const [selectedEventImage, setSelectedEventImage] = useState("");
@@ -180,6 +184,8 @@ export default function Homepage() {
 
 	// Success Modal and Confirmation Modal
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
+	const [showModalEditEventSuccess, setShowModalEditEventSuccess] = useState(false);
+	const [showModalEditSubEventSuccess, setShowModalEditSubEventSuccess] = useState(false);
 	const [showModalDeleteSubEventSuccess, setShowModalDeleteSubEventSuccess] = useState(false);
 	const [showModalConfirmation, setShowModalConfirmation] = useState(false);
 
@@ -660,7 +666,7 @@ export default function Homepage() {
 
 
 	// Remove the session expanded (dynamic textboxes)
-	const handleRemoveEventClick = (eventIndex) => {
+	const handleRemoveEventClick = (eventIndex: number) => {
 		const updatedDetails = [...eventDetails];
 		updatedDetails.splice(eventIndex);
 		setEventDetails(updatedDetails);
@@ -789,17 +795,7 @@ export default function Homepage() {
 				intFEventDescription: selectedEvent.intFEventDescription,
 				intFEventStartDate: selectedEvent.intFEventStartDate,
 				intFEventEndDate: selectedEvent.intFEventEndDate,
-
-				intFStartTime: selectedEvent.intFStartTime,
-				intFEndTime: selectedEvent.intFEndTime,
-				intFVenue: selectedEvent.intFVenue,
-				intFMaximumSeats: selectedEvent.intFMaximumSeats,
-				intFOrganizer: selectedEvent.intFOrganizer,
-				intFFaculty: selectedEvent.intFFaculty,
 			});
-			console.log("testing edit");
-			console.log(selectedEvent.intFName);
-			console.log(selectedEvent.intFOrganizer);
 		}
 	};
 
@@ -810,14 +806,9 @@ export default function Homepage() {
 			.from("internal_events")
 			.update({
 				intFEventName: editEventInfo.intFEventName,
-				intFDescription: editEventInfo.intFDescription,
-				intFStartDate: editEventInfo.intFStartDate,
-				intFStartTime: editEventInfo.intFStartTime,
-				intFEndTime: editEventInfo.intFEndTime,
-				intFVenue: editEventInfo.intFVenue,
-				intFMaximumSeats: editEventInfo.intFMaximumSeats,
-				intFOrganizer: editEventInfo.intFOrganizer,
-				intFFaculty: editEventInfo.intFFaculty,
+				intFEventDescription: editEventInfo.intFEventDescription,
+				intFEventStartDate: editEventInfo.intFEventStartDate,
+				intFEventEndDate: editEventInfo.intFEventEndDate,
 			})
 			.eq("intFID", editEventInfo.intFID);
 
@@ -826,34 +817,73 @@ export default function Homepage() {
 			return;
 		}
 
-		setShowModalSuccess(true);
+		setShowModalEditEventSuccess(true);
 	};
-	
+
 	// Edit Sub Event (using pencil)
-	const handleEditSubEventButton = (e: React.MouseEvent<HTMLButtonElement>, subEventID) => {
+	const handleEditSubEventButton = (e: React.MouseEvent<HTMLButtonElement>, subEventID: string) => {
 		e.preventDefault();
 		setShowModalEditSubEvent(true);
 		setShowModalViewEvent(false);
 
-		// Check if selectedEvent has a value
-		// if (selectedEvent) {
-		// 	setShowModalEditEvent(true);
-		// 	setShowModalViewEvent(false);
+		const selectedSubEvent = subEvents.find(subEvent => subEvent.sub_eventsID === subEventID);
 
-		// 	setEditEventInfo({
+		if (selectedSubEvent) {
+			setEditSubEventInfo({
+				sub_eventsID: selectedSubEvent.sub_eventsID,
+				sub_eventsName: selectedSubEvent.sub_eventsName,
+				sub_eventsVenue: selectedSubEvent.sub_eventsVenue,
+				sub_eventsMaxSeats: selectedSubEvent.sub_eventsMaxSeats,
+				sub_eventsStartDate: selectedSubEvent.sub_eventsStartDate,
+				sub_eventsEndDate: selectedSubEvent.sub_eventsEndDate,
+				sub_eventsStartTime: selectedSubEvent.sub_eventsStartTime,
+				sub_eventsEndTime: selectedSubEvent.sub_eventsEndTime,
+				sub_eventsOrganizer: selectedSubEvent.sub_eventsOrganizer,
+				sub_eventsFaculty: selectedSubEvent.sub_eventsFaculty,
+			});
+		}
+	};
 
-		// 		intFStartTime: selectedEvent.intFStartTime,
-		// 		intFEndTime: selectedEvent.intFEndTime,
-		// 		intFVenue: selectedEvent.intFVenue,
-		// 		intFMaximumSeats: selectedEvent.intFMaximumSeats,
-		// 		intFOrganizer: selectedEvent.intFOrganizer,
-		// 		intFFaculty: selectedEvent.intFFaculty,
-		// 	});
-		// }
+	const handleEditSubEventSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		const { data, error } = await supabase
+			.from("sub_events")
+			.update({
+				sub_eventsID: editSubEventInfo.sub_eventsID,
+				sub_eventsName: editSubEventInfo.sub_eventsName,
+				sub_eventsVenue: editSubEventInfo.sub_eventsVenue,
+				sub_eventsMaxSeats: editSubEventInfo.sub_eventsMaxSeats,
+				sub_eventsStartDate: editSubEventInfo.sub_eventsStartDate,
+				sub_eventsEndDate: editSubEventInfo.sub_eventsEndDate,
+				sub_eventsStartTime: editSubEventInfo.sub_eventsStartTime,
+				sub_eventsEndTime: editSubEventInfo.sub_eventsEndTime,
+				sub_eventsOrganizer: editSubEventInfo.sub_eventsOrganizer,
+				sub_eventsFaculty: editSubEventInfo.sub_eventsFaculty,
+			})
+			.eq("sub_eventsID", editSubEventInfo.sub_eventsID);
+
+		if (error) {
+			console.error("Error updating sub event:", error);
+			return;
+		}
+
+		setShowModalEditSubEventSuccess(true);
+	};
+
+
+
+	const handleAddSubEvent = (e: React.MouseEvent<HTMLButtonElement>, intFID: string) => {
+		e.preventDefault();
+		setShowModalAddEvent(true);
+		setShowModalViewEvent(false);
+
 	};
 
 	const handleOK = () => {
 		setShowModalSuccess(false);
+		setShowModalEditEventSuccess(false);
+		setShowModalEditSubEventSuccess(false);
 		setShowModalDeleteSubEventSuccess(false);
 		window.location.reload();
 	};
@@ -862,7 +892,7 @@ export default function Homepage() {
 		setShowModalConfirmation(false);
 	};
 
-	const handleDeleteEvent = async (intFID) => {
+	const handleDeleteEvent = async (intFID: string) => {
 		// Step 1: Retrieve associated sub-events
 		const { data: subEvents, error: subEventsError } = await supabase
 			.from("sub_events")
@@ -926,7 +956,31 @@ export default function Homepage() {
 		window.location.reload(); // Refresh the page
 	};
 
-	const handleDeleteSubEvent = async (subEventID) => {
+	const handleDeleteSubEvent = async (subEventID: string) => {
+		const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
+
+		// Step 1: Delete attendance forms associated with the sub-event
+		const { error: deleteAttendanceFormsError } = await supabase
+			.from("attendance_forms")
+			.delete()
+			.in("attFSubEventID", subEventIDs);
+
+		if (deleteAttendanceFormsError) {
+			console.error("Error deleting attendance forms:", deleteAttendanceFormsError);
+			return;
+		}
+
+		// Step 2: Delete feedback forms associated with the sub-event
+		const { error: deleteFeedbackFormsError } = await supabase
+			.from("feedback_forms")
+			.delete()
+			.in("feedbackSubEventID", subEventIDs);
+
+		if (deleteFeedbackFormsError) {
+			console.error("Error deleting feedback forms:", deleteFeedbackFormsError);
+			return;
+		}
+
 		const { data, error } = await supabase
 			.from("sub_events")
 			.delete()
@@ -943,18 +997,6 @@ export default function Homepage() {
 
 		// Refresh the page or update the state as needed
 	};
-
-	// Function to update the sub-event details
-	// const handleEditSubEvent = (index, updatedEventData) => {
-	// 	// Update the eventDetails state with the edited data
-	// 	const updatedEventDetails = [...eventDetails];
-	// 	updatedEventDetails[index] = updatedEventData;
-	// 	setEventDetails(updatedEventDetails);
-
-	// 	// Close the edit modal (if using a modal)
-	// 	setEditingIndex(null);
-	// };
-
 
 	return (
 		<div className="p-5 bg-slate-100 space-y-4">
@@ -1411,12 +1453,19 @@ export default function Homepage() {
 												<div className="-mt-4"></div>
 											)}
 
-											<div className="flex items-center gap-1">
-												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
+											<div className="flex items-center gap-[6px]">
+												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ {subEvent.sub_eventsName}</p>
+												<button
+													type="button"
+													onClick={(e) => handleAddSubEvent(e, selectedEvent.intFID)}
+													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
+												>
+													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105" />
+												</button>
 												<button
 													type="button"
 													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
-													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[12.5px]"
+													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[3px] lg:mt-[12.5px]"
 												>
 													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500" />
 												</button>
@@ -1596,34 +1645,417 @@ export default function Homepage() {
 						</div>
 					</ViewAttendance_Modal>
 
-					{/* <input
-						className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-						type="text"
-						placeholder="Description"
-						name="event_description"
-						value={editEventInfo.intFEventDescription}
-						required
-						onChange={e =>
-							setEditEventInfo({
-								...editEventInfo,
-								intFEventDescription: e.target.value,
-							})
-						}
-					/> */}
+					<AddSubEvent_Modal
+						isVisible={showModalAddEvent}
+						onClose={() => setShowModalAddEvent(false)}>
 
-					{/* <div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center">
-						<button
-							className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-							onClick={handleEditEventSubmit}
-						>
-							Submit
-						</button>
-					</div> */}
+						<form>
+							<div className="ml-[7px] lg:ml-4 mb-[70px]">
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
+									Add New SubEvent
+								</h3>
+
+								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
+									Event Name
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Event name"
+									required
+									// onChange={e =>
+									// 	setEditSubEventInfo({
+									// 		...editSubEventInfo,
+									// 		sub_eventsName: e.target.value,
+									// 	})
+									// }
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									Venue
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Venue"
+									required
+									// onChange={e =>
+									// 	setEditSubEventInfo({
+									// 		...editSubEventInfo,
+									// 		sub_eventsVenue: e.target.value,
+									// 	})
+									// }
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+									Maximum Seats
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="number"
+									placeholder="Maximum seats"
+									required
+									// onChange={e =>
+									// 	setEditSubEventInfo({
+									// 		...editSubEventInfo,
+									// 		sub_eventsMaxSeats: e.target.value,
+									// 	})
+									// }
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+
+								<div className="flex flex-col mt-[10px]">
+									<div className="flex">
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+											Start Date
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+											End Date
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+									</div>
+									<div className="flex">
+
+										<input
+											className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+											type="date"
+											name="event_start_date"
+											required
+										// onChange={e =>
+										// 	setEditSubEventInfo({
+										// 		...editSubEventInfo,
+										// 		sub_eventsStartDate: e.target.value,
+										// 	})
+										// }
+										/>
+
+										<input
+											className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
+											type="date"
+											name="event_end_date"
+											required
+										// onChange={e =>
+										// 	setEditSubEventInfo({
+										// 		...editSubEventInfo,
+										// 		sub_eventsEndDate: e.target.value,
+										// 	})
+										// }
+										/>
+									</div>
+								</div>
+
+								<div className="flex flex-col mt-[10px]">
+									<div className="flex">
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
+											Start Time
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+											End Time
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+									</div>
+									<div className="flex">
+										<input
+											className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
+											type="time"
+											name="event_start_time"
+											required
+										// onChange={e =>
+										// 	setEditSubEventInfo({
+										// 		...editSubEventInfo,
+										// 		sub_eventsStartTime: e.target.value,
+										// 	})
+										// }
+										/>
+
+										<input
+											className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
+											type="time"
+											name="event_end_time"
+											required
+										// onChange={e =>
+										// 	setEditSubEventInfo({
+										// 		...editSubEventInfo,
+										// 		sub_eventsEndTime: e.target.value,
+										// 	})
+										// }
+										/>
+									</div>
+								</div>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									Organizer
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Organizer"
+									required
+									// onChange={e =>
+									// 	setEditSubEventInfo({
+									// 		...editSubEventInfo,
+									// 		sub_eventsOrganizer: e.target.value,
+									// 	})
+									// }
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									Faculty
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Faculty"
+									required
+									// onChange={e =>
+									// 	setEditSubEventInfo({
+									// 		...editSubEventInfo,
+									// 		sub_eventsFaculty: e.target.value,
+									// 	})
+									// }
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+							</div>
+
+							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+
+								<button
+									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+								>
+									Save Changes
+								</button>
+							</div>
+						</form>
+					</AddSubEvent_Modal>
+
+					<EditSubEvent_Modal
+						isVisible={showModalEditSubEvent}
+						onClose={() => setShowModalEditSubEvent(false)}>
+
+						<form>
+							<div className="ml-[7px] lg:ml-4 mb-[70px]">
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
+									Edit SubEvent
+								</h3>
+
+								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
+									Event Name
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Event name"
+									value={editSubEventInfo.sub_eventsName}
+									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsName: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									Venue
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Venue"
+									value={editSubEventInfo.sub_eventsVenue}
+									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsVenue: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+									Maximum Seats
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="number"
+									placeholder="Maximum seats"
+									value={editSubEventInfo.sub_eventsMaxSeats}
+									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsMaxSeats: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+
+								<div className="flex flex-col mt-[10px]">
+									<div className="flex">
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+											Start Date
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+											End Date
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+									</div>
+									<div className="flex">
+
+										<input
+											className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+											type="date"
+											name="event_start_date"
+											value={editSubEventInfo.sub_eventsStartDate}
+											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsStartDate: e.target.value,
+												})
+											}
+										/>
+
+										<input
+											className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
+											type="date"
+											name="event_end_date"
+											value={editSubEventInfo.sub_eventsEndDate}
+											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsEndDate: e.target.value,
+												})
+											}
+										/>
+									</div>
+								</div>
+
+								<div className="flex flex-col mt-[10px]">
+									<div className="flex">
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
+											Start Time
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+											End Time
+											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+												*
+											</span>
+										</p>
+									</div>
+									<div className="flex">
+										<input
+											className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
+											type="time"
+											name="event_start_time"
+											value={editSubEventInfo.sub_eventsStartTime}
+											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsStartTime: e.target.value,
+												})
+											}
+										/>
+
+										<input
+											className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
+											type="time"
+											name="event_end_time"
+											value={editSubEventInfo.sub_eventsEndTime}
+											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsEndTime: e.target.value,
+												})
+											}
+										/>
+									</div>
+								</div>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									Organizer
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Organizer"
+									value={editSubEventInfo.sub_eventsOrganizer}
+									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsOrganizer: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									Faculty
+									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+								</p>
+								<input
+									type="text"
+									placeholder="Faculty"
+									value={editSubEventInfo.sub_eventsFaculty}
+									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsFaculty: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+								/>
+							</div>
+
+							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+
+								<button
+									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+								>
+									Save Changes
+								</button>
+							</div>
+						</form>
+					</EditSubEvent_Modal>
 
 					<EditEvent_Modal
 						isVisible={showModalEditEvent}
 						onClose={() => setShowModalEditEvent(false)}>
-						<form onSubmit={handleSubmitCreateEvent}>
+						<form onSubmit={handleEditEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
 								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
 									Edit Event
@@ -1644,7 +2076,7 @@ export default function Homepage() {
 										placeholder="Event name"
 										id="event_name"
 										name="event_name"
-										value={editEventInfo.intFEventDescription}
+										value={editEventInfo.intFEventName}
 										required
 										onChange={e =>
 											setEditEventInfo({
@@ -1724,220 +2156,10 @@ export default function Homepage() {
 
 								</div>
 
-								{/* {eventDetails.map((detail, index) => (
-									<div key={index} className="mb-7">
-
-										{index === 0 && (
-											<div className="mt-1"></div>
-										)}
-										{index > 0 && (
-											<div className="-mt-6"></div>
-										)}
-
-										<div className="flex items-center">
-											<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
-
-											{eventDetails.length > 1 && (
-												<button
-													type="button"
-													onClick={() => handleRemoveEventClick(index)}
-													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[10px] lg:mt-[12.25px]"
-												>
-													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500" />
-												</button>
-											)}
-										</div>
-
-										{detail.event_names.map((event_name, eventNameIndex) => (
-											<div key={eventNameIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
-													Event Name
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Event name"
-													value={event_name}
-													onChange={(e) => handleEventNameInputChange(index, eventNameIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
-
-										{detail.venues.map((venue, venueIndex) => (
-											<div key={venueIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Venue
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Venue"
-													value={venue}
-													onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
-
-										{detail.maximum_seats.map((maximum_seats, maximumSeatsIndex) => (
-											<div key={maximumSeatsIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-													Maximum Seats
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="number"
-													placeholder="Maximum seats"
-													value={maximum_seats}
-													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
-
-										<div className="flex flex-col mt-[10px]">
-											<div className="flex">
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
-													Start Date
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-														*
-													</span>
-												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
-													End Date
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-														*
-													</span>
-												</p>
-											</div>
-											<div className="flex">
-												{detail.start_dates.map((start_dates, startDatesIndex) => (
-													<div key={startDatesIndex}>
-														<input
-															className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
-															type="date"
-															name="event_start_date"
-
-															onChange={(e) => handleEventStartDatesInputChange(index, startDatesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
-
-												{detail.end_dates.map((end_dates, endDatesIndex) => (
-													<div key={endDatesIndex}>
-														<input
-															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
-															type="date"
-															name="event_end_date"
-
-															onChange={(e) => handleEventEndDatesInputChange(index, endDatesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
-											</div>
-										</div>
-
-										<div className="flex flex-col mt-[10px]">
-											<div className="flex">
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
-													Start Time
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-														*
-													</span>
-												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
-													End Time
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-														*
-													</span>
-												</p>
-											</div>
-											<div className="flex">
-												{detail.start_times.map((start_times, startTimesIndex) => (
-													<div key={startTimesIndex}>
-														<input
-															className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
-															type="time"
-															name="event_start_time"
-
-															onChange={(e) => handleEventStartTimesInputChange(index, startTimesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
-
-												{detail.end_times.map((end_times, endTimesIndex) => (
-													<div key={endTimesIndex}>
-														<input
-															className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
-															type="time"
-															name="event_end_time"
-
-															onChange={(e) => handleEventEndTimesInputChange(index, endTimesIndex, e.target.value)}
-															required
-														/>
-													</div>
-												))}
-
-											</div>
-										</div>
-
-										{detail.organizers.map((organizers, organizersIndex) => (
-											<div key={organizersIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Organizer
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Organizer"
-													value={organizers}
-													onChange={(e) => handleEventOrganizersInputChange(index, organizersIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
-
-										{detail.faculties.map((faculties, facultiesIndex) => (
-											<div key={facultiesIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Faculty
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Faculty"
-													value={faculties}
-													onChange={(e) => handleEventFacultiesInputChange(index, facultiesIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
-									</div>
-								))} */}
-
 								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 
 									<button
 										className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-										onClick={() => {
-											if (
-												mainEvent.intFEventName &&
-												mainEvent.intFEventDescription &&
-												mainEvent.intFEventStartDate &&
-												mainEvent.intFEventEndDate
-											) {
-												setShowModalSuccess(true);
-											}
-										}}
 									>
 										Save Changes
 									</button>
@@ -1950,7 +2172,7 @@ export default function Homepage() {
 						isVisible={showModalEditSubEvent}
 						onClose={() => setShowModalEditSubEvent(false)}>
 
-						<form>
+						<form onSubmit={handleEditSubEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
 								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
 									Edit SubEvent
@@ -1965,16 +2187,15 @@ export default function Homepage() {
 								<input
 									type="text"
 									placeholder="Event name"
-									// value={}
-									// required
-									// onChange={e =>
-									// 	setEditEventInfo({
-									// 		...editEventInfo,
-									// 		intFEventDescription: e.target.value,
-									// 	})
-									// }
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									value={editSubEventInfo.sub_eventsName}
 									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsName: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
 								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
@@ -1984,10 +2205,15 @@ export default function Homepage() {
 								<input
 									type="text"
 									placeholder="Venue"
-									// value={venue}
-									// onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									value={editSubEventInfo.sub_eventsVenue}
 									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsVenue: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
 								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
@@ -1997,10 +2223,15 @@ export default function Homepage() {
 								<input
 									type="number"
 									placeholder="Maximum seats"
-									// value={maximum_seats}
-									// onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									value={editSubEventInfo.sub_eventsMaxSeats}
 									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsMaxSeats: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
 
@@ -2025,20 +2256,28 @@ export default function Homepage() {
 											className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
 											type="date"
 											name="event_start_date"
-
-											// onChange={(e) => handleEventStartDatesInputChange(index, startDatesIndex, e.target.value)}
+											value={editSubEventInfo.sub_eventsStartDate}
 											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsStartDate: e.target.value,
+												})
+											}
 										/>
-
-
 
 										<input
 											className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
 											type="date"
 											name="event_end_date"
-
-											// onChange={(e) => handleEventEndDatesInputChange(index, endDatesIndex, e.target.value)}
+											value={editSubEventInfo.sub_eventsEndDate}
 											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsEndDate: e.target.value,
+												})
+											}
 										/>
 									</div>
 								</div>
@@ -2063,18 +2302,28 @@ export default function Homepage() {
 											className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
 											type="time"
 											name="event_start_time"
-
-											// onChange={(e) => handleEventStartTimesInputChange(index, startTimesIndex, e.target.value)}
+											value={editSubEventInfo.sub_eventsStartTime}
 											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsStartTime: e.target.value,
+												})
+											}
 										/>
 
 										<input
 											className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
 											type="time"
 											name="event_end_time"
-
-											// onChange={(e) => handleEventEndTimesInputChange(index, endTimesIndex, e.target.value)}
+											value={editSubEventInfo.sub_eventsEndTime}
 											required
+											onChange={e =>
+												setEditSubEventInfo({
+													...editSubEventInfo,
+													sub_eventsEndTime: e.target.value,
+												})
+											}
 										/>
 									</div>
 								</div>
@@ -2086,10 +2335,15 @@ export default function Homepage() {
 								<input
 									type="text"
 									placeholder="Organizer"
-									// value={organizers}
-									// onChange={(e) => handleEventOrganizersInputChange(index, organizersIndex, e.target.value)}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									value={editSubEventInfo.sub_eventsOrganizer}
 									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsOrganizer: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
 								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
@@ -2099,10 +2353,15 @@ export default function Homepage() {
 								<input
 									type="text"
 									placeholder="Faculty"
-									// value={faculties}
-									// onChange={(e) => handleEventFacultiesInputChange(index, facultiesIndex, e.target.value)}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									value={editSubEventInfo.sub_eventsFaculty}
 									required
+									onChange={e =>
+										setEditSubEventInfo({
+											...editSubEventInfo,
+											sub_eventsFaculty: e.target.value,
+										})
+									}
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 							</div>
 
@@ -2110,16 +2369,9 @@ export default function Homepage() {
 
 								<button
 									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-									onClick={() => {
-										if (
-											mainEvent.intFEventName &&
-											mainEvent.intFEventDescription &&
-											mainEvent.intFEventStartDate &&
-											mainEvent.intFEventEndDate
-										) {
-											setShowModalSuccess(true);
-										}
-									}}
+								// onClick={() => {
+								// 	setShowModalSuccess(true);
+								// }}
 								>
 									Save Changes
 								</button>
@@ -2153,6 +2405,60 @@ export default function Homepage() {
 							</div>
 						</div>
 					</Success_Modal>
+
+					<Success_EditEventModal
+						isVisible={showModalEditEventSuccess}
+						onClose={() => setShowModalEditEventSuccess(false)}>
+						<div className="p-4">
+							<Image
+								src="/images/tick_mark.png"
+								alt="tick_mark"
+								width={200}
+								height={250}
+								className="-mt-[39px] lg:-mt-[45px] ml-[121.5px]"
+							/>
+							<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+								Success!
+							</h3>
+							<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+								Event has been successfully edited!
+							</p>
+							<div className="text-center ml-4">
+								<button
+									className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5 focus:shadow-outline focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									onClick={handleOK}>
+									OK
+								</button>
+							</div>
+						</div>
+					</Success_EditEventModal>
+
+					<Success_EditSubEventModal
+						isVisible={showModalEditSubEventSuccess}
+						onClose={() => setShowModalEditSubEventSuccess(false)}>
+						<div className="p-4">
+							<Image
+								src="/images/tick_mark.png"
+								alt="tick_mark"
+								width={200}
+								height={250}
+								className="-mt-[39px] lg:-mt-[45px] ml-[121.5px]"
+							/>
+							<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+								Success!
+							</h3>
+							<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+								SubEvent has been successfully edited!
+							</p>
+							<div className="text-center ml-4">
+								<button
+									className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5 focus:shadow-outline focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									onClick={handleOK}>
+									OK
+								</button>
+							</div>
+						</div>
+					</Success_EditSubEventModal>
 
 					<Success_DeleteSubEventModal
 						isVisible={showModalDeleteSubEventSuccess}
