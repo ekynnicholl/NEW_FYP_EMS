@@ -1027,7 +1027,7 @@ export default function Homepage() {
 						onClose={() => setShowModalCreateEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px]">
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
 									Create Event
 								</h3>
 
@@ -1625,8 +1625,8 @@ export default function Homepage() {
 						onClose={() => setShowModalEditEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px]">
-									Create Event
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
+									Edit Event
 								</h3>
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px]" />
@@ -1952,11 +1952,11 @@ export default function Homepage() {
 
 						<form>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px]">
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
 									Edit SubEvent
 								</h3>
 
-								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px]" />
+								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
 
 								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
 									Event Name
