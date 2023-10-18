@@ -8,7 +8,9 @@ import ViewEvent_Modal from "@/components/ViewEvent_Modal";
 import EditEvent_Modal from "@/components/EditEvent_Modal";
 import EditSubEvent_Modal from "@/components/EditSubEvent_Modal";
 import AddSubEvent_Modal from "@/components/EditSubEvent_Modal";
-import Success_Modal from "@/components/Modal";
+import Success_CreateEventModal from "@/components/Modal";
+import Success_AddSubEventModal from "@/components/Modal";
+
 import Success_EditEventModal from "@/components/Modal";
 import Success_EditSubEventModal from "@/components/Modal";
 import Success_DeleteSubEventModal from "@/components/Modal";
@@ -188,7 +190,8 @@ export default function Homepage() {
 	const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 
 	// Success Modal and Confirmation Modal
-	const [showModalSuccess, setShowModalSuccess] = useState(false);
+	const [showModalCreateEventSuccess, setShowModalCreateEventSuccess] = useState(false);
+	const [showModalAddEventSuccess, setShowModalAddEventSuccess] = useState(false);
 	const [showModalEditEventSuccess, setShowModalEditEventSuccess] = useState(false);
 	const [showModalEditSubEventSuccess, setShowModalEditSubEventSuccess] = useState(false);
 	const [showModalDeleteSubEventSuccess, setShowModalDeleteSubEventSuccess] = useState(false);
@@ -922,11 +925,12 @@ export default function Homepage() {
 
 		setSubEventz({} as subEvents);
 
-		setShowModalSuccess(true);
+		setShowModalAddEventSuccess(true);
 	};
 
 	const handleOK = () => {
-		setShowModalSuccess(false);
+		setShowModalCreateEventSuccess(false);
+		setShowModalAddEventSuccess(false);
 		setShowModalEditEventSuccess(false);
 		setShowModalEditSubEventSuccess(false);
 		setShowModalDeleteSubEventSuccess(false);
@@ -1422,7 +1426,7 @@ export default function Homepage() {
 												mainEvent.intFEventStartDate &&
 												mainEvent.intFEventEndDate
 											) {
-												setShowModalSuccess(true);
+												setShowModalCreateEventSuccess(true);
 											}
 										}}
 									>
@@ -2414,9 +2418,6 @@ export default function Homepage() {
 
 								<button
 									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-								// onClick={() => {
-								// 	setShowModalSuccess(true);
-								// }}
 								>
 									Save Changes
 								</button>
@@ -2424,9 +2425,9 @@ export default function Homepage() {
 						</form>
 					</EditSubEvent_Modal>
 
-					<Success_Modal
-						isVisible={showModalSuccess}
-						onClose={() => setShowModalSuccess(false)}>
+					<Success_CreateEventModal
+						isVisible={showModalCreateEventSuccess}
+						onClose={() => setShowModalCreateEventSuccess(false)}>
 						<div className="p-4">
 							<Image
 								src="/images/tick_mark.png"
@@ -2449,7 +2450,34 @@ export default function Homepage() {
 								</button>
 							</div>
 						</div>
-					</Success_Modal>
+					</Success_CreateEventModal>
+
+					<Success_AddSubEventModal
+						isVisible={showModalAddEventSuccess}
+						onClose={() => setShowModalAddEventSuccess(false)}>
+						<div className="p-4">
+							<Image
+								src="/images/tick_mark.png"
+								alt="tick_mark"
+								width={200}
+								height={250}
+								className="-mt-[39px] lg:-mt-[45px] ml-[121.5px]"
+							/>
+							<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+								Success!
+							</h3>
+							<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+								SubEvent has been successfully created!
+							</p>
+							<div className="text-center ml-4">
+								<button
+									className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5 focus:shadow-outline focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									onClick={handleOK}>
+									OK
+								</button>
+							</div>
+						</div>
+					</Success_AddSubEventModal>
 
 					<Success_EditEventModal
 						isVisible={showModalEditEventSuccess}

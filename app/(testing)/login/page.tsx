@@ -8,9 +8,6 @@ import { useRouter } from "next/navigation";
 import { auth, provider } from "../../../google_config";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import cookie from 'js-cookie';
-// npm install js-cookie
-// npm install --save-dev @types/js-cookie
 
 type Info = {
 	id: string
@@ -37,11 +34,6 @@ export default function Login() {
 
 	// Fetch data from database
 	useEffect(() => {
-		const authToken = cookie.get('authToken');
-		if (authToken) {
-			router.push("/homepage");
-		}
-
 		const fetchInfos = async () => {
 			const { data } = await supabase.from("login").select("id, firebase_uid");
 			setInfos(data || []); // Ensure data is not null
@@ -51,7 +43,7 @@ export default function Login() {
 			}
 		};
 		fetchInfos();
-	}, [supabase, router]);
+	}, [supabase]);
 
 	const handleGoogleSignIn = (info: Info) => {
 		signInWithPopup(auth, provider)
@@ -68,11 +60,7 @@ export default function Login() {
 
 				// Redirect to the home page after successful sign-in
 				if (userId === "oJvNsADubYNYB0HQYtxt0WJwsh22") {
-					router.push(`/homepage`);
-
-					// Set the cookies,
-					cookie.set('authToken', 'oJvNsADubYNYB0HQYtxt0WJwsh22');
-					cookie.set('accountRank', '99');
+					router.push(`/homepage_backup_login/${concatenatedID}`);
 				} else {
 					setErrorMessageLogin("Unauthorized user.");
 				}
@@ -103,10 +91,6 @@ export default function Login() {
 				// Redirect to the dashboard or another page after successful login
 				if (userId === "oJvNsADubYNYB0HQYtxt0WJwsh22") {
 					router.push("/homepage");
-
-					// Set the cookies,
-					cookie.set('authToken', 'oJvNsADubYNYB0HQYtxt0WJwsh22');
-					cookie.set('accountRank', '99');
 				} else {
 					setErrorMessageLogin("Unauthorized user.");
 				}
