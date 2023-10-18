@@ -148,8 +148,10 @@ export default function Homepage() {
 	const [editEventInfo, setEditEventInfo] = useState({
 		intFID: "",
 		intFEventName: "",
-		intFDescription: "",
-		intFStartDate: "",
+		intFEventDescription: "",
+		intFEventStartDate: "",
+		intFEventEndDate: "",
+
 		intFStartTime: "",
 		intFEndTime: "",
 		intFVenue: "",
@@ -772,9 +774,11 @@ export default function Homepage() {
 
 			setEditEventInfo({
 				intFID: selectedEvent.intFID,
-				intFEventName: selectedEvent.intFName,
-				intFDescription: selectedEvent.intFDescription,
-				intFStartDate: selectedEvent.intFStartDate,
+				intFEventName: selectedEvent.intFEventName,
+				intFEventDescription: selectedEvent.intFEventDescription,
+				intFEventStartDate: selectedEvent.intFEventStartDate,
+				intFEventEndDate: selectedEvent.intFEventEndDate,
+
 				intFStartTime: selectedEvent.intFStartTime,
 				intFEndTime: selectedEvent.intFEndTime,
 				intFVenue: selectedEvent.intFVenue,
@@ -1075,6 +1079,14 @@ export default function Homepage() {
 
 								{eventDetails.map((detail, index) => (
 									<div key={index} className="mb-7">
+
+										{index === 0 && (
+											<div className="mt-1"></div>
+										)}
+										{index > 0 && (
+											<div className="-mt-6"></div>
+										)}
+
 										<div className="flex items-center">
 											<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
 
@@ -1091,7 +1103,7 @@ export default function Homepage() {
 
 										{detail.event_names.map((event_name, eventNameIndex) => (
 											<div key={eventNameIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
 													Event Name
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 												</p>
@@ -1533,31 +1545,55 @@ export default function Homepage() {
 						</div>
 					</ViewAttendance_Modal>
 
+					{/* <input
+						className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+						type="text"
+						placeholder="Description"
+						name="event_description"
+						required
+						value={editEventInfo.intFEventDescription}
+						onChange={e =>
+							setEditEventInfo({
+								...editEventInfo,
+								intFEventDescription: e.target.value,
+							})
+						}
+					/> */}
+
+					{/* <div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center">
+						<button
+							className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+							onClick={handleEditEventSubmit}
+						>
+							Submit
+						</button>
+					</div> */}
+
 					<EditEvent_Modal
 						isVisible={showModalEditEvent}
 						onClose={() => setShowModalEditEvent(false)}>
-						<form>
-							<div className="py-[90px] relative">
-								<div className="ml-[7px] lg:ml-4">
-									<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 -mt-[80px]">
-										Edit Event
-									</h3>
-									<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px]" />
+						<form onSubmit={handleSubmitCreateEvent}>
+							<div className="ml-[7px] lg:ml-4 mb-[70px]">
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px]">
+									Create Event
+								</h3>
 
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[1px]">
-										Name
+								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px]" />
+
+								<div>
+									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px]">
+										Event Name
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
 										</span>
 									</p>
-
 									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
+										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
 										type="text"
 										placeholder="Event name"
 										id="event_name"
 										name="event_name"
-										value={editEventInfo.intFEventName}
+										value={editEventInfo.intFEventDescription}
 										required
 										onChange={e =>
 											setEditEventInfo({
@@ -1567,85 +1603,37 @@ export default function Homepage() {
 										}
 									/>
 
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
 										Description
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
 										</span>
 									</p>
 									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 										type="text"
 										placeholder="Description"
 										name="event_description"
+										value={editEventInfo.intFEventDescription}
 										required
-										value={editEventInfo.intFDescription}
 										onChange={e =>
 											setEditEventInfo({
 												...editEventInfo,
-												intFDescription: e.target.value,
-											})
-										}
-									/>
-
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-										Venue
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-										type="text"
-										placeholder="Venue"
-										name="event_venue"
-										required
-										value={editEventInfo.intFVenue}
-										onChange={e =>
-											setEditEventInfo({
-												...editEventInfo,
-												intFVenue: e.target.value,
-											})
-										}
-									/>
-
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-										Maximum Seats
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-										type="number"
-										placeholder="Maximum seats"
-										name="event_maximum_seats"
-										required
-										value={editEventInfo.intFMaximumSeats}
-										onChange={e =>
-											setEditEventInfo({
-												...editEventInfo,
-												intFMaximumSeats: e.target.value,
+												intFEventDescription: e.target.value,
 											})
 										}
 									/>
 
 									<div className="flex flex-col mt-[10px]">
 										<div className="flex">
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[140.5px] ml-[2px] mb-[2px]">
-												Date
+											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
+												Start Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
 												</span>
 											</p>
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-2 lg:ml-[121px] mb-[2px]">
-												Start Time
-												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-													*
-												</span>
-											</p>
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-2 ml-[10.5px] lg:ml-[26px] mb-[2px]">
-												End Time
+											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px]">
+												End Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
 												</span>
@@ -1653,97 +1641,258 @@ export default function Homepage() {
 										</div>
 										<div className="flex">
 											<input
-												className="lg:pr-[8px] lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[139px] mb-[3px]"
+												className="pr-2 lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px]"
 												type="date"
-												name="event_date"
+												name="event_start_date"
+												value={editEventInfo.intFEventStartDate}
 												required
-												value={editEventInfo.intFStartDate}
 												onChange={e =>
 													setEditEventInfo({
 														...editEventInfo,
-														intFStartDate: e.target.value,
+														intFEventStartDate: e.target.value,
 													})
 												}
+
 											/>
 											<input
-												className="lg:pr-[8px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white ml-2 mr-[14px] mb-[3px]"
-												type="time"
-												name="event_start_time"
+												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-2 lg:pl-3 -ml-[71.5px] pr-2 py-[5px]"
+												type="date"
+												name="event_end_date"
+												value={editEventInfo.intFEventEndDate}
 												required
-												value={editEventInfo.intFStartTime}
 												onChange={e =>
 													setEditEventInfo({
 														...editEventInfo,
-														intFStartTime: e.target.value,
+														intFEventEndDate: e.target.value,
 													})
 												}
 											/>
-											<input
-												className="lg:pr-[8px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] -ml-[6px] lg:ml-0"
-												type="time"
-												name="event_end_time"
-												required
-												value={editEventInfo.intFEndTime}
-												onChange={e =>
-													setEditEventInfo({
-														...editEventInfo,
-														intFEndTime: e.target.value,
-													})
-												}
-											/>
+
 										</div>
 									</div>
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-										Organizer
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-										type="text"
-										placeholder="Organizer"
-										name="event_organizer"
-										required
-										value={editEventInfo.intFOrganizer}
-										onChange={e =>
-											setEditEventInfo({
-												...editEventInfo,
-												intFOrganizer: e.target.value,
-											})
-										}
-									/>
 
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-										Faculty
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white -mb-[30px]"
-										type="text"
-										placeholder="Faculty"
-										name="event_faculty"
-										required
-										value={editEventInfo.intFFaculty}
-										onChange={e =>
-											setEditEventInfo({
-												...editEventInfo,
-												intFFaculty: e.target.value,
-											})
-										}
-									/>
+								</div>
 
-									<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center">
-										<button
-											className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-										// onClick={handleEditEventSubmit}
+								{eventDetails.map((detail, index) => (
+									<div key={index} className="mb-7">
 
-										>
-											Submit
-										</button>
+										{index === 0 && (
+											<div className="mt-1"></div>
+										)}
+										{index > 0 && (
+											<div className="-mt-6"></div>
+										)}
+
+										<div className="flex items-center">
+											<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
+
+											{eventDetails.length > 1 && (
+												<button
+													type="button"
+													onClick={() => handleRemoveEventClick(index)}
+													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[10px] lg:mt-[12.25px]"
+												>
+													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500" />
+												</button>
+											)}
+										</div>
+
+										{detail.event_names.map((event_name, eventNameIndex) => (
+											<div key={eventNameIndex}>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
+													Event Name
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+												</p>
+												<input
+													type="text"
+													placeholder="Event name"
+													value={event_name}
+													onChange={(e) => handleEventNameInputChange(index, eventNameIndex, e.target.value)}
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													required
+												/>
+											</div>
+										))}
+
+										{detail.venues.map((venue, venueIndex) => (
+											<div key={venueIndex}>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+													Venue
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+												</p>
+												<input
+													type="text"
+													placeholder="Venue"
+													value={venue}
+													onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													required
+												/>
+											</div>
+										))}
+
+										{detail.maximum_seats.map((maximum_seats, maximumSeatsIndex) => (
+											<div key={maximumSeatsIndex}>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+													Maximum Seats
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+												</p>
+												<input
+													type="number"
+													placeholder="Maximum seats"
+													value={maximum_seats}
+													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													required
+												/>
+											</div>
+										))}
+
+										<div className="flex flex-col mt-[10px]">
+											<div className="flex">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+													Start Date
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+														*
+													</span>
+												</p>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+													End Date
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+														*
+													</span>
+												</p>
+											</div>
+											<div className="flex">
+												{detail.start_dates.map((start_dates, startDatesIndex) => (
+													<div key={startDatesIndex}>
+														<input
+															className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+															type="date"
+															name="event_start_date"
+
+															onChange={(e) => handleEventStartDatesInputChange(index, startDatesIndex, e.target.value)}
+															required
+														/>
+													</div>
+												))}
+
+												{detail.end_dates.map((end_dates, endDatesIndex) => (
+													<div key={endDatesIndex}>
+														<input
+															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
+															type="date"
+															name="event_end_date"
+
+															onChange={(e) => handleEventEndDatesInputChange(index, endDatesIndex, e.target.value)}
+															required
+														/>
+													</div>
+												))}
+											</div>
+										</div>
+
+										<div className="flex flex-col mt-[10px]">
+											<div className="flex">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
+													Start Time
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+														*
+													</span>
+												</p>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+													End Time
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+														*
+													</span>
+												</p>
+											</div>
+											<div className="flex">
+												{detail.start_times.map((start_times, startTimesIndex) => (
+													<div key={startTimesIndex}>
+														<input
+															className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
+															type="time"
+															name="event_start_time"
+
+															onChange={(e) => handleEventStartTimesInputChange(index, startTimesIndex, e.target.value)}
+															required
+														/>
+													</div>
+												))}
+
+												{detail.end_times.map((end_times, endTimesIndex) => (
+													<div key={endTimesIndex}>
+														<input
+															className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
+															type="time"
+															name="event_end_time"
+
+															onChange={(e) => handleEventEndTimesInputChange(index, endTimesIndex, e.target.value)}
+															required
+														/>
+													</div>
+												))}
+
+											</div>
+										</div>
+
+										{detail.organizers.map((organizers, organizersIndex) => (
+											<div key={organizersIndex}>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+													Organizer
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+												</p>
+												<input
+													type="text"
+													placeholder="Organizer"
+													value={organizers}
+													onChange={(e) => handleEventOrganizersInputChange(index, organizersIndex, e.target.value)}
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													required
+												/>
+											</div>
+										))}
+
+										{detail.faculties.map((faculties, facultiesIndex) => (
+											<div key={facultiesIndex}>
+												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+													Faculty
+													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+												</p>
+												<input
+													type="text"
+													placeholder="Faculty"
+													value={faculties}
+													onChange={(e) => handleEventFacultiesInputChange(index, facultiesIndex, e.target.value)}
+													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+													required
+												/>
+											</div>
+										))}
 									</div>
+								))}
+
+								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
+										Add SubEvent
+									</button>
+
+									<button
+										className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+										onClick={() => {
+											if (
+												mainEvent.intFEventName &&
+												mainEvent.intFEventDescription &&
+												mainEvent.intFEventStartDate &&
+												mainEvent.intFEventEndDate
+											) {
+												setShowModalSuccess(true);
+											}
+										}}
+									>
+										Submit
+									</button>
 								</div>
 							</div>
 						</form>
