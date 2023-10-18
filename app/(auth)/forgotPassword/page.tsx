@@ -47,7 +47,7 @@ export default function ForgotPassword() {
 				</div>
 				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col items-center justify-center">
 					<div className="mt-12 flex flex-col items-center">
-						<div className="w-full flex-1 mt-8">
+						<div className="w-full flex-1 mt-5 lg:mt-8">
 							<Image
 								src={forgot_psw}
 								alt="logo"
@@ -55,10 +55,10 @@ export default function ForgotPassword() {
 								height={280}
 								className="mb-[75px] -mt-[160px] lg:w-[300px] lg:h-[300px] ml-1"
 							/>
-							<h1 className="text-center text-2xl lg:text-3xl font-extrabold -mt-24">
+							<h1 className="text-center text-[22px] lg:text-3xl font-extrabold -mt-24">
 								Reset Password
 							</h1>
-							<p className="mt-4 text-center mb-5 text-sm lg:text-base">
+							<p className="mt-4 text-center mb-5 text-xs lg:text-base">
 								Enter your email to reset your password.
 							</p>
 
@@ -98,7 +98,7 @@ export default function ForgotPassword() {
 								</button>
 							</form>
 
-							<p className="mt-3 text-center mr-1 text-xs lg:text-sm">
+							<p className="mt-3 text-center mr-1 text-[12px] lg:text-sm">
 								Go to your account?
 								<a href="/login" className="font-semibold text-slate-700 ml-1">
 									Sign in
