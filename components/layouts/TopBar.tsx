@@ -41,7 +41,7 @@ const Notification = () => {
 					<DropdownMenuSeparator />
 					<DropdownMenuItem>
 						<div className="flex items-center hover:bg-gray-100 pl-2.5 cursor-pointer hover:text-gray-700">
-							<div className="w-8 h-8">
+							<div className="w-8 h-8 -mt-2 -ml-2 -mr-2">
 								<NotifIcon />
 							</div>
 							<div className="flex flex-col flex-grow pl-2">
@@ -57,7 +57,7 @@ const Notification = () => {
 					</DropdownMenuItem>
 					<DropdownMenuItem>
 						<div className="flex items-center hover:bg-gray-100 pl-2.5 cursor-pointer hover:text-gray-700">
-							<div className="w-8 h-8">
+							<div className="w-8 h-8 -mt-2 -ml-2 -mr-2">
 								<NotifIcon />
 							</div>
 							<div className="flex flex-col flex-grow pl-2">
