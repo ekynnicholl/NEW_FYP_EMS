@@ -9,12 +9,12 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
   if (!isVisible) return null;
 
-  const handleClose = (e: MouseEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLDivElement).id === 'wrapper') onClose();
-  };
+  // const handleClose = (e: MouseEvent<HTMLDivElement>) => {
+  //   if ((e.target as HTMLDivElement).id === 'wrapper') onClose();
+  // };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[999]" id="wrapper" onClick={handleClose}>
+    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[999]" id="wrapper">
       <div className="w-[400px] lg:w-[550px] flex flex-col relative p-10 lg:p-0">
         <div>
           <button className="text-slate-500 text-md md:text-lg lg:text-xl absolute top-1 right-3 hover:font-medium hidden lg:inline" onClick={() => onClose()}>x</button>
