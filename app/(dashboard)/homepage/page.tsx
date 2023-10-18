@@ -939,7 +939,7 @@ export default function Homepage() {
 						</div>
 					</div>
 
-					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5">
+					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden lg:inline">
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
 							onClick={() => setShowModalCreateEvent(true)}>
