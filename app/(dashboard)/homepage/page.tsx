@@ -7,6 +7,7 @@ import CreateEvent_Modal from "@/components/CreateEvent_Modal";
 import ViewEvent_Modal from "@/components/ViewEvent_Modal";
 import EditEvent_Modal from "@/components/EditEvent_Modal";
 import Success_Modal from "@/components/Modal";
+import Success_DeleteSubEventModal from "@/components/Modal";
 import Delete_Event_Confirmation_Modal from "@/components/Modal";
 import { Chart } from 'chart.js/auto';
 
@@ -164,10 +165,9 @@ export default function Homepage() {
 	const [selectedEventImage, setSelectedEventImage] = useState("");
 	const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 
-
-
 	// Success Modal and Confirmation Modal
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
+	const [showModalDeleteSubEventSuccess, setShowModalDeleteSubEventSuccess] = useState(false);
 	const [showModalConfirmation, setShowModalConfirmation] = useState(false);
 
 	// This is for attendance modal,
@@ -184,6 +184,12 @@ export default function Homepage() {
 
 	// This is for checking login and redirecting with router,
 	const router = useRouter();
+
+	const currentAttendees = 20; // Example value, replace with your actual value
+	const maxAttendees = 60; // Example value, replace with your actual value
+
+	const percentage = (currentAttendees / maxAttendees) * 100;
+	const isOverCapacity = percentage > 100;
 
 	// Function to fetch the 6 latest events
 	useEffect(() => {
@@ -808,8 +814,10 @@ export default function Homepage() {
 	// 	setShowModalSuccess(true);
 	// };
 
+
 	const handleOK = () => {
 		setShowModalSuccess(false);
+		setShowModalDeleteSubEventSuccess(false);
 		window.location.reload();
 	};
 
@@ -880,6 +888,25 @@ export default function Homepage() {
 
 		window.location.reload(); // Refresh the page
 	};
+
+	const handleDeleteSubEvent = async (subEventID) => {
+		const { data, error } = await supabase
+			.from("sub_events")
+			.delete()
+			.eq("sub_eventsID", subEventID);
+
+		if (error) {
+			console.error("Error deleting sub-event:", error);
+			return;
+		}
+
+		console.log("Sub-event deleted successfully:", data);
+
+		setShowModalDeleteSubEventSuccess(true);
+
+		// Refresh the page or update the state as needed
+	};
+
 
 	return (
 		<div className="p-5 bg-slate-100 space-y-4">
@@ -1103,7 +1130,7 @@ export default function Homepage() {
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 												</p>
 												<input
-													type="text"
+													type="number"
 													placeholder="Maximum seats"
 													value={maximum_seats}
 													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
@@ -1245,16 +1272,16 @@ export default function Homepage() {
 
 									<button
 										className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-									onClick={() => {
-										if (
-											mainEvent.intFEventName &&
-											mainEvent.intFEventDescription &&
-											mainEvent.intFEventStartDate &&
-											mainEvent.intFEventEndDate
-										) {
-											setShowModalSuccess(true);
-										}
-									}}
+										onClick={() => {
+											if (
+												mainEvent.intFEventName &&
+												mainEvent.intFEventDescription &&
+												mainEvent.intFEventStartDate &&
+												mainEvent.intFEventEndDate
+											) {
+												setShowModalSuccess(true);
+											}
+										}}
 									>
 										Submit
 									</button>
@@ -1277,7 +1304,7 @@ export default function Homepage() {
 								<h3 className="text-[16px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[180px]">
 									About this event
 								</h3>
-								<p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[10px]">
+								<p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[15px]">
 									{selectedEvent.intFEventDescription}
 								</p>
 
@@ -1323,9 +1350,23 @@ export default function Homepage() {
 									.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
 									.map((subEvent, index) => (
 										<div key={index}>
-											<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
 
-											<div className="flex items-center mt-4">
+											{index === 0 && (
+												<div className="-mt-4"></div>
+											)}
+
+											<div className="flex items-center">
+												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
+												<button
+													type="button"
+													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
+													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[10px] lg:mt-[12.25px]"
+												>
+													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500" />
+												</button>
+											</div>
+
+											<div className="flex items-center mt-1">
 												<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
 												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[0.5px]">
 													{formatDate(subEvent.sub_eventsStartDate)}
@@ -1361,6 +1402,7 @@ export default function Homepage() {
 												</p>
 											</div>
 										</div>
+
 									))}
 
 								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white">
@@ -1734,6 +1776,33 @@ export default function Homepage() {
 						</div>
 					</Success_Modal>
 
+					<Success_DeleteSubEventModal
+						isVisible={showModalDeleteSubEventSuccess}
+						onClose={() => setShowModalDeleteSubEventSuccess(false)}>
+						<div className="p-4">
+							<Image
+								src="/images/tick_mark.png"
+								alt="tick_mark"
+								width={200}
+								height={250}
+								className="-mt-[39px] lg:-mt-[45px] ml-[121.5px]"
+							/>
+							<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+								Success!
+							</h3>
+							<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+								Sub Event has been successfully deleted!
+							</p>
+							<div className="text-center ml-4">
+								<button
+									className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5 focus:shadow-outline focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									onClick={handleOK}>
+									OK
+								</button>
+							</div>
+						</div>
+					</Success_DeleteSubEventModal>
+
 					<Delete_Event_Confirmation_Modal
 						isVisible={showModalConfirmation}
 						onClose={() => setShowModalConfirmation(false)}>
@@ -1781,6 +1850,8 @@ export default function Homepage() {
 								onClick={() => {
 									const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
+									console.log(filteredSubEvent);
+
 									if (filteredSubEvent) {
 										openModal(
 											"https://source.unsplash.com/600x300?party",
@@ -1800,6 +1871,26 @@ export default function Homepage() {
 											filteredSubEvent.sub_eventsMaxSeats,
 											filteredSubEvent.sub_eventsOrganizer,
 											filteredSubEvent.sub_eventsFaculty
+										);
+									} else {
+										openModal(
+											"https://source.unsplash.com/600x300?party",
+											latestEvent[0]?.intFID,
+											latestEvent[0]?.intFEventName,
+											latestEvent[0]?.intFEventDescription,
+											latestEvent[0]?.intFEventStartDate,
+											latestEvent[0]?.intFEventEndDate,
+											"default_sub_eventsID",
+											"default_sub_eventsMainID",
+											"default_sub_eventsName",
+											"default_sub_eventsVenue",
+											"default_sub_eventsStartDate",
+											"default_sub_eventsEndDate",
+											"default_sub_eventsStartTime",
+											"default_sub_eventsEndTime",
+											"default_sub_eventsMaxSeats",
+											"default_sub_eventsOrganizer",
+											"default_sub_eventsFaculty"
 										);
 									}
 								}}>
@@ -1865,17 +1956,16 @@ export default function Homepage() {
 													<div key={index}>
 														<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
 															<div
-																className="h-full bg-orange-300 rounded-full"
+																className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300"
+																	}`}
 																style={{
-																	width: `${(20 / 60) * 100}%`,
+																	width: `${Math.min(percentage, 100)}%`,
 																}}
 															></div>
 														</div>
 														<div className="text-xs text-gray-600 mt-2 flex justify-between">
-															<span className="ml-[2px]">Current Attendees: </span>
-															<span className="mr-[2px]">
-																Max Attendees: {subEvent.sub_eventsMaxSeats}
-															</span>
+															<span className="ml-[2px]">Current Attendees: {currentAttendees}</span>
+															<span className="mr-[2px]">Max Attendees: {maxAttendees}</span>
 														</div>
 													</div>
 												))
@@ -1934,6 +2024,26 @@ export default function Homepage() {
 											filteredSubEvent.sub_eventsMaxSeats,
 											filteredSubEvent.sub_eventsOrganizer,
 											filteredSubEvent.sub_eventsFaculty
+										);
+									} else {
+										openModal(
+											"https://source.unsplash.com/600x300?birthday",
+											latestEvent[0]?.intFID,
+											latestEvent[0]?.intFEventName,
+											latestEvent[0]?.intFEventDescription,
+											latestEvent[0]?.intFEventStartDate,
+											latestEvent[0]?.intFEventEndDate,
+											"default_sub_eventsID",
+											"default_sub_eventsMainID",
+											"default_sub_eventsName",
+											"default_sub_eventsVenue",
+											"default_sub_eventsStartDate",
+											"default_sub_eventsEndDate",
+											"default_sub_eventsStartTime",
+											"default_sub_eventsEndTime",
+											"default_sub_eventsMaxSeats",
+											"default_sub_eventsOrganizer",
+											"default_sub_eventsFaculty"
 										);
 									}
 								}}>
@@ -2069,6 +2179,26 @@ export default function Homepage() {
 											filteredSubEvent.sub_eventsOrganizer,
 											filteredSubEvent.sub_eventsFaculty
 										);
+									} else {
+										openModal(
+											"https://source.unsplash.com/600x300?new+year",
+											latestEvent[2]?.intFID,
+											latestEvent[2]?.intFEventName,
+											latestEvent[2]?.intFEventDescription,
+											latestEvent[2]?.intFEventStartDate,
+											latestEvent[2]?.intFEventEndDate,
+											"default_sub_eventsID",
+											"default_sub_eventsMainID",
+											"default_sub_eventsName",
+											"default_sub_eventsVenue",
+											"default_sub_eventsStartDate",
+											"default_sub_eventsEndDate",
+											"default_sub_eventsStartTime",
+											"default_sub_eventsEndTime",
+											"default_sub_eventsMaxSeats",
+											"default_sub_eventsOrganizer",
+											"default_sub_eventsFaculty"
+										);
 									}
 								}}>
 								<div className="w-full h-[300px] mb-4 relative">
@@ -2202,6 +2332,26 @@ export default function Homepage() {
 											filteredSubEvent.sub_eventsMaxSeats,
 											filteredSubEvent.sub_eventsOrganizer,
 											filteredSubEvent.sub_eventsFaculty
+										);
+									} else {
+										openModal(
+											"https://source.unsplash.com/600x300?events",
+											latestEvent[3]?.intFID,
+											latestEvent[3]?.intFEventName,
+											latestEvent[3]?.intFEventDescription,
+											latestEvent[3]?.intFEventStartDate,
+											latestEvent[3]?.intFEventEndDate,
+											"default_sub_eventsID",
+											"default_sub_eventsMainID",
+											"default_sub_eventsName",
+											"default_sub_eventsVenue",
+											"default_sub_eventsStartDate",
+											"default_sub_eventsEndDate",
+											"default_sub_eventsStartTime",
+											"default_sub_eventsEndTime",
+											"default_sub_eventsMaxSeats",
+											"default_sub_eventsOrganizer",
+											"default_sub_eventsFaculty"
 										);
 									}
 								}}>
@@ -2337,6 +2487,26 @@ export default function Homepage() {
 											filteredSubEvent.sub_eventsOrganizer,
 											filteredSubEvent.sub_eventsFaculty
 										);
+									} else {
+										openModal(
+											"https://source.unsplash.com/600x300?balloon",
+											latestEvent[4]?.intFID,
+											latestEvent[4]?.intFEventName,
+											latestEvent[4]?.intFEventDescription,
+											latestEvent[4]?.intFEventStartDate,
+											latestEvent[4]?.intFEventEndDate,
+											"default_sub_eventsID",
+											"default_sub_eventsMainID",
+											"default_sub_eventsName",
+											"default_sub_eventsVenue",
+											"default_sub_eventsStartDate",
+											"default_sub_eventsEndDate",
+											"default_sub_eventsStartTime",
+											"default_sub_eventsEndTime",
+											"default_sub_eventsMaxSeats",
+											"default_sub_eventsOrganizer",
+											"default_sub_eventsFaculty"
+										);
 									}
 								}}>
 								<div className="w-full h-[300px] mb-4 relative">
@@ -2470,6 +2640,26 @@ export default function Homepage() {
 											filteredSubEvent.sub_eventsMaxSeats,
 											filteredSubEvent.sub_eventsOrganizer,
 											filteredSubEvent.sub_eventsFaculty
+										);
+									} else {
+										openModal(
+											"https://source.unsplash.com/600x300?beers",
+											latestEvent[5]?.intFID,
+											latestEvent[5]?.intFEventName,
+											latestEvent[5]?.intFEventDescription,
+											latestEvent[5]?.intFEventStartDate,
+											latestEvent[5]?.intFEventEndDate,
+											"default_sub_eventsID",
+											"default_sub_eventsMainID",
+											"default_sub_eventsName",
+											"default_sub_eventsVenue",
+											"default_sub_eventsStartDate",
+											"default_sub_eventsEndDate",
+											"default_sub_eventsStartTime",
+											"default_sub_eventsEndTime",
+											"default_sub_eventsMaxSeats",
+											"default_sub_eventsOrganizer",
+											"default_sub_eventsFaculty"
 										);
 									}
 								}}>
