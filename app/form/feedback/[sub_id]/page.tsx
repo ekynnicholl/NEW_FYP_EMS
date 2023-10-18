@@ -71,7 +71,7 @@ export default function AttendanceForm() {
 		};
 
 		fetchEventData();
-	}, [sub_id, supabase]);
+	}, [sub_id, supabase, router]);
 
 	// Handle data submission
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

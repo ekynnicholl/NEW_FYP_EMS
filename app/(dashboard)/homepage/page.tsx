@@ -107,7 +107,7 @@ type AttendanceDataType = {
 };
 
 type subEvents = {
-	// sub_eventsID: string;
+	sub_eventsID: string;
 	sub_eventsMainID: string;
 	sub_eventsName: string;
 	sub_eventsVenue: string;
@@ -347,8 +347,8 @@ export default function Homepage() {
 		checkIsUserLoggedIn();
 	})
 
+	// COMMENT HERE
 	// This is for attendance modal,
-
 	const openAttendanceModal = async (event_id: string) => {
 		try {
 			// Fetch sub-events for the given event
@@ -363,7 +363,7 @@ export default function Homepage() {
 			}
 			setAttendanceMainEventID(event_id);
 			fetchAttendanceList(event_id)
-			setSubEvents(subEvents);
+			// setSubEvents(subEvents);
 
 			// Extract the subEventID values from the fetched sub_events
 			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
@@ -381,18 +381,18 @@ export default function Homepage() {
 
 			// Set the attendance data for the main event
 			setAttendanceData(attendanceForms);
-			setSelectedEvent({
-				intFID: event_id,
-				intFName: "",
-				intFDescription: "",
-				intFStartDate: "",
-				intFStartTime: "",
-				intFEndTime: "",
-				intFVenue: "",
-				intFMaximumSeats: "",
-				intFOrganizer: "",
-				intFFaculty: "",
-			});
+			// setSelectedEvent({
+			// 	intFID: event_id,
+			// 	intFEventName: "",
+			// 	intFEventDescription: "",
+			// 	intFEventStartDate: "",
+			// 	intFEventStartTime: "",
+			// 	intFEventEndTime: "",
+			// 	intFEventVenue: "",
+			// 	intFEventMaximumSeats: "",
+			// 	intFEventOrganizer: "",
+			// 	intFEventFaculty: "",
+			// });
 
 			console.log("Attendance forms data:", attendanceForms);
 		} catch (error) {
@@ -403,47 +403,47 @@ export default function Homepage() {
 		setShowAttendanceModal(true);
 	};
 
-	const handleSubEventClick = async (subEvent: subEvents) => {
-		try {
-			// Fetch attendance data for the selected sub-event
-			setSelectedSubEvent(subEvent.sub_eventsID);
-			const { data: attendanceForms, error: formsError } = await supabase
-				.from("attendance_forms")
-				.select()
-				.eq("attFSubEventID", subEvent.sub_eventsID);
+	// const handleSubEventClick = async (subEvent: subEvents) => {
+	// 	try {
+	// 		// Fetch attendance data for the selected sub-event
+	// 		setSelectedSubEvent(subEvent.sub_eventsID);
+	// 		const { data: attendanceForms, error: formsError } = await supabase
+	// 			.from("attendance_forms")
+	// 			.select()
+	// 			.eq("attFSubEventID", subEvent.sub_eventsID);
 
-			if (formsError) {
-				console.error("Error fetching attendance forms:", formsError);
-				return;
-			}
+	// 		if (formsError) {
+	// 			console.error("Error fetching attendance forms:", formsError);
+	// 			return;
+	// 		}
 
-			// Set the attendance data for the selected sub-event
-			setAttendanceData(attendanceForms);
+	// 		// Set the attendance data for the selected sub-event
+	// 		setAttendanceData(attendanceForms);
 
-			// Calculate labels (faculty/unit) and label data (counts)
-			const facultyCounts: { [key: string]: number } = {};
+	// 		// Calculate labels (faculty/unit) and label data (counts)
+	// 		const facultyCounts: { [key: string]: number } = {};
 
-			attendanceForms.forEach(attendanceItem => {
-				const faculty = attendanceItem.attFormsFacultyUnit;
-				if (facultyCounts[faculty]) {
-					facultyCounts[faculty]++;
-				} else {
-					facultyCounts[faculty] = 1;
-				}
-			});
+	// 		attendanceForms.forEach(attendanceItem => {
+	// 			const faculty = attendanceItem.attFormsFacultyUnit;
+	// 			if (facultyCounts[faculty]) {
+	// 				facultyCounts[faculty]++;
+	// 			} else {
+	// 				facultyCounts[faculty] = 1;
+	// 			}
+	// 		});
 
-			const facultyLabels = Object.keys(facultyCounts);
-			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+	// 		const facultyLabels = Object.keys(facultyCounts);
+	// 		const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
-			const canvas = chartContainer.current;
-			createPieChart(canvas, facultyLabels, facultyData);
+	// 		const canvas = chartContainer.current;
+	// 		createPieChart(canvas, facultyLabels, facultyData);
 
-			console.log("Attendance forms data for selected sub-event:", attendanceForms);
-		} catch (error) {
-			const typedError = error as Error;
-			console.error("Error:", typedError.message);
-		}
-	};
+	// 		console.log("Attendance forms data for selected sub-event:", attendanceForms);
+	// 	} catch (error) {
+	// 		const typedError = error as Error;
+	// 		console.error("Error:", typedError.message);
+	// 	}
+	// };
 
 	const fetchAttendanceList = async (event_id: string) => {
 		const { data: subEvents, error: subEventsError } = await supabase
@@ -697,8 +697,8 @@ export default function Homepage() {
 			})
 			.select();
 
-		console.log("DATAWEEEEEEE" + data[0].intFID);
-		const generatedEventID = data[0].intFID;
+		console.log("DATAWEEEEEEE" + data![0].intFID);
+		const generatedEventID = data![0].intFID;
 
 		// // This attendance list will be created x times based on how many days (sub-events spread out across multiple days), x the event has.
 		// if (error) {
@@ -745,12 +745,48 @@ export default function Homepage() {
 		// SUB EVENTS
 
 		// THIS IS THE OLD ONE WITH RED RED
+		// for (const [index, detail] of eventDetails.entries()) {
+		// 	for (let i = 0; i < detail.venues.length; i++) {
+		// 		console.log("Index: " + index)
+		// 		console.log("Length" + detail.venues.length)
 
-		for (const [index, detail] of eventDetails.entries()) {
+		// 		const sub_eventsName = detail.event_names[i];
+		// 		const sub_eventsVenue = detail.venues[i];
+		// 		const sub_eventsStartDate = detail.start_dates[i];
+		// 		const sub_eventsEndDate = detail.end_dates[i];
+		// 		const sub_eventsStartTime = detail.start_times[i];
+		// 		const sub_eventsEndTime = detail.end_times[i];
+		// 		const sub_eventsMaxSeats = detail.maximum_seats[i];
+		// 		const sub_eventsOrganizer = detail.organizers[i];
+		// 		const sub_eventsFaculty = detail.faculties[i];
+
+		// 		const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
+		// 			sub_eventsMainID: generatedEventID,
+		// 			sub_eventsName,
+		// 			sub_eventsVenue,
+		// 			sub_eventsStartDate,
+		// 			sub_eventsEndDate,
+		// 			sub_eventsStartTime,
+		// 			sub_eventsEndTime,
+		// 			sub_eventsMaxSeats,
+		// 			sub_eventsOrganizer,
+		// 			sub_eventsFaculty,
+		// 		});
+
+		// 		if (subEventError) {
+		// 			console.error(subEventError);
+		// 			return;
+		// 		}
+
+		// 		if (subEventData && (subEventData as any[]).length > 0) {
+		// 			setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
+		// 		}
+		// 	}
+		// }
+
+		for (let index = 0; index < eventDetails.length; index++) {
+			const detail = eventDetails[index];
 			for (let i = 0; i < detail.venues.length; i++) {
-				console.log("Index: " + index)
-				console.log("Length" + detail.venues.length)
-
 				const sub_eventsName = detail.event_names[i];
 				const sub_eventsVenue = detail.venues[i];
 				const sub_eventsStartDate = detail.start_dates[i];
@@ -911,6 +947,7 @@ export default function Homepage() {
 		console.log(data);
 
 		setSubEventzs([...subEventzs, {
+			sub_eventsID: subEventz.sub_eventsID,
 			sub_eventsMainID: intFID,
 			sub_eventsName: subEventz.sub_eventsName,
 			sub_eventsVenue: subEventz.sub_eventsVenue,
@@ -1553,7 +1590,7 @@ export default function Homepage() {
 											<div className="flex items-center mt-[11px] lg:mt-[14px]">
 												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px]" />
 												<p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0">
-													{subEvent.numberOfAttendees} Attendees
+													Attendees
 												</p>
 											</div>
 											<div className="flex items-center mt-[15px] lg:mb-0 mb-[3px]">
@@ -1634,7 +1671,8 @@ export default function Homepage() {
 											<button
 												onClick={() => {
 													setIsAllButtonActive(false);
-													handleSubEventClick(subEvent);
+													// COMMENT HERE
+													// handleSubEventClick(subEvent);
 												}}
 											>
 												{subEvent.sub_eventsName}
@@ -3536,198 +3574,7 @@ export default function Homepage() {
 					</div>
 				) : (
 					<div className="w-full bg-slate-100 flex pb-28">
-						<div className="w-full pr-6 bg-slate-100">
-							<div className="w-full bg-slate-100">
-								<div className="ml-1 font-bold text-lg">
-									Today's Event(s)
-								</div>
-								<div className="border-t border-gray-300 my-4 ml-1"></div>
-								{todayEvents.length === 0 ? (
-									<p className="font-bold ml-5 mb-5">No events today...</p>
-								) : (
-									todayEvents.map((event) => (
-										<div
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
-											onClick={() => {
-												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
-												if (filteredSubEvent) {
-													openModal(
-														"https://source.unsplash.com/600x300?party",
-														event.intFID,
-														event.intFEventName,
-														event.intFEventDescription,
-														event.intFEventStartDate,
-														event.intFEventEndDate,
-														filteredSubEvent.sub_eventsID,
-														filteredSubEvent.sub_eventsMainID,
-														filteredSubEvent.sub_eventsName,
-														filteredSubEvent.sub_eventsVenue,
-														filteredSubEvent.sub_eventsStartDate,
-														filteredSubEvent.sub_eventsEndDate,
-														filteredSubEvent.sub_eventsStartTime,
-														filteredSubEvent.sub_eventsEndTime,
-														filteredSubEvent.sub_eventsMaxSeats,
-														filteredSubEvent.sub_eventsOrganizer,
-														filteredSubEvent.sub_eventsFaculty
-													);
-												}
-											}}>
-											<div className="ml-2 mr-2">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
-												<div className="border-t border-gray-300 my-4"></div>
-												<p className="text-gray-500">{event.intFEventDescription}</p>
-												<div className="flex items-center mt-4">
-													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-													<p className="text-slate-600 text-sm">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
-												</div>
-												{/* <div className="flex items-center mt-3">
-											<FiClock className="text-2xl mr-2 text-slate-800" />
-											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
-										</div> */}
-												{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
-										</div> */}
-												<div className="flex justify-between items-end mt-5">
-													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(latestEvent[1].intFID); }}>Attendance List</div>
-													<span className="relative px-3 py-[5px] font-semibold text-green-900 text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-														<span className="relative mt-[1px] leading-3 tracking-wider">Today</span>
-													</span>
-												</div>
-											</div>
-										</div>
-									))
-								)}
-
-								<div className="ml-1 font-bold text-lg">
-									Tomorrow's Event(s)
-								</div>
-								<div className="border-t border-gray-300 my-4 ml-1"></div>
-								{tomorrowEvents.length === 0 ? (
-									<p className="font-bold ml-5 mb-5">No events tomorrow...</p>
-								) : (
-									tomorrowEvents.map((event) => (
-										<div
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
-											onClick={() => {
-												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
-												if (filteredSubEvent) {
-													openModal(
-														"https://source.unsplash.com/600x300?party",
-														event.intFID,
-														event.intFEventName,
-														event.intFEventDescription,
-														event.intFEventStartDate,
-														event.intFEventEndDate,
-														filteredSubEvent.sub_eventsID,
-														filteredSubEvent.sub_eventsMainID,
-														filteredSubEvent.sub_eventsName,
-														filteredSubEvent.sub_eventsVenue,
-														filteredSubEvent.sub_eventsStartDate,
-														filteredSubEvent.sub_eventsEndDate,
-														filteredSubEvent.sub_eventsStartTime,
-														filteredSubEvent.sub_eventsEndTime,
-														filteredSubEvent.sub_eventsMaxSeats,
-														filteredSubEvent.sub_eventsOrganizer,
-														filteredSubEvent.sub_eventsFaculty
-													);
-												}
-											}}>
-											<div className="ml-2 mr-2">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
-												<div className="border-t border-gray-300 my-4"></div>
-												<p className="text-gray-500">{event.intFEventDescription}</p>
-												<div className="flex items-center mt-4">
-													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-													<p className="text-slate-600 text-sm">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
-												</div>
-												{/* <div className="flex items-center mt-3">
-											<FiClock className="text-2xl mr-2 text-slate-800" />
-											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
-										</div> */}
-												{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
-										</div> */}
-												<div className="flex justify-between items-end mt-5">
-													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(latestEvent[1].intFID); }}>Attendance List</div>
-													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-yellow-200 opacity-50 rounded-full"></span>
-														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-														<span className="relative mt-[1px] leading-3 tracking-wider">Tomorrow</span>
-													</span>
-												</div>
-											</div>
-										</div>
-									))
-								)}
-
-								< div className="ml-1 font-bold text-lg">
-									Upcoming Event(s)
-								</div>
-								<div className="border-t border-gray-300 my-4 ml-1"></div>
-								{upcomingEvents.length === 0 ? (
-									<p className="font-bold ml-5 mb-5">No upcoming events...</p>
-								) : (
-									upcomingEvents.map((event) => (
-										<div
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
-											onClick={() => {
-												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
-												if (filteredSubEvent) {
-													openModal(
-														"https://source.unsplash.com/600x300?party",
-														event.intFID,
-														event.intFEventName,
-														event.intFEventDescription,
-														event.intFEventStartDate,
-														event.intFEventEndDate,
-														filteredSubEvent.sub_eventsID,
-														filteredSubEvent.sub_eventsMainID,
-														filteredSubEvent.sub_eventsName,
-														filteredSubEvent.sub_eventsVenue,
-														filteredSubEvent.sub_eventsStartDate,
-														filteredSubEvent.sub_eventsEndDate,
-														filteredSubEvent.sub_eventsStartTime,
-														filteredSubEvent.sub_eventsEndTime,
-														filteredSubEvent.sub_eventsMaxSeats,
-														filteredSubEvent.sub_eventsOrganizer,
-														filteredSubEvent.sub_eventsFaculty
-													);
-												}
-											}}>
-											<div className="ml-2 mr-2">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
-												<div className="border-t border-gray-300 my-4"></div>
-												<p className="text-gray-500">{event.intFEventDescription}</p>
-												<div className="flex items-center mt-4">
-													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-													<p className="text-slate-600 text-sm">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
-												</div>
-												{/* <div className="flex items-center mt-3">
-											<FiClock className="text-2xl mr-2 text-slate-800" />
-											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
-										</div> */}
-												{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
-											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
-										</div> */}
-												<div className="flex justify-between items-end mt-5">
-													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(latestEvent[1].intFID); }}>Attendance List</div>
-													<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-														<span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
-													</span>
-												</div>
-											</div>
-										</div>
-									))
-								)}
-							</div>
-						</div>
+						{/* insert the grid here */}
 					</div>
 				)
 			}
