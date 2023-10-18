@@ -817,22 +817,69 @@ export default function Homepage() {
 		setShowModalConfirmation(false);
 	};
 
-	// TODO: TEST WHETHER DELETE EVENT WORKS, INTFID CHANGED FROM NUMBER TO STRING.
-	// const handleDeleteEvent = async (intFID: string) => {
-	// 	const { data, error } = await supabase
-	// 		.from("internal_events")
-	// 		.delete()
-	// 		.eq("intFID", intFID);
+	const handleDeleteEvent = async (intFID) => {
+		// Step 1: Retrieve associated sub-events
+		const { data: subEvents, error: subEventsError } = await supabase
+			.from("sub_events")
+			.select("*")
+			.eq("sub_eventsMainID", intFID);
 
-	// 	if (error) {
-	// 		console.error("Error deleting event:", error);
-	// 		return;
-	// 	}
+		if (subEventsError) {
+			console.error("Error fetching sub-events:", subEventsError);
+			return;
+		}
 
-	// 	console.log("Event deleted successfully:", data);
+		// Step 2: Delete attendance forms associated with the sub-event
+		const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
+		const { error: deleteAttendanceFormsError } = await supabase
+			.from("attendance_forms")
+			.delete()
+			.in("attFSubEventID", subEventIDs);
 
-	// 	window.location.reload();
-	// };
+		if (deleteAttendanceFormsError) {
+			console.error("Error deleting attendance forms:", deleteAttendanceFormsError);
+			return;
+		}
+
+		// Step 3: Delete feedback forms associated with the sub-event
+		const { error: deleteFeedbackFormsError } = await supabase
+			.from("feedback_forms")
+			.delete()
+			.in("feedbackSubEventID", subEventIDs);
+
+		if (deleteFeedbackFormsError) {
+			console.error("Error deleting feedback forms:", deleteFeedbackFormsError);
+			return;
+		}
+
+		// Step 4: Delete sub-events
+		if (subEventIDs.length > 0) {
+			const { error: deleteSubEventsError } = await supabase
+				.from("sub_events")
+				.delete()
+				.in("sub_eventsID", subEventIDs);
+
+			if (deleteSubEventsError) {
+				console.error("Error deleting sub-events:", deleteSubEventsError);
+				return;
+			}
+		}
+
+		// Step 5: Delete main event
+		const { error: deleteMainEventError } = await supabase
+			.from("internal_events")
+			.delete()
+			.eq("intFID", intFID);
+
+		if (deleteMainEventError) {
+			console.error("Error deleting main event:", deleteMainEventError);
+			return;
+		}
+
+		console.log("Event and associated sub-events deleted successfully.");
+
+		window.location.reload(); // Refresh the page
+	};
 
 	return (
 		<div className="p-5 bg-slate-100 space-y-4">
@@ -1198,16 +1245,16 @@ export default function Homepage() {
 
 									<button
 										className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-									// onClick={() => {
-									// 	if (
-									// 		mainEvent.intFEventName &&
-									// 		mainEvent.intFEventDescription &&
-									// 		mainEvent.intFEventStartDate &&
-									// 		mainEvent.intFEventEndDate
-									// 	) {
-									// 		setShowModalSuccess(true);
-									// 	}
-									// }}
+									onClick={() => {
+										if (
+											mainEvent.intFEventName &&
+											mainEvent.intFEventDescription &&
+											mainEvent.intFEventStartDate &&
+											mainEvent.intFEventEndDate
+										) {
+											setShowModalSuccess(true);
+										}
+									}}
 									>
 										Submit
 									</button>
@@ -1721,6 +1768,7 @@ export default function Homepage() {
 							</div>
 						</div>
 					</Delete_Event_Confirmation_Modal>
+
 				</div>
 			</div>
 
