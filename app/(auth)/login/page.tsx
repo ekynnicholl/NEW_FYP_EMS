@@ -140,7 +140,7 @@ export default function Login() {
 						}}></div>
 				</div>
 
-				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-10 lg:-mt-4">
+				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-13 lg:-mt-4">
 					<Image src={swin_logo} alt="logo" width={260} height={280} className="mb-5 lg:w-[280px] mx-auto lg:hidden" />
 					<h1 className="text-2xl lg:text-3xl font-extrabold mb-6 lg:mb-8 text-center">
 						Sign In
