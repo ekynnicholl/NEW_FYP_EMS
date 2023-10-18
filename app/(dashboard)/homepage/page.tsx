@@ -1481,7 +1481,7 @@ export default function Homepage() {
 							<img
 								src={selectedEventImage}
 								alt="Random"
-								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 hover:rotate-1 scale-[1.063] lg:scale-[1.070] transition duration-300 shadow-sm"
+								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm"
 							/>
 
 							<div className="ml-[7px] lg:ml-[9px]">
