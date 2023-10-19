@@ -40,8 +40,12 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
             endDate = format(endOfMonth(new Date()), "yyyy-MM-dd")
         }
 
-        const formattedStartDate = startDate ? format(new Date(startDate), "yyyy-MM-dd HH:mm:ss") : null;
-        const formattedEndDate = endDate ? format(new Date(endDate), "yyyy-MM-dd HH:mm:ss") : null;
+        let formattedStartDate = startDate ? format(new Date(startDate), "yyyy-MM-dd HH:mm:ss") : null;
+        let formattedEndDate = endDate ? format(new Date(endDate), "yyyy-MM-dd HH:mm:ss") : null;
+
+        if (formattedStartDate === formattedEndDate) {
+            formattedEndDate = format(new Date(endDate), "yyyy-MM-dd 23:59:59");
+        }
 
         const { data, error } = await supabase
             .from("attendance_forms")

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DoubleRightArrow from '@/components/icons/DoubleRightArrow';
 import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
@@ -32,6 +32,10 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
             setCurrentPage(page);
         }
     };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [itemsPerPage]);
 
     const pageCount = Math.ceil(attendanceData.length / itemsPerPage);
 
@@ -77,7 +81,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
                 <button
                     className="opacity-70"
                     onClick={() => handlePageChange(1)}
-                    disabled={currentPage === pageCount}
+                    disabled={currentPage === 1}
                 >
                     <DoubleLeftArrow />
                 </button>

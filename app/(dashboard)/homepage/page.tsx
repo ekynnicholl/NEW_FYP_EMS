@@ -3572,7 +3572,7 @@ export default function Homepage() {
 						<div className="w-full pr-6 bg-slate-100">
 							<div className="w-full bg-slate-100">
 								<div className="ml-1 font-bold text-lg">
-									Today's Event(s)
+									Today&rsquo;s Event(s)
 								</div>
 								<div className="border-t border-gray-300 my-4 ml-1"></div>
 								{todayEvents.length === 0 ? (
@@ -3580,6 +3580,7 @@ export default function Homepage() {
 								) : (
 									todayEvents.map((event) => (
 										<div
+											key={event.intFID}
 											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
@@ -3635,7 +3636,7 @@ export default function Homepage() {
 								)}
 
 								<div className="ml-1 font-bold text-lg">
-									Tomorrow's Event(s)
+									Tomorrow&rsquo;s Event(s)
 								</div>
 								<div className="border-t border-gray-300 my-4 ml-1"></div>
 								{tomorrowEvents.length === 0 ? (
@@ -3643,6 +3644,7 @@ export default function Homepage() {
 								) : (
 									tomorrowEvents.map((event) => (
 										<div
+											key={event.intFID}
 											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
@@ -3698,7 +3700,7 @@ export default function Homepage() {
 									))
 								)}
 
-								< div className="ml-1 font-bold text-lg">
+								<div className="ml-1 font-bold text-lg">
 									Upcoming Event(s)
 								</div>
 								<div className="border-t border-gray-300 my-4 ml-1"></div>
@@ -3707,6 +3709,7 @@ export default function Homepage() {
 								) : (
 									upcomingEvents.map((event) => (
 										<div
+											key={event.intFID}
 											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
