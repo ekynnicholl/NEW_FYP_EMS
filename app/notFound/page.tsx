@@ -4,7 +4,7 @@ import image_404 from "@/public/images/404.png";
 
 const PageNotFound = () => {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900 p-5 -mt-9">
+    <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900 p-5 -mt-10 lg:-mt-5">
       <img src={image_404.src} alt="" className="w-[300px] lg:w-[420px]"/>
       <div className="max-w-[546px] mx-auto w-full mt-6">
         <p className="text-slate-900 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">Page not found</p>
