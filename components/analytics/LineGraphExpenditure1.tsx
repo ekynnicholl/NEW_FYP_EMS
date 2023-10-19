@@ -10,6 +10,7 @@ const LineGraph = () => {
     const supabase = createClientComponentClient();
 
     const [monthlyData, setMonthlyData] = useState<number[]>([]);
+    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
 
     useEffect(() => {
         async function fetchData() {
@@ -93,8 +94,20 @@ const LineGraph = () => {
         fetchData();
     }, []);
 
+    // const handleYearChange = (e) => {
+    //     setSelectedYear(parseInt(e.target.value, 10));
+    // };
+
     return (
-        <canvas ref={chartRef} width="400" height="400"></canvas>
+        <div>
+            {/* <h1>Expenditures Spent per Month</h1>
+            <select value={selectedYear} onChange={handleYearChange}>
+                <option value={2022}>2022</option>
+                <option value={2023}>2023</option>
+            </select> */}
+
+            <canvas ref={chartRef} width="400" height="400"></canvas>
+        </div>
     );
 };
 
