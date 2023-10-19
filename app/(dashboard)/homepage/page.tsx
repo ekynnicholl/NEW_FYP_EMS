@@ -1664,7 +1664,7 @@ export default function Homepage() {
 									>
 										All
 									</button>
-									{subEvents.map((subEvent) => (
+									{subEventsForAttendance.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
 											className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
