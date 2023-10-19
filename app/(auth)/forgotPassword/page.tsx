@@ -55,7 +55,7 @@ export default function ForgotPassword() {
 								height={280}
 								className="mb-[75px] -mt-[160px] lg:w-[300px] lg:h-[300px] ml-1"
 							/>
-							<h1 className="text-center text-[22px] lg:text-3xl font-extrabold -mt-24">
+							<h1 className="text-center text-[22px] lg:text-3xl font-extrabold -mt-[104px]">
 								Reset Password
 							</h1>
 							<p className="mt-4 text-center mb-5 text-xs lg:text-base">
