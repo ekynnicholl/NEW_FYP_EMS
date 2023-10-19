@@ -784,7 +784,7 @@ export default function Home() {
                                                             );
                                                         }
                                                     }}>
-                                                            View Details
+                                                            View sub-Event Details
                                                         </p>
                                                         <p className="text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-[78px] hover:text-slate-800" 
                                                         onClick={() => {openAttendanceModal(event.intFID);}}>
