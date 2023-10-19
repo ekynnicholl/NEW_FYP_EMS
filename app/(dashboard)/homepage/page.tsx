@@ -201,6 +201,7 @@ export default function Homepage() {
 	const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
 	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
 	const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
+	const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
 
 	// This is for the pie chart,
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -350,20 +351,22 @@ export default function Homepage() {
 	// COMMENT HERE
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
+		console.log("testing" + event_id);
 		try {
 			// Fetch sub-events for the given event
 			const { data: subEvents, error: subEventsError } = await supabase
 				.from("sub_events")
-				.select("sub_eventsID, sub_eventsName")
+				.select()
 				.eq("sub_eventsMainID", event_id);
 
 			if (subEventsError) {
 				console.error("Error fetching sub_events:", subEventsError);
 				return;
 			}
+			// Set the main ID for the 
 			setAttendanceMainEventID(event_id);
 			fetchAttendanceList(event_id)
-			// setSubEvents(subEvents);
+			setSubEventsForAttendance(subEvents);
 
 			// Extract the subEventID values from the fetched sub_events
 			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
@@ -393,6 +396,8 @@ export default function Homepage() {
 			// 	intFEventOrganizer: "",
 			// 	intFEventFaculty: "",
 			// });
+			// Fetch the attendance list for that event,
+			fetchAttendanceList(event_id);
 
 			console.log("Attendance forms data:", attendanceForms);
 		} catch (error) {
@@ -601,9 +606,6 @@ export default function Homepage() {
 			sub_eventsOrganizer: sub_event_organizer,
 			sub_eventsFaculty: sub_event_faculty,
 		});
-
-		// Fetch the attendance list for that event,
-		fetchAttendanceList(event_id);
 
 		setShowModalViewEvent(true);
 	};
@@ -3574,7 +3576,199 @@ export default function Homepage() {
 					</div>
 				) : (
 					<div className="w-full bg-slate-100 flex pb-28">
-						{/* insert the grid here */}
+						<div className="w-full pr-6 bg-slate-100">
+							<div className="w-full bg-slate-100">
+								<div className="ml-1 font-bold text-lg">
+									Today's Event(s)
+								</div>
+								<div className="border-t border-gray-300 my-4 ml-1"></div>
+								{todayEvents.length === 0 ? (
+									<p className="font-bold ml-5 mb-5">No events today...</p>
+								) : (
+									todayEvents.map((event) => (
+										<div
+											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
+											onClick={() => {
+												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+												if (filteredSubEvent) {
+													openModal(
+														"https://source.unsplash.com/600x300?party",
+														event.intFID,
+														event.intFEventName,
+														event.intFEventDescription,
+														event.intFEventStartDate,
+														event.intFEventEndDate,
+														filteredSubEvent.sub_eventsID,
+														filteredSubEvent.sub_eventsMainID,
+														filteredSubEvent.sub_eventsName,
+														filteredSubEvent.sub_eventsVenue,
+														filteredSubEvent.sub_eventsStartDate,
+														filteredSubEvent.sub_eventsEndDate,
+														filteredSubEvent.sub_eventsStartTime,
+														filteredSubEvent.sub_eventsEndTime,
+														filteredSubEvent.sub_eventsMaxSeats,
+														filteredSubEvent.sub_eventsOrganizer,
+														filteredSubEvent.sub_eventsFaculty
+													);
+												}
+											}}>
+											<div className="ml-2 mr-2">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
+												<div className="border-t border-gray-300 my-4"></div>
+												<p className="text-gray-500">{event.intFEventDescription}</p>
+												<div className="flex items-center mt-4">
+													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+													<p className="text-slate-600 text-sm">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
+												</div>
+												{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
+										</div> */}
+												{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
+										</div> */}
+												<div className="flex justify-between items-end mt-5">
+													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div>
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+														<span className="relative mt-[1px] leading-3 tracking-wider">Today</span>
+													</span>
+												</div>
+											</div>
+										</div>
+									))
+								)}
+
+								<div className="ml-1 font-bold text-lg">
+									Tomorrow's Event(s)
+								</div>
+								<div className="border-t border-gray-300 my-4 ml-1"></div>
+								{tomorrowEvents.length === 0 ? (
+									<p className="font-bold ml-5 mb-5">No events tomorrow...</p>
+								) : (
+									tomorrowEvents.map((event) => (
+										<div
+											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
+											onClick={() => {
+												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+												console.log(filteredSubEvent);
+
+												if (filteredSubEvent) {
+													openModal(
+														"https://source.unsplash.com/600x300?party",
+														event.intFID,
+														event.intFEventName,
+														event.intFEventDescription,
+														event.intFEventStartDate,
+														event.intFEventEndDate,
+														filteredSubEvent.sub_eventsID,
+														filteredSubEvent.sub_eventsMainID,
+														filteredSubEvent.sub_eventsName,
+														filteredSubEvent.sub_eventsVenue,
+														filteredSubEvent.sub_eventsStartDate,
+														filteredSubEvent.sub_eventsEndDate,
+														filteredSubEvent.sub_eventsStartTime,
+														filteredSubEvent.sub_eventsEndTime,
+														filteredSubEvent.sub_eventsMaxSeats,
+														filteredSubEvent.sub_eventsOrganizer,
+														filteredSubEvent.sub_eventsFaculty
+													);
+												}
+											}}>
+											<div className="ml-2 mr-2">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
+												<div className="border-t border-gray-300 my-4"></div>
+												<p className="text-gray-500">{event.intFEventDescription}</p>
+												<div className="flex items-center mt-4">
+													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+													<p className="text-slate-600 text-sm">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
+												</div>
+												{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
+										</div> */}
+												{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
+										</div> */}
+												<div className="flex justify-between items-end mt-5">
+													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div>
+													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-yellow-200 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+														<span className="relative mt-[1px] leading-3 tracking-wider">Tomorrow</span>
+													</span>
+												</div>
+											</div>
+										</div>
+									))
+								)}
+
+								< div className="ml-1 font-bold text-lg">
+									Upcoming Event(s)
+								</div>
+								<div className="border-t border-gray-300 my-4 ml-1"></div>
+								{upcomingEvents.length === 0 ? (
+									<p className="font-bold ml-5 mb-5">No upcoming events...</p>
+								) : (
+									upcomingEvents.map((event) => (
+										<div
+											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
+											onClick={() => {
+												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+												if (filteredSubEvent) {
+													openModal(
+														"https://source.unsplash.com/600x300?party",
+														event.intFID,
+														event.intFEventName,
+														event.intFEventDescription,
+														event.intFEventStartDate,
+														event.intFEventEndDate,
+														filteredSubEvent.sub_eventsID,
+														filteredSubEvent.sub_eventsMainID,
+														filteredSubEvent.sub_eventsName,
+														filteredSubEvent.sub_eventsVenue,
+														filteredSubEvent.sub_eventsStartDate,
+														filteredSubEvent.sub_eventsEndDate,
+														filteredSubEvent.sub_eventsStartTime,
+														filteredSubEvent.sub_eventsEndTime,
+														filteredSubEvent.sub_eventsMaxSeats,
+														filteredSubEvent.sub_eventsOrganizer,
+														filteredSubEvent.sub_eventsFaculty
+													);
+												}
+											}}>
+											<div className="ml-2 mr-2">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
+												<div className="border-t border-gray-300 my-4"></div>
+												<p className="text-gray-500">{event.intFEventDescription}</p>
+												<div className="flex items-center mt-4">
+													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
+													<p className="text-slate-600 text-sm">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
+												</div>
+												{/* <div className="flex items-center mt-3">
+											<FiClock className="text-2xl mr-2 text-slate-800" />
+											<p className="text-slate-600 text-sm">{formatTime(latestEvent[1].intFStartTime)}</p>
+										</div> */}
+												{/* <div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
+										</div> */}
+												<div className="flex justify-between items-end mt-5">
+													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div>
+													<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+														<span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
+													</span>
+												</div>
+											</div>
+										</div>
+									))
+								)}
+							</div>
+						</div>
 					</div>
 				)
 			}
