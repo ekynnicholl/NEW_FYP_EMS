@@ -46,7 +46,7 @@ export default function ForgotPassword() {
 						}}></div>
 				</div>
 				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col items-center justify-center">
-					<div className="mt-12 flex flex-col items-center">
+					<div className="mt-16 flex flex-col items-center">
 						<div className="w-full flex-1 mt-0 lg:mt-8">
 							<Image
 								src={forgot_psw}
