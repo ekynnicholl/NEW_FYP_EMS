@@ -19,12 +19,15 @@ const EventListModal: React.FC<EventListModalProps> = ({ isVisible, onClose, chi
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center"
       id="wrapper"
       onClick={handleClose}>
-      <div className="w-[700px] h-[500px] border-slate-200 border-[1px] sm:w-[400px] md:w-[400px] lg:w-[700px] flex flex-col relative  overflow-auto">
+      
+      <div className="h-[500px] border-slate-350 bg-slate-50 border-[1px] rounded-t-lg sm:w-full md:w-[700px] lg:w-[1200px] flex flex-col relative shadow-md">
+      <div className="p-2 w-full bg-red-500 rounded-t-lg md:w-[1200px]"></div>
         <button
-          className="text-slate-500 text-md md:text-lg lg:text-xl absolute top-4 right-4 hover:font-medium"
+          className="absolute top-5 right-3"
           onClick={() => onClose()}>
           <AiOutlineClose />
         </button>
+        <p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub Events Details</p>
         <div className="bg-white p-2 rounded">{children}</div>
       </div>
     </div>

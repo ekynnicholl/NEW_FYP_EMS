@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from 'next/link';
-import ViewEvent_Modal from "@/components/ViewEvent_Modal";
-
+import EventListModal from "@/components/Event_List_Modal";
 import filterBar from "@/public/images/filter_bar_black.png";
 import exportCSV from "@/public/images/export_csv.png";
 import arrowLeft from "@/public/images/arrow_left.png";
@@ -14,19 +13,14 @@ import skipRight from "@/public/images/skip_right.png";
 import { FaSortAlphaUp, FaCalendarAlt } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { AiOutlineFieldTime } from "react-icons/ai";
-import { HiMiniCalendarDays } from "react-icons/hi2";
-import { FiClock } from "react-icons/fi";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdPeople } from "react-icons/md";
-import { MdAirlineSeatReclineNormal } from "react-icons/md";
+import { Chart } from 'chart.js/auto';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import SideBarDesktop from "@/components/layouts/SideBarDesktop";
-import SideBarMobile from "@/components/layouts/SideBarMobile";
-import TopBar from "@/components/layouts/TopBar";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
+import useViewModeStore from '@/components/zustand/viewModeStorage';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const currentDate = new Date();
 const formattedDate = currentDate.toLocaleDateString("en-US", {
@@ -37,30 +31,51 @@ const formattedDate = currentDate.toLocaleDateString("en-US", {
 });
 
 const formatDate = (dateString: string): string => {
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+	const options: Intl.DateTimeFormatOptions = {
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	};
+	return new Date(dateString).toLocaleDateString("en-US", options);
 };
 
 const formatTime = (timeString: string): string => {
-    const options: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
-    const formattedTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', options);
+	const options: Intl.DateTimeFormatOptions = {
+		hour: "numeric",
+		minute: "numeric",
+		hour12: true,
+	};
+	const formattedTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
+		"en-US",
+		options,
+	);
 
-    // Convert to lowercase and remove the space
-    return formattedTime.replace(' ', '').toLowerCase();
+	// Convert to lowercase and remove the space
+	return formattedTime.replace(" ", "").toLowerCase();
 };
 
-type Info = {
-    intFID: number;
-    intFEventName: string;
-    intFDescription: string;
-    intFVenue: string;
-    intFMaximumSeats: number;
-    intFStartDate: string;
-    intFStartTime: string;
-    intFEndTime: string;
-    intFOrganizer: string;
-    intFFaculty: string;
+type mainEvent = {
+	intFID: string;
+	intFEventName: string;
+	intFEventDescription: string;
+	intFEventStartDate: string;
+	intFEventEndDate: string;
 };
+
+type subEvents = {
+    sub_eventsMainID: string;
+	sub_eventsID: string;
+	sub_eventsName: string;
+    sub_eventsVenue: string;
+    sub_eventsStartDate: string;
+    sub_eventsEndDate: string;
+    sub_eventsStartTime: string;
+    sub_eventsEndTime: string;
+    sub_eventsOrganizer: string;
+    sub_eventsFaculty: string;
+    sub_eventsMaxSeats: string;
+}
 
 type AttendanceDataType = {
     attFormsID: string;
@@ -71,7 +86,7 @@ type AttendanceDataType = {
 
 export default function Home() {
     const supabase = createClientComponentClient();
-    const [infos, setInfos] = useState<Info[]>([] as Info[]);
+    
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
     const [searchQuery, setSearchQuery] = useState(""); // Search queries for search bar
     const [currentPage, setCurrentPage] = useState(1); // Define state for current page
@@ -79,152 +94,365 @@ export default function Home() {
     const [sortBy, setSortBy] = useState(""); // Initialize state for sorting
     const [sortOrder, setSortOrder] = useState("asc"); // Initialize sort order (asc or desc)
     const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
-    const [showModalViewEvent, setShowModalViewEvent] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState({ 
-        intFID: '', 
-        intFName: '', 
-        intFDescription: '', 
-        intFStartDate: '', 
-        intFStartTime: '', 
-        intFEndTime: '', 
-        intFVenue: '', 
-        intFMaximumSeats: '', 
-        intFOrganizer: '', 
-        intFFaculty: '' });
+    
+    const [subEvents, setSubEvents] = useState<subEvents[]>([]);
+    
+    const [mainEvent, setMainEvent] = useState<mainEvent>({} as mainEvent);
+	const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
+    
+    const [selectedEvent, setSelectedEvent] = useState({
+		intFID: "",
+		intFEventName: "",
+		intFEventDescription: "",
+		intFEventStartDate: "",
+		intFEventEndDate: "",
+		sub_eventsID: "",
+		sub_eventsMainID: "",
+		sub_eventsName: "",
+		sub_eventsVenue: "",
+		sub_eventsStartDate: "",
+		sub_eventsEndDate: "",
+		sub_eventsStartTime: "",
+		sub_eventsEndTime: "",
+		sub_eventsMaxSeats: "",
+		sub_eventsOrganizer: "",
+		sub_eventsFaculty: "",
+	});
 
-    const [selectedEventImage, setSelectedEventImage] = useState("");
+
     // This is for attendance modal,
-    const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
-    const [showAttendanceModal, setShowAttendanceModal] = useState(false);
-    const [numberOfAttendees, setNumberOfAttendees] = useState<number>(0);
+	const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
+	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+	const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
+
+	// This is for the pie chart,
+	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
+	const chartContainer = useRef<HTMLCanvasElement | null>(null);
+	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
+	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
+	const viewMode = useViewModeStore((state) => state.viewMode);
+
+
+    const [showSubEventModal, setShowSubEventModal] = useState(false);
+
+    const handleCancel = () =>{
+		setShowSubEventModal(false);
+	}
 
     useEffect(() => {
-        const fetchInfos = async () => {
+        const fetchMainEvents = async () => {
             // Get the current date
             const currentDate = new Date().toISOString();
+
             // Fetch events where the start date is in the future
-            const { data, error } = await supabase
+            const { data: mainEventData, error: internalError } = await supabase
                 .from("internal_events")
                 .select("*")
-                .filter('intFStartDate', 'gte', currentDate)
-                .order("intFStartDate", { ascending: true });
-            setInfos(data || []);
-            
-        };
-        fetchInfos();
-    }, [supabase]);
+                .filter('intFEventStartDate', 'gte', currentDate)
+                .order("intFEventStartDate", { ascending: true })
+                .select();
 
-    //This is for view event modal
-    const openModal = async (
-        imageSrc: string,
-        event_id: string,
-        event_name: string,
-        event_description: string,
-        event_start_date: string,
-        event_start_time: string,
-        event_end_time: string,
-        event_venue: string,
-        event_maximum_seats: string,
-        event_organizer: string,
-        event_faculty: string
-    ) => {
-        setSelectedEventImage(imageSrc);
-        setSelectedEvent({
-            intFID: event_id,
-            intFName: event_name,
-            intFDescription: event_description,
-            intFStartDate: event_start_date,
-            intFStartTime: event_start_time,
-            intFEndTime: event_end_time,
-            intFVenue: event_venue,
-            intFMaximumSeats: event_maximum_seats,
-            intFOrganizer: event_organizer,
-            intFFaculty: event_faculty,
-        });
-
-        // Fetch the attendance list for that event,
-        const { data: attendanceList, error } = await supabase
-            .from('attendance_list')
-            .select()
-            .eq('attListEventID', event_id);
-
-        if (error) {
-            console.error('Error fetching attendance list:', error);
-            return;
-        }
-
-        attendanceList.forEach(async (entry) => {
-            const { data: attendanceForms, error: formsError } = await supabase
-                .from('attendance_forms')
-                .select('attFormsListID')
-                .eq('attFormsListID', entry.attListID);
-
-            if (formsError) {
-                console.error('Error fetching attendance forms:', formsError);
+            if (internalError) {
+                console.error("Error fetching latest event:", internalError);
                 return;
             }
 
-            setNumberOfAttendees(attendanceForms.length);
-        });
+            setMainEvents(mainEventData || []);
+            
+            // Fetch data from sub_events table where sub_eventsMainID equals intFID
+			const subEventQuery = await supabase
+                .from("sub_events")
+                .select(
+                    "*",
+                )
+                .in("sub_eventsMainID", mainEventData.map(event => event.intFID));
+                
+                if (subEventQuery.error) {
+                    console.error("Error fetching sub_events:", subEventQuery.error);
+                    return;
+                }
 
-        setShowModalViewEvent(true);
-    };
+                setSubEvents(subEventQuery.data);
+            };
+
+        fetchMainEvents();
+
+    }, [supabase]);
+
+
+
+    const openModal = async (
+		event_id: string,
+		event_name: string,
+		event_description: string,
+		event_start_date: string,
+		event_end_date: string,
+		sub_event_id: string,
+		sub_eventMain_id: string,
+		sub_event_name: string,
+		sub_event_venue: string,
+		sub_event_start_date: string,
+		sub_event_end_date: string,
+		sub_event_start_time: string,
+		sub_event_end_time: string,
+		sub_event_maximum_seats: string,
+		sub_event_organizer: string,
+		sub_event_faculty: string,
+	) => {
+		setSelectedEvent({
+			intFID: event_id,
+			intFEventName: event_name,
+			intFEventDescription: event_description,
+			intFEventStartDate: event_start_date,
+			intFEventEndDate: event_end_date,
+			sub_eventsID: sub_event_id,
+			sub_eventsMainID: sub_eventMain_id,
+			sub_eventsName: sub_event_name,
+			sub_eventsVenue: sub_event_venue,
+			sub_eventsStartDate: sub_event_start_date,
+			sub_eventsEndDate: sub_event_end_date,
+			sub_eventsStartTime: sub_event_start_time,
+			sub_eventsEndTime: sub_event_end_time,
+			sub_eventsMaxSeats: sub_event_maximum_seats,
+			sub_eventsOrganizer: sub_event_organizer,
+			sub_eventsFaculty: sub_event_faculty,
+		});
+
+		// Fetch the attendance list for that event,
+		// fetchAttendanceList(event_id);
+        console.log("open view event modals");
+		setShowSubEventModal(true);
+	};
 
     
     // This is for attendance modal,
     const openAttendanceModal = async (event_id: string) => {
-        try {
-            const { data: attendanceListData, error: attendanceListError } = await supabase
-                .from('attendance_list')
-                .select('attListID')
-                .eq('attListEventID', event_id);
+		try {
+			// Fetch sub-events for the given event
+			const { data: subEvents, error: subEventsError } = await supabase
+				.from("sub_events")
+				.select("*")
+				.eq("sub_eventsMainID", event_id);
 
-            if (attendanceListError) {
-                console.error('Error fetching attendance list data:', attendanceListError);
-                return;
-            }
+			if (subEventsError) {
+				console.error("Error fetching sub_events:", subEventsError);
+				return;
+			}
+			setAttendanceMainEventID(event_id);
+			fetchAttendanceList(event_id)
+			setSubEvents(subEvents);
 
-            const attListIDs = attendanceListData.map((item) => item.attListID);
+			// Extract the subEventID values from the fetched sub_events
+			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
 
-            const { data: attendanceFormData, error: attendanceFormError } = await supabase
-                .from('attendance_forms')
-                .select('*')
-                .in('attFormsListID', attListIDs);
+			// Fetch all attendance_forms related to those sub_events
+			const { data: attendanceForms, error: formsError } = await supabase
+				.from("attendance_forms")
+				.select()
+				.in("attFSubEventID", subEventIDs);
 
-            if (attendanceFormError) {
-                console.error('Error fetching attendance forms data:', attendanceFormError);
-                return;
-            }
+			if (formsError) {
+				console.error("Error fetching attendance forms:", formsError);
+				return;
+			}
 
-            setAttendanceData(attendanceFormData);
-            setSelectedEvent({
-                intFID: event_id,
-                intFName: '',
-                intFDescription: '',
-                intFStartDate: '',
-                intFStartTime: '',
-                intFEndTime: '',
-                intFVenue: '',
-                intFMaximumSeats: '',
-                intFOrganizer: '',
-                intFFaculty: '',
-            });
-            console.log('Attendance forms data:', attendanceFormData);
-        } catch (error) {
-            const typedError = error as Error;
-            console.error('Error:', typedError.message);
-        }
+			// Set the attendance data for the main event
+			setAttendanceData(attendanceForms);
+			setSelectedEvent({
+				intFID: event_id,
+                intFEventName: "",
+                intFEventDescription: "",
+                intFEventStartDate: "",
+                intFEventEndDate: "",
+                sub_eventsID: "",
+                sub_eventsMainID: "",
+                sub_eventsName: "",
+                sub_eventsVenue: "",
+                sub_eventsStartDate: "",
+                sub_eventsEndDate: "",
+                sub_eventsStartTime: "",
+                sub_eventsEndTime: "",
+                sub_eventsMaxSeats: "",
+                sub_eventsOrganizer: "",
+                sub_eventsFaculty: "",
+			});
 
-        setShowAttendanceModal(true);
-    };
+			console.log("Attendance forms data:", attendanceForms);
+		} catch (error) {
+			const typedError = error as Error;
+			console.error("Error:", typedError.message);
+		}
+
+		setShowAttendanceModal(true);
+	};
+
+    const handleSubEventClick = async (subEvent: subEvents) => {
+		try {
+			// Fetch attendance data for the selected sub-event
+			setSelectedSubEvent(subEvent.sub_eventsID);
+			const { data: attendanceForms, error: formsError } = await supabase
+				.from("attendance_forms")
+				.select()
+				.eq("attFSubEventID", subEvent.sub_eventsID);
+
+			if (formsError) {
+				console.error("Error fetching attendance forms:", formsError);
+				return;
+			}
+
+			// Set the attendance data for the selected sub-event
+			setAttendanceData(attendanceForms);
+
+			// Calculate labels (faculty/unit) and label data (counts)
+			const facultyCounts: { [key: string]: number } = {};
+
+			attendanceForms.forEach(attendanceItem => {
+				const faculty = attendanceItem.attFormsFacultyUnit;
+				if (facultyCounts[faculty]) {
+					facultyCounts[faculty]++;
+				} else {
+					facultyCounts[faculty] = 1;
+				}
+			});
+
+			const facultyLabels = Object.keys(facultyCounts);
+			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+
+			const canvas = chartContainer.current;
+			createPieChart(canvas, facultyLabels, facultyData);
+
+			console.log("Attendance forms data for selected sub-event:", attendanceForms);
+		} catch (error) {
+			const typedError = error as Error;
+			console.error("Error:", typedError.message);
+		}
+	};
+
+	const fetchAttendanceList = async (event_id: string) => {
+		const { data: subEvents, error: subEventsError } = await supabase
+			.from("sub_events")
+			.select()
+			.eq("sub_eventsMainID", event_id);
+
+		if (subEventsError) {
+			console.error("Error fetching sub_events:", subEventsError);
+			return;
+		}
+
+		// Extract the subEventID values from the fetched sub_events
+		const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
+
+		// Now, fetch the attendance_forms related to those sub_events
+		const { data: attendanceForms, error: formsError } = await supabase
+			.from("attendance_forms")
+			.select()
+			.in("attFSubEventID", subEventIDs);
+
+		if (formsError) {
+			console.error("Error fetching attendance forms:", formsError);
+			return;
+		} else {
+			setAttendanceData(attendanceForms);
+			setSelectedSubEvent("");
+
+			const facultyCounts: { [key: string]: number } = {};
+
+			attendanceForms.forEach(attendanceItem => {
+				const faculty = attendanceItem.attFormsFacultyUnit;
+				if (facultyCounts[faculty]) {
+					facultyCounts[faculty]++;
+				} else {
+					facultyCounts[faculty] = 1;
+				}
+			});
+
+			const facultyLabels = Object.keys(facultyCounts);
+			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+
+			const canvas = chartContainer.current;
+			createPieChart(canvas, facultyLabels, facultyData);
+		}
+	}
+
+	// Pie chart,
+	const createPieChart = (
+		chartContainer: HTMLCanvasElement | null,
+		labels: string[],
+		data: number[]) => {
+		if (chartContainer) {
+			const ctx = chartContainer.getContext('2d');
+
+			if (ctx) {
+				if (chartInstanceRef.current) {
+					chartInstanceRef.current.destroy();
+				}
+
+				Chart.register(ChartDataLabels);
+
+				chartInstanceRef.current = new Chart(ctx, {
+					type: 'pie',
+					data: {
+						labels: labels,
+						datasets: [
+							{
+								data: data,
+								backgroundColor: [
+									'red',
+									'blue',
+									'green',
+									'orange',
+									'purple',
+									'pink',
+									'yellow',
+									'teal',
+									'brown',
+									'cyan',
+									'lime',
+									'indigo',
+									'violet',
+									'magenta',
+									'amber',
+									'lightblue',
+									'deeporange',
+									'lightgreen',
+									'bluegrey',
+								],
+							},
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: {
+								position: 'bottom',
+							},
+							datalabels: {
+								color: '#000000',
+								font: {
+									weight: 'bold'
+								},
+								formatter: (value: number, context: any) => {
+									const total = context.dataset.data.reduce((acc: number, current: number) => acc + current, 0);
+									const percentage = ((value / total) * 100).toFixed(2);
+
+									return `${percentage}%\n(${value}/${total})`;
+								},
+							},
+						},
+					},
+				});
+			}
+		}
+	};
 
     // Refresh data from database
     const refreshData = async () => {
         const { data, error } = await supabase
             .from("internal_events")
-            .select("intFID, intFEventName, intFDescription, intFMaximumSeats, intFVenue, intFStartDate, intFStartTime, intFEndTime, intFOrganizer, intFFaculty");
+            .select("*");
 
-        setInfos(data!);
+        setMainEvents(data!);
         console.log("Data refreshed successfully.");
 
         if (error) {
@@ -232,19 +460,18 @@ export default function Home() {
         }
     };
 
+    
+
 
     // Handle search input
     const handleSearch = (query: string) => {
         setSearchQuery(query);
-        const filteredData = infos.filter(
-            info =>
-                info.intFEventName.toLowerCase().includes(query.toLowerCase()) ||
-                info.intFVenue.toLowerCase().includes(query.toLowerCase()) ||
-                info.intFStartDate.toLowerCase().includes(query.toLowerCase()) ||
-                info.intFFaculty.toLowerCase().includes(query.toLowerCase()) ||
-                info.intFOrganizer.toLowerCase().includes(query.toLowerCase()) ,
+        const filteredData = mainEvents.filter(
+            event =>
+                event.intFEventName.toLowerCase().includes(query.toLowerCase()) ||
+                event.intFEventStartDate.toLowerCase().includes(query.toLowerCase())
         );
-        setInfos(filteredData);
+        setMainEvents(filteredData);
     };
 
     const handleArrowLeftClick = () => {
@@ -256,7 +483,7 @@ export default function Home() {
 
     // go to next page
     const handleArrowRightClick = () => {
-        if (currentPage < Math.ceil(infos.length / entriesToShow)) {
+        if (currentPage < Math.ceil(mainEvents.length / entriesToShow)) {
             setCurrentPage(currentPage + 1);
             setActivePage(currentPage + 1);
         }
@@ -270,7 +497,7 @@ export default function Home() {
 
     // skip to the last page
     const handleSkipToLastPage = () => {
-        const lastPage = Math.ceil(infos.length / entriesToShow);
+        const lastPage = Math.ceil(mainEvents.length / entriesToShow);
         setCurrentPage(lastPage);
         setActivePage(lastPage);
     };
@@ -302,8 +529,8 @@ export default function Home() {
    // export to CSV format
     const exportToCSV = () => {
         // Generate header row
-        const header = Object.keys(infos[0]).join(",");
-        const dataRows = infos.map(e => Object.values(e).join(",")).join("\n");
+        const header = Object.keys(mainEvents[0]).join(",");
+        const dataRows = mainEvents.map(e => Object.values(e).join(",")).join("\n");
 
         // Combine header and data rows
         const csvContent = `${header}\n${dataRows}`;
@@ -325,7 +552,7 @@ export default function Home() {
     ];
 
     // Modify the sorting logic based on the selected option and sort order
-    const sortedData = infos.slice().sort((a, b) => {
+    const sortedData = mainEvents.slice().sort((a, b) => {
         if (sortBy === "event") {
             if (sortOrder === "asc") {
                 return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
@@ -333,8 +560,8 @@ export default function Home() {
                 return a.intFEventName.localeCompare(b.intFEventName, undefined, { sensitivity: 'base' });
             }
         } else if (sortBy === "date") {
-            const dateA = new Date(a.intFStartDate);
-            const dateB = new Date(b.intFStartDate);
+            const dateA = new Date(a.intFEventStartDate);
+            const dateB = new Date(b.intFEventStartDate);
     
             const compareResult = dateA.getTime() - dateB.getTime(); // Cast the result to number
             return sortOrder === "asc" ? compareResult : -compareResult;
@@ -345,7 +572,9 @@ export default function Home() {
 
     return (
         <div className="h-screen flex flex-row justify-start bg-slate-100">
+            
             <div className="flex-1">
+               
                 <div className="flex-1 mx-auto px-5 py-5">
                     <div className="bg-white rounded p-8">
                         <div className="inline-flex">
@@ -385,56 +614,56 @@ export default function Home() {
 
                                 {/* Sort By Button */}
                                 <div className="relative">
-                                    <button
-                                        type="button"
-                                        className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
-                                        onClick={handleSortButtonClick}>
-                                        <Image
-                                            src={filterBar.src}
-                                            alt=""
-                                            width={20}
-                                            height={20}
-                                            className="text-slate-800"
-                                        />
-                                        <span className="ml-2 text-slate-800">Sort By</span>
-                                    </button>
-    
-                                    {/* Dropdown Menu */}
-                                    <div
-                                        className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
-                                            }`}
-                                        style={{ zIndex: 999 }}>
-                                        {showSortOptions && (
-                                            <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-56 rounded-lg">
-                                                <ul>
-                                                    <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
-                                                        <span className="font-bold text-slate-800">
-                                                            Sort By:
+                                <button
+                                    type="button"
+                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
+                                    onClick={handleSortButtonClick}>
+                                    <Image
+                                        src={filterBar.src}
+                                        alt=""
+                                        width={20}
+                                        height={20}
+                                        className="text-slate-800"
+                                    />
+                                    <span className="ml-2 text-slate-800">Sort By</span>
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                <div
+                                    className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
+                                        }`}
+                                    style={{ zIndex: 999 }}>
+                                    {showSortOptions && (
+                                        <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-56 rounded-lg">
+                                            <ul>
+                                                <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
+                                                    <span className="font-bold text-slate-800">
+                                                        Sort By:
+                                                    </span>
+                                                </li>
+                                                {sortOptions.map(option => (
+                                                    <li
+                                                        key={option.value}
+                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
+                                                        onClick={() => {
+                                                            handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
+                                                            setSortBy(option.value); // Set the sorting option
+                                                        }}>
+                                                        {option.value === "event" && (
+                                                            <FaSortAlphaUp className="mr-3 ml-2 text-slate-800" />
+                                                        )}
+                                                        {option.value === "date" && (
+                                                            <FaCalendarAlt className="mr-3 ml-2 text-slate-800" />
+                                                        )}
+                                                        <span className="text-slate-500 ">
+                                                            {option.label}
                                                         </span>
                                                     </li>
-                                                    {sortOptions.map(option => (
-                                                        <li
-                                                            key={option.value}
-                                                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
-                                                            onClick={() => {
-                                                                handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
-                                                                setSortBy(option.value); // Set the sorting option
-                                                            }}>
-                                                            {option.value === "event" && (
-                                                                <FaSortAlphaUp className="mr-3 ml-2 text-slate-800" />
-                                                            )}
-                                                            {option.value === "date" && (
-                                                                <FaCalendarAlt className="mr-3 ml-2 text-slate-800" />
-                                                            )}
-                                                            <span className="text-slate-500 ">
-                                                                {option.label}
-                                                            </span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        )}
-                                    </div>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
                                 </div>
 
                                 {/* Export Button */}
@@ -457,30 +686,24 @@ export default function Home() {
                                 <table className="min-w-full leading-normal">
                                     {/* Table Header */}
                                     <thead>
-                                        <tr className="flex">
-                                            <th className="flex-1 pr-[2px] pl-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                        <tr className="flex justify-between  border-b-2 border-gray-200 bg-gray-100">
+                                            <th className="flex-1 pl-4 py-3 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                                 No.
                                             </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                <span className="-ml-2">Event Title</span>
+                                            <th className="flex-1 py-3 -ml-[58px] text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                <span className="">Event Title</span>
                                             </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                <span className="-ml-[1px]">Venue</span>
+                                            <th className="flex-1 py-3 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                <span className="ml-5">Description</span>
                                             </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                <span className="-ml-4">Start Date</span>
+                                            <th className="flex-1 py-3 ml-28 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                <span className="ml-[52px]">Start Date</span>
                                             </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                <span className="-ml-[3px]">Organizer</span>
+                                            <th className="flex-1 py-3 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                <span className="ml-[76px]">Status</span>
                                             </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                <span className="-ml-[3px]">Faculty</span>
-                                            </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                <span className="-ml-[3px]">Status</span>
-                                            </th>
-                                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                                <span className="-ml-[3px]">Action</span>
+                                            <th className="flex-1 py-3 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                                <span className="ml-20">Action</span>
                                             </th>
                                         </tr>
                                     </thead>
@@ -492,12 +715,12 @@ export default function Home() {
                                                 (currentPage - 1) * entriesToShow,
                                                 currentPage * entriesToShow,
                                             )
-                                            .map((info, index) => (
-                                                <tr className="flex " key={index}>
-                                                    <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs mt-1 lg:text-sm">
+                                            .map((event, index) => (
+                                                <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm" key={index}>
+                                                    <td className="flex-1 py-5 mt-1">
                                                         <div className="flex items-center">
-                                                            <div className="ml-[14px]">
-                                                                <p className="text-gray-900 whitespace-no-wrap">
+                                                            <div className="ml-4">
+                                                                <p className="text-gray-900">
                                                                     {(currentPage - 1) *
                                                                         entriesToShow +
                                                                         index +
@@ -506,34 +729,27 @@ export default function Home() {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="flex-1 px-3 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap -ml-8">
-                                                            {info.intFEventName}
+                                                    <td className="flex-1 py-5">
+                                                        <p className="text-gray-900 -ml-10">
+                                                            {event.intFEventName}
                                                         </p>
                                                     </td>
-                                                    <td className="flex-1 px-3 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm ">
-                                                        <p className="text-gray-900 whitespace-no-wrap -ml-1">
-                                                            {info.intFVenue}
+
+                                                    <td className="flex-1 py-5 -ml-3">
+                                                        <p className="text-gray-900 -ml-1">
+                                                            {event.intFEventDescription}
                                                         </p>
                                                     </td>
-                                                    <td className="flex-1 px-3 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap  -ml-4">
-                                                            {info.intFStartDate}
+                                                    
+                                                    <td className="flex-1 py-5 ml-12">
+                                                        <p className="text-gray-900 whitespace-nowrap ml-[94px]">
+                                                            {event.intFEventStartDate}
                                                         </p>
                                                     </td>
-                                                    <td className="flex-1 px-3 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap ml-2">
-                                                            {info.intFOrganizer}
-                                                        </p>
-                                                    </td>
-                                                    <td className="flex-1 px-3 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm" >
-                                                        <p className="text-gray-900 whitespace-no-wrap ml-6">
-                                                            {info.intFFaculty}
-                                                        </p>
-                                                    </td>
-                                                    <td className="flex-1 px-3 py-5 border-b border-gray-200">
+                                                    
+                                                    <td className="flex-1 py-5 ml-12">
                                                         <div className="flex items-end">
-                                                            <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+                                                            <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10">
                                                                 <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
                                                                 <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
                                                                 <span className="relative mt-[1px] leading-3 tracking-wider ">Upcoming</span>
@@ -541,112 +757,251 @@ export default function Home() {
                                                         </div>
                                                     </td>
                                                     
-                                                    <td className="relative flex-1 px-3 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-                                                        <p className="text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-6 hover:text-slate-800" onClick={() => openModal("https://source.unsplash.com/600x300?party", info.intFID.toString(), info.intFEventName, info.intFDescription, info.intFStartDate, info.intFStartTime, info.intFEndTime, info.intFVenue, info.intFMaximumSeats.toString(), info.intFOrganizer, info.intFFaculty)}>
+                                                    <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+                                                    <p className="text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-[78px] hover:text-slate-800" 
+                                                        onClick={() => {
+                                                        const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                        if (filteredSubEvent) {
+                                                            openModal(
+                                                                
+                                                                event.intFID,
+                                                                event.intFEventName,
+                                                                event.intFEventDescription,
+                                                                event.intFEventStartDate,
+                                                                event.intFEventEndDate,
+                                                                filteredSubEvent.sub_eventsID,
+                                                                filteredSubEvent.sub_eventsMainID,
+                                                                filteredSubEvent.sub_eventsName,
+                                                                filteredSubEvent.sub_eventsVenue,
+                                                                filteredSubEvent.sub_eventsStartDate,
+                                                                filteredSubEvent.sub_eventsEndDate,
+                                                                filteredSubEvent.sub_eventsStartTime,
+                                                                filteredSubEvent.sub_eventsEndTime,
+                                                                filteredSubEvent.sub_eventsMaxSeats,
+                                                                filteredSubEvent.sub_eventsOrganizer,
+                                                                filteredSubEvent.sub_eventsFaculty
+                                                            );
+                                                        }
+                                                    }}>
                                                             View Details
                                                         </p>
-                                                        <p className="mt-3 text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-6 hover:text-slate-800" onClick={() => openAttendanceModal(info.intFID.toString())}>
+                                                        <p className="text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-[78px] hover:text-slate-800" 
+                                                        onClick={() => {openAttendanceModal(event.intFID);}}>
                                                             Attendance
                                                         </p>
+                                                        
                                                     </td>
                                                 </tr>
                                             ))}
 
-                                            <ViewEvent_Modal isVisible={showModalViewEvent} onClose={() => setShowModalViewEvent(false)}>
-                                                <div className="py-[30px] lg:py-[100px] relative">
-                                                    <img
-                                                        src={selectedEventImage}
-                                                        alt="Random"
-                                                        className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 hover:rotate-1 scale-[1.063] lg:scale-[1.068] transition duration-300 shadow-sm"
-                                                    />
-                                                    <div className="ml-[7px] lg:ml-[10px]">
+                                        <EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
+                                            <div className="p-5 bg-slate-100 w-[1160px] h-[420px] ml-1 overflow-auto">
+                                                <table className="leading-normal w-[1090px] ml-4">
+                                                <thead>
+                                                    <tr className="flex border-b-2 border-gray-200 bg-gray-100 justify-between">
+                                                        <th className="ml-5 py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            NO.
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            Events Name
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            Organizer
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            Faculty
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            Venue
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            Start Time
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            End Time
+                                                        </th>
+                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                            Maximum Seats
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {subEvents
+                                                        .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+                                                        .map((subEvent, index) => (
+                                                            <tr className="flex border-b border-gray-200 bg-white" key={index}>
+                                                                <td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-5">
+                                                                    <div>
+                                                                        <div className="ml-[2px]">
+                                                                            <p className="text-gray-900">
+                                                                            {(currentPage - 1) *
+                                                                                entriesToShow +
+                                                                                index +
+                                                                                1
+                                                                            }
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md ">
+                                                                    <p className="text-gray-900 -ml-8">
+                                                                        {subEvent.sub_eventsName}
+                                                                    </p>
+                                                                </td>
+                                                                
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md ">
+                                                                    <p className="text-gray-900">
+                                                                        {subEvent.sub_eventsOrganizer}
+                                                                    </p>
+                                                                </td>
+                                                                
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
+                                                                    <p className="text-gray-900 ml-4">
+                                                                        {subEvent.sub_eventsFaculty}
+                                                                    </p>
+                                                                </td>
+                                                                
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
+                                                                    <p className="text-gray-900 ml-2">
+                                                                        {subEvent.sub_eventsVenue}
+                                                                    </p>
+                                                                </td>
+                                                                
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
+                                                                    <p className="text-gray-900 whitespace-nowrap -ml-4">
+                                                                        {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+                                                                    </p>
+                                                                </td>
+                                                                
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
+                                                                    <p className="text-gray-900 whitespace-nowrap">
+                                                                        {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
+                                                                    </p>
+                                                                </td>
 
-                                                        <h3 className="text-[16px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[190px] lg:mt-[183px]">About this event</h3>
-                                                        <p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[10px]">
-                                                            {selectedEvent.intFDescription}
-                                                        </p>
+                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
+                                                                    <p className="text-gray-900">
+                                                                        {subEvent.sub_eventsMaxSeats}
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            ))}
+                                                    </tbody>
+                                                </table>	
+                                            </div>
+                                        </EventListModal>
 
-                                                        <div className="flex items-center mt-4">
-                                                            <HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
-                                                            <p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[0.5px]">{formatDate(selectedEvent.intFStartDate)}</p>
-                                                            <span className="mx-2 text-slate-800 ml-[15px] lg:ml-[38px] mr-6">|</span>
-                                                            <FiClock className="text-[30px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
-                                                            <p className="text-slate-600 text-[12px] lg:text-[13px]">{formatTime(selectedEvent.intFStartTime)}</p>
-                                                            <span className="mx-2 text-slate-800 -mt-[2px]">-</span>
-                                                            <p className="text-slate-600 text-[12px] lg:text-[13px]">{formatTime(selectedEvent.intFEndTime)}</p>
+                                        <ViewAttendance_Modal
+                                            isVisible={showAttendanceModal}
+                                            onClose={() => setShowAttendanceModal(false)}>
+                                            <div className="flex">
+                                                <div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} h-[700px]`}>
+                                                    <div className="flex items-center justify-center">
+                                                        
+                                                        <div className="flex items-center justify-center text-text text-[20px] text-center -mt-8">
+                                                            <PencilNoteIcon />{" "}
+                                                            <span className="ml-2.5">Attendance List</span>
                                                         </div>
-                                                        <div className="flex items-center mt-[10px] lg:mt-[14px]">
-                                                            <FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800" />
-                                                            <p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px]">{selectedEvent.intFVenue}</p>
-                                                        </div>
-                                                        <div className="flex items-center mt-[11px] lg:mt-[14px]">
-                                                            <MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px]" />
-                                                            <p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0">5 attendees</p>
-                                                        </div>
-                                                        <div className="flex items-center mt-[15px] lg:mb-0 mb-[3px]">
-                                                            <MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px]" />
-                                                            <p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] lg:-ml-[1px]">{selectedEvent.intFMaximumSeats} seats</p>
+                                                        <div className="ml-auto">
+                                                            <Link
+                                                                href={`/attendance/${selectedEvent.intFID}`}
+                                                                passHref
+                                                                legacyBehavior={true}>
+                                                                <a className="flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-slate-300 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5">
+                                                                    <span className="text-slate-800 p-[5px]">
+                                                                        View More
+                                                                    </span>
+                                                                </a>
+                                                            </Link>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </ViewEvent_Modal>
+                                                    <div className="text-left text-black text-[13px] pl-9 pb-5 -mt-[28px]">
+                                                        Total Attendees: {attendanceData.length}
+                                                    </div>
+                                                    <div className="flex flex-wrap">
+                                                        <button
+                                                            className={`font-bold flex items-center rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-400 text-white' : 'bg-slate-200 text-slate-800'
+                                                                }`}
+                                                            onClick={() => {
+                                                                setIsAllButtonActive(true);
+                                                                fetchAttendanceList(attendanceMainEventID);
+                                                            }}
+                                                        >
+                                                            All
+                                                        </button>
+                                                        {subEvents.map((subEvent) => (
+                                                            <div
+                                                                key={subEvent.sub_eventsID}
+                                                                className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
+                                                                    }`}
+                                                            >
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setIsAllButtonActive(false);
+                                                                        handleSubEventClick(subEvent);
+                                                                    }}
+                                                                >
+                                                                    {subEvent.sub_eventsName}
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    {/* This is to loop through the attendance data. */}
+                                                    {attendanceData && attendanceData.length > 0 ? (
+                                                        <div className="overflow-y-auto max-h-[600px]">
+                                                            <table className="w-full">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                                                            Staff ID
+                                                                        </th>
+                                                                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                                                            Staff Name
+                                                                        </th>
+                                                                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                                                            Faculty/ Unit
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {attendanceData.map(attendanceItem => (
+                                                                        <tr key={attendanceItem.attFormsID}>
+                                                                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                                                {attendanceItem.attFormsStaffID}
+                                                                            </td>
+                                                                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                                                {attendanceItem.attFormsStaffName}
+                                                                            </td>
+                                                                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                                                {attendanceItem.attFormsFacultyUnit}
+                                                                            </td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-center text-gray-600 mt-4">
+                                                            No attendance data available.
+                                                        </div>
 
-                                            <ViewAttendance_Modal isVisible={showAttendanceModal} onClose={() => setShowAttendanceModal(false)}>
-                                                <div className="flex items-center justify-center">
-                                                    <div className="flex items-center justify-center text-text text-[20px] text-center -mt-8">
-                                                        <PencilNoteIcon /> <span className="ml-2.5">Attendance List</span>
-                                                    </div>
-                                                    <div className="ml-auto">
-                                                        <Link href={`/attendance/${selectedEvent.intFID}`} passHref legacyBehavior={true}>
-                                                            <a className="flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-slate-300 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5">
-                                                                <span className="text-slate-800 p-[5px]">View More</span>
-                                                            </a>
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                                <div className="text-left text-black text-[13px] pl-9 pb-5 -mt-[28px]">
-                                                    Total Attendees: 5
+                                                    )}
                                                 </div>
                                                 {attendanceData && attendanceData.length > 0 ? (
-                                                    <div className="overflow-y-auto max-h-[500px]">
-                                                        <table className="w-full">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
-                                                                        Staff ID
-                                                                    </th>
-                                                                    <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                                                        Staff Name
-                                                                    </th>
-                                                                    <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                                                        Faculty/ Unit
-                                                                    </th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {attendanceData.map((attendanceItem) => (
-                                                                    <tr key={attendanceItem.attFormsID}>
-                                                                        <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                            {attendanceItem.attFormsStaffID}
-                                                                        </td>
-                                                                        <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                            {attendanceItem.attFormsStaffName}
-                                                                        </td>
-                                                                        <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                            {attendanceItem.attFormsFacultyUnit}
-                                                                        </td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
+                                                    <div className="w-1/2 flex flex-col items-center justify-center">
+                                                        <div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
+                                                        <div className="w-[500px] h-[500px] flex items-center justify-center mt-5">
+                                                            <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
+                                                        </div>
                                                     </div>
-                                                ) : (
-                                                    <div className="text-center text-gray-600 mt-4">No attendance data available.</div>
-                                                )}
-                                            </ViewAttendance_Modal>
+                                                ) : null}
+                                            </div>
+                                        </ViewAttendance_Modal>
 
+                                        {/* pagination */}
                                         {Array.from({
-                                            length: entriesToShow - infos?.length,
+                                            length: entriesToShow - mainEvents?.length,
                                         }).map((_, index) => (
                                             <tr className="flex invisible" key={index}>
                                                 <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -728,7 +1083,7 @@ export default function Home() {
                                     </div>
                                     <div className="flex items-center">
                                         <span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
-                                            1-{entriesToShow} of {infos?.length} entries
+                                            1-{entriesToShow} of {mainEvents?.length} entries
                                         </span>
 
                                         <div className="flex">
@@ -784,7 +1139,7 @@ export default function Home() {
                                                             if (
                                                                 pageNumber <=
                                                                 Math.ceil(
-                                                                    infos.length /
+                                                                    mainEvents.length /
                                                                     entriesToShow,
                                                                 )
                                                             ) {
@@ -803,13 +1158,13 @@ export default function Home() {
                                                 onClick={handleArrowRightClick}
                                                 disabled={
                                                     currentPage ===
-                                                    Math.ceil(infos?.length / entriesToShow)
+                                                    Math.ceil(mainEvents?.length / entriesToShow)
                                                 }
                                                 style={{
                                                     opacity:
                                                         currentPage ===
                                                             Math.ceil(
-                                                                infos?.length / entriesToShow,
+                                                                mainEvents?.length / entriesToShow,
                                                             )
                                                             ? 0.5
                                                             : 1,
@@ -826,7 +1181,7 @@ export default function Home() {
                                             <button
                                                 type="button"
                                                 className={`py-2 px-1 ml-5 ${currentPage ===
-                                                    Math.ceil(infos?.length / entriesToShow)
+                                                    Math.ceil(mainEvents?.length / entriesToShow)
                                                     ? "pointer-events-none opacity-50"
                                                     : ""
                                                     }`}
