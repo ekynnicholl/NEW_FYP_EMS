@@ -1705,7 +1705,9 @@ export default function Homepage() {
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select>
-										<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+										<div className="h-[500px] overflow-y-auto">
+											<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+										</div>
 									</div>
 								) : (
 									<div className="text-center text-gray-600 mt-4">
