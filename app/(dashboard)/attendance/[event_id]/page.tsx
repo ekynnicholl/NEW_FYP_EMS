@@ -58,7 +58,8 @@ export default function Home() {
 	const router = useRouter();
 	console.log("Event ID captured in URL:" + event_id);
 
-	const [showQRCodes, setShowQRCodes] = useState(false);
+	const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
+	const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
 	const [subEventsData, setSubEventsData] = useState<subEvent[]>([]);
 
 	// Fetch data from database
@@ -280,11 +281,15 @@ export default function Home() {
 	return (
 		<div className="flex-1 mx-auto px-5 py-5 bg-slate-100">
 			<div className="bg-white rounded p-8">
+				<div>
+					<h3 className="font-bold">Attendance Forms</h3>
+					<div className="border-t border-gray-300 my-2"></div>
+				</div>
 				<div className="flex flex-wrap">
 					{subEventsData.map((subEvent) => (
 						<Fragment key={subEvent.sub_eventsID}>
 							<div className="w-1/3 mb-8">
-								<h3 className="text-left font-bold">{subEvent.sub_eventsName}</h3>
+								<h3 className="text-left mb-3"> {subEvent.sub_eventsName}</h3>
 								<Link
 									href={`/form/${subEvent.sub_eventsID}`}
 									passHref
@@ -301,7 +306,44 @@ export default function Home() {
 									className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex ml-5"
 									onClick={() => {
 										setSelectedSubEventID(subEvent.sub_eventsID);
-										setShowQRCodes(true);
+										setShowQRCodesAttendance(true);
+									}}
+								>
+									<BsBoxArrowUpRight className="text-xl text-slate-800" />
+									<span className="ml-2 mt-[1.3px] text-slate-800">QR Codes</span>
+								</button>
+							</div>
+						</Fragment>
+					))}
+				</div>
+			</div>
+			<div className="bg-white rounded p-8 mt-5">
+				<div>
+					<h3 className="font-bold">Feedback Forms</h3>
+					<div className="border-t border-gray-300 my-2"></div>
+				</div>
+				<div className="flex flex-wrap">
+					{subEventsData.map((subEvent) => (
+						<Fragment key={subEvent.sub_eventsID}>
+							<div className="w-1/3 mb-8">
+								<h4 className="text-left mb-3">{subEvent.sub_eventsName}</h4>
+								<Link
+									href={`/form/feedback/${subEvent.sub_eventsID}`}
+									passHref
+									legacyBehavior={true}
+								>
+									<a className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex">
+										<SiGoogleforms className="text-xl text-slate-800" />
+										<span className="ml-2 mt-[1.3px] text-slate-800">Forms</span>
+									</a>
+								</Link>
+
+								<button
+									type="button"
+									className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex ml-5"
+									onClick={() => {
+										setSelectedSubEventID(subEvent.sub_eventsID);
+										setShowQRCodesFeedback(true);
 									}}
 								>
 									<BsBoxArrowUpRight className="text-xl text-slate-800" />
@@ -311,7 +353,7 @@ export default function Home() {
 						</Fragment>
 					))}
 
-					<Modal isVisible={showQRCodes} onClose={() => setShowQRCodes(false)}>
+					<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
 						<div className="ml-2 p-5">
 							<h3 className="lg:text-2xl font-medium text-gray-600 mb-2 text-center">
 								QR Code
@@ -331,8 +373,35 @@ export default function Home() {
 							</button>
 						</div>
 					</Modal>
-				</div>
 
+					<Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
+						<div className="ml-2 p-5">
+							<h3 className="lg:text-2xl font-medium text-gray-600 mb-2 text-center">
+								QR Code
+							</h3>
+							<QRCodeSVG
+								value={`localhost:3000/form/feedback/${selectedSubEventID}`}
+							/>
+							<button
+								onClick={() =>
+									copyToClipboard(
+										`localhost:3000/form/feedback/${selectedSubEventID}`
+									)
+								}
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px]"
+							>
+								Copy Link
+							</button>
+						</div>
+					</Modal>
+				</div>
+			</div>
+
+			<div className="bg-white rounded p-8 mt-5">
+				<div>
+					<h3 className="font-bold">Attendance Details</h3>
+					<div className="border-t border-gray-300 my-2 mb-5"></div>
+				</div>
 				<div className="flex items-center justify-between mb-8">
 					{/* Refresh Button */}
 					<button
