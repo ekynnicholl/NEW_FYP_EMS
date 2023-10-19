@@ -8,7 +8,7 @@ const PageNotFound = () => {
       <img src={image_404.src} alt="" className="w-[300px] lg:w-[420px]"/>
       <div className="max-w-[546px] mx-auto w-full mt-6">
         <p className="text-slate-900 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">Page not found</p>
-        <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8">
+        <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-800">
           The page you are looking for is unavailable.
         </div>
       </div>
