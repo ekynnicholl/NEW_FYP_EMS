@@ -291,7 +291,7 @@ export default function Home() {
 							<div className="w-1/3 mb-8">
 								<h3 className="text-left mb-3"> {subEvent.sub_eventsName}</h3>
 								<Link
-									href={`/form/${subEvent.sub_eventsID}`}
+									href={`https://new-fyp-ems.vercel.app/form/${subEvent.sub_eventsID}`}
 									passHref
 									legacyBehavior={true}
 								>
@@ -328,7 +328,7 @@ export default function Home() {
 							<div className="w-1/3 mb-8">
 								<h4 className="text-left mb-3">{subEvent.sub_eventsName}</h4>
 								<Link
-									href={`/form/feedback/${subEvent.sub_eventsID}`}
+									href={`https://new-fyp-ems.vercel.app/form/feedback/${subEvent.sub_eventsID}`}
 									passHref
 									legacyBehavior={true}
 								>
@@ -359,12 +359,12 @@ export default function Home() {
 								QR Code
 							</h3>
 							<QRCodeSVG
-								value={`localhost:3000/form/${selectedSubEventID}`}
+								value={`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`}
 							/>
 							<button
 								onClick={() =>
 									copyToClipboard(
-										`localhost:3000/form/${selectedSubEventID}`
+										`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`
 									)
 								}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px]"
@@ -380,12 +380,12 @@ export default function Home() {
 								QR Code
 							</h3>
 							<QRCodeSVG
-								value={`localhost:3000/form/feedback/${selectedSubEventID}`}
+								value={`https://new-fyp-ems.vercel.app/form/feedback/${selectedSubEventID}`}
 							/>
 							<button
 								onClick={() =>
 									copyToClipboard(
-										`localhost:3000/form/feedback/${selectedSubEventID}`
+										`https://new-fyp-ems.vercel.app/form/feedback/${selectedSubEventID}`
 									)
 								}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px]"
