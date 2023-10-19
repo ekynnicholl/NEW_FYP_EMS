@@ -38,42 +38,44 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
     const pageNumbers = Array.from({ length: pageCount }, (_, index) => index + 1);
 
     return (
-        <div className="">
-            <table className="w-full">
-                <thead>
-                    <tr>
-                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
-                            Staff ID
-                        </th>
-                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                            Staff Name
-                        </th>
-                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                            Faculty/ Unit
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentData.map((attendanceItem) => (
-                        <tr key={attendanceItem.attFormsID}>
-                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                {attendanceItem.attFormsStaffID}
-                            </td>
-                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                {attendanceItem.attFormsStaffName}
-                            </td>
-                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                {attendanceItem.attFormsFacultyUnit}
-                            </td>
+        <div>
+            <div className="max-h-[600]">
+                <table className="w-full max-h-[600]">
+                    <thead>
+                        <tr>
+                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                Staff ID
+                            </th>
+                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Staff Name
+                            </th>
+                            <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Faculty/ Unit
+                            </th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {currentData.map((attendanceItem) => (
+                            <tr key={attendanceItem.attFormsID}>
+                                <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                    {attendanceItem.attFormsStaffID}
+                                </td>
+                                <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                    {attendanceItem.attFormsStaffName}
+                                </td>
+                                <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                    {attendanceItem.attFormsFacultyUnit}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             {/* Pagination */}
             <div className="pagination flex justify-end items-end mt-5">
                 <button
-                    className=""
+                    className="opacity-70"
                     onClick={() => handlePageChange(1)}
                     disabled={currentPage === pageCount}
                 >
@@ -82,7 +84,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
                 <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className=""
+                    className="opacity-70"
                 >
                     <LeftArrow />
                 </button>
@@ -101,12 +103,12 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
                 <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === pageCount}
-                    className=""
+                    className="opacity-70"
                 >
                     <RightArrow />
                 </button>
                 <button
-                    className=""
+                    className="opacity-70"
                     onClick={() => handlePageChange(pageCount)}
                     disabled={currentPage === pageCount}
                 >

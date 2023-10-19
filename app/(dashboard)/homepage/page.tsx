@@ -18,7 +18,7 @@ import Delete_Event_Confirmation_Modal from "@/components/Modal";
 import { Chart } from 'chart.js/auto';
 
 import Image from "next/image";
-import { useState, useEffect, SyntheticEvent, useRef } from "react";
+import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent } from "react";
 import Link from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -410,7 +410,11 @@ export default function Homepage() {
 	};
 
 	// This is for attendance table in homepage pagination,
-	const itemsPerPage = 5;
+	const [itemsPerPage, setItemsPerPage] = useState(10);
+
+	const handleItemsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
+		setItemsPerPage(Number(e.target.value));
+	};
 
 	const handleSubEventClick = async (subEvent: subEvents) => {
 		try {
@@ -1688,7 +1692,21 @@ export default function Homepage() {
 								</div>
 								{/* This is to loop through the attendance data. */}
 								{attendanceData && attendanceData.length > 0 ? (
-									<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+									<div>
+										<label htmlFor="itemsPerPageSelect">Show entries:</label>
+										<select
+											id="itemsPerPageSelect"
+											name="itemsPerPage"
+											value={itemsPerPage}
+											onChange={handleItemsPerPageChange}
+											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+										>
+											<option value="5">5</option>
+											<option value="10">10</option>
+											<option value="20">20</option>
+										</select>
+										<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+									</div>
 								) : (
 									<div className="text-center text-gray-600 mt-4">
 										No attendance data available.
