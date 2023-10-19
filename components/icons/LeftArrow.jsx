@@ -1,0 +1,9 @@
+import React from 'react';
+
+const LeftArrow = () => (
+    <svg width="28px" height="28px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.5 19L9.20711 12.7071C8.81658 12.3166 8.81658 11.6834 9.20711 11.2929L15.5 5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+);
+
+export default LeftArrow;
