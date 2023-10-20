@@ -117,7 +117,6 @@ type subEvents = {
 	sub_eventsStartTime: string;
 	sub_eventsEndTime: string;
 	sub_eventsOrganizer: string;
-	sub_eventsFaculty: string;
 	sub_eventsMaxSeats: string;
 }
 
@@ -155,8 +154,7 @@ export default function Homepage() {
 		sub_eventsStartTime: "",
 		sub_eventsEndTime: "",
 		sub_eventsMaxSeats: "",
-		sub_eventsOrganizer: "",
-		sub_eventsFaculty: "",
+		sub_eventsOrganizer: ""
 	});
 
 	const [editEventInfo, setEditEventInfo] = useState({
@@ -177,7 +175,7 @@ export default function Homepage() {
 		sub_eventsStartTime: "",
 		sub_eventsEndTime: "",
 		sub_eventsOrganizer: "",
-		sub_eventsFaculty: "",
+		// sub_eventsFaculty: "",
 	});
 
 
@@ -248,7 +246,7 @@ export default function Homepage() {
 			const subEventQuery = await supabase
 				.from("sub_events")
 				.select(
-					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsMaxSeats, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer, sub_eventsFaculty",
+					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsMaxSeats, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer",
 				)
 				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
 
@@ -349,7 +347,7 @@ export default function Homepage() {
 		checkIsUserLoggedIn();
 	})
 
-	// COMMENT HERE
+
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
 		console.log("testing" + event_id);
@@ -593,7 +591,7 @@ export default function Homepage() {
 		sub_event_end_time: string,
 		sub_event_maximum_seats: string,
 		sub_event_organizer: string,
-		sub_event_faculty: string,
+		// sub_event_faculty: string,
 	) => {
 		setSelectedEventImage(imageSrc);
 		setSelectedEvent({
@@ -612,7 +610,7 @@ export default function Homepage() {
 			sub_eventsEndTime: sub_event_end_time,
 			sub_eventsMaxSeats: sub_event_maximum_seats,
 			sub_eventsOrganizer: sub_event_organizer,
-			sub_eventsFaculty: sub_event_faculty,
+			// sub_eventsFaculty: sub_event_faculty,
 		});
 
 		setShowModalViewEvent(true);
@@ -621,11 +619,11 @@ export default function Homepage() {
 
 	// Create event + sub events dynamic textbox
 	const [eventDetails, setEventDetails] = useState([
-		{ event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''], faculties: [''] },
+		{ event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''] },
 	]);
 
 	const addEventDetails = () => {
-		setEventDetails([...eventDetails, { event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''], faculties: [''] }]);
+		setEventDetails([...eventDetails, { event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''] }]);
 	};
 
 	const handleEventNameInputChange = (eventIndex: number, eventNameIndex: number, value: string) => {
@@ -675,13 +673,6 @@ export default function Homepage() {
 		updatedDetails[eventIndex].organizers[organizersIndex] = value;
 		setEventDetails(updatedDetails);
 	};
-
-	const handleEventFacultiesInputChange = (eventIndex: number, facultiesIndex: number, value: string) => {
-		const updatedDetails = [...eventDetails];
-		updatedDetails[eventIndex].faculties[facultiesIndex] = value;
-		setEventDetails(updatedDetails);
-	};
-
 
 	// Remove the session expanded (dynamic textboxes)
 	const handleRemoveEventClick = (eventIndex: number) => {
@@ -805,7 +796,7 @@ export default function Homepage() {
 				const sub_eventsEndTime = detail.end_times[i];
 				const sub_eventsMaxSeats = detail.maximum_seats[i];
 				const sub_eventsOrganizer = detail.organizers[i];
-				const sub_eventsFaculty = detail.faculties[i];
+				// const sub_eventsFaculty = detail.faculties[i];
 
 				const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
 					sub_eventsMainID: generatedEventID,
@@ -817,7 +808,7 @@ export default function Homepage() {
 					sub_eventsEndTime,
 					sub_eventsMaxSeats,
 					sub_eventsOrganizer,
-					sub_eventsFaculty,
+					// sub_eventsFaculty,
 				});
 
 				if (subEventError) {
@@ -892,8 +883,7 @@ export default function Homepage() {
 				sub_eventsEndDate: selectedSubEvent.sub_eventsEndDate,
 				sub_eventsStartTime: selectedSubEvent.sub_eventsStartTime,
 				sub_eventsEndTime: selectedSubEvent.sub_eventsEndTime,
-				sub_eventsOrganizer: selectedSubEvent.sub_eventsOrganizer,
-				sub_eventsFaculty: selectedSubEvent.sub_eventsFaculty,
+				sub_eventsOrganizer: selectedSubEvent.sub_eventsOrganizer
 			});
 		}
 	};
@@ -913,7 +903,6 @@ export default function Homepage() {
 				sub_eventsStartTime: editSubEventInfo.sub_eventsStartTime,
 				sub_eventsEndTime: editSubEventInfo.sub_eventsEndTime,
 				sub_eventsOrganizer: editSubEventInfo.sub_eventsOrganizer,
-				sub_eventsFaculty: editSubEventInfo.sub_eventsFaculty,
 			})
 			.eq("sub_eventsID", editSubEventInfo.sub_eventsID);
 
@@ -945,8 +934,7 @@ export default function Homepage() {
 			sub_eventsEndDate: subEventz.sub_eventsEndDate,
 			sub_eventsStartTime: subEventz.sub_eventsStartTime,
 			sub_eventsEndTime: subEventz.sub_eventsEndTime,
-			sub_eventsOrganizer: subEventz.sub_eventsOrganizer,
-			sub_eventsFaculty: subEventz.sub_eventsFaculty,
+			sub_eventsOrganizer: subEventz.sub_eventsOrganizer
 		});
 
 		if (error) {
@@ -966,8 +954,7 @@ export default function Homepage() {
 			sub_eventsEndDate: subEventz.sub_eventsEndDate,
 			sub_eventsStartTime: subEventz.sub_eventsStartTime,
 			sub_eventsEndTime: subEventz.sub_eventsEndTime,
-			sub_eventsOrganizer: subEventz.sub_eventsOrganizer,
-			sub_eventsFaculty: subEventz.sub_eventsFaculty,
+			sub_eventsOrganizer: subEventz.sub_eventsOrganizer
 		}]);
 
 		setSubEventz({} as subEvents);
@@ -1439,23 +1426,6 @@ export default function Homepage() {
 												/>
 											</div>
 										))}
-
-										{detail.faculties.map((faculties, facultiesIndex) => (
-											<div key={facultiesIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-													Faculty
-													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-												</p>
-												<input
-													type="text"
-													placeholder="Faculty"
-													value={faculties}
-													onChange={(e) => handleEventFacultiesInputChange(index, facultiesIndex, e.target.value)}
-													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-													required
-												/>
-											</div>
-										))}
 									</div>
 								))}
 
@@ -1896,23 +1866,6 @@ export default function Homepage() {
 									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-									Faculty
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Faculty"
-									required
-									onChange={e =>
-										setSubEventz({
-											...subEventz,
-											sub_eventsFaculty: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
 							</div>
 
 							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
@@ -2099,24 +2052,6 @@ export default function Homepage() {
 										setEditSubEventInfo({
 											...editSubEventInfo,
 											sub_eventsOrganizer: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-									Faculty
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Faculty"
-									value={editSubEventInfo.sub_eventsFaculty}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsFaculty: e.target.value,
 										})
 									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -2427,24 +2362,6 @@ export default function Homepage() {
 									}
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-									Faculty
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Faculty"
-									value={editSubEventInfo.sub_eventsFaculty}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsFaculty: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
 							</div>
 
 							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
@@ -2661,8 +2578,7 @@ export default function Homepage() {
 												filteredSubEvent.sub_eventsStartTime,
 												filteredSubEvent.sub_eventsEndTime,
 												filteredSubEvent.sub_eventsMaxSeats,
-												filteredSubEvent.sub_eventsOrganizer,
-												filteredSubEvent.sub_eventsFaculty
+												filteredSubEvent.sub_eventsOrganizer
 											);
 										} else {
 											openModal(
@@ -2681,8 +2597,7 @@ export default function Homepage() {
 												"default_sub_eventsStartTime",
 												"default_sub_eventsEndTime",
 												"default_sub_eventsMaxSeats",
-												"default_sub_eventsOrganizer",
-												"default_sub_eventsFaculty"
+												"default_sub_eventsOrganizer"
 											);
 										}
 									}}>
@@ -2815,7 +2730,6 @@ export default function Homepage() {
 												filteredSubEvent.sub_eventsEndTime,
 												filteredSubEvent.sub_eventsMaxSeats,
 												filteredSubEvent.sub_eventsOrganizer,
-												filteredSubEvent.sub_eventsFaculty
 											);
 										} else {
 											openModal(
@@ -2834,8 +2748,7 @@ export default function Homepage() {
 												"default_sub_eventsStartTime",
 												"default_sub_eventsEndTime",
 												"default_sub_eventsMaxSeats",
-												"default_sub_eventsOrganizer",
-												"default_sub_eventsFaculty"
+												"default_sub_eventsOrganizer"
 											);
 										}
 									}}>
@@ -2968,8 +2881,7 @@ export default function Homepage() {
 												filteredSubEvent.sub_eventsStartTime,
 												filteredSubEvent.sub_eventsEndTime,
 												filteredSubEvent.sub_eventsMaxSeats,
-												filteredSubEvent.sub_eventsOrganizer,
-												filteredSubEvent.sub_eventsFaculty
+												filteredSubEvent.sub_eventsOrganizer
 											);
 										} else {
 											openModal(
@@ -2988,8 +2900,7 @@ export default function Homepage() {
 												"default_sub_eventsStartTime",
 												"default_sub_eventsEndTime",
 												"default_sub_eventsMaxSeats",
-												"default_sub_eventsOrganizer",
-												"default_sub_eventsFaculty"
+												"default_sub_eventsOrganizer"
 											);
 										}
 									}}>
@@ -3122,8 +3033,7 @@ export default function Homepage() {
 												filteredSubEvent.sub_eventsStartTime,
 												filteredSubEvent.sub_eventsEndTime,
 												filteredSubEvent.sub_eventsMaxSeats,
-												filteredSubEvent.sub_eventsOrganizer,
-												filteredSubEvent.sub_eventsFaculty
+												filteredSubEvent.sub_eventsOrganizer
 											);
 										} else {
 											openModal(
@@ -3142,8 +3052,7 @@ export default function Homepage() {
 												"default_sub_eventsStartTime",
 												"default_sub_eventsEndTime",
 												"default_sub_eventsMaxSeats",
-												"default_sub_eventsOrganizer",
-												"default_sub_eventsFaculty"
+												"default_sub_eventsOrganizer"
 											);
 										}
 									}}>
@@ -3276,8 +3185,7 @@ export default function Homepage() {
 												filteredSubEvent.sub_eventsStartTime,
 												filteredSubEvent.sub_eventsEndTime,
 												filteredSubEvent.sub_eventsMaxSeats,
-												filteredSubEvent.sub_eventsOrganizer,
-												filteredSubEvent.sub_eventsFaculty
+												filteredSubEvent.sub_eventsOrganizer
 											);
 										} else {
 											openModal(
@@ -3296,8 +3204,7 @@ export default function Homepage() {
 												"default_sub_eventsStartTime",
 												"default_sub_eventsEndTime",
 												"default_sub_eventsMaxSeats",
-												"default_sub_eventsOrganizer",
-												"default_sub_eventsFaculty"
+												"default_sub_eventsOrganizer"
 											);
 										}
 									}}>
@@ -3430,8 +3337,7 @@ export default function Homepage() {
 												filteredSubEvent.sub_eventsStartTime,
 												filteredSubEvent.sub_eventsEndTime,
 												filteredSubEvent.sub_eventsMaxSeats,
-												filteredSubEvent.sub_eventsOrganizer,
-												filteredSubEvent.sub_eventsFaculty
+												filteredSubEvent.sub_eventsOrganizer
 											);
 										} else {
 											openModal(
@@ -3450,8 +3356,7 @@ export default function Homepage() {
 												"default_sub_eventsStartTime",
 												"default_sub_eventsEndTime",
 												"default_sub_eventsMaxSeats",
-												"default_sub_eventsOrganizer",
-												"default_sub_eventsFaculty"
+												"default_sub_eventsOrganizer"
 											);
 										}
 									}}>
@@ -3602,8 +3507,7 @@ export default function Homepage() {
 														filteredSubEvent.sub_eventsStartTime,
 														filteredSubEvent.sub_eventsEndTime,
 														filteredSubEvent.sub_eventsMaxSeats,
-														filteredSubEvent.sub_eventsOrganizer,
-														filteredSubEvent.sub_eventsFaculty
+														filteredSubEvent.sub_eventsOrganizer
 													);
 												}
 											}}>
@@ -3667,8 +3571,7 @@ export default function Homepage() {
 														filteredSubEvent.sub_eventsStartTime,
 														filteredSubEvent.sub_eventsEndTime,
 														filteredSubEvent.sub_eventsMaxSeats,
-														filteredSubEvent.sub_eventsOrganizer,
-														filteredSubEvent.sub_eventsFaculty
+														filteredSubEvent.sub_eventsOrganizer
 													);
 												}
 											}}>
@@ -3731,8 +3634,7 @@ export default function Homepage() {
 														filteredSubEvent.sub_eventsStartTime,
 														filteredSubEvent.sub_eventsEndTime,
 														filteredSubEvent.sub_eventsMaxSeats,
-														filteredSubEvent.sub_eventsOrganizer,
-														filteredSubEvent.sub_eventsFaculty
+														filteredSubEvent.sub_eventsOrganizer
 													);
 												}
 											}}>
