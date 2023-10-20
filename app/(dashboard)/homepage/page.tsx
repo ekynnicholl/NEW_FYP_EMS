@@ -622,9 +622,16 @@ export default function Homepage() {
 		{ event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''] },
 	]);
 
+
+	const lastDetailRef = useRef<HTMLDivElement>(null);
 	const addEventDetails = () => {
-		setEventDetails([...eventDetails, { event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''] }]);
+		setEventDetails(eventDetails => [...eventDetails, { event_names: [''], venues: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], maximum_seats: [''], organizers: [''] }]);
 	};
+	useEffect(() => {
+		if (lastDetailRef.current) {
+			lastDetailRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, [eventDetails]);
 
 	const handleEventNameInputChange = (eventIndex: number, eventNameIndex: number, value: string) => {
 		const updatedDetails = [...eventDetails];
@@ -1247,7 +1254,7 @@ export default function Homepage() {
 								</div>
 
 								{eventDetails.map((detail, index) => (
-									<div key={index} className="mb-7">
+									<div key={index} className="mb-7" ref={index === eventDetails.length - 1 ? lastDetailRef : null}>
 
 										{index === 0 && (
 											<div className="mt-1"></div>
@@ -1520,7 +1527,7 @@ export default function Homepage() {
 											)}
 
 											<div className="flex items-center gap-[6px]">
-												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ {subEvent.sub_eventsName}</p>
+												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index+1}</p>
 												<button
 													type="button"
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
