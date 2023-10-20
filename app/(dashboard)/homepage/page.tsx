@@ -42,6 +42,7 @@ import { useRouter } from "next/navigation";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
 import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 //npm install chartjs-plugin-datalabels
 
 // import {Calendar} from "@/components/layouts/calendar";
@@ -1528,7 +1529,7 @@ export default function Homepage() {
 											)}
 
 											<div className="flex items-center gap-[6px]">
-												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index+1}</p>
+												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
 												<button
 													type="button"
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
@@ -2625,7 +2626,30 @@ export default function Homepage() {
 												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
 													{latestEvent[0].intFEventName}
 												</h2>
-												<ThreeDotIcon />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<ThreeDotIcon />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[0].intFEventDescription}
@@ -2779,7 +2803,30 @@ export default function Homepage() {
 												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
 													{latestEvent[1].intFEventName}
 												</h2>
-												<ThreeDotIcon />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<ThreeDotIcon />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[1].intFID,
+															);
+															fetchAttendanceList(latestEvent[1].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openAttendanceModal(
+																latestEvent[1].intFID,
+															);
+															fetchAttendanceList(latestEvent[1].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[1].intFEventDescription}
@@ -2934,7 +2981,30 @@ export default function Homepage() {
 												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
 													{latestEvent[2].intFEventName}
 												</h2>
-												<ThreeDotIcon />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<ThreeDotIcon />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[2].intFID,
+															);
+															fetchAttendanceList(latestEvent[2].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openAttendanceModal(
+																latestEvent[2].intFID,
+															);
+															fetchAttendanceList(latestEvent[2].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[2].intFEventDescription}
@@ -3089,7 +3159,30 @@ export default function Homepage() {
 												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
 													{latestEvent[3].intFEventName}
 												</h2>
-												<ThreeDotIcon />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<ThreeDotIcon />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[3].intFID,
+															);
+															fetchAttendanceList(latestEvent[3].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openAttendanceModal(
+																latestEvent[3].intFID,
+															);
+															fetchAttendanceList(latestEvent[3].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[3].intFEventDescription}
