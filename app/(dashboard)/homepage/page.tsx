@@ -2628,7 +2628,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 															<ThreeDotIcon />
 														</div>
 													</DropdownMenuTrigger>
@@ -2805,7 +2805,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 															<ThreeDotIcon />
 														</div>
 													</DropdownMenuTrigger>
@@ -2983,7 +2983,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 															<ThreeDotIcon />
 														</div>
 													</DropdownMenuTrigger>
@@ -3161,7 +3161,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 															<ThreeDotIcon />
 														</div>
 													</DropdownMenuTrigger>
@@ -3339,7 +3339,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 															<ThreeDotIcon />
 														</div>
 													</DropdownMenuTrigger>
@@ -3517,7 +3517,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 															<ThreeDotIcon />
 														</div>
 													</DropdownMenuTrigger>
@@ -3683,7 +3683,7 @@ export default function Homepage() {
 													</h2>
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 																<ThreeDotIcon />
 															</div>
 														</DropdownMenuTrigger>
@@ -3775,7 +3775,7 @@ export default function Homepage() {
 													</h2>
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 																<ThreeDotIcon />
 															</div>
 														</DropdownMenuTrigger>
@@ -3866,7 +3866,7 @@ export default function Homepage() {
 													</h2>
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
 																<ThreeDotIcon />
 															</div>
 														</DropdownMenuTrigger>
