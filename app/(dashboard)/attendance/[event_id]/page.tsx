@@ -58,8 +58,6 @@ export default function Home() {
 	const router = useRouter();
 	console.log("Event ID captured in URL:" + event_id);
 
-	const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
-	const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
 	const [subEventsData, setSubEventsData] = useState<subEvent[]>([]);
 
 	// Fetch data from database
@@ -280,7 +278,7 @@ export default function Home() {
 
 	return (
 		<div className="flex-1 mx-auto px-5 py-5 bg-slate-100">
-			<div className="bg-white rounded p-8">
+			{/* <div className="bg-white rounded p-8">
 				<div>
 					<h3 className="font-bold">Attendance Forms</h3>
 					<div className="border-t border-gray-300 my-2"></div>
@@ -316,8 +314,8 @@ export default function Home() {
 						</Fragment>
 					))}
 				</div>
-			</div>
-			<div className="bg-white rounded p-8 mt-5">
+			</div> */}
+			{/* <div className="bg-white rounded p-8 mt-5">
 				<div>
 					<h3 className="font-bold">Feedback Forms</h3>
 					<div className="border-t border-gray-300 my-2"></div>
@@ -395,7 +393,7 @@ export default function Home() {
 						</div>
 					</Modal>
 				</div>
-			</div>
+			</div> */}
 
 			<div className="bg-white rounded p-8 mt-5">
 				<div>
