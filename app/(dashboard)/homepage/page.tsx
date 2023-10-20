@@ -41,6 +41,7 @@ import cookie from 'js-cookie';
 import { useRouter } from "next/navigation";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
+import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
 //npm install chartjs-plugin-datalabels
 
 // import {Calendar} from "@/components/layouts/calendar";
@@ -2620,9 +2621,12 @@ export default function Homepage() {
 									{latestEvent[0] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-												{latestEvent[0].intFEventName}
-											</h2>
+											<div className="flex justify-between items-center">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<ThreeDotIcon />
+											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[0].intFEventDescription}
 											</p>
@@ -2771,9 +2775,12 @@ export default function Homepage() {
 									{latestEvent[1] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-												{latestEvent[1].intFEventName}
-											</h2>
+											<div className="flex justify-between items-center">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+													{latestEvent[1].intFEventName}
+												</h2>
+												<ThreeDotIcon />
+											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[1].intFEventDescription}
 											</p>
@@ -2923,9 +2930,12 @@ export default function Homepage() {
 									{latestEvent[2] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-												{latestEvent[2].intFEventName}
-											</h2>
+											<div className="flex justify-between items-center">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+													{latestEvent[2].intFEventName}
+												</h2>
+												<ThreeDotIcon />
+											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[2].intFEventDescription}
 											</p>
@@ -3075,9 +3085,12 @@ export default function Homepage() {
 									{latestEvent[3] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-												{latestEvent[3].intFEventName}
-											</h2>
+											<div className="flex justify-between items-center">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+													{latestEvent[3].intFEventName}
+												</h2>
+												<ThreeDotIcon />
+											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[3].intFEventDescription}
 											</p>
@@ -3227,9 +3240,12 @@ export default function Homepage() {
 									{latestEvent[4] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-												{latestEvent[4].intFEventName}
-											</h2>
+											<div className="flex justify-between items-center">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+													{latestEvent[4].intFEventName}
+												</h2>
+												<ThreeDotIcon />
+											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[4].intFEventDescription}
 											</p>
@@ -3379,9 +3395,12 @@ export default function Homepage() {
 									{latestEvent[5] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
-											<h2 className="text-2xl font-semibold mb-2 text-slate-800">
-												{latestEvent[5].intFEventName}
-											</h2>
+											<div className="flex justify-between items-center">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+													{latestEvent[5].intFEventName}
+												</h2>
+												<ThreeDotIcon />
+											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[5].intFEventDescription}
 											</p>
