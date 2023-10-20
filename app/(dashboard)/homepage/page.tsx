@@ -3337,7 +3337,30 @@ export default function Homepage() {
 												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
 													{latestEvent[4].intFEventName}
 												</h2>
-												<ThreeDotIcon />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<ThreeDotIcon />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[4].intFID,
+															);
+															fetchAttendanceList(latestEvent[4].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openAttendanceModal(
+																latestEvent[4].intFID,
+															);
+															fetchAttendanceList(latestEvent[4].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[4].intFEventDescription}
@@ -3492,7 +3515,30 @@ export default function Homepage() {
 												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
 													{latestEvent[5].intFEventName}
 												</h2>
-												<ThreeDotIcon />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+															<ThreeDotIcon />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[5].intFID,
+															);
+															fetchAttendanceList(latestEvent[5].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openAttendanceModal(
+																latestEvent[5].intFID,
+															);
+															fetchAttendanceList(latestEvent[5].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4">
 												{latestEvent[5].intFEventDescription}
@@ -3631,7 +3677,35 @@ export default function Homepage() {
 												}
 											}}>
 											<div className="ml-2 mr-2">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
+												<div className="flex justify-between items-center">
+													<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+														{event.intFEventName}
+													</h2>
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+																<ThreeDotIcon />
+															</div>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent>
+															<DropdownMenuItem onClick={e => {
+																e.stopPropagation();
+																openAttendanceModal(
+																	event.intFID,
+																);
+																fetchAttendanceList(event.intFID);
+															}}>Attendance List</DropdownMenuItem>
+															<DropdownMenuSeparator />
+															<DropdownMenuItem onClick={e => {
+																e.stopPropagation(); // 
+																openAttendanceModal(
+																	event.intFID,
+																);
+																fetchAttendanceList(event.intFID);
+															}}>Feedback Forms</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</div>
 												<div className="border-t border-gray-300 my-4"></div>
 												<p className="text-gray-500">{event.intFEventDescription}</p>
 												<div className="flex items-center mt-4">
@@ -3695,7 +3769,35 @@ export default function Homepage() {
 												}
 											}}>
 											<div className="ml-2 mr-2">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
+												<div className="flex justify-between items-center">
+													<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+														{event.intFEventName}
+													</h2>
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+																<ThreeDotIcon />
+															</div>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent>
+															<DropdownMenuItem onClick={e => {
+																e.stopPropagation();
+																openAttendanceModal(
+																	event.intFID,
+																);
+																fetchAttendanceList(event.intFID);
+															}}>Attendance List</DropdownMenuItem>
+															<DropdownMenuSeparator />
+															<DropdownMenuItem onClick={e => {
+																e.stopPropagation(); // 
+																openAttendanceModal(
+																	event.intFID,
+																);
+																fetchAttendanceList(event.intFID);
+															}}>Feedback Forms</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</div>
 												<div className="border-t border-gray-300 my-4"></div>
 												<p className="text-gray-500">{event.intFEventDescription}</p>
 												<div className="flex items-center mt-4">
@@ -3758,7 +3860,35 @@ export default function Homepage() {
 												}
 											}}>
 											<div className="ml-2 mr-2">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">{event.intFEventName}</h2>
+												<div className="flex justify-between items-center">
+													<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+														{event.intFEventName}
+													</h2>
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
+																<ThreeDotIcon />
+															</div>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent>
+															<DropdownMenuItem onClick={e => {
+																e.stopPropagation();
+																openAttendanceModal(
+																	event.intFID,
+																);
+																fetchAttendanceList(event.intFID);
+															}}>Attendance List</DropdownMenuItem>
+															<DropdownMenuSeparator />
+															<DropdownMenuItem onClick={e => {
+																e.stopPropagation(); // 
+																openAttendanceModal(
+																	event.intFID,
+																);
+																fetchAttendanceList(event.intFID);
+															}}>Feedback Forms</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</div>
 												<div className="border-t border-gray-300 my-4"></div>
 												<p className="text-gray-500">{event.intFEventDescription}</p>
 												<div className="flex items-center mt-4">
