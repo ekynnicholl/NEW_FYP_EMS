@@ -238,7 +238,7 @@ export default function AttendanceForm() {
 							<option value="Business Development and Liaison">Business Development and Liaison</option>
 							<option value="Campus Services">Campus Services</option>
 							<option value="Director Administration Office">Director Administration Office</option>
-							<option value="Faculty B">Finance and Business Analysis</option>
+							<option value="Finance and Business Analysis">Finance and Business Analysis</option>
 							<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
 							<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
 							<option value="Human Resources">Human Resources</option>

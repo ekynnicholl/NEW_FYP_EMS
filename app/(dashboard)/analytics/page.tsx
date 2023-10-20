@@ -36,16 +36,12 @@ export default function Home() {
 	const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		if (name === "startDate") {
-			// Check if the new start date is greater than the current end date
 			if (new Date(value) > new Date(endDate)) {
-				// If it is, set the end date to the new start date
 				setEndDate(value);
 			}
 			setStartDate(value);
 		} else if (name === "endDate") {
-			// Check if the new end date is less than the current start date
 			if (new Date(value) < new Date(startDate)) {
-				// If it is, set the start date to the new end date
 				setStartDate(value);
 			}
 			setEndDate(value);
