@@ -1189,7 +1189,7 @@ export default function Homepage() {
 									<input
 										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 										type="text"
-										placeholder="Description"
+										placeholder="Put your event description"
 										name="event_description"
 										required
 										onChange={e =>
