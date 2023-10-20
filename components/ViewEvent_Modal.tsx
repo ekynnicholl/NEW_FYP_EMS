@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[999]" id="wrapper" onClick={handleClose}>
+    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[100]" id="wrapper" onClick={handleClose}>
       <div className="w-[430px] lg:w-[530px] flex flex-col relative p-10 lg:p-0">
         <div>
           <div className="bg-white p-2 rounded-lg shadow-md max-h-[70vh] lg:max-h-[90vh] overflow-y-auto overflow-x-hidden pr-3 lg-pr-0">
