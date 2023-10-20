@@ -110,39 +110,6 @@ export default function Home() {
         fetchSubEvents();
     }, [event_id, supabase]);
 
-    // Refresh data from database
-    const refreshData = async () => {
-        const { data: subEventsData, error: subEventsError } = await supabase
-            .from("sub_events")
-            .select("sub_eventsID")
-            .eq("sub_eventsMainID", event_id);
-
-        if (subEventsError) {
-            console.error("Error fetching sub_events data:", subEventsError);
-            return;
-        }
-
-        const subEventIDs = subEventsData.map(item => item.sub_eventsID);
-        setAttendanceID(subEventIDs);
-
-        const { data: attendanceFormsData, error: attendanceFormError } = await supabase
-            .from("attendance_forms")
-            .select("*")
-            .in("attFSubEventID", subEventIDs);
-
-        if (attendanceFormError) {
-            console.error("Error fetching attendance forms data:", attendanceFormError);
-            return;
-        }
-
-        setInfos(attendanceFormsData);
-        console.log("Data refreshed successfully.");
-
-        if (attendanceFormError) {
-            console.log("Error fetching data: ", attendanceFormError);
-        }
-    };
-
     // Copy text to clipboard,
     const copyToClipboard = (text: string) => {
         navigator.clipboard
