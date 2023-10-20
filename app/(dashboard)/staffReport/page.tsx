@@ -16,19 +16,25 @@ import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 
 import { Fragment, useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import SideBarDesktop from "@/components/layouts/SideBarDesktop";
-import SideBarMobile from "@/components/layouts/SideBarMobile";
-import TopBar from "@/components/layouts/TopBar";
+
 
 type Info = {
     attFormsStaffID: number;
 	attFormsStaffName: string;
 	attFormsFacultyUnit: string;
+	attFSubEventID: string;
+};
+
+type subEventsAttended = {
+    sub_eventsID: string;
+	sub_eventsMainID: string;
+	sub_eventsName: string;
+	sub_eventsStartDate: string;
+	sub_eventsStartTime: string;
 };
 
 export default function Home() {
 	const supabase = createClientComponentClient();
-    const [infos, setInfos] = useState<Info[]>([] as Info[]);
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
     const [searchQuery, setSearchQuery] = useState(""); // Search queries for search bar
     const [currentPage, setCurrentPage] = useState(1); // Define state for current page
@@ -37,23 +43,109 @@ export default function Home() {
     const [sortOrder, setSortOrder] = useState("asc"); // Initialize sort order (asc or desc)
     const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
 	const [showModal, setShowModal] = useState(false);
-
+	const [infos, setInfos] = useState<Info[]>([] as Info[]);
+	const [subEventsAttended, setSubEventsAttended] = useState<subEventsAttended[]>([]);
+	const [selectedEvent, setSelectedEvent] = useState({
+		attFormsStaffID: "",
+		attFormsStaffName: "",
+		attFormsFacultyUnit: "",
+		attFSubEventID: "",
+		sub_eventsID: "",
+		sub_eventsMainID: "",
+		sub_eventsName: "",
+		sub_eventsStartDate: "",
+		sub_eventsStartTime: "",
+	});
+	
 	// Fetch data from database
 	useEffect(() => {
 		const fetchInfos = async () => {
-			const { data } = await supabase
+			const { data: staffData, error: attendedEventError } = await supabase
 				.from("attendance_forms")
-				.select("attFormsStaffID, attFormsStaffName, attFormsFacultyUnit");
-			setInfos(data || []);
+				.select("*");
+
+			if(attendedEventError){
+				console.error("Error fetching staff attendance data:", attendedEventError);
+                return;
+			}
+
+			setInfos(staffData);
+
+			const evetAttendedQuery = await supabase
+				.from("sub_events")
+				.select("sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsStartDate, sub_eventsStartTime")
+				.in("sub_eventsID", staffData.map(info => info.attFSubEventID))
+
+				if(evetAttendedQuery){
+					console.error("Error fetching event attended data:", evetAttendedQuery.error);
+					return;
+				}
+
+			setSubEventsAttended(evetAttendedQuery);
+			
 		};
 		fetchInfos();
+		
 	}, [supabase]);
+	
+	
+	const fetchSubEventList = async (attFormsStaffID: string) => {
+		const { data: attendanceForms, error: attendanceFormsError } = await supabase
+			.from("attendance_forms")
+			.select()
+			.eq("attFSubEventID", attFormsStaffID);
+
+		if(attendanceFormsError){
+			console.error("Error fetching sub_events:", attendanceFormsError);
+			return;
+		}
+
+		const attendnacesubEventIDs =attendanceForms.map(attendance => attendance.sub_event_id);
+		
+		const {data: subEvents, error: subEventsError} = await supabase
+			.from("sub_events")
+			.select()
+			.in("sub_eventsID", attendnacesubEventIDs);
+
+			if(subEventsError){
+				console.error("Error fetching sub_events:", subEventsError);
+				return;
+			}
+			
+			setSubEventsAttended(subEvents);
+			
+	}
+
+	const openViewEventAttendedModal = async (
+			attFormsStaffID: string,
+			attFormsStaffName: string,
+			attFormsFacultyUnit: string,
+			attFSubEventID: string,
+			sub_eventsID: string,
+			sub_eventsMainID: string,
+			sub_eventsName: string,
+			sub_eventsStartDate: string,
+			sub_eventsStartTime: string,
+		
+		) => {
+		setSelectedEvent({
+			attFormsStaffID: attFormsStaffID,
+			attFormsStaffName: attFormsStaffName,
+			attFormsFacultyUnit: attFormsFacultyUnit,
+			attFSubEventID: attFSubEventID,
+			sub_eventsID: sub_eventsID,
+			sub_eventsMainID: sub_eventsMainID,
+			sub_eventsName: sub_eventsName,
+			sub_eventsStartDate: sub_eventsStartDate,
+			sub_eventsStartTime: sub_eventsStartTime,
+		})
+	}
 
 	// Refresh data from database
 	const refreshData = async () => {
         const { data, error } = await supabase
             .from("internal_events")
-            .select("attFormsStaffID, attFormsStaffName, attFormsFacultyUnit");
+            .select("*");
 
         setInfos(data!);
         console.log("Data refreshed successfully.");
@@ -63,6 +155,7 @@ export default function Home() {
         }
     };
 
+	
 	// Handle search input
 	const handleSearch = (query:string) => {
 		setSearchQuery(query);
@@ -170,31 +263,17 @@ export default function Home() {
             }else{
                 return a.attFormsStaffName.localeCompare(b.attFormsStaffName, undefined, {sensitivity: 'base'}); 
             }  
-
 		}
 		return 0;
 	});
 
 	return (
 		<div className="h-screen flex flex-row justify-start">
-			<div className="sm:hidden">
-				<SideBarMobile />
-			</div>
-
-			<div className="hidden sm:flex">
-				<SideBarDesktop />
-			</div>
-			<div className="flex-1">
-
-				{/* Got red red one */}
-				{/* <div className="hidden sm:block">
-					<TopBar />
-				</div> */}
 			<div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
 				<div className="bg-white rounded p-8">
 					<div className="inline-flex">
 						<span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
-						<h1 className="text-2xl font-bold"><span className="ml-[5px]">Staff Reports</span></h1>
+						<h1 className="text-2xl font-bold"><span className="ml-[5px]">Reports</span></h1>
 					</div>
 					<Fragment>
 						<div className="flex-1 items-center justify-left mb-8">
@@ -336,7 +415,25 @@ export default function Home() {
 											currentPage * entriesToShow,
 										)
 										.map((info, index) => (
-											<tr className="flex" key={index} onClick={() => setShowModal(true)}>
+											<tr className="flex" key={index} 
+												onClick={() => {
+													const fileteredSubEvent = subEventsAttended.find(subEvent => subEvent.sub_eventsID === selectedEvent.attFSubEventID);
+													
+													if(fileteredSubEvent){
+														openViewEventAttendedModal(
+															info.attFormsStaffID.toString(),
+															info.attFormsStaffName,
+															info.attFormsFacultyUnit,
+															info.attFSubEventID,
+															fileteredSubEvent.sub_eventsID,
+															fileteredSubEvent.sub_eventsMainID,
+															fileteredSubEvent.sub_eventsName,
+															fileteredSubEvent.sub_eventsStartDate,
+															fileteredSubEvent.sub_eventsStartTime
+														);
+													}
+													console.log(fileteredSubEvent?.sub_eventsID);
+												}}>
 												<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
 													<div className="flex items-center">
 														<div className="ml-[14px]">
@@ -367,9 +464,8 @@ export default function Home() {
 												</td>
 
 												<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white cursor-pointer hover:bg-slate-200 text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-no-wrap ml-1">
-														{info.attFormsStaffID}
-														
+													<p className="text-gray-900 whitespace-no-wrap ml-1" onChange={() => fetchSubEventList(info.attFSubEventID)}>
+														1
 													</p>
 												</td>
                                                 												
@@ -578,6 +674,7 @@ export default function Home() {
 			</div>
 
 			<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
+			<p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Attended</p>
 				<div className="p-10 bg-slate-100 ">
 					<table className="min-w-full leading-normal">
 					<thead>
@@ -588,18 +685,15 @@ export default function Home() {
 							<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
 								Event Name
 							</th>
-							
+							<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+								Start Date
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{sortedData
-							.slice(
-								(currentPage - 1) * entriesToShow,
-								currentPage * entriesToShow,
-							)
-							.map((info, index) => (
+						{subEventsAttended.map((subEvent, index) => (
 								<tr className="flex" 
-									key={index} 
+									key={subEvent.sub_eventsID} 
 									onClick={() => setShowModal(true)}>
 									<td className="flex-1 pl-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
 										<div className="flex items-center">
@@ -615,7 +709,13 @@ export default function Home() {
 									</td>
 									<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
 										<p className="text-gray-900 whitespace-no-wrap ml-2">
-											{info.attFormsStaffName}
+											{subEvent.sub_eventsName}
+										</p>
+									</td>
+
+									<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+										<p className="text-gray-900 whitespace-no-wrap ml-2">
+											{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
 										</p>
 									</td>
 								</tr>
@@ -624,7 +724,6 @@ export default function Home() {
 					</table>	
 				</div>
 			</EventModal>
-			</div>
-		</div>
+		</div>	
 	);
 }
