@@ -236,7 +236,7 @@ export default function Homepage() {
 					"intFEventEndDate",
 					new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }),
 				)
-				.order("intFEventEndDate", { ascending: true })
+				.order("intFEventStartDate", { ascending: true })
 				.range(0, 5)
 				.select();
 
