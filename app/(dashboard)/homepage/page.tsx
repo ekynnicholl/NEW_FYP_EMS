@@ -419,6 +419,35 @@ export default function Homepage() {
 		setItemsPerPage(Number(e.target.value));
 	};
 
+	useEffect(() => {
+		if (attendanceData && attendanceData.length > 0) {
+			// Calculate labels (faculty/unit) and label data (counts)
+			const facultyCounts: { [key: string]: number } = {};
+
+			attendanceData.forEach(attendanceItem => {
+				const faculty = attendanceItem.attFormsFacultyUnit;
+				if (facultyCounts[faculty]) {
+					facultyCounts[faculty]++;
+				} else {
+					facultyCounts[faculty] = 1;
+				}
+			});
+
+			const facultyLabels = Object.keys(facultyCounts);
+			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+
+			const canvas = chartContainer.current;
+
+			if (canvas) {
+				if (chartInstanceRef.current) {
+					chartInstanceRef.current.destroy();
+				}
+
+				createPieChart(canvas, facultyLabels, facultyData);
+			}
+		}
+	}, [attendanceData]);
+
 	const handleSubEventClick = async (subEvent: subEvents) => {
 		try {
 			// Fetch attendance data for the selected sub-event
@@ -436,25 +465,28 @@ export default function Homepage() {
 			// Set the attendance data for the selected sub-event
 			setAttendanceData(attendanceForms);
 
-			// Calculate labels (faculty/unit) and label data (counts)
-			const facultyCounts: { [key: string]: number } = {};
+			// // Calculate labels (faculty/unit) and label data (counts)
+			// const facultyCounts: { [key: string]: number } = {};
 
-			attendanceForms.forEach(attendanceItem => {
-				const faculty = attendanceItem.attFormsFacultyUnit;
-				if (facultyCounts[faculty]) {
-					facultyCounts[faculty]++;
-				} else {
-					facultyCounts[faculty] = 1;
-				}
-			});
+			// attendanceForms.forEach(attendanceItem => {
+			// 	const faculty = attendanceItem.attFormsFacultyUnit;
+			// 	if (facultyCounts[faculty]) {
+			// 		facultyCounts[faculty]++;
+			// 	} else {
+			// 		facultyCounts[faculty] = 1;
+			// 	}
+			// });
 
-			const facultyLabels = Object.keys(facultyCounts);
-			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+			// const facultyLabels = Object.keys(facultyCounts);
+			// const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
-			const canvas = chartContainer.current;
-			createPieChart(canvas, facultyLabels, facultyData);
+			// const canvas = chartContainer.current;
+			// createPieChart(canvas, facultyLabels, facultyData);
+			// if (attendanceData.length === 0) {
+			// 	console.log("the data is empty");
+			// }
 
-			console.log("Attendance forms data for selected sub-event:", attendanceForms);
+			// console.log("Attendance forms data for selected sub-event:", attendanceForms);
 		} catch (error) {
 			const typedError = error as Error;
 			console.error("Error:", typedError.message);
