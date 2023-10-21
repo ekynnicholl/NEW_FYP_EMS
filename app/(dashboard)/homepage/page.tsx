@@ -1878,7 +1878,7 @@ export default function Homepage() {
 										<span className="ml-2.5">Feedback Summary</span>
 									</div>
 								</div>
-								<div className="text-left text-black text-[13px] pl-[34px] pb-5">
+								<div className="text-left text-black text-[13px] pl-[34px]">
 									Total Feedback Received: {feedbackData.length}
 								</div>
 								{/* This is to loop through the attendance data. */}
@@ -1896,7 +1896,7 @@ export default function Homepage() {
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select> */}
-										<div className="h-[600px] overflow-y-auto mt-0">
+										<div className="h-[600px] overflow-y-auto">
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
 									</div>

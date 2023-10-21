@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import LeftArrow from '@/components/icons/LeftArrow';
+import RightArrow from '@/components/icons/RightArrow';
 
 type FeedbackDataType = {
     fbID: string;
@@ -59,54 +61,158 @@ const columnDisplayNames: { [key in keyof FeedbackDataType]: string } = {
 };
 
 const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [activeTab, setActiveTab] = useState<'summary' | 'individual'>('summary');
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const navigateNext = () => {
+        if (currentIndex < feedbackData.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
+    const navigatePrevious = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+        }
+    };
+
+    useEffect(() => {
+        setCurrentIndex(0);
+    }, [feedbackData]);
 
     const columns: (keyof FeedbackDataType)[] = Object.keys(feedbackData[0]).filter(
         (column) => column !== 'fbID' && column !== 'fbSubEventID' && column != 'fbDateSubmitted'
     ) as (keyof FeedbackDataType)[];
 
+    const toggleTab = (tab: 'summary' | 'individual') => {
+        setActiveTab(tab);
+    };
+
     return (
         <div>
-            {columns.map((column, columnIndex) => (
-                <div key={columnIndex} className="mb-5">
-                    {column === 'fbSectionA1' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">A. Course Quality</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                        </p>
-                    ) : column === 'fbSectionB1' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">B. Training Experience</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                        </p>
-                    ) : column === 'fbSectionC1' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">C. Duration</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                        </p>
-                    ) : column === 'fbSectionD1' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">D. Recommendation</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                        </p>
-                    ) : column === 'fbSectionESuggestions' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">E. Suggestions/ Comments</span>
-                        </p>
-                    ) : column === 'fbFullName' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">Verification</span>
-                        </p>
-                    ) : column === 'fbCourseName' ? (
-                        <p className="font-bold text-[18px]">
-                            <span className="underline">Staff Development Program Details</span>
-                        </p>
-                    ) : null}
-                    <h2 className="">{columnDisplayNames[column]}</h2>
-                    <div className="border-t border-gray-300 my-2 mr-6"></div>
-                    <span>
-                        {feedbackData.map((feedback, feedbackIndex) => (
-                            <p className="rounded-md bg-slate-100 p-2 mr-6 mt-2" key={feedbackIndex}>{feedback[column]}</p>
-                        ))}
-                    </span>
+            <div className="mb-5">
+                <button
+                    className={`flex rounded-md items-center py-1 px-2 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'summary' ? 'bg-slate-300' : 'bg-slate-200'
+                        }`}
+                    onClick={() => toggleTab('summary')}
+                >
+                    Summary
+                </button>
+                <button
+                    className={`flex rounded-md items-center py-1 px-2 ml-3 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'individual' ? 'bg-slate-300' : 'bg-slate-200'
+                        }`}
+                    onClick={() => toggleTab('individual')}
+                >
+                    Individual
+                </button>
+            </div>
+
+            {activeTab === 'summary' && (
+                <div>
+                    {columns.map((column, columnIndex) => (
+                        <div key={columnIndex} className="mb-5">
+                            {column === 'fbSectionA1' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">A. Course Quality</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                </p>
+                            ) : column === 'fbSectionB1' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">B. Training Experience</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                </p>
+                            ) : column === 'fbSectionC1' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">C. Duration</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                </p>
+                            ) : column === 'fbSectionD1' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">D. Recommendation</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                </p>
+                            ) : column === 'fbSectionESuggestions' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">E. Suggestions/ Comments</span>
+                                </p>
+                            ) : column === 'fbFullName' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">Verification</span>
+                                </p>
+                            ) : column === 'fbCourseName' ? (
+                                <p className="font-bold text-[18px]">
+                                    <span className="underline">Staff Development Program Details</span>
+                                </p>
+                            ) : null}
+                            <h2 className="">{columnDisplayNames[column]}</h2>
+                            <div className="border-t border-gray-300 my-2 mr-6"></div>
+                            <span>
+                                {feedbackData.map((feedback, feedbackIndex) => (
+                                    <p className="rounded-md bg-slate-100 p-2 mr-6 mt-2" key={feedbackIndex}>{feedback[column]}</p>
+                                ))}
+                            </span>
+                        </div>
+                    ))}
                 </div>
-            ))}
+            )}
+
+            {activeTab === 'individual' && (
+                <div>
+                    <div>
+                        <div className="flex justify-start mb-3">
+                            <button onClick={navigatePrevious}><LeftArrow /></button>
+                            <input
+                                type="number"
+                                value={currentIndex + 1}
+                                onChange={(e) => {
+                                    const value = parseInt(e.target.value, 10);
+                                    if (!isNaN(value) && value >= 1 && value <= feedbackData.length) {
+                                        setCurrentIndex(value - 1);
+                                    }
+                                }}
+                                className="text-[18px] rounded-md font-bold mr-2 ml-2 w-10 text-center border bg-white border-gray-400 text-gray-700 focus:outline-none leading-tight focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+
+                            />
+                            <span className="text-[18px] font-bold mr-2">/ {feedbackData.length}</span>
+                            <button onClick={navigateNext}><RightArrow /></button>
+                        </div>
+                        <div>
+                            {columns.map((column) => (
+                                <div key={column} className="mb-5">
+                                    {column === 'fbSectionA1' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">A. Course Quality</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                        </p>
+                                    ) : column === 'fbSectionB1' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">B. Training Experience</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                        </p>
+                                    ) : column === 'fbSectionC1' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">C. Duration</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                        </p>
+                                    ) : column === 'fbSectionD1' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">D. Recommendation</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                        </p>
+                                    ) : column === 'fbSectionESuggestions' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">E. Suggestions/ Comments</span>
+                                        </p>
+                                    ) : column === 'fbFullName' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">Verification</span>
+                                        </p>
+                                    ) : column === 'fbCourseName' ? (
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">Staff Development Program Details</span>
+                                        </p>
+                                    ) : null}
+                                    <p className="font-bold">{columnDisplayNames[column]}</p>
+                                    <div className="border-t border-gray-300 my-2 mr-6"></div>
+                                    <p className="rounded-md bg-slate-100 p-2 mr-6 mt-2">{feedbackData[currentIndex][column]}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
