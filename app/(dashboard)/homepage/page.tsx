@@ -46,6 +46,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
 import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import ViewEventFeedback from "@/components/ViewEventFeedback";
+import FeedbackList from "@/components/tables/feedbackTable";
 //npm install chartjs-plugin-datalabels
 
 // import {Calendar} from "@/components/layouts/calendar";
@@ -123,6 +125,33 @@ type subEvents = {
 	sub_eventsEndTime: string;
 	sub_eventsOrganizer: string;
 	sub_eventsMaxSeats: string;
+}
+
+type FeedbackDataType = {
+	fbID: string;
+	fbSubEventID: string;
+	fbCourseName: string;
+	fbCommencementDate: string;
+	fbCompletionDate: string;
+	fbDuration: string;
+	fbTrainersName: string;
+	fbTrainingProvider: string;
+	fbSectionA1: string;
+	fbSectionA2: string;
+	fbSectionA3: string;
+	fbSectionA4: string;
+	fbSectionA5: string;
+	fbSectionB1: string;
+	fbSectionB2: string;
+	fbSectionB3: string;
+	fbSectionB4: string;
+	fbSectionC1: string;
+	fbSectionD1: string;
+	fbSectionESuggestions: string;
+	fbSectionEChanges: string;
+	fbSectionEAdditional: string;
+	fbFullName: string;
+	fbEmailAddress: string;
 }
 
 export default function Homepage() {
@@ -1160,6 +1189,88 @@ export default function Homepage() {
 			});
 	};
 
+	// 
+	// This is for feedback modal,
+	//
+	// This is for feedback modal,
+	const [feedbackData, setFeedbackData] = useState<FeedbackDataType[]>([]);
+	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+	const [feedbackMainEventID, setFeedbackMainEventID] = useState("");
+	const [subEventsForFeedback, setSubEventsForFeedback] = useState<subEvents[]>([]);
+
+	// This function fetches ALL the forms,
+	const openFeedbackModal = async (event_id: string) => {
+		try {
+			// Fetch sub-events for the given event
+			const { data: subEvents, error: subEventsError } = await supabase
+				.from("sub_events")
+				.select()
+				.eq("sub_eventsMainID", event_id);
+
+			if (subEventsError) {
+				console.error("Error fetching sub_events:", subEventsError);
+				return;
+			}
+			// Set the main ID for the 
+			setFeedbackMainEventID(event_id);
+			fetchFeedbackList(event_id)
+			setSubEventsForFeedback(subEvents);
+
+			// Extract the subEventID values from the fetched sub_events
+			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
+
+			// Fetch all attendance_forms related to those sub_events
+			const { data: feedbackForms, error: formsError } = await supabase
+				.from("feedback_forms")
+				.select()
+				.in("fbSubEventID", subEventIDs);
+
+			if (formsError) {
+				console.error("Error fetching attendance forms:", formsError);
+				return;
+			}
+
+			// Set the attendance data for the main event
+			setFeedbackData(feedbackForms);
+			fetchFeedbackList(event_id)
+		} catch (error) {
+			const typedError = error as Error;
+			console.error("Error:", typedError.message);
+		}
+
+		setShowFeedbackModal(true);
+	};
+
+	// This function fetches feedback lists for particular sub-events,
+	const fetchFeedbackList = async (event_id: string) => {
+		const { data: subEvents, error: subEventsError } = await supabase
+			.from("sub_events")
+			.select()
+			.eq("sub_eventsMainID", event_id);
+
+		if (subEventsError) {
+			console.error("Error fetching sub_events:", subEventsError);
+			return;
+		}
+
+		// Extract the subEventID values from the fetched sub_events
+		const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
+
+		// Now, fetch the attendance_forms related to those sub_events
+		const { data: feedbackForms, error: formsError } = await supabase
+			.from("feedback_forms")
+			.select()
+			.in("fbSubEventID", subEventIDs);
+
+		if (formsError) {
+			console.error("Error fetching attendance forms:", formsError);
+			return;
+		} else {
+			setFeedbackData(feedbackForms);
+			setSelectedSubEvent("");
+		}
+	}
+
 	return (
 		<div className="p-5 bg-slate-100 space-y-4">
 			<div className="mx-auto w-full">
@@ -1755,6 +1866,57 @@ export default function Homepage() {
 							</div>
 						</div>
 					</ViewEvent_Modal>
+
+					<ViewEventFeedback
+						isVisible={showFeedbackModal}
+						onClose={() => setShowFeedbackModal(false)}>
+						<div className="flex">
+							<div className="h-[700px] w-full mr-3">
+								<div className="flex items-left justify-start">
+									<div className="flex items-center justify-center text-text text-[20px] text-center">
+										<PencilNoteIcon />{" "}
+										<span className="ml-2.5">Feedback Summary</span>
+									</div>
+								</div>
+								<div className="text-left text-black text-[13px] pl-[34px] pb-5">
+									Total Feedback Received: {feedbackData.length}
+								</div>
+								{/* This is to loop through the attendance data. */}
+								{feedbackData && feedbackData.length > 0 ? (
+									<div className="ml-9">
+										{/* <label htmlFor="itemsPerPageSelect">Show entries:</label>
+										<select
+											id="itemsPerPageSelect"
+											name="itemsPerPage"
+											value={itemsPerPage}
+											onChange={handleItemsPerPageChange}
+											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+										>
+											<option value="5">5</option>
+											<option value="10">10</option>
+											<option value="20">20</option>
+										</select> */}
+										<div className="h-[600px] overflow-y-auto mt-0">
+											<FeedbackList feedbackData={feedbackData} />
+										</div>
+									</div>
+								) : (
+									<div className="text-center text-gray-600">
+										No feedback received yet.
+									</div>
+
+								)}
+							</div>
+							{/* {attendanceData && attendanceData.length > 0 ? (
+								<div className="w-1/2 flex flex-col items-center justify-center">
+									<div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
+									<div className="w-[500px] h-[500px] flex items-center justify-center mt-5">
+										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
+									</div>
+								</div>
+							) : null} */}
+						</div>
+					</ViewEventFeedback>
 
 					<ViewAttendance_Modal
 						isVisible={showAttendanceModal}
@@ -2785,10 +2947,10 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
-															openAttendanceModal(
+															openFeedbackModal(
 																latestEvent[0].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[0].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -2962,10 +3124,10 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
-															openAttendanceModal(
+															openFeedbackModal(
 																latestEvent[1].intFID,
 															);
-															fetchAttendanceList(latestEvent[1].intFID);
+															fetchFeedbackList(latestEvent[1].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -3140,10 +3302,10 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
-															openAttendanceModal(
+															openFeedbackModal(
 																latestEvent[2].intFID,
 															);
-															fetchAttendanceList(latestEvent[2].intFID);
+															fetchFeedbackList(latestEvent[2].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -3318,10 +3480,10 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
-															openAttendanceModal(
+															openFeedbackModal(
 																latestEvent[3].intFID,
 															);
-															fetchAttendanceList(latestEvent[3].intFID);
+															fetchFeedbackList(latestEvent[3].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -3496,10 +3658,10 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
-															openAttendanceModal(
+															openFeedbackModal(
 																latestEvent[4].intFID,
 															);
-															fetchAttendanceList(latestEvent[4].intFID);
+															fetchFeedbackList(latestEvent[4].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -3674,10 +3836,10 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
-															openAttendanceModal(
+															openFeedbackModal(
 																latestEvent[5].intFID,
 															);
-															fetchAttendanceList(latestEvent[5].intFID);
+															fetchFeedbackList(latestEvent[5].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -3840,10 +4002,10 @@ export default function Homepage() {
 															<DropdownMenuSeparator />
 															<DropdownMenuItem onClick={e => {
 																e.stopPropagation(); // 
-																openAttendanceModal(
+																openFeedbackModal(
 																	event.intFID,
 																);
-																fetchAttendanceList(event.intFID);
+																fetchFeedbackList(event.intFID);
 															}}>Feedback Forms</DropdownMenuItem>
 														</DropdownMenuContent>
 													</DropdownMenu>
@@ -3932,10 +4094,10 @@ export default function Homepage() {
 															<DropdownMenuSeparator />
 															<DropdownMenuItem onClick={e => {
 																e.stopPropagation(); // 
-																openAttendanceModal(
+																openFeedbackModal(
 																	event.intFID,
 																);
-																fetchAttendanceList(event.intFID);
+																fetchFeedbackList(event.intFID);
 															}}>Feedback Forms</DropdownMenuItem>
 														</DropdownMenuContent>
 													</DropdownMenu>
@@ -4023,10 +4185,10 @@ export default function Homepage() {
 															<DropdownMenuSeparator />
 															<DropdownMenuItem onClick={e => {
 																e.stopPropagation(); // 
-																openAttendanceModal(
+																openFeedbackModal(
 																	event.intFID,
 																);
-																fetchAttendanceList(event.intFID);
+																fetchFeedbackList(event.intFID);
 															}}>Feedback Forms</DropdownMenuItem>
 														</DropdownMenuContent>
 													</DropdownMenu>
