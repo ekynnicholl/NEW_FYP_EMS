@@ -273,12 +273,14 @@ export default function Homepage() {
 		fetchLatestEvent();
 	}, [supabase]);
 
-	// This is for the grid view,
+	// 
+	// This is for the GRID VIEW,
+	//
 	const [todayEvents, setTodayEvents] = useState<any[]>([]);
 	const [tomorrowEvents, setTomorrowEvents] = useState<any[]>([]);
 	const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
 
-	// Function to compare dates (ignores time)
+	// Function to compare dates (ignores time),
 	function isSameDate(date1: string, date2: string) {
 		const d1 = new Date(date1);
 		const d2 = new Date(date2);
@@ -289,7 +291,19 @@ export default function Homepage() {
 		);
 	}
 
-	// Function to get tomorrow's date
+	// Function to check whether todays date is in range of the event,
+	function isDateInRange(currentDate: string, startDate: string, endDate: string) {
+		const currentDateObj = new Date(currentDate.substring(0, 10));
+		const startDateObj = new Date(startDate.substring(0, 10));
+		const endDateObj = new Date(endDate.substring(0, 10));
+
+		return (
+			currentDateObj.getTime() >= startDateObj.getTime() &&
+			currentDateObj.getTime() <= endDateObj.getTime()
+		);
+	}
+
+	// Function to get tomorrow's date,
 	function getTomorrowDate(date: string) {
 		const today = new Date(date);
 		today.setDate(today.getDate() + 1);
@@ -298,14 +312,13 @@ export default function Homepage() {
 
 	useEffect(() => {
 		const fetchGridView = async () => {
-			const today = new Date().toLocaleString('en-US', { timeZone: malaysiaTimezone });
+			const today = new Date().toISOString();
 			// Fetch data from internal_events table
 			const { data: mainEventData, error: internalError } = await supabase
 				.from('internal_events')
 				.select(
 					'intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate'
 				)
-				.gte('intFEventStartDate', today)
 				.order('intFEventStartDate', { ascending: true })
 				.select();
 
@@ -316,18 +329,26 @@ export default function Homepage() {
 
 			// Filter events for today, tomorrow, and upcoming
 			const todayEvents = mainEventData.filter(
-				(event) => isSameDate(event.intFEventStartDate, today)
+				(event) =>
+					isDateInRange(today, event.intFEventStartDate, event.intFEventEndDate)
 			);
+
+			// Filter tomorrow's events while excluding today's events
 			const tomorrow = getTomorrowDate(today);
 			const tomorrowEvents = mainEventData.filter(
 				(event) =>
 					isSameDate(event.intFEventStartDate, tomorrow) &&
-					!isSameDate(event.intFEventStartDate, today)
+					!isSameDate(event.intFEventStartDate, today) &&
+					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
 			);
+
+			// Filter upcoming events while excluding today's and past events
 			const upcomingEvents = mainEventData.filter(
 				(event) =>
 					!isSameDate(event.intFEventStartDate, tomorrow) &&
-					!isSameDate(event.intFEventStartDate, today)
+					!isSameDate(event.intFEventStartDate, today) &&
+					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime() &&
+					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
 			);
 
 			setLatestEvent(mainEventData);
@@ -338,7 +359,7 @@ export default function Homepage() {
 			setUpcomingEvents(upcomingEvents);
 		};
 		fetchGridView();
-	})
+	});
 
 	useEffect(() => {
 		const checkIsUserLoggedIn = () => {
@@ -3843,7 +3864,7 @@ export default function Homepage() {
 											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
-													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div>
+													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
 													<span className="relative px-3 py-[5px] font-semibold text-green-900 text-xs flex items-center">
 														<span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
@@ -3935,7 +3956,7 @@ export default function Homepage() {
 											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
-													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div>
+													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
 													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 text-xs flex items-center">
 														<span aria-hidden className="absolute inset-0 bg-yellow-200 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
@@ -4026,7 +4047,7 @@ export default function Homepage() {
 											<div className="h-full bg-orange-300 rounded-full" style={{ width: `${(20 / 60) * 100}%` }}></div>
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
-													<div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div>
+													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
 													<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
 														<span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
