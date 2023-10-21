@@ -351,8 +351,6 @@ export default function Homepage() {
 					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
 			);
 
-			setLatestEvent(mainEventData);
-
 			// Set the categorized events
 			setTodayEvents(todayEvents);
 			setTomorrowEvents(tomorrowEvents);
@@ -1675,7 +1673,7 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-2">
+														<span className="ml-1">
 															Attendance
 														</span>
 													</span>
@@ -1690,7 +1688,7 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-2">
+														<span className="ml-1">
 															Feedback
 														</span>
 													</span>
@@ -3795,7 +3793,7 @@ export default function Homepage() {
 									todayEvents.map((event) => (
 										<div
 											key={event.intFID}
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
+											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
@@ -3886,7 +3884,7 @@ export default function Homepage() {
 									tomorrowEvents.map((event) => (
 										<div
 											key={event.intFID}
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
+											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 												console.log(filteredSubEvent);
@@ -3978,7 +3976,7 @@ export default function Homepage() {
 									upcomingEvents.map((event) => (
 										<div
 											key={event.intFID}
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col transition transform hover:scale-105"
+											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
