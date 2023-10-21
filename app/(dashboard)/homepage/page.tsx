@@ -233,10 +233,10 @@ export default function Homepage() {
 					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate",
 				)
 				.gte(
-					"intFEventStartDate",
+					"intFEventEndDate",
 					new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }),
 				)
-				.order("intFEventStartDate", { ascending: true })
+				.order("intFEventEndDate", { ascending: true })
 				.range(0, 5)
 				.select();
 
