@@ -12,6 +12,7 @@ import Success_CreateEventModal from "@/components/Modal";
 import Modal from "@/components/QR_Codes_Modal";
 import { QRCodeSVG } from "qrcode.react";
 import Success_AddSubEventModal from "@/components/Modal";
+import QRCodeIcon from '@/components/icons/QRCodeIcon';
 
 import Success_EditEventModal from "@/components/Modal";
 import Success_EditSubEventModal from "@/components/Modal";
@@ -1484,7 +1485,7 @@ export default function Homepage() {
 					<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
 						<div className="ml-2 p-5 z-[999]">
 							<h3 className="lg:text-2xl font-medium text-gray-600 mb-2 text-center">
-								Attendance QR
+								Attendance
 							</h3>
 							<QRCodeSVG
 								value={`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`}
@@ -1505,7 +1506,7 @@ export default function Homepage() {
 					<Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
 						<div className="ml-2 p-5 z-[999]">
 							<h3 className="lg:text-2xl font-medium text-gray-600 mb-2 text-center">
-								Feedback QR
+								Feedback
 							</h3>
 							<QRCodeSVG
 								value={`https://new-fyp-ems.vercel.app/form/feedback/${selectedSubEventID}`}
@@ -1535,9 +1536,9 @@ export default function Homepage() {
 
 							<div className="ml-[7px] lg:ml-[9px]">
 								<h3 className="text-[16px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[180px]">
-									About this event
+									About This Event
 								</h3>
-								<p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[15px]">
+								<p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[10px]">
 									{selectedEvent.intFEventDescription}
 								</p>
 
@@ -1613,25 +1614,33 @@ export default function Homepage() {
 												</button>
 												<button
 													type="button"
-													className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex ml-5"
+													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
 													onClick={() => {
 														setSelectedSubEventID(subEvent.sub_eventsID);
 														setShowQRCodesAttendance(true);
 													}}
 												>
-													<BsBoxArrowUpRight className="text-xl text-slate-800" />
-													<span className="ml-2 mt-[1.3px] text-slate-800">QR Codes</span>
+													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
+														<QRCodeIcon />
+														<span className="ml-2">
+															Attendance
+														</span>
+													</span>
 												</button>
 												<button
 													type="button"
-													className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex ml-5"
+													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
 													onClick={() => {
 														setSelectedSubEventID(subEvent.sub_eventsID);
 														setShowQRCodesFeedback(true);
 													}}
 												>
-													<BsBoxArrowUpRight className="text-xl text-slate-800" />
-													<span className="ml-2 mt-[1.3px] text-slate-800">QR Codes</span>
+													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
+														<QRCodeIcon />
+														<span className="ml-2">
+															Feedback
+														</span>
+													</span>
 												</button>
 											</div>
 
