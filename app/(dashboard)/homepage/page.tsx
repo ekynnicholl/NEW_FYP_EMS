@@ -1358,7 +1358,7 @@ export default function Homepage() {
 									<input
 										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
 										type="text"
-										placeholder="Event name"
+										placeholder="What is your event called?"
 										id="event_name"
 										name="event_name"
 										required
@@ -1379,7 +1379,7 @@ export default function Homepage() {
 									<input
 										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 										type="text"
-										placeholder="Put your event description"
+										placeholder="This event is about..."
 										name="event_description"
 										required
 										onChange={e =>
@@ -1468,7 +1468,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="text"
-													placeholder="Event name"
+													placeholder="This sub-event is called?"
 													value={event_name}
 													onChange={(e) => handleEventNameInputChange(index, eventNameIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1485,7 +1485,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="text"
-													placeholder="Venue"
+													placeholder="Venue i.e., G401"
 													value={venue}
 													onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1502,7 +1502,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="number"
-													placeholder="Maximum seats"
+													placeholder="Maximum Seats"
 													value={maximum_seats}
 													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1563,7 +1563,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[62.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1608,7 +1608,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="text"
-													placeholder="Organizer"
+													placeholder="Who is the organizer?"
 													value={organizers}
 													onChange={(e) => handleEventOrganizersInputChange(index, organizersIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1621,7 +1621,7 @@ export default function Homepage() {
 
 								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
-										Add SubEvent
+										Add Sub-Event
 									</button>
 
 									<button

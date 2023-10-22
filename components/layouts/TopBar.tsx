@@ -185,7 +185,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 						<DropdownMenuContent>
 							<DropdownMenuItem onClick={() => updateHomepageView(1)} className={homepageView === 1 ? 'text-blue-500' : ''}>Card View</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => updateHomepageView(2)} className={homepageView === 2 ? 'text-blue-500' : ''}>Grid View</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => updateHomepageView(2)} className={homepageView === 2 ? 'text-blue-500' : ''}>List View</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
