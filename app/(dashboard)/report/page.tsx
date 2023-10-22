@@ -16,25 +16,16 @@ import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 
 import { Fragment, useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { error } from "console";
 
 type Info = {
     attFormsStaffID: number;
 	attFormsStaffName: string;
 	attFormsFacultyUnit: string;
-	attFSubEventID: string;
-};
-
-type subEvents = {
-    sub_eventsID: string;
-	sub_eventsMainID: string;
-	sub_eventsName: string;
-	sub_eventsStartDate: string;
-	sub_eventsStartTime: string;
 };
 
 export default function Home() {
 	const supabase = createClientComponentClient();
+    const [infos, setInfos] = useState<Info[]>([] as Info[]);
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
     const [searchQuery, setSearchQuery] = useState(""); // Search queries for search bar
     const [currentPage, setCurrentPage] = useState(1); // Define state for current page
@@ -42,78 +33,24 @@ export default function Home() {
     const [sortBy, setSortBy] = useState(""); // Initialize state for sorting
     const [sortOrder, setSortOrder] = useState("asc"); // Initialize sort order (asc or desc)
     const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
-
-
 	const [showModal, setShowModal] = useState(false);
-	const [infos, setInfos] = useState<Info[]>([] as Info[]);
-	const [subEventsAttended, setSubEventsAttended] = useState<subEvents[]>([]);
-	const [selectedEvent, setSelectedEvent] = useState({
-		attFSubEventID: "",
-		sub_eventsID: "",
-		sub_eventsMainID: "",
-		sub_eventsName: "",
-		sub_eventsStartDate: "",
-		sub_eventsStartTime: "",
-	});
-	
+
 	// Fetch data from database
 	useEffect(() => {
 		const fetchInfos = async () => {
-			const { data: staffData, error: attendedEventError } = await supabase
+			const { data } = await supabase
 				.from("attendance_forms")
-				.select("*");
-
-			if(attendedEventError){
-				console.error("Error fetching staff attendance data:", attendedEventError);
-                return;
-			}
-
-			setInfos(staffData || []);	
+				.select("attFormsStaffID, attFormsStaffName, attFormsFacultyUnit");
+			setInfos(data || []);
 		};
 		fetchInfos();
-
 	}, [supabase]);
 
-	const fetchSubEventList = async (event_id: string) => {
-		const { data: subEvents, error: subEventsError } = await supabase
-			.from("sub_events")
-			.select()
-			.eq("sub_eventsID", event_id);
-
-		if (subEventsError) {
-			console.error("Error fetching sub_events:", subEventsError);
-			return;
-		}
-
-		setSubEventsAttended(subEvents || []);
-	}
-
-	const openModal = async (
-		staff_event_id: string,
-		sub_eventsID: string,
-		sub_eventsMainID: string,
-		sub_eventsName: string,
-		sub_eventsStartDate: string,
-		sub_eventsStartTime: string,
-	) => {
-		setSelectedEvent({
-			attFSubEventID: staff_event_id,
-			sub_eventsID: sub_eventsID,
-			sub_eventsMainID: sub_eventsMainID,
-			sub_eventsName: sub_eventsName,
-			sub_eventsStartDate: sub_eventsStartDate,
-			sub_eventsStartTime: sub_eventsStartTime,
-		});
-		
-		fetchSubEventList(staff_event_id);
-		setShowModal(true);
-	}
-	
 	// Refresh data from database
 	const refreshData = async () => {
         const { data, error } = await supabase
-            .from("internal_events")
-            .select("*");
+            .from("attendance_forms")
+            .select("attFormsStaffID, attFormsStaffName, attFormsFacultyUnit");
 
         setInfos(data!);
         console.log("Data refreshed successfully.");
@@ -123,14 +60,14 @@ export default function Home() {
         }
     };
 
-	
 	// Handle search input
 	const handleSearch = (query:string) => {
 		setSearchQuery(query);
 		const filteredData = infos.filter(
 			info =>
 				info.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
-				info.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase()),
+				info.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase()) ||
+				info.attFormsStaffID.toString().includes(query),
 		);
 		setInfos(filteredData);
 	};
@@ -196,12 +133,12 @@ export default function Home() {
 
 	// Toggle sort order between 'asc' and 'desc' when ID is selected
 	const handleSortButtonMenuClick = () => {
-		if (sortBy === "id") {
-			// If it's already sorted by name, toggle between 'asc' and 'desc'
+		if (sortBy === "staffid" || sortBy === "name") {
+			
 			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 		} else {
-			// Set the sorting option to name and default to 'asc'
-			setSortBy("id");
+			
+			setSortBy("staffid");
 			setSortOrder("asc");
 		}
 		setShowSortOptions(false);
@@ -211,7 +148,7 @@ export default function Home() {
 	const sortOptions = [
 		{ label: "Staff Name", value: "name" },
 		{ label: "Staff ID", value: "staffid" },
-		{ label: "Number of Event Attended", value: "eventattended" },
+		// { label: "Number of Event Attended", value: "eventattended" },
 		
 	];
 
@@ -231,12 +168,16 @@ export default function Home() {
             }else{
                 return a.attFormsStaffName.localeCompare(b.attFormsStaffName, undefined, {sensitivity: 'base'}); 
             }  
+
 		}
 		return 0;
 	});
 
 	return (
 		<div className="h-screen flex flex-row justify-start">
+			
+			
+				
 			<div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
 				<div className="bg-white rounded p-8">
 					<div className="inline-flex">
@@ -280,59 +221,61 @@ export default function Home() {
 							</div>
 
 							{/* Sort By Button */}
-							<button
-								type="button"
-								className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden"
-								onClick={handleSortButtonClick}>
-								<Image
-									src={filterBar.src}
-									alt=""
-									width={20}
-									height={20}
-									className="text-slate-800"
-								/>
-								<span className="ml-2 text-slate-800">Sort By</span>
-							</button>
+							<div className="relative">
+								<button
+									type="button"
+									className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden"
+									onClick={handleSortButtonClick}>
+									<Image
+										src={filterBar.src}
+										alt=""
+										width={20}
+										height={20}
+										className="text-slate-800"
+									/>
+									<span className="ml-2 text-slate-800">Sort By</span>
+								</button>
 
-							{/* Dropdown Menu */}
-							<div
-								className={`absolute top-[260px] right-[85px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${
-									showSortOptions ? "translate-x-0" : ""
-								}`}
-								style={{ zIndex: 999 }}>
-								{showSortOptions && (
-									<div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-[300px] rounded-lg">
-										<ul>
-											<li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
-												<span className="font-bold text-slate-800">
-													Sort By:
-												</span>
-											</li>
-											{sortOptions.map(option => (
-												<li
-													key={option.value}
-													className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
-													onClick={() => {
-														handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
-														setSortBy(option.value); // Set the sorting option
-													}}>
-													{option.value === "name" && (
-														<FaSortAlphaDown className="mr-3 ml-2 text-slate-800" />
-													)}
-													{option.value === "staffid" && (
-														<FaSortNumericDown className="mr-3 ml-2 text-slate-800" />
-													)}
-													{option.value === "eventattended" && (
-														<FaSortAmountUp className="mr-3 ml-2 text-slate-800" />
-													)}											
-													<span className="text-slate-500 ">
-														{option.label}
+								{/* Dropdown Menu */}
+								<div
+									className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${
+										showSortOptions ? "translate-x-0" : ""
+									}`}
+									style={{ zIndex: 999 }}>
+									{showSortOptions && (
+										<div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-[180px] rounded-lg">
+											<ul>
+												<li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
+													<span className="font-bold text-slate-800">
+														Sort By:
 													</span>
 												</li>
-											))}
-										</ul>
-									</div>
-								)}
+												{sortOptions.map(option => (
+													<li
+														key={option.value}
+														className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
+														onClick={() => {
+															handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
+															setSortBy(option.value); // Set the sorting option
+														}}>
+														{option.value === "name" && (
+															<FaSortAlphaDown className="mr-3 ml-2 text-slate-800" />
+														)}
+														{option.value === "staffid" && (
+															<FaSortNumericDown className="mr-3 ml-2 text-slate-800" />
+														)}
+														{/* {option.value === "eventattended" && (
+															<FaSortAmountUp className="mr-3 ml-2 text-slate-800" />
+														)}											 */}
+														<span className="text-slate-500 ">
+															{option.label}
+														</span>
+													</li>
+												))}
+											</ul>
+										</div>
+									)}
+								</div>
 							</div>
 
 							{/* Export Button */}
@@ -369,9 +312,9 @@ export default function Home() {
 										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
 											<span className="-ml-[1px]">Faculty / Unit</span>
 										</th>
-										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+										{/* <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
 											<span className="-ml-[3px]">Event Attended</span>
-										</th>	
+										</th>	 */}
 									</tr>
 								</thead>
 
@@ -383,18 +326,7 @@ export default function Home() {
 											currentPage * entriesToShow,
 										)
 										.map((info, index) => (
-											<tr className="flex" key={index} 
-												onClick={() => {
-														openModal(
-															info.attFSubEventID,
-															selectedEvent.sub_eventsID,
-															selectedEvent.sub_eventsMainID,
-															selectedEvent.sub_eventsName,
-															selectedEvent.sub_eventsStartDate,
-															selectedEvent.sub_eventsStartTime
-														);
-													
-												}}>
+											<tr className="flex" key={index} onClick={() => setShowModal(true)}>
 												<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
 													<div className="flex items-center">
 														<div className="ml-[14px]">
@@ -424,70 +356,16 @@ export default function Home() {
 													</p>
 												</td>
 
-												<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white cursor-pointer hover:bg-slate-200 text-xs lg:text-sm">
+												{/* <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white cursor-pointer hover:bg-slate-200 text-xs lg:text-sm">
 													<p className="text-gray-900 whitespace-no-wrap ml-1">
-														1
+														{info.attFormsStaffID}
+														
 													</p>
-												</td>
+												</td> */}
                                                 												
 											</tr>
 										))}
 
-									<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
-										<p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Attended</p>
-										<div className="p-10 bg-slate-100 w-[1160px] h-[420px] ml-1 overflow-auto">
-											<table className="min-w-full leading-normal">
-											<thead>
-												<tr className="flex">
-													<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-														NO.
-													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-														Event Name
-													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-														Start Date
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{subEventsAttended
-												.filter(subEvent => subEvent.sub_eventsID === selectedEvent.attFSubEventID)						
-												.map((subEvent, index) => (
-														<tr className="flex" 
-															key={subEvent.sub_eventsID} 
-															onClick={() => setShowModal(true)}>
-															<td className="flex-1 pl-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-																<div className="flex items-center">
-																	<div className="ml-[14px]">
-																		<p className="text-gray-900 whitespace-no-wrap">
-																		{(currentPage - 1) *
-																				entriesToShow +
-																				index +
-																				1}
-																		</p>
-																	</div>
-																</div>
-															</td>
-															<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-																<p className="text-gray-900 whitespace-no-wrap ml-2">
-																	{subEvent.sub_eventsName}
-																</p>
-															</td>
-
-															<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-																<p className="text-gray-900 whitespace-no-wrap ml-2">
-																	{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-																</p>
-															</td>
-														</tr>
-													))}
-												</tbody>
-											</table>	
-										</div>
-									</EventModal>
-
-									{/* pagination */}
 									{Array.from({
 										length: entriesToShow - infos.length,
 									}).map((_, index) => (
@@ -688,6 +566,54 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-		</div>	
+
+			<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
+				<div className="p-10 bg-slate-100 ">
+					<table className="min-w-full leading-normal">
+					<thead>
+						<tr className="flex">
+							<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+								NO.
+							</th>
+							<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+								Event Name
+							</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						{sortedData
+							.slice(
+								(currentPage - 1) * entriesToShow,
+								currentPage * entriesToShow,
+							)
+							.map((info, index) => (
+								<tr className="flex" 
+									key={index} 
+									onClick={() => setShowModal(true)}>
+									<td className="flex-1 pl-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+										<div className="flex items-center">
+											<div className="ml-[14px]">
+												<p className="text-gray-900 whitespace-no-wrap">
+												{(currentPage - 1) *
+														entriesToShow +
+														index +
+														1}
+												</p>
+											</div>
+										</div>
+									</td>
+									<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+										<p className="text-gray-900 whitespace-no-wrap ml-2">
+											{info.attFormsStaffName}
+										</p>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>	
+				</div>
+			</EventModal>
+			</div>
 	);
 }
