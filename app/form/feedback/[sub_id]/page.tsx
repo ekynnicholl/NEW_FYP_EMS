@@ -12,7 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 
 
 type FeedbackFormData = {
-	feedbackSubEventID: string; // Add the missing property
+	fbSubEventID: string; // Add the missing property
 	feedbackStaffID: string; 
 	fbCourseName: string;
 	fbCommencementDate: Date;
@@ -27,7 +27,7 @@ type FeedbackFormData = {
 	fbEmailAddress: string;
 };
 const initialFormData: FeedbackFormData = {
-	feedbackSubEventID: "", // Add the missing property
+	fbSubEventID: "", // Add the missing property
 	feedbackStaffID: "",
 	fbCourseName: "",
 	fbCommencementDate: new Date(), // Initialize with the current date or any default date you prefer
@@ -119,7 +119,7 @@ export default function FeedbackForm() {
 		// Insert/upsert data into the database using Supabase API
 		const { data, error } = await supabase.from("feedback_forms").upsert([
 		  {
-			feedbackSubEventID: sub_id,
+			fbSubEventID: sub_id,
 			fbCourseName,
 			fbCommencementDate,
 			fbCompletionDate,
