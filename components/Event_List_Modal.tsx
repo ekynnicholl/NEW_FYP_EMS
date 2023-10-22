@@ -27,7 +27,6 @@ const EventListModal: React.FC<EventListModalProps> = ({ isVisible, onClose, chi
           onClick={() => onClose()}>
           <AiOutlineClose />
         </button>
-        <p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub Events Details</p>
         <div className="bg-white p-2 rounded">{children}</div>
       </div>
     </div>
