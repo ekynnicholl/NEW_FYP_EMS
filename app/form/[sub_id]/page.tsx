@@ -9,7 +9,6 @@ import Modal from "@/components/Modal";
 // Import icons from react-icons
 import { BiCalendar } from "react-icons/bi";
 import { useParams, useRouter } from "next/navigation";
-import cookie from 'js-cookie';
 
 type Info = {
 	attFormsAttendanceID: string;
@@ -22,7 +21,6 @@ export default function AttendanceForm() {
 	const supabase = createClientComponentClient();
 	const [info, setInfo] = useState<Info>({} as Info);
 	const [eventData, setEventData] = useState<any>(null);
-	const [authToken, setAuthToken] = useState<any>("")
 
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
 
@@ -33,8 +31,6 @@ export default function AttendanceForm() {
 	const router = useRouter();
 
 	useEffect(() => {
-		setAuthToken(cookie.get('authToken'))
-
 		const fetchEventData = async () => {
 			// Fetch the event_id associated with the given attendance_list ID
 			const { data: attendanceListData, error: attendanceListError } = await supabase
@@ -261,30 +257,17 @@ export default function AttendanceForm() {
 				</div>
 
 				<Fragment>
-					<div>
-						{authToken && (
-							<button
-								type="button"
-								className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base mr-3"
-								onClick={() => {
-									router.push("/homepage")
-								}}
-							>
-								Cancel
-							</button>
-						)}
-						<button
-							type="submit"
-							className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
-							onClick={() => {
-								if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
-									setShowModalSuccess(true);
-								}
-							}}
-							disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
-							Submit
-						</button>
-					</div>
+					<button
+						type="submit"
+						className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
+						onClick={() => {
+							if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
+								setShowModalSuccess(true);
+							}
+						}}
+						disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
+						Submit
+					</button>
 				</Fragment>
 
 				<Modal
