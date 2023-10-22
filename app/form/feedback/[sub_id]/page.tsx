@@ -5,9 +5,8 @@ import { Fragment, useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import Modal from "@/components/Modal";
-
+import { LikertScaleCard } from "@/components/ui/likert";
 // Import icons from react-icons
-import { BiCalendar } from "react-icons/bi";
 import { useParams, useRouter } from "next/navigation";
 
 
@@ -25,6 +24,16 @@ type FeedbackFormData = {
 	fbSectionEAdditional: string;
 	fbFullName: string;
 	fbEmailAddress: string;
+	fbSectionA1: number;
+	fbSectionA2: number;
+	fbSectionA3: number;
+	fbSectionA4: number;
+	fbSectionA5: number;
+	fbSectionB1: number;
+	fbSectionB2: number;
+	fbSectionB3: number;
+	fbSectionC1: number;
+	fbSectionD1: number;
 };
 const initialFormData: FeedbackFormData = {
 	fbSubEventID: "", // Add the missing property
@@ -35,12 +44,21 @@ const initialFormData: FeedbackFormData = {
 	fbDuration: "",
 	fbTrainersName: "",
 	fbTrainingProvider: "",
+	fbSectionA1: 0,
+	fbSectionA2: 0,
+	fbSectionA3: 0,
+	fbSectionA4: 0,
+	fbSectionA5: 0,
+	fbSectionB1: 0,
+	fbSectionB2: 0,
+	fbSectionB3: 0,
+	fbSectionC1: 0,
+	fbSectionD1: 0,
 	fbSectionESuggestions: "",
 	fbSectionEChanges: "",
 	fbSectionEAdditional: "",
 	fbFullName: "",
 	fbEmailAddress: ""
-	// ... initialize other properties ...
   };
   
 export default function FeedbackForm() {
@@ -108,11 +126,21 @@ export default function FeedbackForm() {
 			fbDuration,
 			fbTrainersName,
 			fbTrainingProvider,
+			fbSectionA1,
+			fbSectionA2,
+			fbSectionA3,
+			fbSectionA4,
+			fbSectionA5,
+			fbSectionB1,
+			fbSectionB2,
+			fbSectionB3,
+			fbSectionC1,
+			fbSectionD1,
 			fbSectionESuggestions,
 			fbSectionEChanges,
 			fbSectionEAdditional,
 			fbFullName,
-			fbEmailAddress,
+			fbEmailAddress
 			// ...other new form fields
 		} = formData;
 	  
@@ -131,6 +159,16 @@ export default function FeedbackForm() {
 			fbDuration,
 			fbTrainersName,
 			fbTrainingProvider,
+			fbSectionA1,
+			fbSectionA2,
+			fbSectionA3,
+			fbSectionA4,
+			fbSectionA5,
+			fbSectionB1,
+			fbSectionB2,
+			fbSectionB3,
+			fbSectionC1,
+			fbSectionD1,
 			fbSectionESuggestions,
 			fbSectionEChanges,
 			fbSectionEAdditional,
@@ -333,20 +371,23 @@ export default function FeedbackForm() {
   </div>
 </div>
 
+<LikertScaleCard />
+
+
         {/* Suggestions/Comments Card */}
         <div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg w-full">
           <div className="ml-1">
             <p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
-              E. Suggestions/Comments
+             Suggestions/Comments
             </p>
 
             {/* Question 1 Card */}
-            <div className="mb-4 p-2 py-8 pl-5 bg-white rounded-lg">
+            <div className="mb-4 p-2 py-8  bg-white rounded-lg">
               <div className="ml-1">
                 <label
                   htmlFor="suggestion1"
                   className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-                  1. What did you like most about the course?
+                  What did you like most about the course?
                   <span className="text-red-500"> *</span>
                 </label>
                 <input
@@ -363,12 +404,12 @@ export default function FeedbackForm() {
             </div>
 
             {/* Question 2 Card */}
-            <div className="mb-4 p-2 py-8 pl-5 bg-white rounded-lg">
+            <div className="mb-4 p-2 py-8  bg-white rounded-lg">
               <div className="ml-1">
                 <label
                   htmlFor="suggestion2"
                   className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-                  2. If you could change one thing about this course, what would it be?
+                  If you could change one thing about this course, what would it be?
                   <span className="text-red-500"> *</span>
                 </label>
                 <input
@@ -385,12 +426,12 @@ export default function FeedbackForm() {
             </div>
 
             {/* Question 3 Card */}
-            <div className="mb-4 p-2 py-8 pl-5 bg-white rounded-lg">
+            <div className="mb-4 p-2 py-8  bg-white rounded-lg">
               <div className="ml-1">
                 <label
                   htmlFor="suggestion3"
                   className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-                  3. Please share any additional comments or suggestions.
+                  Please share any additional comments or suggestions.
                   <span className="text-red-500"> *</span>
                 </label>
                 <input
@@ -468,6 +509,7 @@ export default function FeedbackForm() {
     </div>
   </div>
 </div>
+
 
 
 <Fragment>
