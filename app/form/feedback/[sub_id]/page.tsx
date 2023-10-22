@@ -45,7 +45,6 @@ const initialFormData: FeedbackFormData = {
   
 export default function FeedbackForm() {
 	const supabase = createClientComponentClient();
-	const [info, setInfo] = useState<FeedbackFormData>(initialFormData);
 	const [eventData, setEventData] = useState<any>(null);
 	const [formData, setFormData] = useState<FeedbackFormData>(initialFormData);
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
@@ -283,7 +282,7 @@ export default function FeedbackForm() {
     <label
       htmlFor="trainerName"
       className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-      Trainer's Name
+      Trainer&apos;s Name
       <span className="text-red-500"> *</span>
     </label>
     <input
