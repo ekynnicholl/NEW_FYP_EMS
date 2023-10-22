@@ -12,48 +12,18 @@ import skipRight from "@/public/images/skip_right.png";
 
 import { FaSortAlphaUp, FaCalendarAlt } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
+import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { Chart } from 'chart.js/auto';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-const currentDate = new Date();
-const formattedDate = currentDate.toLocaleDateString("en-US", {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-});
-
-const formatDate = (dateString: string): string => {
-	const options: Intl.DateTimeFormatOptions = {
-		weekday: "long",
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	};
-	return new Date(dateString).toLocaleDateString("en-US", options);
-};
-
-const formatTime = (timeString: string): string => {
-	const options: Intl.DateTimeFormatOptions = {
-		hour: "numeric",
-		minute: "numeric",
-		hour12: true,
-	};
-	const formattedTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
-		"en-US",
-		options,
-	);
-
-	// Convert to lowercase and remove the space
-	return formattedTime.replace(" ", "").toLowerCase();
-};
+import AttendanceTable from "@/components/tables/attendanceTable";
 
 type mainEvent = {
 	intFID: string;
@@ -78,11 +48,12 @@ type subEvents = {
 }
 
 type AttendanceDataType = {
-    attFormsID: string;
-    attFormsStaffID: string;
-    attFormsStaffName: string;
-    attFormsFacultyUnit: string;
-}
+	attFormsID: string;
+	attFSubEventID: string;
+	attFormsStaffID: string;
+	attFormsStaffName: string;
+	attFormsFacultyUnit: string;
+};
 
 export default function Home() {
     const supabase = createClientComponentClient();
@@ -119,11 +90,11 @@ export default function Home() {
 		sub_eventsFaculty: "",
 	});
 
-
     // This is for attendance modal,
 	const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
 	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
 	const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
+	const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
 
 	// This is for the pie chart,
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -131,13 +102,8 @@ export default function Home() {
 	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const viewMode = useViewModeStore((state) => state.viewMode);
-
-
+    
     const [showSubEventModal, setShowSubEventModal] = useState(false);
-
-    const handleCancel = () =>{
-		setShowSubEventModal(false);
-	}
 
     useEffect(() => {
         const fetchMainEvents = async () => {
@@ -148,7 +114,7 @@ export default function Home() {
             const { data: mainEventData, error: internalError } = await supabase
                 .from("internal_events")
                 .select("*")
-                .filter('intFEventStartDate', 'gte', currentDate)
+                .filter('intFEventEndDate', 'gte', currentDate)
                 .order("intFEventStartDate", { ascending: true })
                 .select();
 
@@ -178,8 +144,6 @@ export default function Home() {
         fetchMainEvents();
 
     }, [supabase]);
-
-
 
     const openModal = async (
 		event_id: string,
@@ -218,29 +182,27 @@ export default function Home() {
 			sub_eventsFaculty: sub_event_faculty,
 		});
 
-		// Fetch the attendance list for that event,
-		// fetchAttendanceList(event_id);
-        console.log("open view event modals");
 		setShowSubEventModal(true);
 	};
-
     
     // This is for attendance modal,
-    const openAttendanceModal = async (event_id: string) => {
+	const openAttendanceModal = async (event_id: string) => {
+		console.log("testing" + event_id);
 		try {
 			// Fetch sub-events for the given event
 			const { data: subEvents, error: subEventsError } = await supabase
 				.from("sub_events")
-				.select("*")
+				.select()
 				.eq("sub_eventsMainID", event_id);
 
 			if (subEventsError) {
 				console.error("Error fetching sub_events:", subEventsError);
 				return;
 			}
+			// Set the main ID for the 
 			setAttendanceMainEventID(event_id);
 			fetchAttendanceList(event_id)
-			setSubEvents(subEvents);
+			setSubEventsForAttendance(subEvents);
 
 			// Extract the subEventID values from the fetched sub_events
 			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
@@ -258,24 +220,8 @@ export default function Home() {
 
 			// Set the attendance data for the main event
 			setAttendanceData(attendanceForms);
-			setSelectedEvent({
-				intFID: event_id,
-                intFEventName: "",
-                intFEventDescription: "",
-                intFEventStartDate: "",
-                intFEventEndDate: "",
-                sub_eventsID: "",
-                sub_eventsMainID: "",
-                sub_eventsName: "",
-                sub_eventsVenue: "",
-                sub_eventsStartDate: "",
-                sub_eventsEndDate: "",
-                sub_eventsStartTime: "",
-                sub_eventsEndTime: "",
-                sub_eventsMaxSeats: "",
-                sub_eventsOrganizer: "",
-                sub_eventsFaculty: "",
-			});
+			
+			fetchAttendanceList(event_id);
 
 			console.log("Attendance forms data:", attendanceForms);
 		} catch (error) {
@@ -285,6 +231,43 @@ export default function Home() {
 
 		setShowAttendanceModal(true);
 	};
+
+    // This is for attendance table in homepage pagination,
+	const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    const handleItemsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
+		setItemsPerPage(Number(e.target.value));
+	};
+
+
+    useEffect(() => {
+		if (attendanceData && attendanceData.length > 0) {
+			// Calculate labels (faculty/unit) and label data (counts)
+			const facultyCounts: { [key: string]: number } = {};
+
+			attendanceData.forEach(attendanceItem => {
+				const faculty = attendanceItem.attFormsFacultyUnit;
+				if (facultyCounts[faculty]) {
+					facultyCounts[faculty]++;
+				} else {
+					facultyCounts[faculty] = 1;
+				}
+			});
+
+			const facultyLabels = Object.keys(facultyCounts);
+			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+
+			const canvas = chartContainer.current;
+
+			if (canvas) {
+				if (chartInstanceRef.current) {
+					chartInstanceRef.current.destroy();
+				}
+
+				createPieChart(canvas, facultyLabels, facultyData);
+			}
+		}
+	}, [attendanceData]);
 
     const handleSubEventClick = async (subEvent: subEvents) => {
 		try {
@@ -303,30 +286,12 @@ export default function Home() {
 			// Set the attendance data for the selected sub-event
 			setAttendanceData(attendanceForms);
 
-			// Calculate labels (faculty/unit) and label data (counts)
-			const facultyCounts: { [key: string]: number } = {};
-
-			attendanceForms.forEach(attendanceItem => {
-				const faculty = attendanceItem.attFormsFacultyUnit;
-				if (facultyCounts[faculty]) {
-					facultyCounts[faculty]++;
-				} else {
-					facultyCounts[faculty] = 1;
-				}
-			});
-
-			const facultyLabels = Object.keys(facultyCounts);
-			const facultyData = facultyLabels.map(label => facultyCounts[label]);
-
-			const canvas = chartContainer.current;
-			createPieChart(canvas, facultyLabels, facultyData);
-
-			console.log("Attendance forms data for selected sub-event:", attendanceForms);
 		} catch (error) {
 			const typedError = error as Error;
 			console.error("Error:", typedError.message);
 		}
 	};
+
 
 	const fetchAttendanceList = async (event_id: string) => {
 		const { data: subEvents, error: subEventsError } = await supabase
@@ -459,8 +424,6 @@ export default function Home() {
             console.log("Error fetching data: ", error.message);
         }
     };
-
-    
 
 
     // Handle search input
@@ -758,44 +721,59 @@ export default function Home() {
                                                     </td>
                                                     
                                                     <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-                                                    <p className="text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-[78px] hover:text-slate-800" 
-                                                        onClick={() => {
-                                                        const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
+                                                                    <BsThreeDots />
+                                                                </div>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent className="-mt-1">
+                                                                <DropdownMenuItem 
+                                                                    className="cursor-pointer" 
+                                                                    onClick={e => {
+															        e.stopPropagation();
 
-                                                        if (filteredSubEvent) {
-                                                            openModal(
-                                                                
-                                                                event.intFID,
-                                                                event.intFEventName,
-                                                                event.intFEventDescription,
-                                                                event.intFEventStartDate,
-                                                                event.intFEventEndDate,
-                                                                filteredSubEvent.sub_eventsID,
-                                                                filteredSubEvent.sub_eventsMainID,
-                                                                filteredSubEvent.sub_eventsName,
-                                                                filteredSubEvent.sub_eventsVenue,
-                                                                filteredSubEvent.sub_eventsStartDate,
-                                                                filteredSubEvent.sub_eventsEndDate,
-                                                                filteredSubEvent.sub_eventsStartTime,
-                                                                filteredSubEvent.sub_eventsEndTime,
-                                                                filteredSubEvent.sub_eventsMaxSeats,
-                                                                filteredSubEvent.sub_eventsOrganizer,
-                                                                filteredSubEvent.sub_eventsFaculty
-                                                            );
-                                                        }
-                                                    }}>
-                                                            View sub-Event Details
-                                                        </p>
-                                                        <p className="text-sky-600 font-medium whitespace-no-wrap cursor-pointer ml-[78px] hover:text-slate-800" 
-                                                        onClick={() => {openAttendanceModal(event.intFID);}}>
-                                                            Attendance
-                                                        </p>
-                                                        
+                                                                    const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                                    if (filteredSubEvent) {
+                                                                        openModal(
+                                                                            event.intFID,
+                                                                            event.intFEventName,
+                                                                            event.intFEventDescription,
+                                                                            event.intFEventStartDate,
+                                                                            event.intFEventEndDate,
+                                                                            filteredSubEvent.sub_eventsID,
+                                                                            filteredSubEvent.sub_eventsMainID,
+                                                                            filteredSubEvent.sub_eventsName,
+                                                                            filteredSubEvent.sub_eventsVenue,
+                                                                            filteredSubEvent.sub_eventsStartDate,
+                                                                            filteredSubEvent.sub_eventsEndDate,
+                                                                            filteredSubEvent.sub_eventsStartTime,
+                                                                            filteredSubEvent.sub_eventsEndTime,
+                                                                            filteredSubEvent.sub_eventsMaxSeats,
+                                                                            filteredSubEvent.sub_eventsOrganizer,
+                                                                            filteredSubEvent.sub_eventsFaculty
+                                                                        );
+                                                                    }
+
+                                                                }}                                                                
+                                                                >Sub-Events Details</DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer" 
+                                                                    onClick={e => {
+                                                                        e.stopPropagation()
+                                                                        openAttendanceModal(event.intFID);}}
+                                                                >Attendance List
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
                                                     </td>
                                                 </tr>
                                             ))}
 
                                         <EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
+                                            <p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Details</p>
                                             <div className="p-5 bg-slate-100 w-[1160px] h-[420px] ml-1 overflow-auto">
                                                 <table className="leading-normal w-[1090px] ml-4">
                                                 <thead>
@@ -808,9 +786,6 @@ export default function Home() {
                                                         </th>
                                                         <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
                                                             Organizer
-                                                        </th>
-                                                        <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                                                            Faculty
                                                         </th>
                                                         <th className="py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
                                                             Venue
@@ -851,37 +826,31 @@ export default function Home() {
                                                                 </td>
                                                                 
                                                                 <td className="flex-1 px-3 py-5 text-xs lg:text-md ">
-                                                                    <p className="text-gray-900">
+                                                                    <p className="text-gray-900 ml-1">
                                                                         {subEvent.sub_eventsOrganizer}
                                                                     </p>
                                                                 </td>
                                                                 
                                                                 <td className="flex-1 px-3 py-5 text-xs lg:text-md">
-                                                                    <p className="text-gray-900 ml-4">
-                                                                        {subEvent.sub_eventsFaculty}
-                                                                    </p>
-                                                                </td>
-                                                                
-                                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
-                                                                    <p className="text-gray-900 ml-2">
+                                                                    <p className="text-gray-900 ml-6">
                                                                         {subEvent.sub_eventsVenue}
                                                                     </p>
                                                                 </td>
                                                                 
                                                                 <td className="flex-1 px-3 py-5 text-xs lg:text-md">
-                                                                    <p className="text-gray-900 whitespace-nowrap -ml-4">
+                                                                    <p className="text-gray-900 whitespace-nowrap">
                                                                         {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
                                                                     </p>
                                                                 </td>
                                                                 
                                                                 <td className="flex-1 px-3 py-5 text-xs lg:text-md">
-                                                                    <p className="text-gray-900 whitespace-nowrap">
+                                                                    <p className="text-gray-900 whitespace-nowrap ml-4">
                                                                         {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
                                                                     </p>
                                                                 </td>
 
                                                                 <td className="flex-1 px-3 py-5 text-xs lg:text-md">
-                                                                    <p className="text-gray-900">
+                                                                    <p className="text-gray-900 ml-5">
                                                                         {subEvent.sub_eventsMaxSeats}
                                                                     </p>
                                                                 </td>
@@ -898,14 +867,13 @@ export default function Home() {
                                             <div className="flex">
                                                 <div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} h-[700px]`}>
                                                     <div className="flex items-center justify-center">
-                                                        
                                                         <div className="flex items-center justify-center text-text text-[20px] text-center -mt-8">
                                                             <PencilNoteIcon />{" "}
                                                             <span className="ml-2.5">Attendance List</span>
                                                         </div>
                                                         <div className="ml-auto">
                                                             <Link
-                                                                href={`/attendance/${selectedEvent.intFID}`}
+                                                                href={`/attendance/${attendanceMainEventID}`}
                                                                 passHref
                                                                 legacyBehavior={true}>
                                                                 <a className="flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-slate-300 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5">
@@ -930,7 +898,7 @@ export default function Home() {
                                                         >
                                                             All
                                                         </button>
-                                                        {subEvents.map((subEvent) => (
+                                                        {subEventsForAttendance.map((subEvent) => (
                                                             <div
                                                                 key={subEvent.sub_eventsID}
                                                                 className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
@@ -939,6 +907,7 @@ export default function Home() {
                                                                 <button
                                                                     onClick={() => {
                                                                         setIsAllButtonActive(false);
+                                                                        // COMMENT HERE
                                                                         handleSubEventClick(subEvent);
                                                                     }}
                                                                 >
@@ -949,37 +918,22 @@ export default function Home() {
                                                     </div>
                                                     {/* This is to loop through the attendance data. */}
                                                     {attendanceData && attendanceData.length > 0 ? (
-                                                        <div className="overflow-y-auto max-h-[600px]">
-                                                            <table className="w-full">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
-                                                                            Staff ID
-                                                                        </th>
-                                                                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                                                            Staff Name
-                                                                        </th>
-                                                                        <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                                                            Faculty/ Unit
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {attendanceData.map(attendanceItem => (
-                                                                        <tr key={attendanceItem.attFormsID}>
-                                                                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                                {attendanceItem.attFormsStaffID}
-                                                                            </td>
-                                                                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                                {attendanceItem.attFormsStaffName}
-                                                                            </td>
-                                                                            <td className="flex-1 px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                                {attendanceItem.attFormsFacultyUnit}
-                                                                            </td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
+                                                        <div>
+                                                            <label htmlFor="itemsPerPageSelect">Show entries:</label>
+                                                            <select
+                                                                id="itemsPerPageSelect"
+                                                                name="itemsPerPage"
+                                                                value={itemsPerPage}
+                                                                onChange={handleItemsPerPageChange}
+                                                                className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+                                                            >
+                                                                <option value="5">5</option>
+                                                                <option value="10">10</option>
+                                                                <option value="20">20</option>
+                                                            </select>
+                                                            <div className="h-[500px] overflow-y-auto">
+                                                                <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+                                                            </div>
                                                         </div>
                                                     ) : (
                                                         <div className="text-center text-gray-600 mt-4">
