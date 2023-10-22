@@ -102,13 +102,18 @@ export default function FeedbackForm() {
 		e.preventDefault();
 	  
 		const {
-		  fbCourseName,
-		  fbCommencementDate,
-		  fbCompletionDate,
-		  fbDuration,
-		  fbTrainersName,
-		  fbTrainingProvider,
-		  // ...other new form fields
+			fbCourseName,
+			fbCommencementDate,
+			fbCompletionDate,
+			fbDuration,
+			fbTrainersName,
+			fbTrainingProvider,
+			fbSectionESuggestions,
+			fbSectionEChanges,
+			fbSectionEAdditional,
+			fbFullName,
+			fbEmailAddress,
+			// ...other new form fields
 		} = formData;
 	  
 		// Validate form fields
@@ -126,6 +131,11 @@ export default function FeedbackForm() {
 			fbDuration,
 			fbTrainersName,
 			fbTrainingProvider,
+			fbSectionESuggestions,
+			fbSectionEChanges,
+			fbSectionEAdditional,
+			fbFullName,
+			fbEmailAddress,
 			// ...other new form fields
 		  },
 		]);
