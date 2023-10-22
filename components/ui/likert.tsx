@@ -15,13 +15,13 @@ const handleOptionChange = (question: string, value: number) => {
     setChoices({ ...choices, [question]: value });
 };
 
+
 const handleClearSelection = () => {
     setChoices(initialChoices);
 };
 
 const options = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
-
-  const anyOptionSelected = Object.values(choices).some((value) => value !== null);
+const anyOptionSelected = Object.values(choices).some((value) => value !== null);
 
   return (
     <div className="mb-8 p-2 pr-2 md:pr-[100px] py-8 pl-2 md:pl-5 bg-white rounded-lg relative">
