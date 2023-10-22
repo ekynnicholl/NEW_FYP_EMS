@@ -155,6 +155,18 @@ type FeedbackDataType = {
 }
 
 export default function Homepage() {
+	useEffect(() => {
+		const checkIsUserLoggedIn = () => {
+			const authToken = cookie.get('authToken');
+			const accountRank = cookie.get('accountRank');
+			if (!authToken && accountRank != "99") {
+				router.push("/unauthorizedAccess");
+			}
+		};
+
+		checkIsUserLoggedIn();
+	})
+
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
 
@@ -387,19 +399,6 @@ export default function Homepage() {
 		};
 		fetchGridView();
 	});
-
-	useEffect(() => {
-		const checkIsUserLoggedIn = () => {
-			const authToken = cookie.get('authToken');
-			const accountRank = cookie.get('accountRank');
-			if (!authToken && accountRank != "99") {
-				router.push("/error-404");
-			}
-		};
-
-		checkIsUserLoggedIn();
-	})
-
 
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
