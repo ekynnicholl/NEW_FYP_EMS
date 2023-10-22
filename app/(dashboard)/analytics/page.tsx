@@ -6,8 +6,24 @@ import LineGraphExpenditure1 from "@/components/analytics/LineGraphExpenditure1"
 import BarGraphAttendance from "@/components/analytics/BarGraphAttendance";
 import PieChart from "@/components/analytics/PieChart";
 import { useEffect, useState } from "react";
+import cookie from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+	const router = useRouter();
+
+	useEffect(() => {
+		const checkIsUserLoggedIn = () => {
+			const authToken = cookie.get('authToken');
+			const accountRank = cookie.get('accountRank');
+			if (!authToken && accountRank != "99") {
+				router.push("/unauthorizedAccess");
+			}
+		};
+
+		checkIsUserLoggedIn();
+	})
+
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 
@@ -27,8 +43,6 @@ export default function Home() {
 
 	useEffect(() => {
 		const { start, end } = getStartAndEndOfMonth();
-		console.log("test1" + start);
-		console.log("test2" + end);
 		setStartDate(start);
 		setEndDate(end);
 	}, []);

@@ -155,6 +155,18 @@ type FeedbackDataType = {
 }
 
 export default function Homepage() {
+	useEffect(() => {
+		const checkIsUserLoggedIn = () => {
+			const authToken = cookie.get('authToken');
+			const accountRank = cookie.get('accountRank');
+			if (!authToken && accountRank != "99") {
+				router.push("/unauthorizedAccess");
+			}
+		};
+
+		checkIsUserLoggedIn();
+	})
+
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
 
@@ -387,19 +399,6 @@ export default function Homepage() {
 		};
 		fetchGridView();
 	});
-
-	useEffect(() => {
-		const checkIsUserLoggedIn = () => {
-			const authToken = cookie.get('authToken');
-			const accountRank = cookie.get('accountRank');
-			if (!authToken && accountRank != "99") {
-				router.push("/error-404");
-			}
-		};
-
-		checkIsUserLoggedIn();
-	})
-
 
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
@@ -1358,7 +1357,7 @@ export default function Homepage() {
 									<input
 										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
 										type="text"
-										placeholder="Event name"
+										placeholder="What is your event called?"
 										id="event_name"
 										name="event_name"
 										required
@@ -1379,7 +1378,7 @@ export default function Homepage() {
 									<input
 										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 										type="text"
-										placeholder="Put your event description"
+										placeholder="This event is about..."
 										name="event_description"
 										required
 										onChange={e =>
@@ -1468,7 +1467,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="text"
-													placeholder="Event name"
+													placeholder="This sub-event is called?"
 													value={event_name}
 													onChange={(e) => handleEventNameInputChange(index, eventNameIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1485,7 +1484,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="text"
-													placeholder="Venue"
+													placeholder="Venue i.e., G401"
 													value={venue}
 													onChange={(e) => handleEventVenueInputChange(index, venueIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1502,7 +1501,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="number"
-													placeholder="Maximum seats"
+													placeholder="Maximum Seats"
 													value={maximum_seats}
 													onChange={(e) => handleEventMaximumSeatsInputChange(index, maximumSeatsIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1563,7 +1562,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[62.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1608,7 +1607,7 @@ export default function Homepage() {
 												</p>
 												<input
 													type="text"
-													placeholder="Organizer"
+													placeholder="Who is the organizer?"
 													value={organizers}
 													onChange={(e) => handleEventOrganizersInputChange(index, organizersIndex, e.target.value)}
 													className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
@@ -1621,7 +1620,7 @@ export default function Homepage() {
 
 								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
-										Add SubEvent
+										Add Sub-Event
 									</button>
 
 									<button
@@ -1932,7 +1931,7 @@ export default function Homepage() {
 								</div>
 								<div className="flex flex-wrap">
 									<button
-										className={`font-bold flex items-center rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-400 text-white' : 'bg-slate-200 text-slate-800'
+										className={`font-bold flex items-center rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 											}`}
 										onClick={() => {
 											setIsAllButtonActive(true);
@@ -1944,7 +1943,7 @@ export default function Homepage() {
 									{subEventsForAttendance.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
+											className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
