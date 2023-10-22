@@ -340,9 +340,9 @@ export default function FeedbackForm() {
                   1. What did you like most about the course?
                   <span className="text-red-500"> *</span>
                 </label>
-                <input
+                <textarea
                   id="suggestion1"
-                  className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-basepleas"
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
                   required
                   placeholder="Your answer"
                   value={formData.fbSectionESuggestions}
@@ -362,9 +362,9 @@ export default function FeedbackForm() {
                   2. If you could change one thing about this course, what would it be?
                   <span className="text-red-500"> *</span>
                 </label>
-                <input
+                <textarea
                   id="suggestion2"
-                  className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
                   required
                   placeholder="Your answer"
                   value={formData.fbSectionEChanges}
@@ -384,9 +384,9 @@ export default function FeedbackForm() {
                   3. Please share any additional comments or suggestions.
                   <span className="text-red-500"> *</span>
                 </label>
-                <input
+                <textarea
                   id="suggestion3"
-                  className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
                   required
                   placeholder="Your answer"
                   value={formData.fbSectionEAdditional}
