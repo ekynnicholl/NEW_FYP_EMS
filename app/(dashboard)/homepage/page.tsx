@@ -2256,7 +2256,7 @@ export default function Homepage() {
 											sub_eventsOrganizer: e.target.value,
 										})
 									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
+									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] lg:mb-[8px]"
 								/>
 							</div>
 
@@ -2340,7 +2340,7 @@ export default function Homepage() {
 												</span>
 											</p>
 										</div>
-										<div className="flex">
+										<div className="flex mb-0 lg:-mb-[18px]">
 											<input
 												className="pr-2 lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px]"
 												type="date"
@@ -2567,7 +2567,7 @@ export default function Homepage() {
 
 							<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mt-[68px] lg:mt-0">
 								<button
-									className="rounded-lg px-[12px] py-[7px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									className="rounded-lg px-[12px] py-[7px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 lg:mb-1"
 								>
 									Save Changes
 								</button>
