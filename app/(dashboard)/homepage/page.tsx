@@ -1288,10 +1288,10 @@ export default function Homepage() {
 	}
 
 	return (
-		<div className="p-5 bg-slate-100 space-y-4">
+		<div className="p-3 lg:p-5 bg-slate-100 space-y-4">
 			<div className="mx-auto w-full">
 				<div className="w-full flex ml-1">
-					<div className="lg:flex bg-white border border-slate-200 rounded-lg hidden p-5 gap-4 w-full">
+					<div className="lg:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full">
 						<div className="w-1/3 text-left h-full">
 							<div className="bg-[#E5F9FF] p-5 text-slate-700 rounded-lg flex">
 								<div className="mr-4">
@@ -3948,6 +3948,7 @@ export default function Homepage() {
 								</div>
 							)}
 						</div>
+
 
 						{/* Mobile View */}
 						<div className="grid md:hidden grid-auto-fit-lg gap-4 ml-1">
