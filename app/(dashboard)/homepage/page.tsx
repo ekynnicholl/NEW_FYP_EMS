@@ -1288,7 +1288,7 @@ export default function Homepage() {
 	}
 
 	return (
-		<div className="p-3 lg:p-5 bg-slate-100 space-y-4">
+		<div className="pl-1 pr-3 py-3 lg:p-5 bg-slate-100 space-y-4">
 			<div className="mx-auto w-full">
 				<div className="w-full flex ml-1">
 
@@ -4005,7 +4005,7 @@ export default function Homepage() {
 						</div>
 
 						{/* Mobile View */}
-						<div className="grid md:hidden grid-cols-2 gap-[6px] ml-1 -mr-[3px] -mt-2">
+						<div className="grid md:hidden grid-cols-2 gap-[6px] ml-1 -mr-[4.5px] -mt-2">
 
 							{latestEvent[0] && (
 								<div
