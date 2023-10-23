@@ -1291,7 +1291,9 @@ export default function Homepage() {
 		<div className="p-3 lg:p-5 bg-slate-100 space-y-4">
 			<div className="mx-auto w-full">
 				<div className="w-full flex ml-1">
-					<div className="lg:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full">
+
+					{/* PC View */}
+					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full">
 						<div className="w-1/3 text-left h-full">
 							<div className="bg-[#E5F9FF] p-5 text-slate-700 rounded-lg flex">
 								<div className="mr-4">
@@ -1345,8 +1347,9 @@ export default function Homepage() {
 						</div>
 					</div>
 
-					<div className="bg-white border border-slate-200 rounded-lg p-2 gap-3 w-full">
-						<div className="grid grid-cols-2 gap-3 h-[51px]">
+					{/* Mobile View */}
+					<div className="bg-white border border-slate-200 rounded-lg p-2 gap-2 w-full md:hidden">
+						<div className="grid grid-cols-2 gap-2 h-[49px]">
 							<div className="text-left transition transform hover:scale-105 h-[48px]">
 								<a
 									href="/upcomingEvents"
@@ -2914,7 +2917,7 @@ export default function Homepage() {
 
 			{
 				viewMode === 1 ? (
-					<div className="w-full bg-slate-100 grid grid-cols-2 lg:grid-cols-[1fr_32%] pb-28 gap-4">
+					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4">
 
 						{/* PC View */}
 						<div className="hidden md:grid grid-auto-fit-lg gap-4 ml-1">
@@ -3989,13 +3992,12 @@ export default function Homepage() {
 							)}
 						</div>
 
-
 						{/* Mobile View */}
-						<div className="grid md:hidden grid-auto-fit-lg gap-4 ml-1">
+						<div className="grid md:hidden grid-cols-2 gap-[6px] ml-1 -mr-[3px] -mt-2">
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[220px] w-[170px] relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -4150,7 +4152,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[220px] w-[170px] relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -5021,6 +5023,7 @@ export default function Homepage() {
 							{/* <Calendar /> */}
 						</div>
 					</div>
+
 
 				) : (
 					<div className="w-full bg-slate-100 flex pb-28">
