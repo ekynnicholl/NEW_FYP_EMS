@@ -2875,7 +2875,7 @@ export default function Homepage() {
 			{
 				viewMode === 1 ? (
 					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4">
-						<div className="grid grid-auto-fit-lg gap-4 ml-1">
+						<div className="hidden lg:grid grid-auto-fit-lg gap-4 ml-1">
 
 							{latestEvent[0] && (
 								<div
@@ -3947,7 +3947,7 @@ export default function Homepage() {
 							)}
 						</div>
 
-						<div className="w-full bg-white border border-slate-200 rounded-lg p-6 h-[500px] transition transform hover:scale-105">
+						<div className="w-full bg-white border border-slate-200 rounded-lg p-6 h-[500px] transition transform hover:scale-105 hidden lg:inline">
 							<h2 className="text-2xl font-semibold mb-2">Calendar</h2>
 							{/* <Calendar /> */}
 						</div>
