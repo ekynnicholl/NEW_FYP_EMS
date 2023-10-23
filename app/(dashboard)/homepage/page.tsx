@@ -1756,11 +1756,11 @@ export default function Homepage() {
 								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm"
 							/>
 
-							<div className="ml-[7px] lg:ml-[9px]">
-								<h3 className="text-[16px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[180px]">
+							<div className="ml-[6px] lg:ml-[9px]">
+								<h3 className="text-[15px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px]">
 									About This Event
 								</h3>
-								<p className="text-[12px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[10px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 -mb-1 lg:mb-5 font-normal text-slate-500 mt-[10px]">
 									{selectedEvent.intFEventDescription}
 								</p>
 
@@ -1811,29 +1811,32 @@ export default function Homepage() {
 												<div className="-mt-4"></div>
 											)}
 
-											<div className="flex items-center gap-[6px]">
-												<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
+											<div className="flex items-center gap-[0px] lg:gap-[6px]">
+												<p className="text-[14px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
+
 												<button
 													type="button"
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
 													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
 												>
-													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105" />
+													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[0.5px]" />
 												</button>
 												<button
 													type="button"
 													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
 													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[3px] lg:mt-[12.5px]"
 												>
-													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500" />
+													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px]" />
 												</button>
 												<button
 													type="button"
 													onClick={(e) => handleEditSubEventButton(e, subEvent.sub_eventsID)}
 													className="text-base lg:text-lg ml-[10px] mt-[20px] lg:ml-[3px] lg:mt-[12.6px]"
 												>
-													<HiPencilAlt className="text-slate-700 hover:scale-105" />
+													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px]" />
 												</button>
+											</div>
+											<div className="flex mt-0 lg:-mt-3 mb-4">
 												<button
 													type="button"
 													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
@@ -1844,14 +1847,14 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1">
+														<span className="ml-1 text-[13px]">
 															Attendance
 														</span>
 													</span>
 												</button>
 												<button
 													type="button"
-													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
+													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-3 px-[5px]"
 													onClick={() => {
 														setSelectedSubEventID(subEvent.sub_eventsID);
 														setShowQRCodesFeedback(true);
@@ -1859,7 +1862,7 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1">
+														<span className="ml-1 text-[13px]">
 															Feedback
 														</span>
 													</span>
@@ -2055,7 +2058,7 @@ export default function Homepage() {
 								)}
 							</div>
 							{attendanceData && attendanceData.length > 0 ? (
-								<div className="w-full lg:flex flex-col items-center justify-center mt-5 lg:mt-0">
+								<div className="w-full lg:flex flex-col items-center justify-center mt-5">
 									<div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
 									<div className="w-[325px] h-[325px] lg:w-[500px] lg:h-[500px] flex items-center justify-center mt-5">
 										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
