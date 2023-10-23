@@ -1623,7 +1623,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[62.5px] mb-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[50px] lg:ml-[62.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
