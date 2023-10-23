@@ -1679,7 +1679,7 @@ export default function Homepage() {
 									</div>
 								))}
 
-								<div className="-mt-8 lg:mt-0 lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+								<div className="-mt-10 lg:mt-0 lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[4px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[11px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
 										Add Sub-Event
 									</button>
