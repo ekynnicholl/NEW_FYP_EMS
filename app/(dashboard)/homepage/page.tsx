@@ -2271,196 +2271,6 @@ export default function Homepage() {
 						</form>
 					</AddSubEvent_Modal>
 
-					<EditSubEvent_Modal
-						isVisible={showModalEditSubEvent}
-						onClose={() => setShowModalEditSubEvent(false)}>
-
-						<form>
-							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
-									Edit SubEvent
-								</h3>
-
-								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
-									Event Name
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Event name"
-									value={editSubEventInfo.sub_eventsName}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsName: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-									Venue
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Venue"
-									value={editSubEventInfo.sub_eventsVenue}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsVenue: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
-									Maximum Seats
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="number"
-									placeholder="Maximum seats"
-									value={editSubEventInfo.sub_eventsMaxSeats}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsMaxSeats: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
-
-
-								<div className="flex flex-col mt-[10px]">
-									<div className="flex">
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
-											Start Date
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
-											End Date
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-									</div>
-									<div className="flex">
-
-										<input
-											className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
-											type="date"
-											name="event_start_date"
-											value={editSubEventInfo.sub_eventsStartDate}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsStartDate: e.target.value,
-												})
-											}
-										/>
-
-										<input
-											className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2"
-											type="date"
-											name="event_end_date"
-											value={editSubEventInfo.sub_eventsEndDate}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsEndDate: e.target.value,
-												})
-											}
-										/>
-									</div>
-								</div>
-
-								<div className="flex flex-col mt-[10px]">
-									<div className="flex">
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
-											Start Time
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
-											End Time
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-									</div>
-									<div className="flex">
-										<input
-											className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px]"
-											type="time"
-											name="event_start_time"
-											value={editSubEventInfo.sub_eventsStartTime}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsStartTime: e.target.value,
-												})
-											}
-										/>
-
-										<input
-											className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
-											type="time"
-											name="event_end_time"
-											value={editSubEventInfo.sub_eventsEndTime}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsEndTime: e.target.value,
-												})
-											}
-										/>
-									</div>
-								</div>
-
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
-									Organizer
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Organizer"
-									value={editSubEventInfo.sub_eventsOrganizer}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsOrganizer: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
-								/>
-							</div>
-
-							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
-
-								<button
-									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-								>
-									Save Changes
-								</button>
-							</div>
-						</form>
-					</EditSubEvent_Modal>
-
 					<EditEvent_Modal
 						isVisible={showModalEditEvent}
 						onClose={() => setShowModalEditEvent(false)}>
@@ -2583,13 +2393,13 @@ export default function Homepage() {
 
 						<form onSubmit={handleEditSubEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
-									Edit Sub-Event
+								<h3 className="text-[14px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 -mb-[7px] lg:mb-2 mt-[9px] ml-[2px]">
+									Edit Sub-event
 								</h3>
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
 
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 -mt-2 ml-[2px] lg:mt-1">
 									Event Name
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2607,7 +2417,7 @@ export default function Homepage() {
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px]">
 									Venue
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2625,7 +2435,7 @@ export default function Homepage() {
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[1px]">
 									Maximum Seats
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2644,15 +2454,15 @@ export default function Homepage() {
 								/>
 
 
-								<div className="flex flex-col mt-[10px]">
+								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
 									<div className="flex">
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
 											Start Date
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
 											</span>
 										</p>
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
 											End Date
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
@@ -2691,15 +2501,15 @@ export default function Homepage() {
 									</div>
 								</div>
 
-								<div className="flex flex-col mt-[10px]">
+								<div className="flex flex-col mt-[5px] mt-[10px]">
 									<div className="flex">
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
 											Start Time
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
 											</span>
 										</p>
-										<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
 											End Time
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
@@ -2737,7 +2547,7 @@ export default function Homepage() {
 									</div>
 								</div>
 
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px]">
 									Organizer
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2756,10 +2566,10 @@ export default function Homepage() {
 								/>
 							</div>
 
-							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+							<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
 
 								<button
-									className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									className="rounded-lg px-[18px] py-[8.5px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
 								>
 									Save Changes
 								</button>
