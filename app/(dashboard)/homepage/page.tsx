@@ -1680,12 +1680,12 @@ export default function Homepage() {
 								))}
 
 								<div className="-mt-8 lg:mt-0 lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
-									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
+									<button type="button" onClick={addEventDetails} className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[11px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium">
 										Add Sub-Event
 									</button>
 
 									<button
-										className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+										className="rounded-lg px-[30px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
 										onClick={() => {
 											if (
 												mainEvent.intFEventName &&
