@@ -1836,7 +1836,7 @@ export default function Homepage() {
 													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px]" />
 												</button>
 											</div>
-											<div className="flex mt-0 lg:-mt-3 mb-2 lg:mb-4">
+											<div className="flex -mt-1 lg:-mt-3 mb-2 lg:mb-4">
 												<button
 													type="button"
 													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
@@ -1847,7 +1847,7 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1 text-[13px]">
+														<span className="ml-1 text-[11px] lg:text-[13px]">
 															Attendance
 														</span>
 													</span>
@@ -1862,14 +1862,14 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1 text-[13px]">
+														<span className="ml-1 text-[11px] lg:text-[13px]">
 															Feedback
 														</span>
 													</span>
 												</button>
 											</div>
 
-											<div className="flex items-center mt-1">
+											<div className="hidden lg:flex items-center mt-1">
 												<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
 												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px]">
 													{formatDate(subEvent.sub_eventsStartDate)}
@@ -1886,6 +1886,27 @@ export default function Homepage() {
 													{formatTime(subEvent.sub_eventsEndTime)}
 												</p>
 											</div>
+
+											<div className="inline lg:hidden mt-1">
+												<div className="flex items-center mt-[11px] lg:mt-[14px]">
+													<HiMiniCalendarDays className="text-[20px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
+													<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px]">
+														{formatDate(subEvent.sub_eventsStartDate)}
+													</p>
+												</div>
+												<div className="flex items-center mt-[11px] lg:mt-[14px]">
+													<FiClock className="text-[20px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
+													<p className="text-slate-600 text-[12px] lg:text-[13px]">
+														{formatTime(subEvent.sub_eventsStartTime)}
+													</p>
+
+													<span className="mx-2 text-slate-800 -mt-[2px]">-</span>
+													<p className="text-slate-600 text-[12px] lg:text-[13px]">
+														{formatTime(subEvent.sub_eventsEndTime)}
+													</p>
+												</div>
+											</div>
+
 											<div className="flex items-center mt-[10px] lg:mt-[14px]">
 												<FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800" />
 												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px]">
