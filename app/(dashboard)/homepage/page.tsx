@@ -1760,7 +1760,7 @@ export default function Homepage() {
 								<h3 className="text-[15px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px]">
 									About This Event
 								</h3>
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-0 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px]">
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px]">
 									{selectedEvent.intFEventDescription}
 								</p>
 
