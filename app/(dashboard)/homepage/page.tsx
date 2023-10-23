@@ -1836,7 +1836,7 @@ export default function Homepage() {
 													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px]" />
 												</button>
 											</div>
-											<div className="flex -mt-1 lg:-mt-3 mb-2 lg:mb-4">
+											<div className="flex -mt-2 lg:-mt-3 mb-2 lg:mb-4">
 												<button
 													type="button"
 													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
