@@ -1617,7 +1617,7 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[2px] lg:ml-[2px]">
 													Start Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
