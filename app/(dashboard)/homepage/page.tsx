@@ -4474,9 +4474,11 @@ export default function Homepage() {
 
 							{latestEvent[3] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID);
+
+										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
@@ -4518,7 +4520,8 @@ export default function Homepage() {
 											);
 										}
 									}}>
-									<div className="w-full h-[300px] mb-4 relative">
+
+									<div className="w-full h-[300px] mb-[6px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?events"
@@ -4527,11 +4530,12 @@ export default function Homepage() {
 											/>
 										</div>
 									</div>
+
 									{latestEvent[3] && (
-										<div className="mt-6">
+										<div className="mt-4">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
 													{latestEvent[3].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -4559,12 +4563,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-4">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
 												{latestEvent[3].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-												<p className="text-slate-600 text-sm">
+											<div className="flex items-center mt-[6px]">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
+												<p className="text-slate-600 text-[8px] -ml-1">
 													{formatDate(latestEvent[3].intFEventStartDate)}
 												</p>
 											</div>
@@ -4575,9 +4579,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-3">
-															<FiClock className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FiClock className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4589,9 +4593,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-3">
-															<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4604,7 +4608,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
@@ -4612,39 +4616,12 @@ export default function Homepage() {
 																	}}
 																></div>
 															</div>
-															<div className="text-xs text-gray-600 mt-2 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: </span>
-																<span className="mr-[2px]">
-																	Max Attendees: {subEvent.sub_eventsMaxSeats}
-																</span>
+															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
+																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
 											)}
-
-											<div className="flex justify-between items-end mt-5">
-												<div
-													className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-													onClick={e => {
-														e.stopPropagation(); // This line prevents the event from propagating
-														openAttendanceModal(
-															latestEvent[3].intFID,
-														);
-														fetchAttendanceList(latestEvent[3].intFID);
-													}}>
-													Attendance List
-												</div>
-
-												<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-													<span
-														aria-hidden
-														className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-													<span className="relative mt-[1px] leading-3 tracking-wider">
-														Upcoming
-													</span>
-												</span>
-											</div>
 										</div>
 									)}
 								</div>
@@ -4652,9 +4629,11 @@ export default function Homepage() {
 
 							{latestEvent[4] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID);
+
+										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
@@ -4696,7 +4675,8 @@ export default function Homepage() {
 											);
 										}
 									}}>
-									<div className="w-full h-[300px] mb-4 relative">
+
+									<div className="w-full h-[300px] mb-[6px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?balloon"
@@ -4705,11 +4685,12 @@ export default function Homepage() {
 											/>
 										</div>
 									</div>
+
 									{latestEvent[4] && (
-										<div className="mt-6">
+										<div className="mt-4">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
 													{latestEvent[4].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -4737,12 +4718,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-4">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
 												{latestEvent[4].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-												<p className="text-slate-600 text-sm">
+											<div className="flex items-center mt-[6px]">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
+												<p className="text-slate-600 text-[8px] -ml-1">
 													{formatDate(latestEvent[4].intFEventStartDate)}
 												</p>
 											</div>
@@ -4753,9 +4734,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-3">
-															<FiClock className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FiClock className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4767,9 +4748,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-3">
-															<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4782,7 +4763,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
@@ -4790,39 +4771,12 @@ export default function Homepage() {
 																	}}
 																></div>
 															</div>
-															<div className="text-xs text-gray-600 mt-2 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: </span>
-																<span className="mr-[2px]">
-																	Max Attendees: {subEvent.sub_eventsMaxSeats}
-																</span>
+															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
+																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
 											)}
-
-											<div className="flex justify-between items-end mt-5">
-												<div
-													className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-													onClick={e => {
-														e.stopPropagation(); // This line prevents the event from propagating
-														openAttendanceModal(
-															latestEvent[4].intFID,
-														);
-														fetchAttendanceList(latestEvent[4].intFID);
-													}}>
-													Attendance List
-												</div>
-
-												<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-													<span
-														aria-hidden
-														className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-													<span className="relative mt-[1px] leading-3 tracking-wider">
-														Upcoming
-													</span>
-												</span>
-											</div>
 										</div>
 									)}
 								</div>
@@ -4830,9 +4784,11 @@ export default function Homepage() {
 
 							{latestEvent[5] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID);
+
+										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
@@ -4874,7 +4830,8 @@ export default function Homepage() {
 											);
 										}
 									}}>
-									<div className="w-full h-[300px] mb-4 relative">
+
+									<div className="w-full h-[300px] mb-[6px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?beers"
@@ -4883,11 +4840,12 @@ export default function Homepage() {
 											/>
 										</div>
 									</div>
+
 									{latestEvent[5] && (
-										<div className="mt-6">
+										<div className="mt-4">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
 													{latestEvent[5].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -4915,12 +4873,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-4">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
 												{latestEvent[5].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-												<p className="text-slate-600 text-sm">
+											<div className="flex items-center mt-[6px]">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
+												<p className="text-slate-600 text-[8px] -ml-1">
 													{formatDate(latestEvent[5].intFEventStartDate)}
 												</p>
 											</div>
@@ -4931,9 +4889,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-3">
-															<FiClock className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FiClock className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4945,9 +4903,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-3">
-															<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4960,7 +4918,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
@@ -4968,39 +4926,12 @@ export default function Homepage() {
 																	}}
 																></div>
 															</div>
-															<div className="text-xs text-gray-600 mt-2 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: </span>
-																<span className="mr-[2px]">
-																	Max Attendees: {subEvent.sub_eventsMaxSeats}
-																</span>
+															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
+																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
 											)}
-
-											<div className="flex justify-between items-end mt-5">
-												<div
-													className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
-													onClick={e => {
-														e.stopPropagation(); // This line prevents the event from propagating
-														openAttendanceModal(
-															latestEvent[5].intFID,
-														);
-														fetchAttendanceList(latestEvent[5].intFID);
-													}}>
-													Attendance List
-												</div>
-
-												<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-													<span
-														aria-hidden
-														className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
-													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-													<span className="relative mt-[1px] leading-3 tracking-wider">
-														Upcoming
-													</span>
-												</span>
-											</div>
 										</div>
 									)}
 								</div>
