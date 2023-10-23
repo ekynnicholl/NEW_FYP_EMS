@@ -17,7 +17,7 @@ const PageNotFound = () => {
           <div>
             <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">OOPSIES!</p>
             <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
-              The forms you're currently accessing is <span className="font-bold">no longer accepting new responses.</span> <br /> Contact the event organizer(s) if you think this was a mistake.
+              The forms you&aposre currently accessing is <span className="font-bold">no longer accepting new responses.</span> <br /> Contact the event organizer(s) if you think this was a mistake.
             </div>
           </div>
         ) : (
