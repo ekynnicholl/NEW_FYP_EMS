@@ -1871,7 +1871,7 @@ export default function Homepage() {
 
 											<div className="flex items-center mt-1">
 												<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[0.5px]">
+												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px]">
 													{formatDate(subEvent.sub_eventsStartDate)}
 												</p>
 												<span className="mx-2 text-slate-800 ml-[15px] lg:ml-[57px] mr-6">
