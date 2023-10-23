@@ -4412,7 +4412,7 @@ export default function Homepage() {
 												{latestEvent[2].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 -mt-[1px]" />
 												<p className="text-slate-600 text-[8px] -ml-1">
 													{formatDate(latestEvent[2].intFEventStartDate)}
 												</p>
