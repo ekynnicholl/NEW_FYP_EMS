@@ -2276,7 +2276,7 @@ export default function Homepage() {
 						onClose={() => setShowModalEditEvent(false)}>
 						<form onSubmit={handleEditEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px]">
+								<h3 className="text-[14px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px]">
 									Edit Event
 								</h3>
 
