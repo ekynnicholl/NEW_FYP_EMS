@@ -2501,7 +2501,7 @@ export default function Homepage() {
 									</div>
 								</div>
 
-								<div className="flex flex-col mt-[5px] mt-[10px]">
+								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
 									<div className="flex">
 										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
 											Start Time
@@ -2509,7 +2509,7 @@ export default function Homepage() {
 												*
 											</span>
 										</p>
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[38.5px] mb-[2px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[60px] lg:ml-[38.5px] mb-[2px]">
 											End Time
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
