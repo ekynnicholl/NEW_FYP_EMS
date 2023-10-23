@@ -1293,59 +1293,57 @@ export default function Homepage() {
 				<div className="w-full flex ml-1">
 
 					{/* PC View */}
-					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden pl-5 pr-5 py-5 gap-4">
-						<div className="grid grid-cols-3 gap-5">
-							<div className="text-left h-full">
-								<div className="bg-[#E5F9FF] pl-5 pr-16 py-5 text-slate-700 rounded-lg flex">
-									<div className="mr-4">
-										<FontAwesomeIcon
-											icon={faCalendar}
-											className="w-8 mt-[6.5px] text-slate-700"
-											size="2x"
-										/>
-									</div>
-									<div className="ml-1">
-										<p className="text-[15px]">Today&apos;s Date</p>
-										<p className="font-medium">{formattedDate}</p>
-									</div>
+					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full">
+						<div className="w-1/3 text-left h-full">
+							<div className="bg-[#E5F9FF] p-5 text-slate-700 rounded-lg flex">
+								<div className="mr-4">
+									<FontAwesomeIcon
+										icon={faCalendar}
+										className="w-8 mt-[6.5px] text-slate-700"
+										size="2x"
+									/>
+								</div>
+								<div className="ml-1">
+									<p className="text-[15px]">Today&apos;s Date</p>
+									<p className="font-medium">{formattedDate}</p>
 								</div>
 							</div>
+						</div>
 
-							<div className=" h-full text-left transition transform hover:scale-105">
-								<a
-									href="/upcomingEvents"
-									className="bg-[#FFEDE5] h-full pl-5 pr-20 py-5 text-slate-700 rounded-lg flex hover:bg-[#ffdcce]">
-									<div className="mr-4">
-										<FontAwesomeIcon
-											icon={faUsers}
-											className="w-8 mt-[6px] text-slate-700"
-											size="2x"
-										/>
-									</div>
-									<div className="ml-1">
-										<p className="text-[15px]">Upcoming Events</p>
-										<p className="font-medium">2</p>
-									</div>
-								</a>
-							</div>
+						<div className="w-1/3 h-full text-left transition transform hover:scale-105">
+							<a
+								href="/upcomingEvents"
+								className="bg-[#FFEDE5] h-full p-5 text-slate-700 rounded-lg flex hover:bg-[#ffdcce]">
+								<div className="mr-4">
+									<FontAwesomeIcon
+										icon={faUsers}
+										className="w-8 mt-[6px] text-slate-700"
+										size="2x"
+									/>
+								</div>
+								<div className="ml-1">
+									<p className="text-[15px]">Upcoming Events</p>
+									<p className="font-medium">2</p>
+								</div>
+							</a>
+						</div>
 
-							<div className=" text-left h-full transition transform hover:scale-105">
-								<a
-									href="/pastEvents"
-									className="bg-[#EAE5FF] pl-5 pr-20 py-5 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff]">
-									<div className="mr-4">
-										<FontAwesomeIcon
-											icon={faCheckCircle}
-											className="w-[34px] mt-[6px] text-slate-700"
-											size="2x"
-										/>
-									</div>
-									<div className="ml-1">
-										<p className="text-[15px]">Past Events</p>
-										<p className="font-medium">2</p>
-									</div>
-								</a>
-							</div>
+						<div className="w-1/3 text-left h-full transition transform hover:scale-105">
+							<a
+								href="/pastEvents"
+								className="bg-[#EAE5FF] p-5 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff]">
+								<div className="mr-4">
+									<FontAwesomeIcon
+										icon={faCheckCircle}
+										className="w-[34px] mt-[6px] text-slate-700"
+										size="2x"
+									/>
+								</div>
+								<div className="ml-1">
+									<p className="text-[15px]">Past Events</p>
+									<p className="font-medium">2</p>
+								</div>
+							</a>
 						</div>
 					</div>
 
@@ -2763,15 +2761,14 @@ export default function Homepage() {
 
 			{
 				viewMode === 1 ? (
-					// 1fr_32%
-					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_26.3%] pb-28 gap-4">
+					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4">
 
 						{/* PC View */}
 						<div className="hidden md:grid grid-auto-fit-lg gap-4 ml-1">
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] max-w-[350px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -2950,7 +2947,7 @@ export default function Homepage() {
 
 							{latestEvent[1] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] max-w-[350px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID);
 
@@ -3128,7 +3125,7 @@ export default function Homepage() {
 
 							{latestEvent[2] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] max-w-[350px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID);
 
@@ -3306,7 +3303,7 @@ export default function Homepage() {
 
 							{latestEvent[3] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] max-w-[350px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID);
 
@@ -3484,7 +3481,7 @@ export default function Homepage() {
 
 							{latestEvent[4] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] max-w-[350px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID);
 
@@ -3662,7 +3659,7 @@ export default function Homepage() {
 
 							{latestEvent[5] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] max-w-[350px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID);
 
