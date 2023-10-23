@@ -46,7 +46,7 @@ const NavigationBarMobile = () => {
                 "flex justify-between"
             )}
         >
-            <div className="flex justify-between w-full">
+            <div className="flex justify-between w-full hidden">
                 {NavLinks.map(({ icon: Icon, ...nav }) => {
                     const navItemClassName = displayNavItems(nav); // Call the function here
 
