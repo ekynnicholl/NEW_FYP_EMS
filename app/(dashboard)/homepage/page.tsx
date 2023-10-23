@@ -2461,7 +2461,7 @@ export default function Homepage() {
 												*
 											</span>
 										</p>
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[92px] mb-[2px] -ml-[4px] lg:ml-[1px]">
 											End Date
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
