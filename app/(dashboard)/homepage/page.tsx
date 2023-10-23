@@ -1819,7 +1819,7 @@ export default function Homepage() {
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
 													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
 												>
-													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[0.5px] text-[15px] lg:text-base" />
+													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px] text-[15px] lg:text-base" />
 												</button>
 												<button
 													type="button"
