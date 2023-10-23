@@ -1348,12 +1348,12 @@ export default function Homepage() {
 					</div>
 
 					{/* Mobile View */}
-					<div className="bg-white border border-slate-200 rounded-lg p-2 gap-2 w-full md:hidden">
+					<div className="bg-white border border-slate-200 rounded p-2 gap-2 w-full md:hidden">
 						<div className="grid grid-cols-2 gap-2 h-[49px]">
 							<div className="text-left transition transform hover:scale-105 h-[48px]">
 								<a
 									href="/upcomingEvents"
-									className="bg-[#FFEDE5] h-full p-3 text-slate-700 rounded-lg flex hover:bg-[#ffdcce]">
+									className="bg-[#FFEDE5] h-full p-3 text-slate-700 rounded flex hover:bg-[#ffdcce]">
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faUsers}
@@ -1371,7 +1371,7 @@ export default function Homepage() {
 							<div className="text-left transition transform hover:scale-105 h-[48px]">
 								<a
 									href="/pastEvents"
-									className="bg-[#EAE5FF] p-3 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff]">
+									className="bg-[#EAE5FF] p-3 h-full text-slate-700 rounded flex hover:bg-[#e0d8ff]">
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faCheckCircle}
@@ -4009,7 +4009,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -4164,7 +4164,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
