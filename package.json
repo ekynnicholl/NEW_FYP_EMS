@@ -50,7 +50,7 @@
 		"next-nprogress-bar": "^2.1.2",
 		"nextjs-progressbar": "^0.0.16",
 		"openai-edge": "^1.2.2",
-		"postcss": "8.4.29",
+		"postcss": "^8.4.31",
 		"qrcode.react": "^3.1.0",
 		"react": "18.2.0",
 		"react-day-picker": "^8.8.2",
