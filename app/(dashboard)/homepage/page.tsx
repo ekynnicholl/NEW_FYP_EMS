@@ -2067,7 +2067,7 @@ export default function Homepage() {
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select>
-										<div className="h-[300px] lg:h-[500px] overflow-y-auto">
+										<div className="h-[300px] lg:h-[450px] overflow-y-auto">
 											<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
 										</div>
 									</div>
