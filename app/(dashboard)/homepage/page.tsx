@@ -1401,7 +1401,7 @@ export default function Homepage() {
 					<CreateEvent_Modal isVisible={showModalCreateEvent}
 						onClose={() => setShowModalCreateEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
-							<div className="ml-1 lg:ml-4 mb-[70px]">
+							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px]">
 								<h3 className="text-[14px] lg:text-[16px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px]">
 									Create Event
 								</h3>
@@ -1819,7 +1819,7 @@ export default function Homepage() {
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
 													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
 												>
-													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px] text-[15px] lg:text-base" />
+													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px] text-[15px] lg:text-[18px]" />
 												</button>
 												<button
 													type="button"
@@ -2276,14 +2276,14 @@ export default function Homepage() {
 						onClose={() => setShowModalEditEvent(false)}>
 						<form onSubmit={handleEditEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
+								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px]">
 									Edit Event
 								</h3>
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px]" />
 
 								<div>
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px]">
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] mt-0 lg:mt-1">
 										Event Name
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
@@ -2305,7 +2305,7 @@ export default function Homepage() {
 										}
 									/>
 
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
 										Description
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
@@ -2328,13 +2328,13 @@ export default function Homepage() {
 
 									<div className="flex flex-col mt-[10px]">
 										<div className="flex">
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
 												Start Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
 												</span>
 											</p>
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px]">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px]">
 												End Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
@@ -2375,10 +2375,10 @@ export default function Homepage() {
 
 								</div>
 
-								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+								<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mb-20 lg:mb-0">
 
 									<button
-										className="rounded-lg px-[32px] py-[8px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+										className="rounded-lg px-[15px] py-[8.5px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 mb-2"
 									>
 										Save Changes
 									</button>
