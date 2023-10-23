@@ -1345,6 +1345,46 @@ export default function Homepage() {
 						</div>
 					</div>
 
+					<div className="bg-white border border-slate-200 rounded-lg p-2 gap-3 w-full">
+						<div className="grid grid-cols-2 gap-3 h-[51px]">
+							<div className="text-left transition transform hover:scale-105 h-[48px]">
+								<a
+									href="/upcomingEvents"
+									className="bg-[#FFEDE5] h-full p-3 text-slate-700 rounded-lg flex hover:bg-[#ffdcce]">
+									<div className="mr-2">
+										<FontAwesomeIcon
+											icon={faUsers}
+											className="w-[18px] -mt-[5px] text-slate-700"
+											size="2x"
+										/>
+									</div>
+									<div className="ml-[2px] -mt-1">
+										<p className="text-[10px]">Upcoming Events</p>
+										<p className="font-medium text-[10px]">2</p>
+									</div>
+								</a>
+							</div>
+
+							<div className="text-left transition transform hover:scale-105 h-[48px]">
+								<a
+									href="/pastEvents"
+									className="bg-[#EAE5FF] p-3 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff]">
+									<div className="mr-2">
+										<FontAwesomeIcon
+											icon={faCheckCircle}
+											className="w-[18px] -mt-[5px] text-slate-700"
+											size="2x"
+										/>
+									</div>
+									<div className="ml-[2px] -mt-1">
+										<p className="text-[10px]">Past Events</p>
+										<p className="font-medium text-[10px]">2</p>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden lg:inline">
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
