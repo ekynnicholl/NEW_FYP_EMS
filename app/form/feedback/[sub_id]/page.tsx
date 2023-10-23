@@ -23,11 +23,11 @@
 		fbSectionEAdditional: string;
 		fbFullName: string;
 		fbEmailAddress: string;
-		fbSectionA1: number;
-		fbSectionA2: number;
-		fbSectionA3: number;
-		fbSectionA4: number;
-		fbSectionA5: number;
+		fbSectionA1: number | null;
+		fbSectionA2: number | null;
+		fbSectionA3: number | null;
+		fbSectionA4: number | null;
+		fbSectionA5: number | null;
 		fbSectionB1: number;
 		fbSectionB2: number;
 		fbSectionB3: number;
@@ -44,11 +44,11 @@
 		fbDuration: "",
 		fbTrainersName: "",
 		fbTrainingProvider: "",
-		fbSectionA1: 0,
-		fbSectionA2: 0,
-		fbSectionA3: 0,
-		fbSectionA4: 0,
-		fbSectionA5: 0,
+		fbSectionA1: null,
+		fbSectionA2: null,
+		fbSectionA3: null,
+		fbSectionA4: null,
+		fbSectionA5: null,
 		fbSectionB1: 0,
 		fbSectionB2: 0,
 		fbSectionB3: 0,
@@ -144,7 +144,7 @@
 			} = formData;
 		
 			// Validate form fields
-			if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider || !fbSectionA1 || !fbSectionA2 || !fbSectionA3 || !fbSectionA4 || !fbSectionA5){
+			if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider){
 			return;
 			}
 		

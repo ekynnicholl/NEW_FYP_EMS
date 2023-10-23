@@ -2,21 +2,25 @@ import React, { useState } from "react";
 
 const LikertScaleCard = () => {
   const initialChoices = {
-    fbSectionA1: null,
-    fbSectionA2: null,
-    fbSectionA3: null,
-    fbSectionA4: null,
-    fbSectionA5: null,
+    fbSectionA1: 0,
+    fbSectionA2: 0,
+    fbSectionA3: 0,
+    fbSectionA4: 0,
+    fbSectionA5: 0,
   };
 
 const [choices, setChoices] = useState(initialChoices);
 
 const handleOptionChange = (question: string, value: number) => {
-    setChoices((prevChoices) => ({
+  setChoices((prevChoices) => {
+    const updatedChoices = {
       ...prevChoices,
       [question]: value,
-    }));
-  };
+    };
+    console.log(updatedChoices); // Log the updated state
+    return updatedChoices;
+  });
+};
   
 
 
