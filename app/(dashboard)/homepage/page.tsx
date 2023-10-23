@@ -4089,7 +4089,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-[6px] w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
@@ -4244,7 +4244,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-[6px] w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
