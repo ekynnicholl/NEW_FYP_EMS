@@ -1357,13 +1357,13 @@ export default function Homepage() {
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faUsers}
-											className="w-[18px] -mt-[5px] text-slate-700"
+											className="w-[19px] -mt-[4px] text-slate-700"
 											size="2x"
 										/>
 									</div>
 									<div className="ml-[2px] -mt-1">
-										<p className="text-[10px]">Upcoming Events</p>
-										<p className="font-medium text-[10px]">2</p>
+										<p className="text-[11px]">Upcoming Events</p>
+										<p className="font-medium text-[11px]">2</p>
 									</div>
 								</a>
 							</div>
@@ -1375,13 +1375,13 @@ export default function Homepage() {
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faCheckCircle}
-											className="w-[18px] -mt-[5px] text-slate-700"
+											className="w-[19px] -mt-[4px] text-slate-700"
 											size="2x"
 										/>
 									</div>
 									<div className="ml-[2px] -mt-1">
-										<p className="text-[10px]">Past Events</p>
-										<p className="font-medium text-[10px]">2</p>
+										<p className="text-[11px]">Past Events</p>
+										<p className="font-medium text-[11px]">2</p>
 									</div>
 								</a>
 							</div>
