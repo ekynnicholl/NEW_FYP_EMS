@@ -24,7 +24,6 @@ import Image from "next/image";
 import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent } from "react";
 import Link from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createClient } from '@supabase/supabase-js'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faUsers, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -586,22 +585,6 @@ export default function Homepage() {
 			createPieChart(canvas, facultyLabels, facultyData);
 		}
 	}
-
-	// useEffect(() => {
-	// 	const channel = supabase
-	// 		.channel('attendance-forms-changes')
-	// 		.on('postgres_changes', {
-	// 			event: 'INSERT',
-	// 			schema: 'public',
-	// 		}, (payload) => {
-	// 			console.log(payload);
-	// 		})
-	// 		.subscribe();
-
-	// 	return () => {
-	// 		channel.unsubscribe();
-	// 	};
-	// }, []);
 
 	// Pie chart,
 	const createPieChart = (
@@ -1966,6 +1949,7 @@ export default function Homepage() {
 											<button
 												onClick={() => {
 													setIsAllButtonActive(false);
+													// COMMENT HERE
 													handleSubEventClick(subEvent);
 												}}
 											>
@@ -1974,16 +1958,6 @@ export default function Homepage() {
 										</div>
 									))}
 								</div>
-								<button
-									onClick={() => {
-										// Handle the refresh button click here
-										fetchAttendanceList(attendanceMainEventID);
-										setIsAllButtonActive(true);
-									}}
-									className="font-bold flex items-center rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
-								>
-									Refresh
-								</button>
 								{/* This is to loop through the attendance data. */}
 								{attendanceData && attendanceData.length > 0 ? (
 									<div className="">
@@ -2516,7 +2490,7 @@ export default function Homepage() {
 						<form onSubmit={handleEditSubEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
 								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
-									Edit Sub-Event
+									Edit SubEvent
 								</h3>
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
