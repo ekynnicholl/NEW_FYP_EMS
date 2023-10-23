@@ -12,8 +12,12 @@ const LikertScaleCard = () => {
 const [choices, setChoices] = useState(initialChoices);
 
 const handleOptionChange = (question: string, value: number) => {
-    setChoices({ ...choices, [question]: value });
-};
+    setChoices((prevChoices) => ({
+      ...prevChoices,
+      [question]: value,
+    }));
+  };
+  
 
 
 const handleClearSelection = () => {
@@ -60,6 +64,9 @@ const anyOptionSelected = Object.values(choices).some((value) => value !== null)
         </button>
       )}
     </div>
+
+  
+
   );
 };
 

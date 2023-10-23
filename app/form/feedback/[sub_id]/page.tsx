@@ -9,7 +9,6 @@
 	// Import icons from react-icons
 	import { useParams, useRouter } from "next/navigation";
 
-
 	type FeedbackFormData = {
 		fbSubEventID: string; // Add the missing property
 		feedbackStaffID: string; 
@@ -145,7 +144,7 @@
 			} = formData;
 		
 			// Validate form fields
-			if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider) {
+			if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider || !fbSectionA1 || !fbSectionA2 || !fbSectionA3 || !fbSectionA4 || !fbSectionA5){
 			return;
 			}
 		
@@ -500,7 +499,7 @@
 		</label>
 		<div className="flex items-center border-b border-gray-300 py-2">
 			<input
-			type="email"
+			type="text"
 			id="email"
 			name="email"
 			placeholder="Your answer"
