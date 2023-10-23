@@ -2096,12 +2096,12 @@ export default function Homepage() {
 						<form>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
 								<h3 className="text-[14px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
-									Add New SubEvent
+									Add New Sub-event
 								</h3>
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px]" />
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-0 lg:mt-1 ml-[2px]">
 									Event Name
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2118,7 +2118,7 @@ export default function Homepage() {
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px]">
 									Venue
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2135,7 +2135,7 @@ export default function Homepage() {
 									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px]"
 								/>
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[1px]">
 									Maximum Seats
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2153,7 +2153,7 @@ export default function Homepage() {
 								/>
 
 
-								<div className="flex flex-col mt-[10px]">
+								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
 									<div className="flex">
 										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
 											Start Date
@@ -2198,7 +2198,7 @@ export default function Homepage() {
 									</div>
 								</div>
 
-								<div className="flex flex-col mt-[10px]">
+								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
 									<div className="flex">
 										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
 											Start Time
@@ -2242,7 +2242,7 @@ export default function Homepage() {
 									</div>
 								</div>
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px]">
 									Organizer
 									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 								</p>
@@ -2260,7 +2260,7 @@ export default function Homepage() {
 								/>
 							</div>
 
-							<div className="absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px]">
+							<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mt-[68px] lg:mt-0">
 
 								<button onClick={handleAddSubEvent}
 									className="rounded-lg px-[12px] py-[7px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 mb-2"
@@ -2375,7 +2375,7 @@ export default function Homepage() {
 
 								</div>
 
-								<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mb-20 lg:mb-0">
+								<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mb-[68px] lg:mb-0">
 
 									<button
 										className="rounded-lg px-[12px] py-[7px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 mb-2"
