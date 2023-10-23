@@ -364,12 +364,221 @@ const initialFormData: FeedbackFormData = {
 		/>
 	</div>
 	</div>
-
+<div className="mb-4 p-2 pr-2 py-8 pl-2 lg:pl-5 bg-white rounded-lg overflow-x-auto">
+<p className="block text-black font-medium text-xl lg:text-2xl ml-3 -mt-3">Assessment Criteria <span className="text-red-500"> *</span></p>
+  <div className="ml-1">
+    <table className="w-full text-center border-collapse">
+      <thead>
+        <tr>
+          <th className="w-40 block text-gray-700 text-left lg:text-base font-medium ml-2 mt-7">A. Course Quality</th>
+          <th className="w-1/5 p-2 ">Strongly Disagree</th>
+          <th className="w-1/5 p-2 r">Disagree</th>
+          <th className="w-1/5 p-2 ">Neutral</th>
+          <th className="w-1/5 p-2 ">Agree</th>
+          <th className="w-1/5 p-2 ">Strongly Agree</th>
+        </tr>
+      </thead>
+      <tbody>
+        {/* Question 1 */}
+        <tr className="mb-1">
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>The contents were clear and easy to understand.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question1"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionA1: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 2 */}
+        <tr>
+          <td className="text-left p-2 bg-[#f8f9fa]">
+            <p>The course objectives were successfully achieved.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question2"
+                value={value}
+				className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionA2: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 3 */}
+        <tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>The course materials were enough and helpful.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question3"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionA3: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 4 */}
+        <tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>The class environment enabled me to learn.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question4"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionA4: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 5 */}
+        <tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>The program was well coordinated (e.g., registration, pre-program information, etc.).</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa]">
+              <input
+                type="radio"
+                name="question5"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionA5: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+		<tr>
+	  <td className="text-left p-2" colSpan={6}>B. Training Experience</td>
+ 		</tr>
+				<tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>My learning was enhanced by the knowledge and experience shared by the trainer.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question6"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionB1: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td className="text-left p-2 bg-[#f8f9fa]">
+            <p>I was well engaged during the session by the trainer.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question7"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionB2: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 3 */}
+        <tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>The course exposed me to new knowledge and practices.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question8"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionB3: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+		<tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>I understand how to apply what I learned.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question9"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionB4: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+		<tr>
+	  <td className="text-left p-2" colSpan={6}>C. Duration</td>
+ 		</tr>
+		 <tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>The duration of the course was just right.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question10"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionC1: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+		<tr>
+	  <td className="text-left p-2" colSpan={6}>D. Recommendation</td>
+ 		</tr>
+		 <tr>
+          <td className="text-left p-2 bg-[#f8f9fa] ">
+            <p>I would recommend this course to my colleagues.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 bg-[#f8f9fa] ">
+              <input
+                type="radio"
+                name="question11"
+                value={value}
+				    className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
+                onChange={(e) => setFormData({ ...formData, fbSectionD1: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>	
+      </tbody>
+    </table>
+  </div>
+</div>
 
 	{/* Suggestions/Comments Card */}
 	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg w-full">
 	<div className="ml-1">
-		<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
+		<p className="block text-black font-medium text-xl lg:text-2xl ml-3 -mt-3">
 		Suggestions/Comments
 		</p>
 
@@ -446,8 +655,8 @@ const initialFormData: FeedbackFormData = {
 	<div className="ml-1">
 			{/* Verification Card */}
 	<div className="mb-4">
-	<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">Verification</p>
-	<p className="font-semibold mt-6">
+	<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3 ml-3">Verification</p>
+	<p className="font-semibold mt-6 ml-3">
 		I hereby declare that the information I have provided in the Training Feedback Form provided is true, correct & complete.
 	</p>
 	</div>
@@ -502,109 +711,7 @@ const initialFormData: FeedbackFormData = {
 	</div>
 	</div>
 
-	<div className="mb-4 p-2 pr-2 lg:pr-[100px] py-8 pl-2 lg:pl-5 bg-white rounded-lg overflow-x-auto">
-  <div className="ml-1">
-    <table className="w-full text-center border-collapse">
-      <thead>
-        <tr>
-          <th className="text-left p-2 border">Likert Scale Questions</th>
-          <th className="p-2 border">Strongly Disagree</th>
-          <th className="p-2 border">Disagree</th>
-          <th className="p-2 border">Neutral</th>
-          <th className="p-2 border">Agree</th>
-          <th className="p-2 border">Strongly Agree</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* Question 1 */}
-        <tr>
-          <td className="text-left p-2 border">
-            <p>The contents were clear and easy to understand.</p>
-          </td>
-          {[1, 2, 3, 4, 5].map((value) => (
-            <td key={value} className="p-2 border">
-              <input
-                type="radio"
-                name="question1"
-                value={value}
-				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                onChange={(e) => setFormData({ ...formData, fbSectionA1: parseInt(e.target.value) })}
-              />
-            </td>
-          ))}
-        </tr>
-        {/* Question 2 */}
-        <tr>
-          <td className="text-left p-2 border">
-            <p>The course objectives were successfully achieved.</p>
-          </td>
-          {[1, 2, 3, 4, 5].map((value) => (
-            <td key={value} className="p-2 border">
-              <input
-                type="radio"
-                name="question2"
-                value={value}
-				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                onChange={(e) => setFormData({ ...formData, fbSectionA2: parseInt(e.target.value) })}
-              />
-            </td>
-          ))}
-        </tr>
-        {/* Question 3 */}
-        <tr>
-          <td className="text-left p-2 border">
-            <p>The course materials were enough and helpful.</p>
-          </td>
-          {[1, 2, 3, 4, 5].map((value) => (
-            <td key={value} className="p-2 border">
-              <input
-                type="radio"
-                name="question3"
-                value={value}
-				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                onChange={(e) => setFormData({ ...formData, fbSectionA3: parseInt(e.target.value) })}
-              />
-            </td>
-          ))}
-        </tr>
-        {/* Question 4 */}
-        <tr>
-          <td className="text-left p-2 border">
-            <p>The class environment enabled me to learn.</p>
-          </td>
-          {[1, 2, 3, 4, 5].map((value) => (
-            <td key={value} className="p-2 border">
-              <input
-                type="radio"
-                name="question4"
-                value={value}
-				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                onChange={(e) => setFormData({ ...formData, fbSectionA4: parseInt(e.target.value) })}
-              />
-            </td>
-          ))}
-        </tr>
-        {/* Question 5 */}
-        <tr>
-          <td className="text-left p-2 border">
-            <p>The program was well coordinated (e.g., registration, pre-program information, etc.).</p>
-          </td>
-          {[1, 2, 3, 4, 5].map((value) => (
-            <td key={value} className="p-2 border">
-              <input
-                type="radio"
-                name="question5"
-                value={value}
-				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                onChange={(e) => setFormData({ ...formData, fbSectionA5: parseInt(e.target.value) })}
-              />
-            </td>
-          ))}
-        </tr>	
-      </tbody>
-    </table>
-  </div>
-</div>
+
 
 
 
