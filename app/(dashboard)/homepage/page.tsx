@@ -1812,7 +1812,7 @@ export default function Homepage() {
 											)}
 
 											<div className="flex items-center gap-[0px] lg:gap-[6px]">
-												<p className="text-[14px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
+												<p className="text-[13px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
 
 												<button
 													type="button"
@@ -1890,18 +1890,18 @@ export default function Homepage() {
 											<div className="inline lg:hidden mt-1">
 												<div className="flex items-center mt-[11px] lg:mt-[14px]">
 													<HiMiniCalendarDays className="text-[20px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
-													<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px]">
+													<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px]">
 														{formatDate(subEvent.sub_eventsStartDate)}
 													</p>
 												</div>
 												<div className="flex items-center mt-[10px] lg:mt-[14px]">
 													<FiClock className="text-[20px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
-													<p className="text-slate-600 text-[12px] lg:text-[13px]">
+													<p className="text-slate-600 text-[11px] lg:text-[13px]">
 														{formatTime(subEvent.sub_eventsStartTime)}
 													</p>
 
 													<span className="mx-2 text-slate-800 -mt-[2px]">-</span>
-													<p className="text-slate-600 text-[12px] lg:text-[13px]">
+													<p className="text-slate-600 text-[11px] lg:text-[13px]">
 														{formatTime(subEvent.sub_eventsEndTime)}
 													</p>
 												</div>
@@ -1909,19 +1909,19 @@ export default function Homepage() {
 
 											<div className="flex items-center mt-[10px] lg:mt-[14px]">
 												<FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px]">
+												<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px]">
 													{subEvent.sub_eventsVenue}
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[14px]">
 												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px]" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0">
+												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0">
 													Attendees
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
 												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px]" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px]">
+												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px]">
 													{subEvent.sub_eventsMaxSeats} Seats
 												</p>
 											</div>
