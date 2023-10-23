@@ -1388,6 +1388,7 @@ export default function Homepage() {
 						</div>
 					</div>
 
+					{/* PC View */}
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden lg:inline">
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
@@ -2911,8 +2912,19 @@ export default function Homepage() {
 							</div>
 						</div>
 					</Delete_Event_Confirmation_Modal>
-
 				</div>
+
+				{/* Mobile View */}
+				<div className="lg:hidden mt-2">
+					<button
+						className="bg-slate-800 rounded h-[25px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1"
+						onClick={() => setShowModalCreateEvent(true)}
+					>
+						<IoIosAddCircleOutline className="text-[15px] text-slate-100" />
+						<span className="text-slate-100 ml-1 text-[8.5px]">Add Events</span>
+					</button>
+				</div>
+
 			</div>
 
 			{
