@@ -2753,7 +2753,7 @@ export default function Homepage() {
 						onClick={() => setShowModalCreateEvent(true)}
 					>
 						<IoIosAddCircleOutline className="text-[18px] text-slate-100" />
-						<span className="text-slate-100 ml-1 text-[12px]">Add Events</span>
+						<span className="text-slate-100 ml-1 text-[12px] mt-[0.5pxs] lg:mt-0px">Add Events</span>
 					</button>
 				</div>
 
