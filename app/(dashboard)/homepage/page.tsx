@@ -1819,21 +1819,21 @@ export default function Homepage() {
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
 													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
 												>
-													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[0.5px]" />
+													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px]" />
 												</button>
 												<button
 													type="button"
 													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
 													className="text-sm lg:text-base ml-[10px] mt-[20px] lg:ml-[3px] lg:mt-[12.5px]"
 												>
-													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px]" />
+													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[2.5px] lg:mt-[1px]" />
 												</button>
 												<button
 													type="button"
 													onClick={(e) => handleEditSubEventButton(e, subEvent.sub_eventsID)}
 													className="text-base lg:text-lg ml-[10px] mt-[20px] lg:ml-[3px] lg:mt-[12.6px]"
 												>
-													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px]" />
+													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[1px]" />
 												</button>
 											</div>
 											<div className="flex -mt-2 lg:-mt-3 mb-2 lg:mb-4">
@@ -1854,7 +1854,7 @@ export default function Homepage() {
 												</button>
 												<button
 													type="button"
-													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-3 px-[5px]"
+													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px]"
 													onClick={() => {
 														setSelectedSubEventID(subEvent.sub_eventsID);
 														setShowQRCodesFeedback(true);
