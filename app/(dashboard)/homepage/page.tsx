@@ -248,6 +248,8 @@ export default function Homepage() {
 	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
 	const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
 	const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
+	const [searchAttendanceQuery, setSearchAttendanceQuery] = useState("");
+	const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
 
 	// This is for the pie chart,
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -1257,6 +1259,24 @@ export default function Homepage() {
 		setShowFeedbackModal(true);
 	};
 
+	//Refresh attendance data from database
+	const refreshAttendanceData = async () => {
+        setSearchAttendanceQuery("");
+        setAttendanceData(attendanceData);
+    }
+
+	//Handle search input
+	const handleAttendanceSearch = (query: string) => {
+        setSearchAttendanceQuery(query);
+        const filteredStaffData = attendanceData.filter(
+            staff =>
+                staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
+                staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredAttendanceData(filteredStaffData);
+        console.log("filter data: ",filteredAttendanceData);
+    }
+
 	// This function fetches feedback lists for particular sub-events,
 	const fetchFeedbackList = async (event_id: string) => {
 		const { data: subEvents, error: subEventsError } = await supabase
@@ -2067,9 +2087,14 @@ export default function Homepage() {
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select>
-										<div className="h-[300px] lg:h-[450px] overflow-y-auto">
-											<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
-										</div>
+										<div className="h-[500px] overflow-y-auto">
+                                            {filteredAttendanceData && searchAttendanceQuery.length > 0 ?(
+                                            	<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
+                                                ):(
+                                                    <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+                                                )
+											}
+                                        </div>
 									</div>
 								) : (
 									<div className="text-center text-gray-600 mt-4">
