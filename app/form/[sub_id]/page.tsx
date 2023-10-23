@@ -44,7 +44,7 @@ export default function AttendanceForm() {
 
 			if (attendanceListError) {
 				console.error('Error fetching attendance list data:', attendanceListError);
-				router.push('/error-404');
+				router.push('/notFound');
 				return;
 			}
 
@@ -55,21 +55,21 @@ export default function AttendanceForm() {
 			// Check if the event end date has passed
 			if (currentTime > eventEndDate) {
 				// Event has already ended, redirect or display a message
-				router.push('/error-404'); // Redirect to a page indicating that the event has passed
+				router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
 				return;
 			}
 
 			// Check if the event end date is today and the event end time has passed
 			if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
 				// Event has already ended today, redirect or display a message
-				router.push('/error-404'); // Redirect to a page indicating that the event has passed
+				router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
 				return;
 			}
 
 			// Check if the event start time has already passed
 			if (currentTime > eventEndTime) {
 				// Event has already started, redirect or display a message
-				router.push('/error-404'); // Redirect to a page indicating that the event has passed
+				router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
 				return;
 			}
 
