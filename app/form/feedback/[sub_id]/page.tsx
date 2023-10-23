@@ -72,7 +72,9 @@ const initialFormData: FeedbackFormData = {
 		// Get the Event ID from the link,
 		const { sub_id } = useParams();
 		const router = useRouter();
-
+		const handleClearForm = () => {
+			setFormData(initialFormData);
+		  };
 		useEffect(() => {
 			const fetchEventData = async () => {
 				// Fetch the event_id associated with the given attendance_list ID
@@ -267,6 +269,7 @@ const initialFormData: FeedbackFormData = {
 				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 				required
 				placeholder="Your answer"
+				style={{ paddingLeft: "5px" }}
 				value={formData.fbCommencementDate.toISOString().split('T')[0]} // Format date as YYYY-MM-DD
 				onChange={(event) =>
 					setFormData({ ...formData, fbCommencementDate: new Date(event.target.value) })
@@ -289,6 +292,7 @@ const initialFormData: FeedbackFormData = {
 				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 				required
 				placeholder="Your answer"
+				style={{ paddingLeft: "5px" }}
 				value={formData.fbCompletionDate.toISOString().split('T')[0]} // Format date as YYYY-MM-DD
 				onChange={(event) =>
 					setFormData({ ...formData, fbCompletionDate: new Date(event.target.value) })
@@ -311,6 +315,7 @@ const initialFormData: FeedbackFormData = {
 			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 			required
 			placeholder="Your answer"
+			style={{ paddingLeft: "5px" }}
 			value={formData.fbDuration}
 			onChange={(event) =>
 				setFormData({ ...formData, fbDuration: event.target.value })
@@ -334,6 +339,7 @@ const initialFormData: FeedbackFormData = {
 		className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 		required
 		placeholder="Your answer"
+		style={{ paddingLeft: "5px" }}
 		value={formData.fbTrainersName}
 		onChange={(event) =>
 			setFormData({ ...formData, fbTrainersName: event.target.value })
@@ -357,6 +363,7 @@ const initialFormData: FeedbackFormData = {
 		className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 		required
 		placeholder="Your answer"
+		style={{ paddingLeft: "5px" }}
 		value={formData.fbTrainingProvider}
 		onChange={(event) =>
 			setFormData({ ...formData, fbTrainingProvider: event.target.value })
@@ -370,7 +377,7 @@ const initialFormData: FeedbackFormData = {
     <table className="w-full text-center border-collapse">
       <thead>
         <tr>
-          <th className="w-40 block text-gray-700 text-left lg:text-base font-medium ml-2 mt-7">A. Course Quality</th>
+          <th className="w-40 block text-black-800 text-left lg:text-base font-medium ml-2 mt-7">A. Course Quality</th>
           <th className="w-1/5 p-2 ">Strongly Disagree</th>
           <th className="w-1/5 p-2 r">Disagree</th>
           <th className="w-1/5 p-2 ">Neutral</th>
@@ -382,7 +389,7 @@ const initialFormData: FeedbackFormData = {
         {/* Question 1 */}
         <tr className="mb-1">
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>The contents were clear and easy to understand.</p>
+            <p className="block text-gray-700 text-sm lg:text-base font-medium">The contents were clear and easy to understand.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -399,7 +406,7 @@ const initialFormData: FeedbackFormData = {
         {/* Question 2 */}
         <tr>
           <td className="text-left p-2 bg-[#f8f9fa]">
-            <p>The course objectives were successfully achieved.</p>
+            <p className="block text-gray-700 text-sm lg:text-base font-medium" >The course objectives were successfully achieved.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -416,7 +423,7 @@ const initialFormData: FeedbackFormData = {
         {/* Question 3 */}
         <tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>The course materials were enough and helpful.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >The course materials were enough and helpful.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -433,7 +440,7 @@ const initialFormData: FeedbackFormData = {
         {/* Question 4 */}
         <tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>The class environment enabled me to learn.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >The class environment enabled me to learn.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -450,7 +457,7 @@ const initialFormData: FeedbackFormData = {
         {/* Question 5 */}
         <tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>The program was well coordinated (e.g., registration, pre-program information, etc.).</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >The program was well coordinated (e.g., registration, pre-program information, etc.).</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa]">
@@ -469,7 +476,7 @@ const initialFormData: FeedbackFormData = {
  		</tr>
 				<tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>My learning was enhanced by the knowledge and experience shared by the trainer.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >My learning was enhanced by the knowledge and experience shared by the trainer.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -485,7 +492,7 @@ const initialFormData: FeedbackFormData = {
         </tr>
         <tr>
           <td className="text-left p-2 bg-[#f8f9fa]">
-            <p>I was well engaged during the session by the trainer.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >I was well engaged during the session by the trainer.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -502,7 +509,7 @@ const initialFormData: FeedbackFormData = {
         {/* Question 3 */}
         <tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>The course exposed me to new knowledge and practices.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >The course exposed me to new knowledge and practices.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -518,7 +525,7 @@ const initialFormData: FeedbackFormData = {
         </tr>
 		<tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>I understand how to apply what I learned.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >I understand how to apply what I learned.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -537,7 +544,7 @@ const initialFormData: FeedbackFormData = {
  		</tr>
 		 <tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>The duration of the course was just right.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >The duration of the course was just right.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -556,7 +563,7 @@ const initialFormData: FeedbackFormData = {
  		</tr>
 		 <tr>
           <td className="text-left p-2 bg-[#f8f9fa] ">
-            <p>I would recommend this course to my colleagues.</p>
+		  <p className="block text-gray-700 text-sm lg:text-base font-medium" >I would recommend this course to my colleagues.</p>
           </td>
           {[1, 2, 3, 4, 5].map((value) => (
             <td key={value} className="p-2 bg-[#f8f9fa] ">
@@ -578,7 +585,7 @@ const initialFormData: FeedbackFormData = {
 	{/* Suggestions/Comments Card */}
 	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg w-full">
 	<div className="ml-1">
-		<p className="block text-black font-medium text-xl lg:text-2xl ml-3 -mt-3">
+		<p className="block text-black font-medium text-xl lg:text-2xl -mt-3 ml-1">
 		Suggestions/Comments
 		</p>
 
@@ -587,15 +594,16 @@ const initialFormData: FeedbackFormData = {
 		<div className="ml-1">
 			<label
 			htmlFor="suggestion1"
-			className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+			className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 -ml-[6px]">
 			What did you like most about the course?
 			<span className="text-red-500"> *</span>
 			</label>
 			<input
 			id="suggestion1"
-			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-basepleas"
+			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 			required
 			placeholder="Your answer"
+			style={{ paddingLeft: "0px" }}
 			value={formData.fbSectionESuggestions}
 			onChange={(event) =>
 				setFormData({ ...formData, fbSectionESuggestions: event.target.value })
@@ -609,7 +617,7 @@ const initialFormData: FeedbackFormData = {
 			<div className="ml-1">
 				<label
 				htmlFor="suggestion2"
-				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 -ml-[6px]">
 				If you could change one thing about this course, what would it be?
 				<span className="text-red-500"> *</span>
 				</label>
@@ -618,6 +626,7 @@ const initialFormData: FeedbackFormData = {
 				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 				required
 				placeholder="Your answer"
+				style={{ paddingLeft: "0px" }}
 				value={formData.fbSectionEChanges}
 				onChange={(event) =>
 					setFormData({ ...formData, fbSectionEChanges: event.target.value })
@@ -631,7 +640,7 @@ const initialFormData: FeedbackFormData = {
 			<div className="ml-1">
 				<label
 				htmlFor="suggestion3"
-				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 -ml-[6px]">
 				Please share any additional comments or suggestions.
 				<span className="text-red-500"> *</span>
 				</label>
@@ -640,6 +649,7 @@ const initialFormData: FeedbackFormData = {
 				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 				required
 				placeholder="Your answer"
+				style={{ paddingLeft: "0px" }}
 				value={formData.fbSectionEAdditional}
 				onChange={(event) =>
 					setFormData({ ...formData, fbSectionEAdditional: event.target.value })
@@ -655,8 +665,8 @@ const initialFormData: FeedbackFormData = {
 	<div className="ml-1">
 			{/* Verification Card */}
 	<div className="mb-4">
-	<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3 ml-3">Verification</p>
-	<p className="font-semibold mt-6 ml-3">
+	<p className="block text-black font-medium text-xl lg:text-2xl mb-2 -mt-3 ml-[5px]">Verification</p>
+	<p className="font-semibold mb-2 mt-3 ml-[5px]">
 		I hereby declare that the information I have provided in the Training Feedback Form provided is true, correct & complete.
 	</p>
 	</div>
@@ -666,54 +676,47 @@ const initialFormData: FeedbackFormData = {
 			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 			<div className="ml-1">
 				{/* Full Name Card */}
-				<div className="mb-4">
 				<label htmlFor="fullName" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 					Full Name
 					<span className="text-red-500">*</span>
 				</label>
-				<div className="flex items-center border-b border-gray-300 py-2">
 					<input
 					type="text"
 					id="fullName"
 					name="fullName"
 					placeholder="Your answer"
-					className="w-full px-4 focus:outline-none text-sm lg:text-base"
+					style={{ paddingLeft: "5px" }}
+					className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 					required
 					value={formData.fbFullName}
 					onChange={(event) => setFormData({ ...formData, fbFullName: event.target.value })}
 					/>
-				</div>
-				</div>
 			</div>
 			</div>
 
 			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 			<div className="ml-1">
-				{/* Email Address Card */}
-				<div className="mb-4">
-				<label htmlFor="email" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-					Email Address
-					<span className="text-red-500">*</span>
-				</label>
-				<div className="flex items-center border-b border-gray-300 py-2">
-					<input
-					type="text"
-					id="email"
-					name="email"
-					placeholder="Your answer"
-					className="w-full px-4 focus:outline-none text-sm lg:text-base"
-					required
-					value={formData.fbEmailAddress}
-					onChange={(event) => setFormData({ ...formData, fbEmailAddress: event.target.value })}
-					/>
+			<label
+			htmlFor="emailAddress"
+			className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+			Email Address
+			<span className="text-red-500"> *</span>
+			</label>
+			<input
+			type="text"
+			name="emailAddress"
+			id="emailAddress"
+			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+			required
+			placeholder="Your answer"
+			style={{ paddingLeft: "5px" }}
+			value={formData.fbEmailAddress}
+			onChange={(event) =>
+				setFormData({ ...formData, fbEmailAddress: event.target.value })
+			}
+			/>
 			</div>
 			</div>
-	</div>
-	</div>
-
-
-
-
 
 
 
@@ -746,6 +749,16 @@ const initialFormData: FeedbackFormData = {
 		Submit
 	</button>
 	</Fragment>
+	
+	<button
+        type="button"
+        className="bottom-4 ml-[500px] -mt-[20px]  bg-transparent border border-gray-500 text-gray-500 px-4 py-2 rounded-full transition duration-300 hover:bg-gray-500 hover:text-white focus:outline-none cursor-pointer font-sans font-medium text-sm"
+        onClick={handleClearForm}
+      >
+        Clear Form
+      </button>
+
+	
 
 
 					<Modal
