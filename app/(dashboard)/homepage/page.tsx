@@ -1573,7 +1573,7 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[82px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
 													Start Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1590,7 +1590,7 @@ export default function Homepage() {
 												{detail.start_dates.map((start_dates, startDatesIndex) => (
 													<div key={startDatesIndex}>
 														<input
-															className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px]"
+															className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[87.5px] lg:mr-[90.5px] mb-[3px]"
 															type="date"
 															name="event_start_date"
 
@@ -1623,7 +1623,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[50px] lg:ml-[62.5px] mb-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[47px] lg:ml-[62.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1647,7 +1647,7 @@ export default function Homepage() {
 												{detail.end_times.map((end_times, endTimesIndex) => (
 													<div key={endTimesIndex}>
 														<input
-															className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 "
+															className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[15px] lg:-ml-[71.5px] pr-2 "
 															type="time"
 															name="event_end_time"
 
