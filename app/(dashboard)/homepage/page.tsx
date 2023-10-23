@@ -1894,7 +1894,7 @@ export default function Homepage() {
 														{formatDate(subEvent.sub_eventsStartDate)}
 													</p>
 												</div>
-												<div className="flex items-center mt-[11px] lg:mt-[14px]">
+												<div className="flex items-center mt-[10px] lg:mt-[14px]">
 													<FiClock className="text-[20px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
 													<p className="text-slate-600 text-[12px] lg:text-[13px]">
 														{formatTime(subEvent.sub_eventsStartTime)}
@@ -1913,13 +1913,13 @@ export default function Homepage() {
 													{subEvent.sub_eventsVenue}
 												</p>
 											</div>
-											<div className="flex items-center mt-[11px] lg:mt-[14px]">
+											<div className="flex items-center mt-[8px] lg:mt-[14px]">
 												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px]" />
 												<p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0">
 													Attendees
 												</p>
 											</div>
-											<div className="flex items-center mt-[15px] lg:mb-0 mb-[3px]">
+											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
 												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px]" />
 												<p className="text-slate-600 text-[12px] lg:text-[13px] mt-[1px] lg:-ml-[1px]">
 													{subEvent.sub_eventsMaxSeats} Seats
