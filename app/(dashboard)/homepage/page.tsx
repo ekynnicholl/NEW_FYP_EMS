@@ -1111,7 +1111,7 @@ export default function Homepage() {
 		const { error: deleteFeedbackFormsError } = await supabase
 			.from("feedback_forms")
 			.delete()
-			.in("feedbackSubEventID", subEventIDs);
+			.in("fbSubEventID", subEventIDs);
 
 		if (deleteFeedbackFormsError) {
 			console.error("Error deleting feedback forms:", deleteFeedbackFormsError);
@@ -1165,7 +1165,7 @@ export default function Homepage() {
 		const { error: deleteFeedbackFormsError } = await supabase
 			.from("feedback_forms")
 			.delete()
-			.in("feedbackSubEventID", subEventIDs);
+			.in("fbSubEventID", subEventIDs);
 
 		if (deleteFeedbackFormsError) {
 			console.error("Error deleting feedback forms:", deleteFeedbackFormsError);
