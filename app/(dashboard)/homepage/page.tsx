@@ -1396,7 +1396,7 @@ export default function Homepage() {
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
 							onClick={() => setShowModalCreateEvent(true)}>
 							<IoIosAddCircleOutline className="text-3xl text-slate-100 -ml-1 mr-1" />
-							<span className="text-slate-100 ml-1">Add Events</span>
+							<span className="text-slate-100 ml-[2px]">Add Events</span>
 						</button>
 					</div>
 
