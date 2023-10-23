@@ -2568,7 +2568,7 @@ export default function Homepage() {
 
 							<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mt-16 lg:mt-0">
 								<button
-									className="rounded-lg px-[15px] py-[8.5px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									className="rounded-lg px-[12px] py-[7px] lg:px-[18px] lg:py-[10px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
 								>
 									Save Changes
 								</button>
