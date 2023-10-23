@@ -1579,7 +1579,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[92px] mb-[2px] -ml-[4px] lg:ml-[1px]">
 													End Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1623,7 +1623,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[75px] lg:ml-[62.5px] mb-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[77px] lg:ml-[62.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -2161,7 +2161,7 @@ export default function Homepage() {
 												*
 											</span>
 										</p>
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[86px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
 											End Date
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
@@ -2455,7 +2455,7 @@ export default function Homepage() {
 
 								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
 									<div className="flex">
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[87px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
 											Start Date
 											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 												*
