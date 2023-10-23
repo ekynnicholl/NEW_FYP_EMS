@@ -1,68 +1,69 @@
-	"use client";
+"use client";
 
-	import Image from "next/image";
-	import { Fragment, useState, useEffect } from "react";
-	import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
+import { Fragment, useState, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Modal from "@/components/Modal";
+import { LikertScaleCard } from "@/components/ui/likert";
+import { useParams, useRouter } from "next/navigation";
 
-	import Modal from "@/components/Modal";
-	import { LikertScaleCard } from "@/components/ui/likert";
-	// Import icons from react-icons
-	import { useParams, useRouter } from "next/navigation";
-
-	type FeedbackFormData = {
-		fbSubEventID: string; // Add the missing property
-		feedbackStaffID: string; 
-		fbCourseName: string;
-		fbCommencementDate: Date;
-		fbCompletionDate: Date;
-		fbDuration: string;
-		fbTrainersName: string;
-		fbTrainingProvider: string;
-		fbSectionESuggestions: string;
-		fbSectionEChanges: string;
-		fbSectionEAdditional: string;
-		fbFullName: string;
-		fbEmailAddress: string;
-		fbSectionA1: number | null;
-		fbSectionA2: number | null;
-		fbSectionA3: number | null;
-		fbSectionA4: number | null;
-		fbSectionA5: number | null;
-		fbSectionB1: number;
-		fbSectionB2: number;
-		fbSectionB3: number;
-		fbSectionB4: number;
-		fbSectionC1: number;
-		fbSectionD1: number;
-	};
-	const initialFormData: FeedbackFormData = {
-		fbSubEventID: "", // Add the missing property
-		feedbackStaffID: "",
-		fbCourseName: "",
-		fbCommencementDate: new Date(), // Initialize with the current date or any default date you prefer
-		fbCompletionDate: new Date(),
-		fbDuration: "",
-		fbTrainersName: "",
-		fbTrainingProvider: "",
-		fbSectionA1: null,
-		fbSectionA2: null,
-		fbSectionA3: null,
-		fbSectionA4: null,
-		fbSectionA5: null,
-		fbSectionB1: 0,
-		fbSectionB2: 0,
-		fbSectionB3: 0,
-		fbSectionB4: 0,
-		fbSectionC1: 0,
-		fbSectionD1: 0,
-		fbSectionESuggestions: "",
-		fbSectionEChanges: "",
-		fbSectionEAdditional: "",
-		fbFullName: "",
-		fbEmailAddress: ""
-	};
+//Define the structure of Feedback Form Data
+type FeedbackFormData = {
+	fbSubEventID: string; // Add the missing property
+	feedbackStaffID: string; 
+	fbCourseName: string;
+	fbCommencementDate: Date;
+	fbCompletionDate: Date;
+	fbDuration: string;
+	fbTrainersName: string;
+	fbTrainingProvider: string;
+	fbSectionA1: number;
+	fbSectionA2: number;
+	fbSectionA3: number;
+	fbSectionA4: number; 
+	fbSectionA5: number;
+	fbSectionB1: number;
+	fbSectionB2: number;
+	fbSectionB3: number;
+	fbSectionB4: number;
+	fbSectionC1: number;
+	fbSectionD1: number;
+	fbSectionESuggestions: string;
+	fbSectionEChanges: string;
+	fbSectionEAdditional: string;
+	fbFullName: string;
+	fbEmailAddress: string;
+};
+// Initial form data with default values
+const initialFormData: FeedbackFormData = {
+	fbSubEventID: "", // Add the missing property
+	feedbackStaffID: "",
+	fbCourseName: "",
+	fbCommencementDate: new Date(), // Initialize with the current date or any default date you prefer
+	fbCompletionDate: new Date(),
+	fbDuration: "",
+	fbTrainersName: "",
+	fbTrainingProvider: "",
+	fbSectionA1: 0,
+	fbSectionA2: 0,
+	fbSectionA3: 0,
+	fbSectionA4: 0,
+	fbSectionA5: 0,
+	fbSectionB1: 0,
+	fbSectionB2: 0,
+	fbSectionB3: 0,
+	fbSectionB4: 0,
+	fbSectionC1: 0,
+	fbSectionD1: 0,
+	fbSectionESuggestions: "",
+	fbSectionEChanges: "",
+	fbSectionEAdditional: "",
+	fbFullName: "",
+	fbEmailAddress: ""
+};
 	
 	export default function FeedbackForm() {
+		 // Initialize Supabase client
 		const supabase = createClientComponentClient();
 		const [eventData, setEventData] = useState<any>(null);
 		const [formData, setFormData] = useState<FeedbackFormData>(initialFormData);
@@ -113,7 +114,7 @@
 			fetchEventData();
 		}, [sub_id, supabase, router]);
 
-		// Handle data submission
+  // Handle form submission
 		const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
 		
@@ -174,7 +175,6 @@
 				fbSectionEAdditional,
 				fbFullName,
 				fbEmailAddress,
-				// ...other new form fields
 			},
 			]);
 		
@@ -186,23 +186,14 @@
 			setShowModalSuccess(true);
 			}
 		};
-
-
 		const handleOK = () => {
 			setShowModalSuccess(false);
 			window.location.reload();
 		};
-
-		//likert
-
-
 		return (
 			<div className="flex flex-col items-center min-h-screen bg-slate-100">
-				<form
-					onSubmit={handleSubmit}
-					className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[50px]">
-					<div
-						className="mb-4 bg-white rounded-md relative"
+				<form onSubmit={handleSubmit} className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[50px]">
+					<div className="mb-4 bg-white rounded-md relative"
 						style={{ height: "200px" }}>
 						<img
 							src="https://source.unsplash.com/600x300?party"
@@ -238,27 +229,27 @@
 						</div>
 					</div>
 
-					<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 			<div className="ml-1">
-				<label
-				htmlFor="courseName"
-				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-				Course Name
-				<span className="text-red-500"> *</span>
-				</label>
-				<input
-				type="text"
-				name="courseName"
-				id="courseName"
-				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-				required
-				placeholder="Your answer"
-				style={{ paddingLeft: "5px" }}
-				value={formData.fbCourseName}
-				onChange={(event) =>
-					setFormData({ ...formData, fbCourseName: event.target.value })
-				}
-				/>
+			<label
+			htmlFor="courseName"
+			className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+			Course Name
+			<span className="text-red-500"> *</span>
+			</label>
+			<input
+			type="text"
+			name="courseName"
+			id="courseName"
+			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+			required
+			placeholder="Your answer"
+			style={{ paddingLeft: "5px" }}
+			value={formData.fbCourseName}
+			onChange={(event) =>
+				setFormData({ ...formData, fbCourseName: event.target.value })
+			}
+			/>
 			</div>
 			</div>
 			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
@@ -306,27 +297,27 @@
 			</div>
 			</div>
 			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-	<div className="ml-1">
-		<label
-		htmlFor="duration"
-		className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-		Duration of Course (No. of Days)
-		<span className="text-red-500"> *</span>
-		</label>
-		<input
-		type="text"
-		name="duration"
-		id="duration"
-		className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-		required
-		placeholder="Your answer"
-		value={formData.fbDuration}
-		onChange={(event) =>
-			setFormData({ ...formData, fbDuration: event.target.value })
-		}
-		/>
-	</div>
-	</div>
+			<div className="ml-1">
+			<label
+			htmlFor="duration"
+			className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+			Duration of Course (No. of Days)
+			<span className="text-red-500"> *</span>
+			</label>
+			<input
+			type="text"
+			name="duration"
+			id="duration"
+			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+			required
+			placeholder="Your answer"
+			value={formData.fbDuration}
+			onChange={(event) =>
+				setFormData({ ...formData, fbDuration: event.target.value })
+			}
+			/>
+			</div>
+			</div>
 
 	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 	<div className="ml-1">
@@ -374,148 +365,253 @@
 	</div>
 	</div>
 
-	<LikertScaleCard />
 
+	{/* Suggestions/Comments Card */}
+	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg w-full">
+	<div className="ml-1">
+		<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
+		Suggestions/Comments
+		</p>
 
-			{/* Suggestions/Comments Card */}
-			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg w-full">
+		{/* Question 1 Card */}
+		<div className="mb-4 p-2 py-8  bg-white rounded-lg">
+		<div className="ml-1">
+			<label
+			htmlFor="suggestion1"
+			className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+			What did you like most about the course?
+			<span className="text-red-500"> *</span>
+			</label>
+			<input
+			id="suggestion1"
+			className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-basepleas"
+			required
+			placeholder="Your answer"
+			value={formData.fbSectionESuggestions}
+			onChange={(event) =>
+				setFormData({ ...formData, fbSectionESuggestions: event.target.value })
+			}
+			/>
+			</div>
+			</div>
+
+			{/* Question 2 Card */}
+			<div className="mb-4 p-2 py-8  bg-white rounded-lg">
 			<div className="ml-1">
-				<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
-				Suggestions/Comments
-				</p>
+				<label
+				htmlFor="suggestion2"
+				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+				If you could change one thing about this course, what would it be?
+				<span className="text-red-500"> *</span>
+				</label>
+				<input
+				id="suggestion2"
+				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+				required
+				placeholder="Your answer"
+				value={formData.fbSectionEChanges}
+				onChange={(event) =>
+					setFormData({ ...formData, fbSectionEChanges: event.target.value })
+				}
+				/>
+			</div>
+			</div>
 
-				{/* Question 1 Card */}
-				<div className="mb-4 p-2 py-8  bg-white rounded-lg">
-				<div className="ml-1">
-					<label
-					htmlFor="suggestion1"
-					className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-					What did you like most about the course?
-					<span className="text-red-500"> *</span>
-					</label>
+			{/* Question 3 Card */}
+			<div className="mb-4 p-2 py-8  bg-white rounded-lg">
+			<div className="ml-1">
+				<label
+				htmlFor="suggestion3"
+				className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+				Please share any additional comments or suggestions.
+				<span className="text-red-500"> *</span>
+				</label>
+				<input
+				id="suggestion3"
+				className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+				required
+				placeholder="Your answer"
+				value={formData.fbSectionEAdditional}
+				onChange={(event) =>
+					setFormData({ ...formData, fbSectionEAdditional: event.target.value })
+				}
+				/>
+			</div>
+			</div>
+
+			</div>
+			</div>
+
+	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+	<div className="ml-1">
+			{/* Verification Card */}
+	<div className="mb-4">
+	<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">Verification</p>
+	<p className="font-semibold mt-6">
+		I hereby declare that the information I have provided in the Training Feedback Form provided is true, correct & complete.
+	</p>
+	</div>
+	</div>
+	</div>
+
+			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+			<div className="ml-1">
+				{/* Full Name Card */}
+				<div className="mb-4">
+				<label htmlFor="fullName" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+					Full Name
+					<span className="text-red-500">*</span>
+				</label>
+				<div className="flex items-center border-b border-gray-300 py-2">
 					<input
-					id="suggestion1"
-					className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-basepleas"
-					required
+					type="text"
+					id="fullName"
+					name="fullName"
 					placeholder="Your answer"
-					value={formData.fbSectionESuggestions}
-					onChange={(event) =>
-						setFormData({ ...formData, fbSectionESuggestions: event.target.value })
-					}
+					className="w-full px-4 focus:outline-none text-sm lg:text-base"
+					required
+					value={formData.fbFullName}
+					onChange={(event) => setFormData({ ...formData, fbFullName: event.target.value })}
 					/>
 				</div>
 				</div>
-
-				{/* Question 2 Card */}
-				<div className="mb-4 p-2 py-8  bg-white rounded-lg">
-				<div className="ml-1">
-					<label
-					htmlFor="suggestion2"
-					className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-					If you could change one thing about this course, what would it be?
-					<span className="text-red-500"> *</span>
-					</label>
-					<input
-					id="suggestion2"
-					className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-					required
-					placeholder="Your answer"
-					value={formData.fbSectionEChanges}
-					onChange={(event) =>
-						setFormData({ ...formData, fbSectionEChanges: event.target.value })
-					}
-					/>
-				</div>
-				</div>
-
-				{/* Question 3 Card */}
-				<div className="mb-4 p-2 py-8  bg-white rounded-lg">
-				<div className="ml-1">
-					<label
-					htmlFor="suggestion3"
-					className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-					Please share any additional comments or suggestions.
-					<span className="text-red-500"> *</span>
-					</label>
-					<input
-					id="suggestion3"
-					className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-					required
-					placeholder="Your answer"
-					value={formData.fbSectionEAdditional}
-					onChange={(event) =>
-						setFormData({ ...formData, fbSectionEAdditional: event.target.value })
-					}
-					/>
-				</div>
-				</div>
-
 			</div>
 			</div>
 
 			<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-	<div className="ml-1">
-		{/* Verification Card */}
-		<div className="mb-4">
-		<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">Verification</p>
-		<p className="font-semibold mt-6">
-			I hereby declare that the information I have provided in the Training Feedback Form provided is true, correct & complete.
-		</p>
-		</div>
+			<div className="ml-1">
+				{/* Email Address Card */}
+				<div className="mb-4">
+				<label htmlFor="email" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+					Email Address
+					<span className="text-red-500">*</span>
+				</label>
+				<div className="flex items-center border-b border-gray-300 py-2">
+					<input
+					type="text"
+					id="email"
+					name="email"
+					placeholder="Your answer"
+					className="w-full px-4 focus:outline-none text-sm lg:text-base"
+					required
+					value={formData.fbEmailAddress}
+					onChange={(event) => setFormData({ ...formData, fbEmailAddress: event.target.value })}
+					/>
+			</div>
+			</div>
 	</div>
 	</div>
 
-	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-	<div className="ml-1">
-		{/* Full Name Card */}
-		<div className="mb-4">
-		<label htmlFor="fullName" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-			Full Name
-			<span className="text-red-500">*</span>
-		</label>
-		<div className="flex items-center border-b border-gray-300 py-2">
-			<input
-			type="text"
-			id="fullName"
-			name="fullName"
-			placeholder="Your answer"
-			className="w-full px-4 focus:outline-none text-sm lg:text-base"
-			required
-			value={formData.fbFullName}
-			onChange={(event) => setFormData({ ...formData, fbFullName: event.target.value })}
-			/>
-		</div>
-		</div>
-	</div>
-	</div>
+	<div className="mb-4 p-2 pr-2 lg:pr-[100px] py-8 pl-2 lg:pl-5 bg-white rounded-lg overflow-x-auto">
+  <div className="ml-1">
+    <table className="w-full text-center border-collapse">
+      <thead>
+        <tr>
+          <th className="text-left p-2 border">Likert Scale Questions</th>
+          <th className="p-2 border">Strongly Disagree</th>
+          <th className="p-2 border">Disagree</th>
+          <th className="p-2 border">Neutral</th>
+          <th className="p-2 border">Agree</th>
+          <th className="p-2 border">Strongly Agree</th>
+        </tr>
+      </thead>
+      <tbody>
+        {/* Question 1 */}
+        <tr>
+          <td className="text-left p-2 border">
+            <p>The contents were clear and easy to understand.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 border">
+              <input
+                type="radio"
+                name="question1"
+                value={value}
+				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                onChange={(e) => setFormData({ ...formData, fbSectionA1: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 2 */}
+        <tr>
+          <td className="text-left p-2 border">
+            <p>The course objectives were successfully achieved.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 border">
+              <input
+                type="radio"
+                name="question2"
+                value={value}
+				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                onChange={(e) => setFormData({ ...formData, fbSectionA2: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 3 */}
+        <tr>
+          <td className="text-left p-2 border">
+            <p>The course materials were enough and helpful.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 border">
+              <input
+                type="radio"
+                name="question3"
+                value={value}
+				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                onChange={(e) => setFormData({ ...formData, fbSectionA3: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 4 */}
+        <tr>
+          <td className="text-left p-2 border">
+            <p>The class environment enabled me to learn.</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 border">
+              <input
+                type="radio"
+                name="question4"
+                value={value}
+				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                onChange={(e) => setFormData({ ...formData, fbSectionA4: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>
+        {/* Question 5 */}
+        <tr>
+          <td className="text-left p-2 border">
+            <p>The program was well coordinated (e.g., registration, pre-program information, etc.).</p>
+          </td>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <td key={value} className="p-2 border">
+              <input
+                type="radio"
+                name="question5"
+                value={value}
+				className="form-radio h-5 w-5 text-blue-600 border-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                onChange={(e) => setFormData({ ...formData, fbSectionA5: parseInt(e.target.value) })}
+              />
+            </td>
+          ))}
+        </tr>	
+      </tbody>
+    </table>
+  </div>
+</div>
 
-	<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-	<div className="ml-1">
-		{/* Email Address Card */}
-		<div className="mb-4">
-		<label htmlFor="email" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-			Email Address
-			<span className="text-red-500">*</span>
-		</label>
-		<div className="flex items-center border-b border-gray-300 py-2">
-			<input
-			type="text"
-			id="email"
-			name="email"
-			placeholder="Your answer"
-			className="w-full px-4 focus:outline-none text-sm lg:text-base"
-			required
-			value={formData.fbEmailAddress}
-			onChange={(event) => setFormData({ ...formData, fbEmailAddress: event.target.value })}
-			/>
-		</div>
-		</div>
-	</div>
-	</div>
 
 
 
-	<Fragment>
+
+
+	<Fragment>	
 	<button
 		type="submit"
 		className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
@@ -573,5 +669,6 @@
 					</Modal>
 				</form>
 			</div>
+
 		);
 	}

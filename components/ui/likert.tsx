@@ -12,17 +12,15 @@ const LikertScaleCard = () => {
 const [choices, setChoices] = useState(initialChoices);
 
 const handleOptionChange = (question: string, value: number) => {
-  setChoices((prevChoices) => {
-    const updatedChoices = {
+  console.log(`Updating state for ${question} with value ${value}`);
+  setChoices(prevChoices => {
+    return {
       ...prevChoices,
       [question]: value,
     };
-    console.log(updatedChoices); // Log the updated state
-    return updatedChoices;
   });
 };
   
-
 
 const handleClearSelection = () => {
     setChoices(initialChoices);
