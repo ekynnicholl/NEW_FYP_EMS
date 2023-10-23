@@ -2750,11 +2750,11 @@ export default function Homepage() {
 				{/* Mobile View */}
 				<div className="md:hidden mt-2">
 					<button
-						className="bg-slate-800 rounded h-[30px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1"
+						className="bg-slate-800 rounded h-[35px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1"
 						onClick={() => setShowModalCreateEvent(true)}
 					>
-						<IoIosAddCircleOutline className="text-[15px] text-slate-100" />
-						<span className="text-slate-100 ml-1 text-[10px]">Add Events</span>
+						<IoIosAddCircleOutline className="text-[18px] text-slate-100" />
+						<span className="text-slate-100 ml-1 text-[12px]">Add Events</span>
 					</button>
 				</div>
 
