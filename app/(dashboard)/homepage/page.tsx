@@ -3955,7 +3955,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[260px] w-[170px] relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[220px] w-[170px] relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -4002,7 +4002,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-2 relative">
+									<div className="w-full h-[300px] mb-[6px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?party"
@@ -4044,12 +4044,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[9px] -mt-2">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
 												{latestEvent[0].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-2">
-												<HiMiniCalendarDays className="text-base mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[9px] -ml-[2px]">
+											<div className="flex items-center mt-[6px]">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
+												<p className="text-slate-600 text-[8px] -ml-1">
 													{formatDate(latestEvent[0].intFEventStartDate)}
 												</p>
 											</div>
@@ -4060,9 +4060,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-2">
-															<FiClock className="text-base mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[9px] -ml-[2px]">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FiClock className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4074,9 +4074,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-2">
-															<FaLocationDot className="text-base mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[9px] -ml-[2px]">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4089,7 +4089,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-[6px] w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
@@ -4110,7 +4110,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[260px] w-[170px] relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-[10px] h-[220px] w-[170px] relative flex flex-col transition transform hover:scale-105"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -4157,7 +4157,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-2 relative">
+									<div className="w-full h-[300px] mb-[6px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?party"
@@ -4199,12 +4199,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[9px] -mt-2">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
 												{latestEvent[0].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-2">
-												<HiMiniCalendarDays className="text-base mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[9px] -ml-[2px]">
+											<div className="flex items-center mt-[6px]">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
+												<p className="text-slate-600 text-[8px] -ml-1">
 													{formatDate(latestEvent[0].intFEventStartDate)}
 												</p>
 											</div>
@@ -4215,9 +4215,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-2">
-															<FiClock className="text-base mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[9px] -ml-[2px]">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FiClock className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4229,9 +4229,9 @@ export default function Homepage() {
 													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-2">
-															<FaLocationDot className="text-base mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[9px] -ml-[2px]">
+														<div key={index} className="flex items-center mt-[6px]">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
+															<p className="text-slate-600 text-[8px] -ml-1">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4244,7 +4244,7 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-[6px] w-full h-[5px] bg-gray-200 rounded-full relative">
 																<div
 																	className="h-full bg-orange-300 rounded-full"
 																	style={{
