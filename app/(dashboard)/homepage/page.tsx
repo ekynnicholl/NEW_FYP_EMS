@@ -1890,13 +1890,13 @@ export default function Homepage() {
 											<div className="inline lg:hidden mt-1">
 												<div className="flex items-center mt-[11px] lg:mt-[14px]">
 													<HiMiniCalendarDays className="text-[20px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
-													<p className="text-slate-600 text-[11px] lg:text-[13px] -ml-[1px] mt-[0.5px] lg:mt-[0.5px]">
+													<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px] mt-[0.5px] lg:mt-[0.5px]">
 														{formatDate(subEvent.sub_eventsStartDate)}
 													</p>
 												</div>
 												<div className="flex items-center mt-[10px] lg:mt-[14px]">
 													<FiClock className="text-[20px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
-													<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[2px]">
+													<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[0.5px]">
 														{formatTime(subEvent.sub_eventsStartTime)}
 													</p>
 
