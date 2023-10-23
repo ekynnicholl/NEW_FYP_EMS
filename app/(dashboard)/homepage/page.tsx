@@ -1401,7 +1401,7 @@ export default function Homepage() {
 					<CreateEvent_Modal isVisible={showModalCreateEvent}
 						onClose={() => setShowModalCreateEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
-							<div className="ml-[7px] lg:ml-4 mb-[70px]">
+							<div className="ml-1 lg:ml-4 mb-[70px]">
 								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
 									Create Event
 								</h3>
