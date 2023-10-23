@@ -1402,14 +1402,14 @@ export default function Homepage() {
 						onClose={() => setShowModalCreateEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[70px]">
-								<h3 className="text-[15px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px]">
+								<h3 className="text-[14px] lg:text-[16px] font-semibold text-slate-700 -mb-[7px] lg:mb-2 mt-[9px] ml-[2px]">
 									Create Event
 								</h3>
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[270px] lg:w-[505px]" />
 
 								<div>
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px]">
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px]">
 										Event Name
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
@@ -1430,7 +1430,7 @@ export default function Homepage() {
 										}
 									/>
 
-									<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
 										Description
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 											*
@@ -1452,13 +1452,13 @@ export default function Homepage() {
 
 									<div className="flex flex-col mt-[10px]">
 										<div className="flex">
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px]">
 												Start Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
 												</span>
 											</p>
-											<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px]">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px]">
 												End Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 													*
@@ -1507,7 +1507,7 @@ export default function Homepage() {
 										)}
 
 										<div className="flex items-center">
-											<p className="text-[15px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
+											<p className="text-[14px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-5">‣ Session {index + 1}</p>
 
 											{eventDetails.length > 1 && (
 												<button
@@ -1522,7 +1522,7 @@ export default function Homepage() {
 
 										{detail.event_names.map((event_name, eventNameIndex) => (
 											<div key={eventNameIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 ml-[2px]">
 													Sub-event Name
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 												</p>
@@ -1539,7 +1539,7 @@ export default function Homepage() {
 
 										{detail.venues.map((venue, venueIndex) => (
 											<div key={venueIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
 													Venue
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 												</p>
@@ -1556,7 +1556,7 @@ export default function Homepage() {
 
 										{detail.maximum_seats.map((maximum_seats, maximumSeatsIndex) => (
 											<div key={maximumSeatsIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[1px]">
 													Maximum Seats
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 												</p>
@@ -1573,13 +1573,13 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px]">
 													Start Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
 													</span>
 												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px]">
 													End Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1617,13 +1617,13 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px]">
 													Start Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
 													</span>
 												</p>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[62.5px] mb-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[37px] lg:ml-[62.5px] mb-[2px]">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 														*
@@ -1662,7 +1662,7 @@ export default function Homepage() {
 
 										{detail.organizers.map((organizers, organizersIndex) => (
 											<div key={organizersIndex}>
-												<p className="text-[12px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px]">
 													Organizer
 													<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
 												</p>
