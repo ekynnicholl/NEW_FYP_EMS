@@ -113,6 +113,8 @@ module.exports = {
 					800: "#1E293B",
 					900: "#0F172A",
 				},
+				"dark_mode_bg": "#1E2021", 
+				"dark_mode_card": "#181A1B",
 			},
 			keyframes: {
 				"accordion-down": {
