@@ -1309,12 +1309,12 @@ export default function Homepage() {
 	}
 
 	return (
-		<div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-500' : 'bg-slate-100'} space-y-4`}>
+		<div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 			<div className="mx-auto w-full">
 				<div className="w-full flex ml-1">
 
 					{/* PC View */}
-					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full">
+					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full dark:bg-black-900">
 						<div className="w-1/3 text-left h-full">
 							<div className="bg-[#E5F9FF] p-5 text-slate-700 rounded-lg flex">
 								<div className="mr-4">
