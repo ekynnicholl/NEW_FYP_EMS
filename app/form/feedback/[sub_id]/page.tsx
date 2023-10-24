@@ -235,7 +235,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="courseName"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Course Name
 							<span className="text-red-500"> *</span>
 						</label>
@@ -258,7 +258,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="commencementDate"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Commencement Date
 							<span className="text-red-500"> *</span>
 						</label>
@@ -281,7 +281,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="completionDate"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Completion Date
 							<span className="text-red-500"> *</span>
 						</label>
@@ -304,7 +304,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="duration"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Duration of Course (No. of Days)
 							<span className="text-red-500"> *</span>
 						</label>
@@ -328,7 +328,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="trainerName"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Trainer&apos;s Name
 							<span className="text-red-500"> *</span>
 						</label>
@@ -352,7 +352,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="trainingProvider"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Training Provider
 							<span className="text-red-500"> *</span>
 						</label>
@@ -372,7 +372,7 @@ export default function FeedbackForm() {
 					</div>
 				</div>
 				<div className="mb-4 p-2 pr-2 py-8 pl-2 lg:pl-5 bg-white rounded-lg overflow-x-auto">
-					<p className="block text-black font-medium text-xl lg:text-2xl ml-3 -mt-3">Assessment Criteria <span className="text-red-500"> *</span></p>
+					<p className="block text-black font-medium text-[18px] lg:text-2xl ml-3 -mt-3">Assessment Criteria <span className="text-red-500"> *</span></p>
 					<div className="ml-1">
 						<table className="w-full text-center border-collapse">
 							<thead>
@@ -665,7 +665,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						{/* Verification Card */}
 						<div className="mb-4">
-							<p className="block text-black font-medium text-xl lg:text-2xl mb-2 -mt-3 ml-[5px]">Verification</p>
+							<p className="block text-black font-medium text-[18px] lg:text-2xl mb-2 -mt-3 ml-[5px]">Verification</p>
 							<p className="font-semibold mb-2 mt-3 ml-[5px]">
 								I hereby declare that the information I have provided in the Training Feedback Form provided is true, correct & complete.
 							</p>
@@ -676,7 +676,7 @@ export default function FeedbackForm() {
 				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 					<div className="ml-1">
 						{/* Full Name Card */}
-						<label htmlFor="fullName" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+						<label htmlFor="fullName" className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Full Name
 							<span className="text-red-500">*</span>
 						</label>
@@ -698,7 +698,7 @@ export default function FeedbackForm() {
 					<div className="ml-1">
 						<label
 							htmlFor="emailAddress"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
 							Email Address
 							<span className="text-red-500"> *</span>
 						</label>
@@ -717,8 +717,6 @@ export default function FeedbackForm() {
 						/>
 					</div>
 				</div>
-
-
 
 
 				<Fragment>
