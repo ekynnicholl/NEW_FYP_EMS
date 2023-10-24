@@ -48,7 +48,7 @@ const NavigationBarDesktop = () => {
 
 	// Put fixed if want the navigation bar to scroll together but if I put fixed, the side elements will not change size when navigation bar is open.
 	const wrapper = classNames(
-		"h-screen p-5 flex flex-col top-0 left-0", {
+		"h-screen p-5 flex flex-col top-0 left-0 dark:bg-dark_mode_card", {
 		/* Display the whole navigation IF it is NOT CLOSED OR IT IS HOVERED, */
 		["w-72"]: !closeNav || isHovered,
 

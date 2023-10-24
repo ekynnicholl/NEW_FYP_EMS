@@ -1315,13 +1315,13 @@ export default function Homepage() {
 				<div className="w-full flex ml-1">
 
 					{/* PC View */}
-					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full dark:bg-dark_mode_card">
+					<div className="md:flex bg-white border border-slate-200 rounded-lg hidden p-3 lg:p-5 gap-4 w-full dark:bg-dark_mode_card dark:border-[#27374C]">
 						<div className="w-1/3 text-left h-full">
-							<div className="bg-[#E5F9FF] p-5 text-slate-700 rounded-lg flex">
+							<div className="bg-[#E5F9FF] p-5 text-slate-700 rounded-lg flex dark:bg-[#003343] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faCalendar}
-										className="w-8 mt-[6.5px] text-slate-700"
+										className="w-8 mt-[6.5px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
@@ -1335,11 +1335,11 @@ export default function Homepage() {
 						<div className="w-1/3 h-full text-left transition transform hover:scale-105">
 							<a
 								href="/upcomingEvents"
-								className="bg-[#FFEDE5] h-full p-5 text-slate-700 rounded-lg flex hover:bg-[#ffdcce]">
+								className="bg-[#FFEDE5] h-full p-5 text-slate-700 rounded-lg flex hover:bg-[#ffdcce] dark:bg-[#431400] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faUsers}
-										className="w-8 mt-[6px] text-slate-700"
+										className="w-8 mt-[6px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
@@ -1353,11 +1353,11 @@ export default function Homepage() {
 						<div className="w-1/3 text-left h-full transition transform hover:scale-105">
 							<a
 								href="/pastEvents"
-								className="bg-[#EAE5FF] p-5 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff]">
+								className="bg-[#EAE5FF] p-5 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff] dark:bg-[#1F2223] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faCheckCircle}
-										className="w-[34px] mt-[6px] text-slate-700"
+										className="w-[34px] mt-[6px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
@@ -1413,7 +1413,7 @@ export default function Homepage() {
 					{/* PC View */}
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden md:inline">
 						<button
-							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer"
+							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-[#18212F]"
 							onClick={() => setShowModalCreateEvent(true)}>
 							<IoIosAddCircleOutline className="text-3xl text-slate-100 -ml-1 mr-1" />
 							<span className="text-slate-100 ml-[2px]">Add Events</span>
@@ -2788,14 +2788,14 @@ export default function Homepage() {
 
 			{
 				viewMode === 1 ? (
-					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4">
+					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4 dark:bg-dark_mode_bg">
 
 						{/* PC View */}
 						<div className="hidden md:grid grid-auto-fit-lg gap-4 ml-1">
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -2854,7 +2854,7 @@ export default function Homepage() {
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800">
+												<h2 className="text-2xl font-semibold mb-2 text-slate-800 dark:text-dark_text">
 													{latestEvent[0].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -2882,12 +2882,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-4">
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B]">
 												{latestEvent[0].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800" />
-												<p className="text-slate-600 text-sm">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
 													{formatDate(latestEvent[0].intFEventStartDate)}
 												</p>
 											</div>
@@ -2899,8 +2899,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
-															<FiClock className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+															<FiClock className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-sm dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -2913,8 +2913,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
-															<FaLocationDot className="text-2xl mr-2 text-slate-800" />
-															<p className="text-slate-600 text-sm">
+															<FaLocationDot className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-sm dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -2929,7 +2929,7 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative">
 																<div
-																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300"
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
 																		}`}
 																	style={{
 																		width: `${Math.min(percentage, 100)}%`,
@@ -2937,8 +2937,8 @@ export default function Homepage() {
 																></div>
 															</div>
 															<div className="text-xs text-gray-600 mt-2 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}</span>
-																<span className="mr-[2px]">Max Attendees: {maxAttendees}</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}</span>
+																<span className="mr-[2px] dark:text-dark_text">Max Attendees: {maxAttendees}</span>
 															</div>
 														</div>
 													))
@@ -2946,7 +2946,7 @@ export default function Homepage() {
 
 											<div className="flex justify-between items-end mt-5">
 												<div
-													className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]"
+													className="cursor-pointer text-slate-500 dark:text-[#7B756B] hover:font-medium text-[14.5px] ml-[1px]"
 													onClick={e => {
 														e.stopPropagation(); // This line prevents the event from propagating
 														openAttendanceModal(
@@ -2957,10 +2957,10 @@ export default function Homepage() {
 													Attendance List
 												</div>
 
-												<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
+												<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
 													<span
 														aria-hidden
-														className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+														className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
 													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
 													<span className="relative mt-[1px] leading-3 tracking-wider">
 														Upcoming

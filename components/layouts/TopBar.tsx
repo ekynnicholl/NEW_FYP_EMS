@@ -197,7 +197,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
-		<div className="top-0 left-0 w-full p-4 flex justify-end items-center bg-white dark:bg-dark_mode_bg dark:border-black-500 dark:border  border-b">
+		<div className="top-0 left-0 w-full p-4 flex justify-end items-center bg-white dark:bg-dark_mode_card">
 			<div className="flex space-x-6 pr-2 pl-12">
 				<div className="rounded-full px-2 py-2 bg-slate-100 cursor-pointer mt-[2px] opacity-80 hover:opacity-90">
 					{!isDarkMode ? (

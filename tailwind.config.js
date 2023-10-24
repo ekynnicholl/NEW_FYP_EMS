@@ -115,6 +115,7 @@ module.exports = {
 				},
 				"dark_mode_bg": "#1E2021", 
 				"dark_mode_card": "#181A1B",
+				"dark_text": "#CCC7C1",
 			},
 			keyframes: {
 				"accordion-down": {
