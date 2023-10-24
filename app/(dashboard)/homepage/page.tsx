@@ -24,7 +24,6 @@ import Image from "next/image";
 import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent } from "react";
 import Link from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createClient } from '@supabase/supabase-js'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faUsers, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -41,6 +40,7 @@ import { IoMdAddCircleOutline } from "react-icons/io"
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
+import darkLightStorage from '@/components/zustand/darkLightStorage';
 import cookie from 'js-cookie';
 import { useRouter } from "next/navigation";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -257,6 +257,7 @@ export default function Homepage() {
 	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const viewMode = useViewModeStore((state) => state.viewMode);
+	const isDarkMode = darkLightStorage((state) => state.isDarkMode);
 
 	// This is for checking login and redirecting with router,
 	const router = useRouter();
@@ -1261,21 +1262,21 @@ export default function Homepage() {
 
 	//Refresh attendance data from database
 	const refreshAttendanceData = async () => {
-        setSearchAttendanceQuery("");
-        setAttendanceData(attendanceData);
-    }
+		setSearchAttendanceQuery("");
+		setAttendanceData(attendanceData);
+	}
 
 	//Handle search input
 	const handleAttendanceSearch = (query: string) => {
-        setSearchAttendanceQuery(query);
-        const filteredStaffData = attendanceData.filter(
-            staff =>
-                staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
-                staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
-        );
-        setFilteredAttendanceData(filteredStaffData);
-        console.log("filter data: ",filteredAttendanceData);
-    }
+		setSearchAttendanceQuery(query);
+		const filteredStaffData = attendanceData.filter(
+			staff =>
+				staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
+				staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
+		);
+		setFilteredAttendanceData(filteredStaffData);
+		console.log("filter data: ", filteredAttendanceData);
+	}
 
 	// This function fetches feedback lists for particular sub-events,
 	const fetchFeedbackList = async (event_id: string) => {
@@ -1308,7 +1309,7 @@ export default function Homepage() {
 	}
 
 	return (
-		<div className="pl-1 pr-3 py-3 lg:p-5 bg-slate-100 space-y-4">
+		<div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-500' : 'bg-slate-100'} space-y-4`}>
 			<div className="mx-auto w-full">
 				<div className="w-full flex ml-1">
 
@@ -2088,13 +2089,13 @@ export default function Homepage() {
 											<option value="20">20</option>
 										</select>
 										<div className="h-[500px] overflow-y-auto">
-                                            {filteredAttendanceData && searchAttendanceQuery.length > 0 ?(
-                                            	<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
-                                                ):(
-                                                    <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
-                                                )
+											{filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
+												<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
+											) : (
+												<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+											)
 											}
-                                        </div>
+										</div>
 									</div>
 								) : (
 									<div className="text-center text-gray-600 mt-4">

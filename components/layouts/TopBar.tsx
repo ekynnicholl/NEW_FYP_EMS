@@ -17,6 +17,7 @@ import ProfileRoundIcon from "@/components/icons/ProfileRoundIcon";
 import PropTypes from 'prop-types';
 import { useRouter } from "next/navigation";
 import cookie from 'js-cookie';
+import useDarkLight from '@/components/zustand/darkLightStorage';
 
 import {
 	DropdownMenu,
@@ -97,14 +98,15 @@ const User = () => {
 }
 
 interface TopBarProps {
-	onViewModeChange: (id: number) => void; // Define the type as a function
+	onViewModeChange: (id: number) => void;
+	onIsDarkModeChange: () => void;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
-	const [isDarkMode, setIsDarkMode] = useState(false);
+const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange }) => {
 	const [userId, setUserId] = useState<string | null>(null);
 	const supabase = createClientComponentClient();
 	const [homepageView, setHomepageView] = useState(1);
+	const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
 	useEffect(() => {
 		const storedUserId = localStorage.getItem('concatenatedID');
@@ -115,6 +117,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 
 	useEffect(() => {
 		fetchHomepageView();
+		fetchIsDarkMode();
 	})
 
 	const fetchHomepageView = async () => {
@@ -133,9 +136,37 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 		useViewModeStore.setState({ viewMode: data[0].accHomeView });
 	}
 
-	const toggleDarkMode = () => {
-		setIsDarkMode(!isDarkMode);
-	};
+	const fetchIsDarkMode = async () => {
+		const { data, error } = await supabase
+			.from('accounts')
+			.select('accIsDarkMode')
+			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58'); // Use the appropriate accID
+
+		if (error) {
+			console.error('Error fetching IsDarkMode:', error);
+			return;
+		}
+
+		// Set the homepageView based on the fetched value
+		setIsDarkMode(data[0].accIsDarkMode);
+		useDarkLight.setState({ isDarkMode: data[0].accIsDarkMode });
+	}
+
+	// 0 is vanilla, 1 is dark mode.
+	const updateIsDarkMode = async (status: boolean) => {
+		const { data, error } = await supabase
+			.from('accounts')
+			.update({ accIsDarkMode: status })
+			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58').select();
+
+		if (error) {
+			console.error('Update failed:', error);
+			return;
+		} else {
+			fetchIsDarkMode();
+			onIsDarkModeChange();
+		}
+	}
 
 	const handleLogoutClick = () => {
 		// Clear user data from localStorage
@@ -165,13 +196,13 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange }) => {
 	};
 
 	return (
-		<div className="top-0 left-0 w-full bg-white p-4 flex justify-end items-center border-b">
+		<div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
 			<div className="flex space-x-6 pr-2 pl-12">
 				<div className="rounded-full px-2 py-2 bg-slate-100 cursor-pointer mt-[2px] opacity-80 hover:opacity-90">
-					{isDarkMode ? (
-						<LightIcon onClick={toggleDarkMode} />
+					{!isDarkMode ? (
+						<LightIcon onClick={() => updateIsDarkMode(true)} />
 					) : (
-						<DarkIcon onClick={toggleDarkMode} />
+						<DarkIcon onClick={() => updateIsDarkMode(false)} />
 					)}
 				</div>
 				<Notification />

@@ -17,6 +17,8 @@ import ReportIcon from "@/components/icons/ReportIcon";
 import EventsIcon from "@/components/icons/EventsIcon";
 import ChatIcon from "@/components/icons/ChatIcon";
 import BsFillChatLeftTextFill from "react-icons/bs"
+// IMPORT THIS TO USE THE DARK/ LIGHT MODE STATE,
+import darkLightStorage from '@/components/zustand/darkLightStorage';
 
 // PLEASE DON'T DELETE MY COMMENTED LINES UNTIL FINAL PHASE OF DEVELOPMENT, TQ.
 
@@ -34,6 +36,9 @@ const NavigationBarDesktop = () => {
 	const [isHovered, setIsHovered] = useState(false);
 	// const [isHamburgerClicked, setIsHamburgerClicked] = useState(false);
 
+	// USE THIS TO GET THE DARK/ LIGHT MODE STATE,
+	const isDarkMode = darkLightStorage((state) => state.isDarkMode);
+
 	const pathname = usePathname();
 
 	const activeNavBar = useMemo(
@@ -43,11 +48,13 @@ const NavigationBarDesktop = () => {
 
 	// Put fixed if want the navigation bar to scroll together but if I put fixed, the side elements will not change size when navigation bar is open.
 	const wrapper = classNames(
-		"h-screen p-5 bg-white flex flex-col top-0 left-0 border-r", {
+		"h-screen p-5 flex flex-col top-0 left-0", {
 		/* Display the whole navigation IF it is NOT CLOSED OR IT IS HOVERED, */
 		["w-72"]: !closeNav || isHovered,
 
 		["w-20"]: closeNav,
+		["bg-white border-r"]: !isDarkMode,
+		["bg-black-500"]: isDarkMode,
 	});
 
 	const ToggleNavBarClass = classNames(
@@ -92,7 +99,7 @@ const NavigationBarDesktop = () => {
 			},
 		);
 	};
-	
+
 
 	return (
 		<div
@@ -155,15 +162,19 @@ const NavigationBarDesktop = () => {
 						<div className={NavLinkResults} key={nav.id}>
 							{/* Use legacy behaviour to allow to wrap <a> tag inside <Link> tag, */}
 							<Link href={nav.link} legacyBehavior={true}>
-								<a className="flex py-[14px] px-2 items-center w-full h-full text-sm -mt-1 text-slate-800">
-									<div className="opacity-80">
+								<a className={`flex py-[14px] px-2 items-center w-full h-full text-sm -mt-1 ${isDarkMode ? 'text-white' : 'text-slate-800'} `}>
+									<div className={isDarkMode ? "opacity-100 text-white" : "opacity-80"}>
 										<Icon />
 									</div>
 									{/* If the navigation bar is not closed OR it is hovered, display the items, */}
 									{(!closeNav || isHovered) && (
 										<span
 											className={classNames(
-												"pl-5 text-md font-medium text-text-light text-slate-800",
+												"pl-5 text-md font-medium text-text-light",
+												{
+													"text-white": isDarkMode,
+													"text-slate-800": !isDarkMode,
+												}
 											)}>
 											{nav.name}
 										</span>
