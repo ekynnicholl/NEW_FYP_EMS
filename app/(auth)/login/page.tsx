@@ -54,81 +54,105 @@ export default function Login() {
 		fetchInfos();
 	}, [supabase, router]);
 
-	const handleGoogleSignIn = (info: Info) => {
-		signInWithPopup(auth, provider)
-			.then(data => {
-				const userId = data.user.uid; // Extract user ID
+	const handleGoogleSignIn = async (info: Info) => {
+		try {
+			const result = await signInWithPopup(auth, provider);
+			const userId = result.user.uid; // Extract user ID
+			const email_address = result.user.email!;
 
-				setValue(data.user.email);
-				localStorage.setItem("email", data.user.email!);
-				localStorage.setItem("userId", userId); // Save user ID to localStorage
+			setValue(email_address);
+			localStorage.setItem("email", email_address);
+			localStorage.setItem("userId", userId); // Save user ID to localStorage
 
-				const concatenatedID = info.id + info.firebase_uid
-				console.log(concatenatedID);
+			const { data, error } = await supabase
+				.from('login_2')
+				.select('firebase_uid, email_address')
+				.eq('firebase_uid', userId);
 
+			if (error) {
+				console.error('Error fetching user data:', error.message);
+				return;
+			}
 
-				// Redirect to the home page after successful sign-in
-				if (userId === "oJvNsADubYNYB0HQYtxt0WJwsh22") {
-					router.push(`/homepage`);
+			if (data && data.length > 0) {
+				const userInfo = data[0];
+				const { firebase_uid, email_address: dbEmailAddress } = userInfo;
 
-					// Set the cookies,
-					cookie.set('authToken', 'oJvNsADubYNYB0HQYtxt0WJwsh22');
+				if (firebase_uid === userId && dbEmailAddress === email_address) {
+					console.log("Success!!!");
+					router.push("/homepage");
+
+					// Set the cookies
+					cookie.set('authToken', userId);
 					cookie.set('accountRank', '99');
 				} else {
 					setErrorMessageLogin("Unauthorized user.");
 				}
-			})
-			.catch(error => {
-				console.log("Sign-in error: ", error);
-			});
+			} else {
+				setErrorMessageLogin("Unauthorized user.");
+			}
+		} catch (error) {
+			console.log("Sign-in error: ", error);
+		}
 	};
 
 	useEffect(() => {
 		setValue(localStorage.getItem("email"));
 	}, []); // take the value from localStorage
 
-	const testing = (info: Info) => {
-		const concatenatedID = info.id + info.firebase_uid
-		console.log(concatenatedID);
-	}
-
-	const handleLogin = (e: React.FormEvent) => {
+	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		signInWithEmailAndPassword(auth, email, password)
-			.then(data => {
-				const userId = data.user.uid; // Extract user ID
-				console.log(data, "authData");
-				localStorage.setItem("userId", userId); // Save user ID to localStorage
+		try {
+			const { user } = await signInWithEmailAndPassword(auth, email, password);
+			const userId = user.uid; // Extract user ID
+			const email_address = user.email;
+			console.log(user, "authData");
+			localStorage.setItem("userId", userId); // Save user ID to localStorage
+
+			const { data, error } = await supabase
+				.from('login_2')
+				.select('firebase_uid, email_address')
+				.eq('firebase_uid', userId);
+
+			if (error) {
+				console.error('Error fetching user data:', error.message);
+				return;
+			}
+
+			if (data && data.length > 0) {
+				const userInfo = data[0];
+				const { firebase_uid, email_address: dbEmailAddress } = userInfo;
 
 				// Redirect to the dashboard or another page after successful login
-				if (userId === "oJvNsADubYNYB0HQYtxt0WJwsh22") {
+				if (firebase_uid === userId && dbEmailAddress === email_address) {
+					console.log("Success!!!");
 					router.push("/homepage");
 
-					// Set the cookies,
-					cookie.set('authToken', 'oJvNsADubYNYB0HQYtxt0WJwsh22');
+					// Set the cookies
+					cookie.set('authToken', userId);
 					cookie.set('accountRank', '99');
 				} else {
 					setErrorMessageLogin("Unauthorized user.");
 				}
-			})
-			.catch(error => {
-				if (
-					error.code === "auth/user-not-found" ||
-					error.code === "auth/wrong-password"
-				) {
-					setErrorMessageLogin("Invalid email or password. Please try again.");
-				} else {
-					console.error("Login error: ", error);
-				}
-			});
+			} else {
+				setErrorMessageLogin("Unauthorized user.");
+			}
+		} catch (error) {
+			if (
+				error.code === "auth/user-not-found" ||
+				error.code === "auth/wrong-password"
+			) {
+				setErrorMessageLogin("Invalid email or password. Please try again.");
+			} else {
+				console.error("Login error: ", error);
+			}
+		}
 	};
+
 
 	return (
 		<div className="min-h-screen bg-slate-200 text-gray-900 flex justify-center">
-			{/* <button onClick={() => testing(info)}>
-				testing
-			</button> */}
 			<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1 lg:flex-row">
 				<div className="hidden lg:flex flex-1 bg-slate-100 text-center">
 					<div
