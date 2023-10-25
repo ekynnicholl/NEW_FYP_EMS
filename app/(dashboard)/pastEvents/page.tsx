@@ -1012,7 +1012,7 @@ export default function Home() {
                         <EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
                             <p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Details</p>
                             <div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto">
-                                <table className="leading-normal w-[1090px] ml-4 hidden lg:block">
+                                <table className="leading-normal w-[1090px] ml-4 hidden lg:table">
                                     <thead>
                                         <tr className="flex border-b-2 border-gray-200 bg-gray-100 justify-between">
                                             <th className="ml-5 py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
