@@ -27,17 +27,17 @@ import AttendanceTable from "@/components/tables/attendanceTable";
 import { table } from "console";
 
 type mainEvent = {
-	intFID: string;
-	intFEventName: string;
-	intFEventDescription: string;
-	intFEventStartDate: string;
-	intFEventEndDate: string;
+    intFID: string;
+    intFEventName: string;
+    intFEventDescription: string;
+    intFEventStartDate: string;
+    intFEventEndDate: string;
 };
 
 type subEvents = {
     sub_eventsMainID: string;
-	sub_eventsID: string;
-	sub_eventsName: string;
+    sub_eventsID: string;
+    sub_eventsName: string;
     sub_eventsVenue: string;
     sub_eventsStartDate: string;
     sub_eventsEndDate: string;
@@ -49,16 +49,16 @@ type subEvents = {
 }
 
 type AttendanceDataType = {
-	attFormsID: string;
-	attFSubEventID: string;
-	attFormsStaffID: string;
-	attFormsStaffName: string;
-	attFormsFacultyUnit: string;
+    attFormsID: string;
+    attFSubEventID: string;
+    attFormsStaffID: string;
+    attFormsStaffName: string;
+    attFormsFacultyUnit: string;
 };
 
 export default function Home() {
     const supabase = createClientComponentClient();
-    
+
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
     const [searchQuery, setSearchQuery] = useState(""); // Search queries for search bar
     const [searchAttendanceQuery, setSearchAttendanceQuery] = useState("");
@@ -67,45 +67,45 @@ export default function Home() {
     const [sortBy, setSortBy] = useState(""); // Initialize state for sorting
     const [sortOrder, setSortOrder] = useState("asc"); // Initialize sort order (asc or desc)
     const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
-    
+
     const [subEvents, setSubEvents] = useState<subEvents[]>([]);
-    
+
     const [mainEvent, setMainEvent] = useState<mainEvent>({} as mainEvent);
-	const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
-    
+    const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
+
     const [selectedEvent, setSelectedEvent] = useState({
-		intFID: "",
-		intFEventName: "",
-		intFEventDescription: "",
-		intFEventStartDate: "",
-		intFEventEndDate: "",
-		sub_eventsID: "",
-		sub_eventsMainID: "",
-		sub_eventsName: "",
-		sub_eventsVenue: "",
-		sub_eventsStartDate: "",
-		sub_eventsEndDate: "",
-		sub_eventsStartTime: "",
-		sub_eventsEndTime: "",
-		sub_eventsMaxSeats: "",
-		sub_eventsOrganizer: "",
-		sub_eventsFaculty: "",
-	});
+        intFID: "",
+        intFEventName: "",
+        intFEventDescription: "",
+        intFEventStartDate: "",
+        intFEventEndDate: "",
+        sub_eventsID: "",
+        sub_eventsMainID: "",
+        sub_eventsName: "",
+        sub_eventsVenue: "",
+        sub_eventsStartDate: "",
+        sub_eventsEndDate: "",
+        sub_eventsStartTime: "",
+        sub_eventsEndTime: "",
+        sub_eventsMaxSeats: "",
+        sub_eventsOrganizer: "",
+        sub_eventsFaculty: "",
+    });
 
     // This is for attendance modal,
-	const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
-	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
-	const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
-	const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
+    const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
+    const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+    const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
+    const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
     const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
 
-	// This is for the pie chart,
-	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
-	const chartContainer = useRef<HTMLCanvasElement | null>(null);
-	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
-	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
-	const viewMode = useViewModeStore((state) => state.viewMode);
-    
+    // This is for the pie chart,
+    const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
+    const chartContainer = useRef<HTMLCanvasElement | null>(null);
+    const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
+    const [isAllButtonActive, setIsAllButtonActive] = useState(true);
+    const viewMode = useViewModeStore((state) => state.viewMode);
+
     const [showSubEventModal, setShowSubEventModal] = useState(false);
 
     useEffect(() => {
@@ -127,291 +127,291 @@ export default function Home() {
             }
 
             setMainEvents(mainEventData || []);
-            
+
             // Fetch data from sub_events table where sub_eventsMainID equals intFID
-			const subEventQuery = await supabase
+            const subEventQuery = await supabase
                 .from("sub_events")
                 .select(
                     "*",
                 )
                 .in("sub_eventsMainID", mainEventData.map(event => event.intFID));
-                
-                if (subEventQuery.error) {
-                    console.error("Error fetching sub_events:", subEventQuery.error);
-                    return;
-                }
 
-                setSubEvents(subEventQuery.data);
-            };
+            if (subEventQuery.error) {
+                console.error("Error fetching sub_events:", subEventQuery.error);
+                return;
+            }
+
+            setSubEvents(subEventQuery.data);
+        };
 
         fetchMainEvents();
 
     }, [supabase]);
 
     const openModal = async (
-		event_id: string,
-		event_name: string,
-		event_description: string,
-		event_start_date: string,
-		event_end_date: string,
-		sub_event_id: string,
-		sub_eventMain_id: string,
-		sub_event_name: string,
-		sub_event_venue: string,
-		sub_event_start_date: string,
-		sub_event_end_date: string,
-		sub_event_start_time: string,
-		sub_event_end_time: string,
-		sub_event_maximum_seats: string,
-		sub_event_organizer: string,
-		sub_event_faculty: string,
-	) => {
-		setSelectedEvent({
-			intFID: event_id,
-			intFEventName: event_name,
-			intFEventDescription: event_description,
-			intFEventStartDate: event_start_date,
-			intFEventEndDate: event_end_date,
-			sub_eventsID: sub_event_id,
-			sub_eventsMainID: sub_eventMain_id,
-			sub_eventsName: sub_event_name,
-			sub_eventsVenue: sub_event_venue,
-			sub_eventsStartDate: sub_event_start_date,
-			sub_eventsEndDate: sub_event_end_date,
-			sub_eventsStartTime: sub_event_start_time,
-			sub_eventsEndTime: sub_event_end_time,
-			sub_eventsMaxSeats: sub_event_maximum_seats,
-			sub_eventsOrganizer: sub_event_organizer,
-			sub_eventsFaculty: sub_event_faculty,
-		});
+        event_id: string,
+        event_name: string,
+        event_description: string,
+        event_start_date: string,
+        event_end_date: string,
+        sub_event_id: string,
+        sub_eventMain_id: string,
+        sub_event_name: string,
+        sub_event_venue: string,
+        sub_event_start_date: string,
+        sub_event_end_date: string,
+        sub_event_start_time: string,
+        sub_event_end_time: string,
+        sub_event_maximum_seats: string,
+        sub_event_organizer: string,
+        sub_event_faculty: string,
+    ) => {
+        setSelectedEvent({
+            intFID: event_id,
+            intFEventName: event_name,
+            intFEventDescription: event_description,
+            intFEventStartDate: event_start_date,
+            intFEventEndDate: event_end_date,
+            sub_eventsID: sub_event_id,
+            sub_eventsMainID: sub_eventMain_id,
+            sub_eventsName: sub_event_name,
+            sub_eventsVenue: sub_event_venue,
+            sub_eventsStartDate: sub_event_start_date,
+            sub_eventsEndDate: sub_event_end_date,
+            sub_eventsStartTime: sub_event_start_time,
+            sub_eventsEndTime: sub_event_end_time,
+            sub_eventsMaxSeats: sub_event_maximum_seats,
+            sub_eventsOrganizer: sub_event_organizer,
+            sub_eventsFaculty: sub_event_faculty,
+        });
 
-		setShowSubEventModal(true);
-	};
-    
+        setShowSubEventModal(true);
+    };
+
     // This is for attendance modal,
-	const openAttendanceModal = async (event_id: string) => {
-		console.log("testing" + event_id);
-		try {
-			// Fetch sub-events for the given event
-			const { data: subEvents, error: subEventsError } = await supabase
-				.from("sub_events")
-				.select()
-				.eq("sub_eventsMainID", event_id);
+    const openAttendanceModal = async (event_id: string) => {
+        console.log("testing" + event_id);
+        try {
+            // Fetch sub-events for the given event
+            const { data: subEvents, error: subEventsError } = await supabase
+                .from("sub_events")
+                .select()
+                .eq("sub_eventsMainID", event_id);
 
-			if (subEventsError) {
-				console.error("Error fetching sub_events:", subEventsError);
-				return;
-			}
-			// Set the main ID for the 
-			setAttendanceMainEventID(event_id);
-			fetchAttendanceList(event_id)
-			setSubEventsForAttendance(subEvents);
+            if (subEventsError) {
+                console.error("Error fetching sub_events:", subEventsError);
+                return;
+            }
+            // Set the main ID for the 
+            setAttendanceMainEventID(event_id);
+            fetchAttendanceList(event_id)
+            setSubEventsForAttendance(subEvents);
 
-			// Extract the subEventID values from the fetched sub_events
-			const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
+            // Extract the subEventID values from the fetched sub_events
+            const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
 
-			// Fetch all attendance_forms related to those sub_events
-			const { data: attendanceForms, error: formsError } = await supabase
-				.from("attendance_forms")
-				.select()
-				.in("attFSubEventID", subEventIDs);
+            // Fetch all attendance_forms related to those sub_events
+            const { data: attendanceForms, error: formsError } = await supabase
+                .from("attendance_forms")
+                .select()
+                .in("attFSubEventID", subEventIDs);
 
-			if (formsError) {
-				console.error("Error fetching attendance forms:", formsError);
-				return;
-			}
+            if (formsError) {
+                console.error("Error fetching attendance forms:", formsError);
+                return;
+            }
 
-			// Set the attendance data for the main event
-			setAttendanceData(attendanceForms);
-			
-			fetchAttendanceList(event_id);
+            // Set the attendance data for the main event
+            setAttendanceData(attendanceForms);
 
-			console.log("Attendance forms data:", attendanceForms);
-		} catch (error) {
-			const typedError = error as Error;
-			console.error("Error:", typedError.message);
-		}
+            fetchAttendanceList(event_id);
 
-		setShowAttendanceModal(true);
-	};
+            console.log("Attendance forms data:", attendanceForms);
+        } catch (error) {
+            const typedError = error as Error;
+            console.error("Error:", typedError.message);
+        }
+
+        setShowAttendanceModal(true);
+    };
 
     // This is for attendance table in homepage pagination,
-	const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const handleItemsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
-		setItemsPerPage(Number(e.target.value));
-	};
+        setItemsPerPage(Number(e.target.value));
+    };
 
     useEffect(() => {
-		if (attendanceData && attendanceData.length > 0) {
-			// Calculate labels (faculty/unit) and label data (counts)
-			const facultyCounts: { [key: string]: number } = {};
+        if (attendanceData && attendanceData.length > 0) {
+            // Calculate labels (faculty/unit) and label data (counts)
+            const facultyCounts: { [key: string]: number } = {};
 
-			attendanceData.forEach(attendanceItem => {
-				const faculty = attendanceItem.attFormsFacultyUnit;
-				if (facultyCounts[faculty]) {
-					facultyCounts[faculty]++;
-				} else {
-					facultyCounts[faculty] = 1;
-				}
-			});
+            attendanceData.forEach(attendanceItem => {
+                const faculty = attendanceItem.attFormsFacultyUnit;
+                if (facultyCounts[faculty]) {
+                    facultyCounts[faculty]++;
+                } else {
+                    facultyCounts[faculty] = 1;
+                }
+            });
 
-			const facultyLabels = Object.keys(facultyCounts);
-			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+            const facultyLabels = Object.keys(facultyCounts);
+            const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
-			const canvas = chartContainer.current;
+            const canvas = chartContainer.current;
 
-			if (canvas) {
-				if (chartInstanceRef.current) {
-					chartInstanceRef.current.destroy();
-				}
+            if (canvas) {
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
 
-				createPieChart(canvas, facultyLabels, facultyData);
-			}
-		}
-	}, [attendanceData]);
+                createPieChart(canvas, facultyLabels, facultyData);
+            }
+        }
+    }, [attendanceData]);
 
     const handleSubEventClick = async (subEvent: subEvents) => {
-		try {
-			// Fetch attendance data for the selected sub-event
-			setSelectedSubEvent(subEvent.sub_eventsID);
-			const { data: attendanceForms, error: formsError } = await supabase
-				.from("attendance_forms")
-				.select()
-				.eq("attFSubEventID", subEvent.sub_eventsID);
+        try {
+            // Fetch attendance data for the selected sub-event
+            setSelectedSubEvent(subEvent.sub_eventsID);
+            const { data: attendanceForms, error: formsError } = await supabase
+                .from("attendance_forms")
+                .select()
+                .eq("attFSubEventID", subEvent.sub_eventsID);
 
-			if (formsError) {
-				console.error("Error fetching attendance forms:", formsError);
-				return;
-			}
+            if (formsError) {
+                console.error("Error fetching attendance forms:", formsError);
+                return;
+            }
 
-			// Set the attendance data for the selected sub-event
-			setAttendanceData(attendanceForms);
+            // Set the attendance data for the selected sub-event
+            setAttendanceData(attendanceForms);
 
-		} catch (error) {
-			const typedError = error as Error;
-			console.error("Error:", typedError.message);
-		}
-	};
+        } catch (error) {
+            const typedError = error as Error;
+            console.error("Error:", typedError.message);
+        }
+    };
 
 
-	const fetchAttendanceList = async (event_id: string) => {
-		const { data: subEvents, error: subEventsError } = await supabase
-			.from("sub_events")
-			.select()
-			.eq("sub_eventsMainID", event_id);
+    const fetchAttendanceList = async (event_id: string) => {
+        const { data: subEvents, error: subEventsError } = await supabase
+            .from("sub_events")
+            .select()
+            .eq("sub_eventsMainID", event_id);
 
-		if (subEventsError) {
-			console.error("Error fetching sub_events:", subEventsError);
-			return;
-		}
+        if (subEventsError) {
+            console.error("Error fetching sub_events:", subEventsError);
+            return;
+        }
 
-		// Extract the subEventID values from the fetched sub_events
-		const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
+        // Extract the subEventID values from the fetched sub_events
+        const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
 
-		// Now, fetch the attendance_forms related to those sub_events
-		const { data: attendanceForms, error: formsError } = await supabase
-			.from("attendance_forms")
-			.select()
-			.in("attFSubEventID", subEventIDs);
+        // Now, fetch the attendance_forms related to those sub_events
+        const { data: attendanceForms, error: formsError } = await supabase
+            .from("attendance_forms")
+            .select()
+            .in("attFSubEventID", subEventIDs);
 
-		if (formsError) {
-			console.error("Error fetching attendance forms:", formsError);
-			return;
-		} else {
-			setAttendanceData(attendanceForms);
-			setSelectedSubEvent("");
+        if (formsError) {
+            console.error("Error fetching attendance forms:", formsError);
+            return;
+        } else {
+            setAttendanceData(attendanceForms);
+            setSelectedSubEvent("");
 
-			const facultyCounts: { [key: string]: number } = {};
+            const facultyCounts: { [key: string]: number } = {};
 
-			attendanceForms.forEach(attendanceItem => {
-				const faculty = attendanceItem.attFormsFacultyUnit;
-				if (facultyCounts[faculty]) {
-					facultyCounts[faculty]++;
-				} else {
-					facultyCounts[faculty] = 1;
-				}
-			});
+            attendanceForms.forEach(attendanceItem => {
+                const faculty = attendanceItem.attFormsFacultyUnit;
+                if (facultyCounts[faculty]) {
+                    facultyCounts[faculty]++;
+                } else {
+                    facultyCounts[faculty] = 1;
+                }
+            });
 
-			const facultyLabels = Object.keys(facultyCounts);
-			const facultyData = facultyLabels.map(label => facultyCounts[label]);
+            const facultyLabels = Object.keys(facultyCounts);
+            const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
-			const canvas = chartContainer.current;
-			createPieChart(canvas, facultyLabels, facultyData);
-		}
-	}
+            const canvas = chartContainer.current;
+            createPieChart(canvas, facultyLabels, facultyData);
+        }
+    }
 
-	// Pie chart,
-	const createPieChart = (
-		chartContainer: HTMLCanvasElement | null,
-		labels: string[],
-		data: number[]) => {
-		if (chartContainer) {
-			const ctx = chartContainer.getContext('2d');
+    // Pie chart,
+    const createPieChart = (
+        chartContainer: HTMLCanvasElement | null,
+        labels: string[],
+        data: number[]) => {
+        if (chartContainer) {
+            const ctx = chartContainer.getContext('2d');
 
-			if (ctx) {
-				if (chartInstanceRef.current) {
-					chartInstanceRef.current.destroy();
-				}
+            if (ctx) {
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
 
-				Chart.register(ChartDataLabels);
+                Chart.register(ChartDataLabels);
 
-				chartInstanceRef.current = new Chart(ctx, {
-					type: 'pie',
-					data: {
-						labels: labels,
-						datasets: [
-							{
-								data: data,
-								backgroundColor: [
-									'red',
-									'blue',
-									'green',
-									'orange',
-									'purple',
-									'pink',
-									'yellow',
-									'teal',
-									'brown',
-									'cyan',
-									'lime',
-									'indigo',
-									'violet',
-									'magenta',
-									'amber',
-									'lightblue',
-									'deeporange',
-									'lightgreen',
-									'bluegrey',
-								],
-							},
-						],
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						plugins: {
-							legend: {
-								position: 'bottom',
-							},
-							datalabels: {
-								color: '#000000',
-								font: {
-									weight: 'bold'
-								},
-								formatter: (value: number, context: any) => {
-									const total = context.dataset.data.reduce((acc: number, current: number) => acc + current, 0);
-									const percentage = ((value / total) * 100).toFixed(2);
+                chartInstanceRef.current = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                data: data,
+                                backgroundColor: [
+                                    'red',
+                                    'blue',
+                                    'green',
+                                    'orange',
+                                    'purple',
+                                    'pink',
+                                    'yellow',
+                                    'teal',
+                                    'brown',
+                                    'cyan',
+                                    'lime',
+                                    'indigo',
+                                    'violet',
+                                    'magenta',
+                                    'amber',
+                                    'lightblue',
+                                    'deeporange',
+                                    'lightgreen',
+                                    'bluegrey',
+                                ],
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            datalabels: {
+                                color: '#000000',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                formatter: (value: number, context: any) => {
+                                    const total = context.dataset.data.reduce((acc: number, current: number) => acc + current, 0);
+                                    const percentage = ((value / total) * 100).toFixed(2);
 
-									return `${percentage}%\n(${value}/${total})`;
-								},
-							},
-						},
-					},
-				});
-			}
-		}
-	};
+                                    return `${percentage}%\n(${value}/${total})`;
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+        }
+    };
 
     // Refresh data from database
     const refreshData = async () => {
@@ -512,7 +512,7 @@ export default function Home() {
         setShowSortOptions(false);
     };
 
-   // export to CSV format
+    // export to CSV format
     const exportToCSV = () => {
         // Generate header row
         const header = Object.keys(mainEvents[0]).join(",");
@@ -548,7 +548,7 @@ export default function Home() {
         } else if (sortBy === "date") {
             const dateA = new Date(a.intFEventStartDate);
             const dateB = new Date(b.intFEventStartDate);
-    
+
             const compareResult = dateA.getTime() - dateB.getTime(); // Cast the result to number
             return sortOrder === "asc" ? compareResult : -compareResult;
         } else {
@@ -558,9 +558,9 @@ export default function Home() {
 
     return (
         <div className="h-screen flex flex-row justify-start bg-slate-100">
-            
+
             <div className="flex-1">
-               
+
                 <div className="flex-1 mx-auto px-5 py-5">
                     <div className="bg-white rounded p-8">
                         <div className="inline-flex">
@@ -608,56 +608,56 @@ export default function Home() {
 
                                 {/* Sort By Button */}
                                 <div className="relative">
-                                <button
-                                    type="button"
-                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
-                                    onClick={handleSortButtonClick}>
-                                    <Image
-                                        src={filterBar.src}
-                                        alt=""
-                                        width={20}
-                                        height={20}
-                                        className="text-slate-800"
-                                    />
-                                    <span className="ml-2 text-slate-800">Sort By</span>
-                                </button>
+                                    <button
+                                        type="button"
+                                        className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
+                                        onClick={handleSortButtonClick}>
+                                        <Image
+                                            src={filterBar.src}
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="text-slate-800"
+                                        />
+                                        <span className="ml-2 text-slate-800">Sort By</span>
+                                    </button>
 
-                                {/* Dropdown Menu */}
-                                <div
-                                    className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
-                                        }`}
-                                    style={{ zIndex: 999 }}>
-                                    {showSortOptions && (
-                                        <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-56 rounded-lg">
-                                            <ul>
-                                                <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
-                                                    <span className="font-bold text-slate-800">
-                                                        Sort By:
-                                                    </span>
-                                                </li>
-                                                {sortOptions.map(option => (
-                                                    <li
-                                                        key={option.value}
-                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
-                                                        onClick={() => {
-                                                            handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
-                                                            setSortBy(option.value); // Set the sorting option
-                                                        }}>
-                                                        {option.value === "event" && (
-                                                            <FaSortAlphaUp className="mr-3 ml-2 text-slate-800" />
-                                                        )}
-                                                        {option.value === "date" && (
-                                                            <FaCalendarAlt className="mr-3 ml-2 text-slate-800" />
-                                                        )}
-                                                        <span className="text-slate-500 ">
-                                                            {option.label}
+                                    {/* Dropdown Menu */}
+                                    <div
+                                        className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
+                                            }`}
+                                        style={{ zIndex: 999 }}>
+                                        {showSortOptions && (
+                                            <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-56 rounded-lg">
+                                                <ul>
+                                                    <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
+                                                        <span className="font-bold text-slate-800">
+                                                            Sort By:
                                                         </span>
                                                     </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
+                                                    {sortOptions.map(option => (
+                                                        <li
+                                                            key={option.value}
+                                                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
+                                                            onClick={() => {
+                                                                handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
+                                                                setSortBy(option.value); // Set the sorting option
+                                                            }}>
+                                                            {option.value === "event" && (
+                                                                <FaSortAlphaUp className="mr-3 ml-2 text-slate-800" />
+                                                            )}
+                                                            {option.value === "date" && (
+                                                                <FaCalendarAlt className="mr-3 ml-2 text-slate-800" />
+                                                            )}
+                                                            <span className="text-slate-500 ">
+                                                                {option.label}
+                                                            </span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Export Button */}
@@ -735,13 +735,13 @@ export default function Home() {
                                                             {event.intFEventDescription}
                                                         </p>
                                                     </td>
-                                                    
+
                                                     <td className="flex-1 py-5 ml-12">
                                                         <p className="text-gray-900 whitespace-nowrap ml-[94px]">
                                                             {event.intFEventStartDate}
                                                         </p>
                                                     </td>
-                                                    
+
                                                     <td className="flex-1 py-5 ml-12">
                                                         <div className="flex items-end">
                                                             <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10">
@@ -751,7 +751,7 @@ export default function Home() {
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    
+
                                                     <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
@@ -760,42 +760,43 @@ export default function Home() {
                                                                 </div>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent className="-mt-1">
-                                                                <DropdownMenuItem 
-                                                                    className="cursor-pointer" 
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
                                                                     onClick={e => {
-															        e.stopPropagation();
+                                                                        e.stopPropagation();
 
-                                                                    const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+                                                                        const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
-                                                                    if (filteredSubEvent) {
-                                                                        openModal(
-                                                                            event.intFID,
-                                                                            event.intFEventName,
-                                                                            event.intFEventDescription,
-                                                                            event.intFEventStartDate,
-                                                                            event.intFEventEndDate,
-                                                                            filteredSubEvent.sub_eventsID,
-                                                                            filteredSubEvent.sub_eventsMainID,
-                                                                            filteredSubEvent.sub_eventsName,
-                                                                            filteredSubEvent.sub_eventsVenue,
-                                                                            filteredSubEvent.sub_eventsStartDate,
-                                                                            filteredSubEvent.sub_eventsEndDate,
-                                                                            filteredSubEvent.sub_eventsStartTime,
-                                                                            filteredSubEvent.sub_eventsEndTime,
-                                                                            filteredSubEvent.sub_eventsMaxSeats,
-                                                                            filteredSubEvent.sub_eventsOrganizer,
-                                                                            filteredSubEvent.sub_eventsFaculty
-                                                                        );
-                                                                    }
+                                                                        if (filteredSubEvent) {
+                                                                            openModal(
+                                                                                event.intFID,
+                                                                                event.intFEventName,
+                                                                                event.intFEventDescription,
+                                                                                event.intFEventStartDate,
+                                                                                event.intFEventEndDate,
+                                                                                filteredSubEvent.sub_eventsID,
+                                                                                filteredSubEvent.sub_eventsMainID,
+                                                                                filteredSubEvent.sub_eventsName,
+                                                                                filteredSubEvent.sub_eventsVenue,
+                                                                                filteredSubEvent.sub_eventsStartDate,
+                                                                                filteredSubEvent.sub_eventsEndDate,
+                                                                                filteredSubEvent.sub_eventsStartTime,
+                                                                                filteredSubEvent.sub_eventsEndTime,
+                                                                                filteredSubEvent.sub_eventsMaxSeats,
+                                                                                filteredSubEvent.sub_eventsOrganizer,
+                                                                                filteredSubEvent.sub_eventsFaculty
+                                                                            );
+                                                                        }
 
-                                                                }}                                                                
+                                                                    }}
                                                                 >Sub-Events Details</DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
                                                                 <DropdownMenuItem
-                                                                    className="cursor-pointer" 
+                                                                    className="cursor-pointer"
                                                                     onClick={e => {
                                                                         e.stopPropagation()
-                                                                        openAttendanceModal(event.intFID);}}
+                                                                        openAttendanceModal(event.intFID);
+                                                                    }}
                                                                 >Attendance List
                                                                 </DropdownMenuItem>
                                                             </DropdownMenuContent>
@@ -803,7 +804,7 @@ export default function Home() {
                                                     </td>
                                                 </tr>
                                             ))}
-                                        
+
                                         {/* pagination */}
                                         {Array.from({
                                             length: entriesToShow - mainEvents?.length,
@@ -1043,9 +1044,9 @@ export default function Home() {
                                                             <div className="ml-[2px]">
                                                                 <p className="text-gray-900">
                                                                     {(currentPage - 1) *
-                                                                    entriesToShow +
-                                                                    index +
-                                                                    1
+                                                                        entriesToShow +
+                                                                        index +
+                                                                        1
                                                                     }
                                                                 </p>
                                                             </div>
@@ -1056,25 +1057,25 @@ export default function Home() {
                                                             {subEvent.sub_eventsName}
                                                         </p>
                                                     </td>
-                                                                    
+
                                                     <td className="flex-1 px-3 py-5 text-xs lg:text-md ">
                                                         <p className="text-gray-900 ml-1">
                                                             {subEvent.sub_eventsOrganizer}
                                                         </p>
                                                     </td>
-                                                                    
+
                                                     <td className="flex-1 px-3 py-5 text-xs lg:text-md">
                                                         <p className="text-gray-900 ml-6">
                                                             {subEvent.sub_eventsVenue}
                                                         </p>
                                                     </td>
-                                                                    
+
                                                     <td className="flex-1 px-3 py-5 text-xs lg:text-md">
                                                         <p className="text-gray-900 whitespace-nowrap">
                                                             {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
                                                         </p>
                                                     </td>
-                                                                    
+
                                                     <td className="flex-1 px-3 py-5 text-xs lg:text-md">
                                                         <p className="text-gray-900 whitespace-nowrap ml-4">
                                                             {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
@@ -1088,15 +1089,15 @@ export default function Home() {
                                                     </td>
                                                 </tr>
                                             ))}
-                                        </tbody>                                    
-                                    </table>	
+                                    </tbody>
+                                </table>
                                 {/* mobile view */}
                                 <div className="grid grid-cols-1 gap-4 lg:hidden">
                                     {subEvents
                                         .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
                                         .map((subEvent, index) => (
-                                            <div className="bg-slate-100 p-4 rounded-lg shadow">
-                                                <table className="w-full"> 
+                                            <div key={subEvent.sub_eventsID} className="bg-slate-100 p-4 rounded-lg shadow">
+                                                <table className="w-full">
                                                     <tr className="border-b-2 border-gray-200 bg-gray-100">
                                                         <th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                                             No.
@@ -1157,12 +1158,12 @@ export default function Home() {
                                             </div>
                                         ))}
                                 </div>
-                            </div>                            
+                            </div>
                         </EventListModal>
 
                         <ViewAttendance_Modal
                             isVisible={showAttendanceModal}
-                             onClose={() => setShowAttendanceModal(false)}>
+                            onClose={() => setShowAttendanceModal(false)}>
                             <div className="flex flex-col lg:flex-row h-[600px] lg:h-[700px] overflow-y-auto">
                                 <div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
                                     <div className="flex items-start justify-start text-text text-[20px] text-center">
@@ -1170,12 +1171,12 @@ export default function Home() {
                                         <span className="ml-5 -mt-1">Attendance List</span>
                                     </div>
                                     <div className="text-left text-black text-[13px] pb-5 ml-11">
-                                         Total Attendees: {attendanceData.length}
+                                        Total Attendees: {attendanceData.length}
                                     </div>
                                     <div className="flex flex-wrap">
                                         <button
                                             className={`font-bold flex items-center rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
-                                            }`}
+                                                }`}
                                             onClick={() => {
                                                 setIsAllButtonActive(true);
                                                 fetchAttendanceList(attendanceMainEventID);
@@ -1186,7 +1187,7 @@ export default function Home() {
                                         {subEventsForAttendance.map((subEvent) => (
                                             <div
                                                 key={subEvent.sub_eventsID}
-                                                    className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
+                                                className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
                                                     }`}
                                             >
                                                 <button
@@ -1199,88 +1200,88 @@ export default function Home() {
                                                     {subEvent.sub_eventsName}
                                                 </button>
                                             </div>
-                                            ))}
-                                            </div>
-                                            {/* This is to loop through the attendance data. */}
-                                            {attendanceData && attendanceData.length > 0 ? (
-                                                <div>
-                                                    <label htmlFor="itemsPerPageSelect">Show entries:</label>
-                                                    <select
-                                                        id="itemsPerPageSelect"
-                                                        name="itemsPerPage"
-                                                        value={itemsPerPage}
-                                                        onChange={handleItemsPerPageChange}
-                                                        className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
-                                                    >
-                                                        <option value="5">5</option>
-                                                        <option value="10">10</option>
-                                                        <option value="20">20</option>
-                                                    </select>
+                                        ))}
+                                    </div>
+                                    {/* This is to loop through the attendance data. */}
+                                    {attendanceData && attendanceData.length > 0 ? (
+                                        <div>
+                                            <label htmlFor="itemsPerPageSelect">Show entries:</label>
+                                            <select
+                                                id="itemsPerPageSelect"
+                                                name="itemsPerPage"
+                                                value={itemsPerPage}
+                                                onChange={handleItemsPerPageChange}
+                                                className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+                                            >
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                            </select>
 
-                                                    {/* Search Input */}
-                                                    <div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
-                                                        <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                                                            <svg
-                                                                viewBox="0 0 24 24"
-                                                                className="h-4 w-4 fill-current text-gray-500">
-                                                                <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                                                            </svg>
-                                                        </span>
-                                                        <input
-                                                            placeholder="Search here..."
-                                                            className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-                                                            value={searchAttendanceQuery}
-                                                            onChange={e => handleAttendanceSearch(e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <button 
-                                                        type="button"
-                                                        className="items-center relative float-right mr-2 bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
-                                                        onClick={refreshAttendanceData}>
-                                                        <IoMdRefresh className="text-xl text-slate-800" />
-                                                        <span className="ml-2 -mt-[1.25px] text-slate-800">
-                                                            Refresh
-                                                        </span>
-                                                    </button>
-                                                             
-                                                    <div className="h-[500px] overflow-y-auto">
-                                                        {filteredAttendanceData && searchAttendanceQuery.length > 0 ?(
-                                                            <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
-                                                                    
-                                                            ):(
-                                                            <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
-                                                            )
-                                                        }                                                                
-                                                        </div>
-                                                    </div>
-                                            ) : (
-                                                <div className="text-center text-gray-600 mt-4">
-                                                    No attendance data available.
-                                                </div>    
-                                            )}
+                                            {/* Search Input */}
+                                            <div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
+                                                <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        className="h-4 w-4 fill-current text-gray-500">
+                                                        <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                                                    </svg>
+                                                </span>
+                                                <input
+                                                    placeholder="Search here..."
+                                                    className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+                                                    value={searchAttendanceQuery}
+                                                    onChange={e => handleAttendanceSearch(e.target.value)}
+                                                />
                                             </div>
-                                            {attendanceData && attendanceData.length > 0 ? (
-                                                <div className="w-full lg:flex flex-col items-center justify-center mt-5 lg:mt-0">
-                                                    <div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
-                                                    <div className="w-[325px] h-[325px] lg:w-[500px] lg:h-[500px] flex items-center justify-center mt-5">
-                                                    <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
-                                                    </div>
-                                                </div>
-                                            ) : null}
-                                        </div>                                            
+
+                                            <button
+                                                type="button"
+                                                className="items-center relative float-right mr-2 bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
+                                                onClick={refreshAttendanceData}>
+                                                <IoMdRefresh className="text-xl text-slate-800" />
+                                                <span className="ml-2 -mt-[1.25px] text-slate-800">
+                                                    Refresh
+                                                </span>
+                                            </button>
+
+                                            <div className="h-[500px] overflow-y-auto">
+                                                {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
+                                                    <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
+
+                                                ) : (
+                                                    <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
+                                                )
+                                                }
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center text-gray-600 mt-4">
+                                            No attendance data available.
+                                        </div>
+                                    )}
+                                </div>
+                                {attendanceData && attendanceData.length > 0 ? (
+                                    <div className="w-full lg:flex flex-col items-center justify-center mt-5 lg:mt-0">
+                                        <div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
+                                        <div className="w-[325px] h-[325px] lg:w-[500px] lg:h-[500px] flex items-center justify-center mt-5">
+                                            <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
+                                        </div>
+                                    </div>
+                                ) : null}
+                            </div>
                         </ViewAttendance_Modal>
 
                         {/* mobile view table*/}
                         <div className="grid grid-cols-1 gap-4 lg:hidden">
-                        {sortedData
-                            .slice(
-                            (currentPage - 1) * entriesToShow,
-                             currentPage * entriesToShow,
-                            )
-                            .map((event, index) => (
-                                <div className="bg-slate-100 p-4 rounded-lg shadow">
-                                    <table className="w-full">                                        
+                            {sortedData
+                                .slice(
+                                    (currentPage - 1) * entriesToShow,
+                                    currentPage * entriesToShow,
+                                )
+                                .map((event, index) => (
+                                    <div className="bg-slate-100 p-4 rounded-lg shadow">
+                                        <table className="w-full">
                                             <tr className="border-b-2 border-gray-200 bg-gray-100">
                                                 <th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                                     No.
@@ -1339,51 +1340,52 @@ export default function Home() {
                                                             </div>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent className="-mt-1">
-                                                            <DropdownMenuItem 
-                                                                className="cursor-pointer" 
+                                                            <DropdownMenuItem
+                                                                className="cursor-pointer"
                                                                 onClick={e => {
-															    e.stopPropagation();
+                                                                    e.stopPropagation();
 
-                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+                                                                    const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
-                                                                if (filteredSubEvent) {
-                                                                    openModal(
-                                                                        event.intFID,
-                                                                        event.intFEventName,
-                                                                        event.intFEventDescription,
-                                                                        event.intFEventStartDate,
-                                                                        event.intFEventEndDate,
-                                                                        filteredSubEvent.sub_eventsID,
-                                                                        filteredSubEvent.sub_eventsMainID,
-                                                                        filteredSubEvent.sub_eventsName,
-                                                                        filteredSubEvent.sub_eventsVenue,
-                                                                        filteredSubEvent.sub_eventsStartDate,
-                                                                        filteredSubEvent.sub_eventsEndDate,
-                                                                        filteredSubEvent.sub_eventsStartTime,
-                                                                        filteredSubEvent.sub_eventsEndTime,
-                                                                        filteredSubEvent.sub_eventsMaxSeats,
-                                                                        filteredSubEvent.sub_eventsOrganizer,
-                                                                        filteredSubEvent.sub_eventsFaculty
-                                                                    );
-                                                                }
+                                                                    if (filteredSubEvent) {
+                                                                        openModal(
+                                                                            event.intFID,
+                                                                            event.intFEventName,
+                                                                            event.intFEventDescription,
+                                                                            event.intFEventStartDate,
+                                                                            event.intFEventEndDate,
+                                                                            filteredSubEvent.sub_eventsID,
+                                                                            filteredSubEvent.sub_eventsMainID,
+                                                                            filteredSubEvent.sub_eventsName,
+                                                                            filteredSubEvent.sub_eventsVenue,
+                                                                            filteredSubEvent.sub_eventsStartDate,
+                                                                            filteredSubEvent.sub_eventsEndDate,
+                                                                            filteredSubEvent.sub_eventsStartTime,
+                                                                            filteredSubEvent.sub_eventsEndTime,
+                                                                            filteredSubEvent.sub_eventsMaxSeats,
+                                                                            filteredSubEvent.sub_eventsOrganizer,
+                                                                            filteredSubEvent.sub_eventsFaculty
+                                                                        );
+                                                                    }
 
-                                                            }}                                                                
+                                                                }}
                                                             >Sub-Events Details</DropdownMenuItem>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem
-                                                                className="cursor-pointer" 
+                                                                className="cursor-pointer"
                                                                 onClick={e => {
                                                                     e.stopPropagation()
-                                                                    openAttendanceModal(event.intFID);}}
+                                                                    openAttendanceModal(event.intFID);
+                                                                }}
                                                             >Attendance List
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </td>
                                             </tr>
-                                    </table>
-                                </div>          
-                            ))}
+                                        </table>
+                                    </div>
+                                ))}
                         </div>
                         {/* mobile view paginagtion */}
                         <div className="flex mt-10 lg:hidden justify-center -ml-10 pb-6">
@@ -1396,60 +1398,60 @@ export default function Home() {
                                 style={{
                                     cursor:
                                         currentPage === 1
-                                        ? "not-allowed"
-                                        : "pointer",
+                                            ? "not-allowed"
+                                            : "pointer",
                                     opacity: currentPage === 1 ? 0.5 : 1,
                                 }}>
-                                    <img
-                                        src={skipLeft.src}
-                                        alt=""
-                                        width={20}
-                                        className="lg:w-[22px]"
-                                    />
-                                </button>
+                                <img
+                                    src={skipLeft.src}
+                                    alt=""
+                                    width={20}
+                                    className="lg:w-[22px]"
+                                />
+                            </button>
 
-                                {/* Arrow Previous Page Button */}
-                                <button
-                                    type="button"
-                                    className="py-2 px-1 ml-5"
-                                    onClick={handleArrowLeftClick}
-                                    disabled={currentPage === 1}
-                                    style={{
+                            {/* Arrow Previous Page Button */}
+                            <button
+                                type="button"
+                                className="py-2 px-1 ml-5"
+                                onClick={handleArrowLeftClick}
+                                disabled={currentPage === 1}
+                                style={{
                                     opacity: currentPage === 1 ? 0.5 : 1,
-                                    }}>
-                                    <img
+                                }}>
+                                <img
                                     src={arrowLeft.src}
-                                        alt=""
-                                        width={12}
-                                        className="lg:w-[13px]"
-                                    />
-                                </button>
+                                    alt=""
+                                    width={12}
+                                    className="lg:w-[13px]"
+                                />
+                            </button>
 
-                                {/* Pagination Buttons */}
-                                    <div className="flex">
-                                        {[1, 2, 3, 4, 5].map(pageNumber => (
-                                            <button
-                                                type="button"
-                                                className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-                                                ? "text-slate-100 bg-slate-900"
-                                                : "text-slate-800 bg-slate-200"
-                                                }`}
-                                                key={pageNumber}
-                                                onClick={() => {
-                                                    if (
-                                                        pageNumber <=
-                                                        Math.ceil(
-                                                            mainEvents.length /
-                                                            entriesToShow,
-                                                        )
-                                                    ) {
-                                                        handlePageClick(pageNumber);
-                                                    }
-                                                }}>
-                                                {pageNumber}
-                                            </button>
-                                        ))}
-                                    </div>
+                            {/* Pagination Buttons */}
+                            <div className="flex">
+                                {[1, 2, 3, 4, 5].map(pageNumber => (
+                                    <button
+                                        type="button"
+                                        className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
+                                            ? "text-slate-100 bg-slate-900"
+                                            : "text-slate-800 bg-slate-200"
+                                            }`}
+                                        key={pageNumber}
+                                        onClick={() => {
+                                            if (
+                                                pageNumber <=
+                                                Math.ceil(
+                                                    mainEvents.length /
+                                                    entriesToShow,
+                                                )
+                                            ) {
+                                                handlePageClick(pageNumber);
+                                            }
+                                        }}>
+                                        {pageNumber}
+                                    </button>
+                                ))}
+                            </div>
 
                             {/* Arrow Next Page Button */}
                             <button
@@ -1461,19 +1463,19 @@ export default function Home() {
                                     Math.ceil(mainEvents?.length / entriesToShow)
                                 }
                                 style={{
-                                opacity:
-                                    currentPage ===
-                                    Math.ceil(
-                                    mainEvents?.length / entriesToShow,
-                                    )
-                                ? 0.5
-                                : 1,
+                                    opacity:
+                                        currentPage ===
+                                            Math.ceil(
+                                                mainEvents?.length / entriesToShow,
+                                            )
+                                            ? 0.5
+                                            : 1,
                                 }}>
                                 <img
-                                src={arrowRight.src}
-                                alt=""
-                                width={12}
-                                className="lg:w-[13px]"
+                                    src={arrowRight.src}
+                                    alt=""
+                                    width={12}
+                                    className="lg:w-[13px]"
                                 />
                             </button>
 
@@ -1481,21 +1483,21 @@ export default function Home() {
                             <button
                                 type="button"
                                 className={`py-2 px-1 ml-5 ${currentPage ===
-                                Math.ceil(mainEvents?.length / entriesToShow)
-                                ? "pointer-events-none opacity-50"
-                                : ""
-                                }`}
+                                    Math.ceil(mainEvents?.length / entriesToShow)
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                                    }`}
                                 onClick={handleSkipToLastPage}>
                                 <img
-                                src={skipRight.src}
-                                alt=""
-                                width={17}
-                                className="lg:w-[18px]"
+                                    src={skipRight.src}
+                                    alt=""
+                                    width={17}
+                                    className="lg:w-[18px]"
                                 />
                             </button>
-                        </div>                        
-                    </div>                    
-                </div>                
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
