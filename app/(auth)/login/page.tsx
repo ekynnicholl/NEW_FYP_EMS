@@ -54,6 +54,7 @@ export default function Login() {
 		fetchInfos();
 	}, [supabase, router]);
 
+	// Handle Google SignIn Button Click
 	const handleGoogleSignIn = async (info: Info) => {
 		try {
 			const result = await signInWithPopup(auth, provider);
@@ -65,7 +66,7 @@ export default function Login() {
 			localStorage.setItem("userId", userId); // Save user ID to localStorage
 
 			const { data, error } = await supabase
-				.from('login_2')
+				.from('login')
 				.select('firebase_uid, email_address')
 				.eq('firebase_uid', userId);
 
@@ -100,6 +101,7 @@ export default function Login() {
 		setValue(localStorage.getItem("email"));
 	}, []); // take the value from localStorage
 
+	// Handle Login Button Click
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -111,7 +113,7 @@ export default function Login() {
 			localStorage.setItem("userId", userId); // Save user ID to localStorage
 
 			const { data, error } = await supabase
-				.from('login_2')
+				.from('login')
 				.select('firebase_uid, email_address')
 				.eq('firebase_uid', userId);
 
@@ -149,7 +151,6 @@ export default function Login() {
 			}
 		}
 	};
-
 
 	return (
 		<div className="min-h-screen bg-slate-200 text-gray-900 flex justify-center">
@@ -208,6 +209,7 @@ export default function Login() {
 
 					<div className="w-full">
 						<form onSubmit={handleLogin} className="max-w-xs mx-auto">
+
 							{/* Email Input*/}
 							<input
 								className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1"
@@ -221,7 +223,6 @@ export default function Login() {
 							<p className="text-red-500 text-left ml-3 text-[0.65rem] lg:text-xs -mt-4">
 								{errorMessageLogin}
 							</p>
-
 
 							{/* Password Input*/}
 							<div className="relative">
