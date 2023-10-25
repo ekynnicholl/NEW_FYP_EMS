@@ -1979,12 +1979,12 @@ export default function Homepage() {
 						<div className="flex">
 							<div className="h-[450px] lg:h-[700px] w-full mr-3">
 								<div className="flex items-left justify-start">
-									<div className="flex items-center justify-center text-text text-[20px] text-center">
+									<div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center">
 										<PencilNoteIcon />{" "}
 										<span className="ml-2.5">Feedback Summary</span>
 									</div>
 								</div>
-								<div className="text-left text-black text-[13px] pl-[34px]">
+								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px]">
 									Total Feedback Received: {feedbackData.length}
 								</div>
 								{/* This is to loop through the attendance data. */}
@@ -2007,7 +2007,7 @@ export default function Homepage() {
 										</div>
 									</div>
 								) : (
-									<div className="text-center text-gray-600">
+									<div className="text-left text-[12px] lg:text-[14px] text-red-600 ml-[34px]">
 										No feedback received yet.
 									</div>
 
