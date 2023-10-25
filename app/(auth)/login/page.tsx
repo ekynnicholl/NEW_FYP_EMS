@@ -85,7 +85,6 @@ export default function Login() {
 
 					// Set the cookies
 					cookie.set('authToken', userId);
-					cookie.set('accountRank', '99');
 				} else {
 					setErrorMessageLogin("Unauthorized user.");
 				}
@@ -133,7 +132,6 @@ export default function Login() {
 
 					// Set the cookies
 					cookie.set('authToken', userId);
-					cookie.set('accountRank', '99');
 				} else {
 					setErrorMessageLogin("Unauthorized user.");
 				}
