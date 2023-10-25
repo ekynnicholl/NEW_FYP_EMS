@@ -36,6 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="hidden sm:flex">
                 <SideBarDesktop />
             </div>
+
             <div className="w-full">
                 <div className="hidden sm:block">
                     <TopBar onViewModeChange={handleViewModeChange} onIsDarkModeChange={handeIsDarkModeChange} />

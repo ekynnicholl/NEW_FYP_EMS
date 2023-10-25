@@ -142,7 +142,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
                             ) : null}
                             <h2 className="">{columnDisplayNames[column]}</h2>
                             <div className="border-t border-gray-300 my-2 mr-14"></div>
-                            <div className="max-h-[200px] overflow-y-auto mr-14 shadow-md">
+                            <div className="max-h-[200px] overflow-y-auto mr-14">
                                 <span className="">
                                     {feedbackData.map((feedback, feedbackIndex) => (
                                         <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>{feedback[column]}</p>
