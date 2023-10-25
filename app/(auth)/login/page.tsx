@@ -142,8 +142,8 @@ export default function Login() {
 			}
 		} catch (error) {
 			if (
-				error.code === "auth/user-not-found" ||
-				error.code === "auth/wrong-password"
+				(error as any).code === "auth/user-not-found" ||
+				(error as any).code === "auth/wrong-password"
 			) {
 				setErrorMessageLogin("Invalid email or password. Please try again.");
 			} else {
