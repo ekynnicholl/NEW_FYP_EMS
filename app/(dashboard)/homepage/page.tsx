@@ -1977,7 +1977,7 @@ export default function Homepage() {
 						isVisible={showFeedbackModal}
 						onClose={() => setShowFeedbackModal(false)}>
 						<div className="flex">
-							<div className="h-[700px] w-full mr-3">
+							<div className="h-[450px] lg:h-[700px] w-full mr-3">
 								<div className="flex items-left justify-start">
 									<div className="flex items-center justify-center text-text text-[20px] text-center">
 										<PencilNoteIcon />{" "}
@@ -2089,7 +2089,7 @@ export default function Homepage() {
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select>
-										<div className="h-[500px]">
+										<div className="h-[450px]">
 											{filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
 												<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
 											) : (
@@ -2105,9 +2105,9 @@ export default function Homepage() {
 								)}
 							</div>
 							{attendanceData && attendanceData.length > 0 ? (
-								<div className="w-full lg:flex flex-col items-center justify-center mt-5">
+								<div className="w-full lg:flex flex-col items-center justify-center">
 									<div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
-									<div className="w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] flex items-center justify-center mt-5">
+									<div className="w-[300px] h-[300px] lg:w-[500px] lg:h-[450px] flex items-center justify-center mt-5">
 										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
 									</div>
 								</div>

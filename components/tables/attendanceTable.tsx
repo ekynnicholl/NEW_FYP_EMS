@@ -43,8 +43,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
 
     return (
         <div>
-            <div className="max-h-[600]">
-                <table className="lg:w-full w-auto max-h-[600]">
+            <div className="">
+                <table className="lg:w-full w-auto">
                     <thead>
                         <tr>
                             <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
