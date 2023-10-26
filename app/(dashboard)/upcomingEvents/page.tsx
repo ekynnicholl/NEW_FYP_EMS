@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from 'next/link';
 import EventListModal from "@/components/Event_List_Modal";
 import filterBar from "@/public/images/filter_bar_black.png";
 import exportCSV from "@/public/images/export_csv.png";
@@ -25,6 +24,10 @@ import useViewModeStore from '@/components/zustand/viewModeStorage';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
 import { table } from "console";
+import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
+import RightArrow from "@/components/icons/RightArrow";
+import LeftArrow from "@/components/icons/LeftArrow";
+import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 
 type mainEvent = {
     intFID: string;
@@ -557,15 +560,12 @@ export default function Home() {
     });
 
     return (
-        <div className="h-screen flex flex-row justify-start bg-slate-100">
-
-            <div className="flex-1">
-
-                <div className="flex-1 mx-auto px-5 py-5">
-                    <div className="bg-white rounded p-8">
-                        <div className="inline-flex">
-                            <span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 sm:texl-xl" /></a></span>
-                            <h1 className="text-2xl font-bold"><span className="ml-[5px] text-slate-800">Upcoming Events</span></h1>
+        <div className="h-screen flex flex-row justify-start">
+			<div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
+				<div className="bg-white rounded p-8">
+					<div className="inline-flex">
+                            <span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
+                            <h1 className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800">Upcoming Events</span></h1>
                         </div>
 
                         <div className="flex items-center justify-between mb-8 mt-5">
@@ -1164,18 +1164,18 @@ export default function Home() {
                         <ViewAttendance_Modal
                             isVisible={showAttendanceModal}
                             onClose={() => setShowAttendanceModal(false)}>
-                            <div className="flex flex-col lg:flex-row h-[600px] lg:h-[700px] overflow-y-auto">
+                            <div className="flex flex-col lg:flex-row h-[450px] lg:h-[700px] overflow-y-auto">
                                 <div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
                                     <div className="flex items-start justify-start text-text text-[20px] text-center">
                                         <PencilNoteIcon />{" "}
-                                        <span className="ml-5 -mt-1">Attendance List</span>
+                                        <span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px]">Attendance List</span>
                                     </div>
-                                    <div className="text-left text-black text-[13px] pb-5 ml-11">
+                                    <div className="text-left text-black lg:text-[13px] text-[12px] pb-5 ml-11">
                                         Total Attendees: {attendanceData.length}
                                     </div>
                                     <div className="flex flex-wrap">
                                         <button
-                                            className={`font-bold flex items-center rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                            className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                             onClick={() => {
                                                 setIsAllButtonActive(true);
@@ -1187,13 +1187,12 @@ export default function Home() {
                                         {subEventsForAttendance.map((subEvent) => (
                                             <div
                                                 key={subEvent.sub_eventsID}
-                                                className={`font-bold flex items-center bg-slate-200 rounded-lg text-[15px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-400 text-white' : ''
+                                                className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                     }`}
                                             >
                                                 <button
                                                     onClick={() => {
                                                         setIsAllButtonActive(false);
-                                                        // COMMENT HERE
                                                         handleSubEventClick(subEvent);
                                                     }}
                                                 >
@@ -1202,9 +1201,19 @@ export default function Home() {
                                             </div>
                                         ))}
                                     </div>
+                                    <button
+                                        onClick={() => {
+                                            // Handle the refresh button click here
+                                            fetchAttendanceList(attendanceMainEventID);
+                                            setIsAllButtonActive(true);
+                                        }}
+                                        className="font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
+                                    >
+                                        Refresh
+                                    </button>
                                     {/* This is to loop through the attendance data. */}
                                     {attendanceData && attendanceData.length > 0 ? (
-                                        <div>
+                                        <div className="lg:text-[16px] text-[12px]">
                                             <label htmlFor="itemsPerPageSelect">Show entries:</label>
                                             <select
                                                 id="itemsPerPageSelect"
@@ -1217,38 +1226,9 @@ export default function Home() {
                                                 <option value="10">10</option>
                                                 <option value="20">20</option>
                                             </select>
-
-                                            {/* Search Input */}
-                                            <div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
-                                                <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                                                    <svg
-                                                        viewBox="0 0 24 24"
-                                                        className="h-4 w-4 fill-current text-gray-500">
-                                                        <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                                                    </svg>
-                                                </span>
-                                                <input
-                                                    placeholder="Search here..."
-                                                    className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-                                                    value={searchAttendanceQuery}
-                                                    onChange={e => handleAttendanceSearch(e.target.value)}
-                                                />
-                                            </div>
-
-                                            <button
-                                                type="button"
-                                                className="items-center relative float-right mr-2 bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
-                                                onClick={refreshAttendanceData}>
-                                                <IoMdRefresh className="text-xl text-slate-800" />
-                                                <span className="ml-2 -mt-[1.25px] text-slate-800">
-                                                    Refresh
-                                                </span>
-                                            </button>
-
-                                            <div className="h-[500px] overflow-y-auto">
+                                            <div className="h-[450px]">
                                                 {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
                                                     <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
-
                                                 ) : (
                                                     <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
                                                 )
@@ -1262,9 +1242,9 @@ export default function Home() {
                                     )}
                                 </div>
                                 {attendanceData && attendanceData.length > 0 ? (
-                                    <div className="w-full lg:flex flex-col items-center justify-center mt-5 lg:mt-0">
-                                        <div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
-                                        <div className="w-[325px] h-[325px] lg:w-[500px] lg:h-[500px] flex items-center justify-center mt-5">
+                                    <div className="w-full lg:flex flex-col items-center justify-center">
+                                        <div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
+                                        <div className="w-[300px] h-[300px] lg:w-[500px] lg:h-[450px] flex items-center justify-center mt-5">
                                             <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
                                         </div>
                                     </div>
@@ -1387,118 +1367,69 @@ export default function Home() {
                                     </div>
                                 ))}
                         </div>
-                        {/* mobile view paginagtion */}
-                        <div className="flex mt-10 lg:hidden justify-center -ml-10 pb-6">
-                            {/* Skip To First Page Button */}
+                        
+                        {/* mobile view pagination */}
+                        <div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
                             <button
-                                type="button"
-                                className="py-2 px-1 ml-8"
-                                onClick={handleSkipToFirstPage}
+                                className="opacity-70"
+                                onClick={() => handleSkipToFirstPage}
                                 disabled={currentPage === 1}
-                                style={{
-                                    cursor:
-                                        currentPage === 1
-                                            ? "not-allowed"
-                                            : "pointer",
-                                    opacity: currentPage === 1 ? 0.5 : 1,
-                                }}>
-                                <img
-                                    src={skipLeft.src}
-                                    alt=""
-                                    width={20}
-                                    className="lg:w-[22px]"
-                                />
+                            >
+                                <DoubleLeftArrow />
                             </button>
-
-                            {/* Arrow Previous Page Button */}
                             <button
-                                type="button"
-                                className="py-2 px-1 ml-5"
-                                onClick={handleArrowLeftClick}
+                                onClick={() => handleArrowLeftClick}
                                 disabled={currentPage === 1}
-                                style={{
-                                    opacity: currentPage === 1 ? 0.5 : 1,
-                                }}>
-                                <img
-                                    src={arrowLeft.src}
-                                    alt=""
-                                    width={12}
-                                    className="lg:w-[13px]"
-                                />
+                                className="opacity-70"
+                            >
+                                <LeftArrow />
                             </button>
 
                             {/* Pagination Buttons */}
                             <div className="flex">
-                                {[1, 2, 3, 4, 5].map(pageNumber => (
-                                    <button
-                                        type="button"
-                                        className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-                                            ? "text-slate-100 bg-slate-900"
-                                            : "text-slate-800 bg-slate-200"
-                                            }`}
-                                        key={pageNumber}
-                                        onClick={() => {
-                                            if (
-                                                pageNumber <=
-                                                Math.ceil(
-                                                    mainEvents.length /
-                                                    entriesToShow,
-                                                )
-                                            ) {
-                                                handlePageClick(pageNumber);
-                                            }
-                                        }}>
-                                        {pageNumber}
-                                    </button>
+                                {[1, 2, 3].map(pageNumber => (
+                                <button
+                                    type="button"
+                                    className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
+                                    ? "text-slate-100 bg-slate-900"
+                                    : "text-slate-800 bg-slate-200"
+                                    }`}
+                                    key={pageNumber}
+                                    onClick={() => {
+                                    if (
+                                        pageNumber <=
+                                            Math.ceil(
+                                            mainEvents.length /
+                                            entriesToShow,
+                                        )
+                                    ) {
+                                        handlePageClick(pageNumber);
+                                        }
+                                    }}>
+                                    {pageNumber}
+                                </button>
                                 ))}
                             </div>
 
-                            {/* Arrow Next Page Button */}
                             <button
-                                type="button"
-                                className="py-2 px-1 ml-5"
                                 onClick={handleArrowRightClick}
                                 disabled={
                                     currentPage ===
                                     Math.ceil(mainEvents?.length / entriesToShow)
                                 }
-                                style={{
-                                    opacity:
-                                        currentPage ===
-                                            Math.ceil(
-                                                mainEvents?.length / entriesToShow,
-                                            )
-                                            ? 0.5
-                                            : 1,
-                                }}>
-                                <img
-                                    src={arrowRight.src}
-                                    alt=""
-                                    width={12}
-                                    className="lg:w-[13px]"
-                                />
+                                className="opacity-70"
+                            >
+                                <RightArrow />
                             </button>
-
-                            {/* Skip To Last Page Button */}
                             <button
-                                type="button"
-                                className={`py-2 px-1 ml-5 ${currentPage ===
-                                    Math.ceil(mainEvents?.length / entriesToShow)
-                                    ? "pointer-events-none opacity-50"
-                                    : ""
-                                    }`}
-                                onClick={handleSkipToLastPage}>
-                                <img
-                                    src={skipRight.src}
-                                    alt=""
-                                    width={17}
-                                    className="lg:w-[18px]"
-                                />
+                                className="opacity-70"
+                                onClick={handleSkipToLastPage}
+                            >
+                                <DoubleRightArrow />
                             </button>
-                        </div>
+                        </div>                    
                     </div>
                 </div>
-            </div>
-        </div>
+            </div>        
     )
 };
