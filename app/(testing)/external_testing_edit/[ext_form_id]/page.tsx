@@ -21,7 +21,17 @@ type FormDetails = {
 
 export default function Page() {
     const supabase = createClientComponentClient();
-    const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
+    const [formDetails, setFormDetails] = useState<FormDetails>({
+        fundSourceName: '',
+        fundAmount: 0,
+        expenditureCapped: false,
+        cappedAmount: 0,
+        hosEmail: '',
+        formStage: 0,
+        revertComment: '',
+        hosName: '',
+        deanEmail: '',
+    });
     const { ext_form_id } = useParams();
     const authToken = cookie.get('authToken');
     const router = useRouter();
@@ -32,6 +42,7 @@ export default function Page() {
 
     useEffect(() => {
         if (formDetails.formStage != fetchedFormStage) {
+            console.log(formDetails);
             sendContactForm(formDetails);
         }
     }, [formDetails.formStage])
@@ -61,7 +72,8 @@ export default function Page() {
 
     // 1 - form exists (revert), 2 - AAO, 3 - HOS, 4 - Dean, 5 - approved, 6 - rejected
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
         // Only update specific fields if they click on submit.
         if (formDetails.formStage === 2) {
             const { data, error } = await supabase
@@ -70,6 +82,7 @@ export default function Page() {
                     {
                         expenditureCapped: formDetails.expenditureCapped,
                         fundAmount: formDetails.fundAmount,
+                        revertComment: "None",
                         formStage: 3
                     }
                 ])
@@ -82,7 +95,10 @@ export default function Page() {
 
                 setFormDetails({
                     ...formDetails,
-                    formStage: 3
+                    revertComment: '',
+                    expenditureCapped: formDetails.expenditureCapped,
+                    fundAmount: formDetails.fundAmount,
+                    formStage: 3,
                 });
             }
         } else if (formDetails.formStage === 1) {
@@ -237,7 +253,7 @@ export default function Page() {
                                     <input
                                         type="text"
                                         id="name"
-                                        value={formDetails.fundSourceName}
+                                        value={formDetails.fundSourceName || ''}
                                         placeholder="Fund Source Name"
                                         className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${formDetails.formStage !== 1 ? "cursor-not-allowed" : ""}`}
                                         disabled={formDetails.formStage !== 1}
@@ -257,7 +273,7 @@ export default function Page() {
                                         type="number"
                                         id="consolidated_pool_fund"
                                         placeholder="Amount (RM)"
-                                        value={formDetails.fundAmount}
+                                        value={formDetails.fundAmount || 0}
                                         className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${formDetails.formStage !== 1 ? "cursor-not-allowed" : ""}`}
                                         disabled={formDetails.formStage !== 1}
                                         onChange={event =>
@@ -312,7 +328,7 @@ export default function Page() {
                                         type="number"
                                         id="capped_amount"
                                         placeholder="Amount (RM)"
-                                        value={formDetails.cappedAmount}
+                                        value={formDetails.cappedAmount || 0.00}
                                         onChange={event =>
                                             setFormDetails({ ...formDetails, cappedAmount: parseFloat(event.target.value) })
                                         }
@@ -335,7 +351,7 @@ export default function Page() {
                                             onChange={event =>
                                                 setFormDetails({ ...formDetails, hosEmail: event.target.value })
                                             }
-                                            value={formDetails.hosEmail}
+                                            value={formDetails.hosEmail || ''}
                                         >
                                             <option value="" className="text-slate-800">Please select an option</option>
                                             <option value="hos@gmail.com" className="text-slate-800">hos@gmail.com</option>
@@ -373,7 +389,7 @@ export default function Page() {
                                             onChange={event =>
                                                 setFormDetails({ ...formDetails, deanEmail: event.target.value })
                                             }
-                                            value={formDetails.deanEmail}
+                                            value={formDetails.deanEmail || ''}
                                         >
                                             <option value="" className="text-slate-800">Choose an item</option>
                                             <option value="dean@gmail.com" className="text-slate-800">dean@gmail.com</option>
@@ -383,7 +399,7 @@ export default function Page() {
                                             type="text"
                                             id="dean"
                                             placeholder=""
-                                            value={formDetails.deanEmail}
+                                            value={formDetails.deanEmail || ''}
                                             className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${formDetails.formStage === 2 ? "cursor-not-allowed" : ""}`}
                                             disabled={formDetails.formStage === 2}
                                         />
@@ -392,7 +408,7 @@ export default function Page() {
                                             type="text"
                                             id="dean"
                                             placeholder=""
-                                            value={formDetails.deanEmail}
+                                            value={formDetails.deanEmail || ''}
                                             className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${formDetails.formStage !== 2 ? "cursor-not-allowed" : ""}`}
                                             disabled={formDetails.formStage !== 1}
                                         />
@@ -430,7 +446,7 @@ export default function Page() {
                                             onChange={event =>
                                                 setFormDetails({ ...formDetails, revertComment: event.target.value })
                                             }
-                                            value={formDetails.revertComment}
+                                            value={formDetails.revertComment || ''}
                                             disabled
                                             className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] cursor-not-allowed"
                                         />
@@ -452,9 +468,9 @@ export default function Page() {
                                     </p>
                                     <input
                                         type="text"
-                                        id="name"
+                                        id="hos_name"
                                         placeholder="Your Name"
-                                        value={formDetails.hosName}
+                                        value={formDetails.hosName || ''}
                                         className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
                                         onChange={event =>
                                             setFormDetails({ ...formDetails, hosName: event.target.value })
@@ -486,7 +502,7 @@ export default function Page() {
                                     onChange={event =>
                                         setFormDetails({ ...formDetails, revertComment: event.target.value })
                                     }
-                                    value={formDetails.revertComment}
+                                    value={formDetails.revertComment || ''}
                                     className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
                                 />
                             </div>

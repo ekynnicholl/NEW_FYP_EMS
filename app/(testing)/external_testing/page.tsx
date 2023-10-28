@@ -20,10 +20,12 @@ export default function Page() {
     const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
 
     useEffect(() => {
+        console.log(formDetails);
         sendContactForm(formDetails);
     }, [formDetails.formStage]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
         if (!formDetails.fundSourceName || !formDetails.fundAmount || !formDetails.hosEmail || !formDetails.deanEmail) {
             return;
         }
