@@ -15,8 +15,7 @@ export default function Home() {
 	useEffect(() => {
 		const checkIsUserLoggedIn = () => {
 			const authToken = cookie.get('authToken');
-			const accountRank = cookie.get('accountRank');
-			if (!authToken && accountRank != "99") {
+			if (!authToken) {
 				router.push("/unauthorizedAccess");
 			}
 		};
