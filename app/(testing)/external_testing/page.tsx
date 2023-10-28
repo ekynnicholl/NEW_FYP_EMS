@@ -1,8 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from 'react';
+import { sendContactForm } from "@/lib/api";
 
 type FormDetails = {
     fundSourceName: string,
@@ -10,16 +11,19 @@ type FormDetails = {
     expenditureCapped: boolean,
     formStage: number,
     hosEmail: string,
-    deanEmail: string
+    deanEmail: string,
+    formID: string
 }
 
-export default function page() {
+export default function Page() {
     const supabase = createClientComponentClient();
     const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    useEffect(() => {
+        sendContactForm(formDetails);
+    }, [formDetails.formStage]);
 
+    const handleSubmit = async () => {
         if (!formDetails.fundSourceName || !formDetails.fundAmount || !formDetails.hosEmail || !formDetails.deanEmail) {
             return;
         }
@@ -35,13 +39,18 @@ export default function page() {
                     hosEmail: formDetails.hosEmail,
                     deanEmail: formDetails.deanEmail
                 },
-            ]);
+            ])
+            .select();
 
         if (error) {
             console.error("Error inserting data:", error);
         } else {
             console.log("Data inserted successfully:", data);
-            setFormDetails({} as FormDetails);
+            setFormDetails({
+                ...formDetails,
+                formID: data[0].formID,
+                formStage: data[0].formStage
+            });
         }
     }
 

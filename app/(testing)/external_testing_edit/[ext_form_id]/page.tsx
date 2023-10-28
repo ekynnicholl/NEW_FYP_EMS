@@ -5,7 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import cookie from 'js-cookie';
-import { Router } from 'lucide-react';
+import { sendContactForm } from '@/lib/api';
 
 type FormDetails = {
     fundSourceName: string,
@@ -19,15 +19,22 @@ type FormDetails = {
     deanEmail: string
 }
 
-export default function page() {
+export default function Page() {
     const supabase = createClientComponentClient();
     const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
     const { ext_form_id } = useParams();
     const authToken = cookie.get('authToken');
     const router = useRouter();
+    const [fetchedFormStage, setFetchedFormStage] = useState<number>(0);
 
     // Keep track of the revert comment,
     const [showCommentInput, setShowCommentInput] = useState(false);
+
+    useEffect(() => {
+        if (formDetails.formStage != fetchedFormStage) {
+            sendContactForm(formDetails);
+        }
+    }, [formDetails.formStage])
 
     useEffect(() => {
         async function fetchData() {
@@ -43,6 +50,7 @@ export default function page() {
                 const row = data[0];
                 if (row) {
                     setFormDetails(row);
+                    setFetchedFormStage(row.formStage);
                 }
             }
             console.log(data);
@@ -71,6 +79,11 @@ export default function page() {
                 console.error("Error updating data:", error);
             } else {
                 console.log("Data updated successfully:", data);
+
+                setFormDetails({
+                    ...formDetails,
+                    formStage: 3
+                });
             }
         } else if (formDetails.formStage === 1) {
             const { data, error } = await supabase
@@ -90,7 +103,11 @@ export default function page() {
                 console.error("Error inserting data:", error);
             } else {
                 console.log("Data inserted successfully:", data);
-                setFormDetails({} as FormDetails);
+
+                setFormDetails({
+                    ...formDetails,
+                    formStage: 2
+                });
             }
         } else if (formDetails.formStage === 2) {
             const { data, error } = await supabase
@@ -106,7 +123,11 @@ export default function page() {
                 console.error("Error inserting data:", error);
             } else {
                 console.log("Data inserted successfully:", data);
-                setFormDetails({} as FormDetails);
+
+                setFormDetails({
+                    ...formDetails,
+                    formStage: 4
+                });
             }
         }
         else if (formDetails.formStage === 3) {
@@ -124,7 +145,11 @@ export default function page() {
                 console.error("Error inserting data:", error);
             } else {
                 console.log("Data inserted successfully:", data);
-                setFormDetails({} as FormDetails);
+
+                setFormDetails({
+                    ...formDetails,
+                    formStage: 5
+                });
             }
         }
     };
@@ -145,6 +170,12 @@ export default function page() {
                 console.error("Error updating data:", error);
             } else {
                 console.log("Data updated successfully:", data);
+
+                setFormDetails({
+                    ...formDetails,
+                    formStage: 6
+                });
+
                 window.location.reload();
             }
         }
@@ -166,6 +197,12 @@ export default function page() {
                 console.error("Error updating data:", error);
             } else {
                 console.log("Data updated successfully:", data);
+
+                setFormDetails({
+                    ...formDetails,
+                    formStage: 1
+                });
+
                 window.location.reload();
             }
         }
