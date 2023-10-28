@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import cookie from 'js-cookie';
 import { sendContactForm } from '@/lib/api';
+import { toast } from 'react-hot-toast';
 
 type FormDetails = {
     fundSourceName: string,
@@ -70,10 +71,24 @@ export default function Page() {
         fetchData();
     }, []);
 
-    // 1 - form exists (revert), 2 - AAO, 3 - HOS, 4 - Dean, 5 - approved, 6 - rejected
+    // const showSuccessToast = (message: string) => {
+    //     toast.success(message, {
+    //         duration: 3500,
+    //         style: {
+    //             border: '1px solid #86DC3D',
+    //             padding: '16px',
+    //             color: '#000000',
+    //             textAlign: 'justify',
+    //         },
+    //         iconTheme: {
+    //             primary: '#86DC3D',
+    //             secondary: '#FFFAEE',
+    //         },
+    //     });
+    // };
 
+    // 1 - form exists (revert), 2 - AAO, 3 - HOS, 4 - Dean, 5 - approved, 6 - rejected
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
         // Only update specific fields if they click on submit.
         if (formDetails.formStage === 2) {
             const { data, error } = await supabase
@@ -93,6 +108,8 @@ export default function Page() {
             } else {
                 console.log("Data updated successfully:", data);
 
+                // showSuccessToast('Your form has successfully been submitted for review.');
+
                 setFormDetails({
                     ...formDetails,
                     revertComment: '',
@@ -100,6 +117,7 @@ export default function Page() {
                     fundAmount: formDetails.fundAmount,
                     formStage: 3,
                 });
+                window.location.reload();
             }
         } else if (formDetails.formStage === 1) {
             const { data, error } = await supabase
@@ -120,10 +138,13 @@ export default function Page() {
             } else {
                 console.log("Data inserted successfully:", data);
 
+                // showSuccessToast('Your form has been submitted successfully. You should receive a confirmation email.');
+
                 setFormDetails({
                     ...formDetails,
                     formStage: 2
                 });
+                window.location.reload();
             }
         } else if (formDetails.formStage === 2) {
             const { data, error } = await supabase
@@ -140,10 +161,13 @@ export default function Page() {
             } else {
                 console.log("Data inserted successfully:", data);
 
+                // showSuccessToast('Your form has successfully been submitted for review.');
+
                 setFormDetails({
                     ...formDetails,
                     formStage: 4
                 });
+                window.location.reload();
             }
         }
         else if (formDetails.formStage === 3) {
@@ -162,10 +186,13 @@ export default function Page() {
             } else {
                 console.log("Data inserted successfully:", data);
 
+                // showSuccessToast('You have successfully approved the form. Emails have been sent out.');
+
                 setFormDetails({
                     ...formDetails,
                     formStage: 5
                 });
+                window.location.reload();
             }
         }
     };
@@ -186,6 +213,8 @@ export default function Page() {
                 console.error("Error updating data:", error);
             } else {
                 console.log("Data updated successfully:", data);
+
+                // showSuccessToast('You have successfully rejected the form. Emails have been sent out.');
 
                 setFormDetails({
                     ...formDetails,
@@ -213,6 +242,8 @@ export default function Page() {
                 console.error("Error updating data:", error);
             } else {
                 console.log("Data updated successfully:", data);
+
+                // showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
 
                 setFormDetails({
                     ...formDetails,
@@ -420,6 +451,7 @@ export default function Page() {
                         {formDetails.formStage === 2 && (
                             <div>
                                 <button
+                                    type="button"
                                     onClick={handleSubmit}
                                     className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5"
                                 >

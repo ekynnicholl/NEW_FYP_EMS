@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from 'react';
 import { sendContactForm } from "@/lib/api";
+import { toast } from 'react-hot-toast';
 
 type FormDetails = {
     fundSourceName: string,
@@ -48,6 +49,19 @@ export default function Page() {
             console.error("Error inserting data:", error);
         } else {
             console.log("Data inserted successfully:", data);
+            toast.success('Your form has been submitted successfully. You should receive a confirmation email.', {
+                duration: 3500,
+                style: {
+                    border: '1px solid #86DC3D',
+                    padding: '16px',
+                    color: '#000000',
+                    textAlign: 'justify',
+                },
+                iconTheme: {
+                    primary: '#86DC3D',
+                    secondary: '#FFFAEE',
+                },
+            });
             setFormDetails({
                 ...formDetails,
                 formID: data[0].formID,

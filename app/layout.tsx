@@ -17,7 +17,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					options={{ showSpinner: false }}
 					shallowRouting
 				/>
-				<Toaster />
+				{/* <Toaster position="top-right"
+					toastOptions={{
+						className: '',
+						duration: 5000,
+						style: {
+							background: '#363636',
+							color: '#fff',
+						},
+
+						success: {
+							duration: 5000
+						},
+					}}
+				/> */}
+				<Toaster position="top-right" />
 			</body>
 		</html>
 	);
