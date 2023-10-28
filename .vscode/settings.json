@@ -14,7 +14,12 @@
 		"next-env.d.ts": true,
 		"node_modules": true,
 		".next": true,
-		"postcss.config.js": true
+		"postcss.config.js": true,
+		".gitattributes": true,
+		".eslintrc.json": true,
+		"components.json": true,
+		"google_config.js": true,
+		"next.config.js": true
 	},
 	"hide-files.files": [
 		"README.md",
@@ -25,6 +30,11 @@
 		"next-env.d.ts",
 		"node_modules",
 		".next",
-		"postcss.config.js"
+		"postcss.config.js",
+		".gitattributes",
+		".eslintrc.json",
+		"components.json",
+		"google_config.js",
+		"next.config.js"
 	]
 }

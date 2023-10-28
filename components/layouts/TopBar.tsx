@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { auth } from "../../google_config";
 
+import Link from "next/link";
 import ProfileIcon from "@/components/icons/ProfileIcon";
 import NotifIcon from "@/components/icons/NotifIcon";
 import LightIcon from "@/components/icons/LightIcon";
@@ -10,14 +11,14 @@ import DarkIcon from "@/components/icons/DarkIcon";
 import ArrowDownIcon from "@/components/icons/ArrowDownIcon";
 import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import useViewModeStore from '@/components/zustand/viewModeStorage';
+import useViewModeStore from "@/components/zustand/viewModeStorage";
 import LogoutIcon from "@/components/icons/LogoutIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
 import ProfileRoundIcon from "@/components/icons/ProfileRoundIcon";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
-import cookie from 'js-cookie';
-import useDarkLight from '@/components/zustand/darkLightStorage';
+import cookie from "js-cookie";
+import useDarkLight from "@/components/zustand/darkLightStorage";
 
 import {
 	DropdownMenu,
@@ -27,6 +28,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { usePathname } from "next/navigation";
 
 const Notification = () => {
 	return (
@@ -94,8 +97,41 @@ const User = () => {
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>
-	)
-}
+	);
+};
+
+const BreadCrumb = () => {
+	const pathname = usePathname();
+
+	if (pathname === "/homepage") {
+		return (
+			<div className="flex items-center space-x-2 text-sm">
+				<Link href="/homepage">Home</Link>
+				<p>/</p>
+				<Link href="/homepage" className="underline underline-offset-4">
+					Dashboard
+				</Link>
+			</div>
+		);
+	}
+
+	// convert /homepage to Homepage
+	const path = pathname.substring(1, pathname.length);
+	const pathArray = path.split("/");
+	const pathArrayLength = pathArray.length;
+	const lastPath = pathArray[pathArrayLength - 1];
+	const lastPathCapitalized = lastPath.charAt(0).toUpperCase() + lastPath.slice(1);
+
+	return (
+		<div className="flex items-center space-x-2 text-sm">
+			<Link href="/homepage">Home</Link>
+			<p>/</p>
+			<Link href={pathname} className="underline underline-offset-4">
+				{lastPathCapitalized}
+			</Link>
+		</div>
+	);
+};
 
 interface TopBarProps {
 	onViewModeChange: (id: number) => void;
@@ -103,13 +139,13 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange }) => {
-	const [userId, setUserId] = useState<string | null>(null);
 	const supabase = createClientComponentClient();
+	const [userId, setUserId] = useState<string | null>(null);
 	const [homepageView, setHomepageView] = useState(1);
 	const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
 	useEffect(() => {
-		const storedUserId = localStorage.getItem('concatenatedID');
+		const storedUserId = localStorage.getItem("concatenatedID");
 		if (storedUserId) {
 			setUserId(storedUserId);
 		}
@@ -118,76 +154,77 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 	useEffect(() => {
 		fetchHomepageView();
 		fetchIsDarkMode();
-	})
+	}, []);
 
 	const fetchHomepageView = async () => {
 		const { data, error } = await supabase
-			.from('accounts')
-			.select('accHomeView')
-			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58'); // Use the appropriate accID
+			.from("accounts")
+			.select("accHomeView")
+			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58"); // Use the appropriate accID
 
 		if (error) {
-			console.error('Error fetching homepageView:', error);
+			console.error("Error fetching homepageView:", error);
 			return;
 		}
 
 		// Set the homepageView based on the fetched value
 		setHomepageView(data[0].accHomeView);
 		useViewModeStore.setState({ viewMode: data[0].accHomeView });
-	}
+	};
 
 	const fetchIsDarkMode = async () => {
 		const { data, error } = await supabase
-			.from('accounts')
-			.select('accIsDarkMode')
-			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58'); // Use the appropriate accID
+			.from("accounts")
+			.select("accIsDarkMode")
+			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58"); // Use the appropriate accID
 
 		if (error) {
-			console.error('Error fetching IsDarkMode:', error);
+			console.error("Error fetching IsDarkMode:", error);
 			return;
 		}
 
 		// Set the homepageView based on the fetched value
 		setIsDarkMode(data[0].accIsDarkMode);
 		useDarkLight.setState({ isDarkMode: data[0].accIsDarkMode });
-	}
+	};
 
 	// 0 is vanilla, 1 is dark mode.
 	const updateIsDarkMode = async (status: boolean) => {
 		const { data, error } = await supabase
-			.from('accounts')
+			.from("accounts")
 			.update({ accIsDarkMode: status })
-			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58').select();
+			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58")
+			.select();
 
 		if (error) {
-			console.error('Update failed:', error);
+			console.error("Update failed:", error);
 			return;
 		} else {
 			fetchIsDarkMode();
 			onIsDarkModeChange();
 		}
-	}
+	};
 
 	const handleLogoutClick = () => {
 		// Clear user data from localStorage
-		localStorage.removeItem('concatenatedID');
+		localStorage.removeItem("concatenatedID");
 
 		// Remove the cookies,
-		cookie.remove('authToken');
-		cookie.remove('accountRank');
+		cookie.remove("authToken");
+		cookie.remove("accountRank");
 
 		// Redirect to the login page after logout
-		window.location.href = '/login'; // You can replace with the actual login page URL
+		window.location.href = "/login"; // You can replace with the actual login page URL
 	};
 
 	const updateHomepageView = async (id: number) => {
 		const { data, error } = await supabase
-			.from('accounts')
+			.from("accounts")
 			.update({ accHomeView: id })
-			.eq('accID', '8f505ae4-8a5e-465b-bf32-3f7843554e58');
+			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58");
 
 		if (error) {
-			console.error('Update failed:', error);
+			console.error("Update failed:", error);
 			return;
 		} else {
 			fetchHomepageView();
@@ -197,7 +234,8 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
-		<div className="top-0 left-0 w-full p-4 flex justify-end items-center bg-white dark:bg-dark_mode_card">
+		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card">
+			<BreadCrumb />
 			<div className="flex space-x-6 pr-2 pl-12">
 				<div className="rounded-full px-2 py-2 bg-slate-100 cursor-pointer mt-[2px] opacity-80 hover:opacity-90">
 					{!isDarkMode ? (
@@ -215,9 +253,17 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
-							<DropdownMenuItem onClick={() => updateHomepageView(1)} className={homepageView === 1 ? 'text-blue-500' : ''}>Card View</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => updateHomepageView(1)}
+								className={homepageView === 1 ? "text-blue-500" : ""}>
+								Card View
+							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => updateHomepageView(2)} className={homepageView === 2 ? 'text-blue-500' : ''}>List View</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => updateHomepageView(2)}
+								className={homepageView === 2 ? "text-blue-500" : ""}>
+								List View
+							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
@@ -235,7 +281,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 						<DropdownMenuContent>
 							<DropdownMenuLabel>My Account</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={handleLogoutClick}>Logout</DropdownMenuItem>
+							<DropdownMenuItem onClick={handleLogoutClick}>
+								Logout
+							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>

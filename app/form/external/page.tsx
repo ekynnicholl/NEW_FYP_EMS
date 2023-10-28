@@ -1,175 +1,8 @@
-"use client"
-
-import React, { useState } from 'react';
+import AdminExternalForm from "@/components/forms/AdminExternalForm";
+import ExternalForm from "@/components/forms/ApplicantExternalForm";
 import Image from "next/image";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import SignatureCanvas from 'react-signature-canvas';
-
-type FormData = {
-	// Section 1: Personal Details
-	email: string;
-	full_name: string;
-	staff_id: string;
-	course: string;
-	faculty: string;
-	transport: string;
-	travelling: string;
-	other_members: string;
-	total_members: number;
-
-	// Section 2: Travel Details
-	program_title: string;
-	program_description: string;
-	commencement_date: string;
-	completion_date: string;
-	organiser: string;
-	venue: string;
-	hrdf_claimable: string;
-
-	// Section 3: Logistic Arrangement
-	// flight_number: string;
-	// flight_date: string;
-	// flight_time: string;
-	// destination_from: string;
-	// destination_to: string;
-	// hotel_name: string;
-	// check_in_date: string;
-	// check_out_date: string;
-
-	// Section 4: Funding
-	// course_fee: number;
-	// airfare_fee: number;
-	// accommodation_fee: number;
-	// per_diem_fee: number;
-	// transportation_fee: number;
-	// travel_insurance_fee: number;
-	// other_fees: number;
-	// grand_total_fees: number;
-
-	// staff_development_fund: string;
-	// consolidated_pool_fund: string;
-	// research_fund: string;
-	// travel_fund: string;
-	// student_council_fund: string;
-	// other_funds: string;
-	// expenditure_cap: string;
-	// expenditure_cap_amount: number;
-
-	// Section 5: Applicant Declaration
-	// applicant_declaration_name: string;
-	// applicant_declaration_position_title: string;
-	// applicant_declaration_date: string;
-	// applicant_declaration_signature: string;
-
-	// Section 6: Verification
-	// verification_name: string;
-	// verification_position_title: string;
-	// verification_date: string;
-	// verification_signature: string;
-
-	// Section 7: Approval
-	// approval_name: string;
-	// approval_position_title: string;
-	// approval_date: string;
-	// approval_signature: string;
-};
 
 export default function ExternalFormPage() {
-	const supabase = createClientComponentClient();
-	const [formData, setFormData] = useState<FormData>({} as FormData);
-	const [formDatas, setFormDatas] = useState<FormData[]>([] as FormData[]);
-
-	const submitForm = async (e) => {
-		e.preventDefault();
-
-		const { data, error } = await supabase.from("external_forms").insert({
-			// Section 1: Personal Details
-			email: formData.email || null,
-			full_name: formData.full_name || null,
-			staff_id: formData.staff_id || null,
-			course: formData.course || null,
-			faculty: formData.faculty || null,
-			transport: formData.transport || null,
-			travelling: formData.travelling || null,
-			other_members: formData.other_members || null,
-			total_members: formData.total_members || null,
-
-			// Section 2: Travel Details
-			program_title: formData.program_title,
-			program_description: formData.program_description,
-			commencement_date: formData.commencement_date,
-			completion_date: formData.completion_date,
-			organiser: formData.organiser,
-			venue: formData.venue,
-			hrdf_claimable: formData.hrdf_claimable
-		});
-
-		if (error) {
-			console.error(error);
-			return;
-		}
-
-		console.log(data);
-
-		setFormDatas([...formDatas, {
-			// Section 1: Personal Details
-			email: formData.email,
-			full_name: formData.full_name,
-			staff_id: formData.staff_id,
-			course: formData.course,
-			faculty: formData.faculty,
-			transport: formData.transport,
-			travelling: formData.travelling,
-			other_members: formData.other_members,
-			total_members: formData.total_members,
-
-			// Section 2: Travel Details
-			program_title: formData.program_title,
-			program_description: formData.program_description,
-			commencement_date: formData.commencement_date,
-			completion_date: formData.completion_date,
-			organiser: formData.organiser,
-			venue: formData.venue,
-			hrdf_claimable: formData.hrdf_claimable
-		}]);
-
-		setFormData({} as FormData);
-	};
-
-
-
-
-
-
-
-	// Create a reference to the signature canvas
-	const sigCanvas = React.useRef({});
-
-	// Function to clear the signature
-	const clearSignature = () => {
-		sigCanvas.current.clear();
-	};
-
-	const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
-
-	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target?.files?.[0];
-		if (file) {
-			setUploadedFileName(file.name);
-		}
-	}
-
-	// Initialize state variables for each input field
-	const [courseFee, setCourseFee] = useState(0);
-	const [airfareFee, setAirfareFee] = useState(0);
-	const [accomodation, setAccomodation] = useState(0);
-	const [perDiem, setPerDiem] = useState(0);
-	const [transportation, setTransportation] = useState(0);
-	const [travelInsurance, setTravelInsurance] = useState(0);
-	const [others, setOthers] = useState(0);
-
-	// Calculate the grand total
-	const grandTotal = courseFee + airfareFee + accomodation + perDiem + transportation + travelInsurance + others;
 
 	return (
 		<div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
@@ -196,26 +29,40 @@ export default function ExternalFormPage() {
 						<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
 							*
 						</span>
-						<span>Before completing this form, please refer to the separate document on “General Instructions for completing Nomination / Travelling Application Form”, which is available on SharePoint.</span>
+						<span>
+							Before completing this form, please refer to the separate
+							document on “General Instructions for completing Nomination /
+							Travelling Application Form”, which is available on
+							SharePoint.
+						</span>
 					</p>
 					<p className="mb-2">
 						<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
 							*
-						</span><span>All fields are mandatory to complete as required for each applicable section.</span>
+						</span>
+						<span>
+							All fields are mandatory to complete as required for each
+							applicable section.
+						</span>
 					</p>
 					<p>
 						<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
 							*
 						</span>
-						<span>This form is also to be used for any contracted individual as consultant, and is to be completed where applicable.
+						<span>
+							This form is also to be used for any contracted individual as
+							consultant, and is to be completed where applicable.
 						</span>
 					</p>
 				</div>
 			</div>
 
-			<hr className="my-8" />
+			<hr className="mt-8" />
 
-			<div className="flex justify-between -mt-6">
+			<ExternalForm />
+			{/* <AdminExternalForm id={1} /> */}
+
+			{/* <div className="flex justify-between">
 				<div className="space-y-8 h-[150vh] top-0 px-8 py-8 whitespace-nowrap text-slate-800 hidden lg:inline">
 					<a href="#personal_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Personal Details</a>
 					<a href="#travel_details" className="cursor-pointer hover:text-lg hover:font-semibold block">Travel Details</a>
@@ -230,7 +77,6 @@ export default function ExternalFormPage() {
 
 				<form className="mt-6 w-full ml-[45px]">
 
-					{/* 1. Personal Details */}
 					<div>
 						<div>
 							<a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900">
@@ -404,7 +250,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 2. Travel Details */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="travel_details" className="text-2xl font-bold mb-5 block">
@@ -560,7 +405,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 3. Logistic Arrangement */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="logistic_arrangement" className="text-2xl font-bold mb-5 block text-slate-900">
@@ -682,7 +526,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 4. Funding */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="funding" className="text-2xl font-bold mb-5 block text-slate-900">
@@ -947,7 +790,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 5. Additional Files */}
 					<div className="mt-[45px]">
 						<p id="additional_files" className="text-2xl font-bold block text-slate-900">
 							5. Additional Files
@@ -994,7 +836,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 6. Applicant Declaration */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
@@ -1062,7 +903,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 7. Verification (by HOS) */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="hos_verification" className="text-2xl font-bold mb-4 block text-slate-900">
@@ -1121,7 +961,6 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* 8. Approval (by HMU or Dean ) */}
 					<div className="mt-[45px]">
 						<div>
 							<p id="hmu_dean_approval" className="text-2xl font-bold mb-4 block text-slate-900">
@@ -1180,14 +1019,11 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					{/* Submit Button */}
 					<button className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[125px] mt-6 text-center" onClick={submitForm}>
 						Submit
 					</button>
 				</form>
-			</div >
-		</div >
-
-
-	)
+			</div> */}
+		</div>
+	);
 }
