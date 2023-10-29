@@ -10,14 +10,17 @@ type AttendanceDataType = {
     attFormsStaffID: string;
     attFormsStaffName: string;
     attFormsFacultyUnit: string;
+    attDateSubmitted: string;
+    sub_eventName: string;
 };
 
 interface Props {
     attendanceData: AttendanceDataType[];
     itemsPerPage: number;
+    isAllTabActive: boolean;
 }
 
-const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
+const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     // Calculate the start and end indices for the current page
@@ -31,6 +34,13 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
         if (page >= 1 && page <= Math.ceil(attendanceData.length / itemsPerPage)) {
             setCurrentPage(page);
         }
+    };
+
+    const formatDate = (timestamp: string) => {
+        const dateObj = new Date(timestamp);
+        const date = dateObj.toDateString();
+        const time = dateObj.toLocaleTimeString();
+        return { date, time };
     };
 
     useEffect(() => {
@@ -56,6 +66,14 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
                             <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                 Faculty/ Unit
                             </th>
+                            {isAllTabActive && (
+                                <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
+                                    Sub-Event
+                                </th>
+                            )}
+                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Date Submitted
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,6 +87,16 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage }) => {
                                 </td>
                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                     {attendanceItem.attFormsFacultyUnit}
+                                </td>
+                                {isAllTabActive && (
+                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        {attendanceItem.sub_eventName}
+                                    </td>
+                                )}
+                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                    {formatDate(attendanceItem.attDateSubmitted).date}
+                                    <br />
+                                    {formatDate(attendanceItem.attDateSubmitted).time}
                                 </td>
                             </tr>
                         ))}

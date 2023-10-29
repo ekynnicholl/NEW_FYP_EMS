@@ -113,6 +113,8 @@ type AttendanceDataType = {
 	attFormsStaffID: string;
 	attFormsStaffName: string;
 	attFormsFacultyUnit: string;
+	attDateSubmitted: string;
+	sub_eventName: string;
 };
 
 type subEvents = {
@@ -405,9 +407,8 @@ export default function Homepage() {
 
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
-		console.log("testing" + event_id);
 		try {
-			// Fetch sub-events for the given event
+			// Fetch sub-events for the given event,
 			const { data: subEvents, error: subEventsError } = await supabase
 				.from("sub_events")
 				.select()
@@ -417,9 +418,14 @@ export default function Homepage() {
 				console.error("Error fetching sub_events:", subEventsError);
 				return;
 			}
-			// Set the main ID for the 
+
+			const subEventNameMap: { [key: string]: string } = {};
+			subEvents.forEach(subEvent => {
+				subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+			});
+
+			// Set the main ID for the, 
 			setAttendanceMainEventID(event_id);
-			fetchAttendanceList(event_id)
 			setSubEventsForAttendance(subEvents);
 
 			// Extract the subEventID values from the fetched sub_events
@@ -436,30 +442,23 @@ export default function Homepage() {
 				return;
 			}
 
-			// Set the attendance data for the main event
-			setAttendanceData(attendanceForms);
-			// setSelectedEvent({
-			// 	intFID: event_id,
-			// 	intFEventName: "",
-			// 	intFEventDescription: "",
-			// 	intFEventStartDate: "",
-			// 	intFEventStartTime: "",
-			// 	intFEventEndTime: "",
-			// 	intFEventVenue: "",
-			// 	intFEventMaximumSeats: "",
-			// 	intFEventOrganizer: "",
-			// 	intFEventFaculty: "",
-			// });
+			const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+				...attendanceItem,
+				sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+			}));
+
+			// Set the attendance data for the main event,
+			setAttendanceData(attendanceDataWithSubEventNames);
+
 			// Fetch the attendance list for that event,
 			fetchAttendanceList(event_id);
 
-			console.log("Attendance forms data:", attendanceForms);
+			console.log("Attendance forms data:", attendanceDataWithSubEventNames);
+			setShowAttendanceModal(true);
 		} catch (error) {
 			const typedError = error as Error;
 			console.error("Error:", typedError.message);
 		}
-
-		setShowAttendanceModal(true);
 	};
 
 	// This is for attendance table in homepage pagination,
@@ -554,6 +553,11 @@ export default function Homepage() {
 			return;
 		}
 
+		const subEventNameMap: { [key: string]: string } = {};
+		subEvents.forEach(subEvent => {
+			subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+		});
+
 		// Extract the subEventID values from the fetched sub_events
 		const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
 
@@ -567,7 +571,12 @@ export default function Homepage() {
 			console.error("Error fetching attendance forms:", formsError);
 			return;
 		} else {
-			setAttendanceData(attendanceForms);
+			const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+				...attendanceItem,
+				sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+			}));
+
+			setAttendanceData(attendanceDataWithSubEventNames);
 			setSelectedSubEvent("");
 
 			const facultyCounts: { [key: string]: number } = {};
@@ -2090,11 +2099,10 @@ export default function Homepage() {
 										</select>
 										<div className="h-[450px]">
 											{filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
-												<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} />
+												<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
 											) : (
-												<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} />
-											)
-											}
+												<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
+											)}
 										</div>
 									</div>
 								) : (
