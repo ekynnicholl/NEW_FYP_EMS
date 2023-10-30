@@ -67,9 +67,12 @@ export default function AdminExternalForm({ id }: { id: string }) {
 
 	useEffect(() => {
 		const fetchForm = async () => {
-			const { data } = await supabase.from("external_form").select("*").eq("id", id);
+			const { data } = await supabase
+				.from("external_forms")
+				.select("*")
+				.eq("id", id);
 
-			console.log("testing");
+			console.log(data);
 			if (data) {
 				setExternalForm(data[0]);
 			} else {
@@ -83,6 +86,10 @@ export default function AdminExternalForm({ id }: { id: string }) {
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
 		defaultValues: {
+			revertComment: externalForm.revertComment,
+			formStage: externalForm.formStage,
+			securityKey: externalForm.securityKey,
+
 			name: externalForm.name,
 			email: "example@gmail.com",
 			staff_id: externalForm.staff_id,
@@ -146,12 +153,15 @@ export default function AdminExternalForm({ id }: { id: string }) {
 	});
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
-		console.log("Form sent");
-		const { error } = await supabase.from("external_form").insert([
-			{
-				...values,
-			},
-		]);
+		console.log("Form updated successfully.");
+		const { error } = await supabase
+			.from("external_form")
+			.update([
+				{
+					...values,
+				},
+			])
+			.eq("id", id);
 
 		if (error) {
 			console.log(error);
@@ -1334,311 +1344,319 @@ export default function AdminExternalForm({ id }: { id: string }) {
 
 					<Separator className="my-8" />
 
-					<section className="section-7" id="Verification">
-						<h1 className="text-2xl font-bold mb-4">7. Verification</h1>
-						<p className="text-gray-500 dark:text-gray-400 mb-8">
-							I have verified and support of this application.
-						</p>
-						<div className="grid gap-8">
-							<div className="grid grid-auto-fit-lg gap-8">
+					{externalForm.formStage >= 3 ? (
+						<section className="section-7" id="Verification">
+							<h1 className="text-2xl font-bold mb-4">7. Verification</h1>
+							<p className="text-gray-500 dark:text-gray-400 mb-8">
+								I have verified and support of this application.
+							</p>
+							<div className="grid gap-8">
+								<div className="grid grid-auto-fit-lg gap-8">
+									<FormField
+										control={form.control}
+										name="verification_name"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Name</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="verification_position_title"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Position title</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+
 								<FormField
 									control={form.control}
-									name="verification_name"
+									name="verification_date"
 									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Name</FormLabel>
-											<FormControl>
-												<Input placeholder="" {...field} />
-											</FormControl>
+										<FormItem className="flex flex-col">
+											<FormLabel>Declaration Date</FormLabel>
+											<Popover>
+												<PopoverTrigger asChild>
+													<FormControl>
+														<Button
+															variant={"outline"}
+															className={cn(
+																"w-full pl-3 text-left font-normal",
+																!field.value &&
+																"text-muted-foreground",
+															)}>
+															{field.value ? (
+																format(field.value, "PPP")
+															) : (
+																<span>Pick a date</span>
+															)}
+														</Button>
+													</FormControl>
+												</PopoverTrigger>
+												<PopoverContent
+													className="w-auto p-0"
+													align="start">
+													<Calendar
+														mode="single"
+														selected={field.value}
+														onSelect={field.onChange}
+														disabled={date => date <= new Date()}
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
 								<FormField
 									control={form.control}
-									name="verification_position_title"
+									name="verification_signature"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Position title</FormLabel>
-											<FormControl>
-												<Input placeholder="" {...field} />
-											</FormControl>
-											<FormMessage />
+											<FormLabel>Signature</FormLabel>
+											<Dialog>
+												<FormControl>
+													<DialogTrigger asChild>
+														<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
+															{imageURL && (
+																<Image
+																	src={imageURL}
+																	width={300}
+																	height={200}
+																	alt="Signature"
+																/>
+															)}
+														</div>
+													</DialogTrigger>
+												</FormControl>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Signature</DialogTitle>
+														<DialogClose />
+													</DialogHeader>
+													<DialogDescription>
+														Please sign below
+													</DialogDescription>
+													<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
+														<SignaturePad
+															ref={sigCanvas}
+															canvasProps={{
+																className: "w-full h-full",
+															}}
+														/>
+													</div>
+													<DialogFooter>
+														<Button
+															variant="outline"
+															onClick={clear}>
+															Clear
+														</Button>
+														<DialogClose asChild>
+															<Button
+																onClick={() => {
+																	save();
+																	field.onChange(
+																		sigCanvas.current
+																			.getTrimmedCanvas()
+																			.toDataURL(
+																				"image/png",
+																			),
+																	);
+																	field.value =
+																		sigCanvas.current
+																			.getTrimmedCanvas()
+																			.toDataURL(
+																				"image/png",
+																			);
+																	console.log(
+																		"Field Value: " +
+																		field.value,
+																	);
+																}}>
+																Save
+															</Button>
+														</DialogClose>
+													</DialogFooter>
+												</DialogContent>
+												<FormMessage />
+											</Dialog>
 										</FormItem>
 									)}
 								/>
 							</div>
+						</section>
+					) : (
+						null
+					)}
 
-							<FormField
-								control={form.control}
-								name="verification_date"
-								render={({ field }) => (
-									<FormItem className="flex flex-col">
-										<FormLabel>Declaration Date</FormLabel>
-										<Popover>
-											<PopoverTrigger asChild>
+					{externalForm.formStage >= 4 ? (
+						<section className="section-8" id="Approval">
+							<h1 className="text-2xl font-bold mb-4">8. Approval</h1>
+							<p className="text-gray-500 dark:text-gray-400 mb-8">
+								I have reviewed, and approve this application.
+							</p>
+							<div className="grid gap-8">
+								<div className="grid grid-auto-fit-lg gap-8">
+									<FormField
+										control={form.control}
+										name="approval_name"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Name</FormLabel>
 												<FormControl>
-													<Button
-														variant={"outline"}
-														className={cn(
-															"w-full pl-3 text-left font-normal",
-															!field.value &&
-															"text-muted-foreground",
-														)}>
-														{field.value ? (
-															format(field.value, "PPP")
-														) : (
-															<span>Pick a date</span>
-														)}
-													</Button>
+													<Input placeholder="" {...field} />
 												</FormControl>
-											</PopoverTrigger>
-											<PopoverContent
-												className="w-auto p-0"
-												align="start">
-												<Calendar
-													mode="single"
-													selected={field.value}
-													onSelect={field.onChange}
-													disabled={date => date <= new Date()}
-													initialFocus
-												/>
-											</PopoverContent>
-										</Popover>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="verification_signature"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Signature</FormLabel>
-										<Dialog>
-											<FormControl>
-												<DialogTrigger asChild>
-													<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-														{imageURL && (
-															<Image
-																src={imageURL}
-																width={300}
-																height={200}
-																alt="Signature"
-															/>
-														)}
-													</div>
-												</DialogTrigger>
-											</FormControl>
-											<DialogContent>
-												<DialogHeader>
-													<DialogTitle>Signature</DialogTitle>
-													<DialogClose />
-												</DialogHeader>
-												<DialogDescription>
-													Please sign below
-												</DialogDescription>
-												<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-													<SignaturePad
-														ref={sigCanvas}
-														canvasProps={{
-															className: "w-full h-full",
-														}}
-													/>
-												</div>
-												<DialogFooter>
-													<Button
-														variant="outline"
-														onClick={clear}>
-														Clear
-													</Button>
-													<DialogClose asChild>
-														<Button
-															onClick={() => {
-																save();
-																field.onChange(
-																	sigCanvas.current
-																		.getTrimmedCanvas()
-																		.toDataURL(
-																			"image/png",
-																		),
-																);
-																field.value =
-																	sigCanvas.current
-																		.getTrimmedCanvas()
-																		.toDataURL(
-																			"image/png",
-																		);
-																console.log(
-																	"Field Value: " +
-																	field.value,
-																);
-															}}>
-															Save
-														</Button>
-													</DialogClose>
-												</DialogFooter>
-											</DialogContent>
-											<FormMessage />
-										</Dialog>
-									</FormItem>
-								)}
-							/>
-						</div>
-					</section>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="approval_position_title"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Position title</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
 
-					<section className="section-8" id="Approval">
-						<h1 className="text-2xl font-bold mb-4">8. Approval</h1>
-						<p className="text-gray-500 dark:text-gray-400 mb-8">
-							I have reviewed, and approve this application.
-						</p>
-						<div className="grid gap-8">
-							<div className="grid grid-auto-fit-lg gap-8">
 								<FormField
 									control={form.control}
-									name="approval_name"
+									name="approval_date"
 									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Name</FormLabel>
-											<FormControl>
-												<Input placeholder="" {...field} />
-											</FormControl>
+										<FormItem className="flex flex-col">
+											<FormLabel>Declaration Date</FormLabel>
+											<Popover>
+												<PopoverTrigger asChild>
+													<FormControl>
+														<Button
+															variant={"outline"}
+															className={cn(
+																"w-full pl-3 text-left font-normal",
+																!field.value &&
+																"text-muted-foreground",
+															)}>
+															{field.value ? (
+																format(field.value, "PPP")
+															) : (
+																<span>Pick a date</span>
+															)}
+														</Button>
+													</FormControl>
+												</PopoverTrigger>
+												<PopoverContent
+													className="w-auto p-0"
+													align="start">
+													<Calendar
+														mode="single"
+														selected={field.value}
+														onSelect={field.onChange}
+														disabled={date => date <= new Date()}
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
 								<FormField
 									control={form.control}
-									name="approval_position_title"
+									name="approval_signature"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Position title</FormLabel>
-											<FormControl>
-												<Input placeholder="" {...field} />
-											</FormControl>
-											<FormMessage />
+											<FormLabel>Signature</FormLabel>
+											<Dialog>
+												<FormControl>
+													<DialogTrigger asChild>
+														<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
+															{imageURL && (
+																<Image
+																	src={imageURL}
+																	width={300}
+																	height={200}
+																	alt="Signature"
+																/>
+															)}
+														</div>
+													</DialogTrigger>
+												</FormControl>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Signature</DialogTitle>
+														<DialogClose />
+													</DialogHeader>
+													<DialogDescription>
+														Please sign below
+													</DialogDescription>
+													<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
+														<SignaturePad
+															ref={sigCanvas}
+															canvasProps={{
+																className: "w-full h-full",
+															}}
+														/>
+													</div>
+													<DialogFooter>
+														<Button
+															variant="outline"
+															onClick={clear}>
+															Clear
+														</Button>
+														<DialogClose asChild>
+															<Button
+																onClick={() => {
+																	save();
+																	field.onChange(
+																		sigCanvas.current
+																			.getTrimmedCanvas()
+																			.toDataURL(
+																				"image/png",
+																			),
+																	);
+																	field.value =
+																		sigCanvas.current
+																			.getTrimmedCanvas()
+																			.toDataURL(
+																				"image/png",
+																			);
+																	console.log(
+																		"Field Value: " +
+																		field.value,
+																	);
+																}}>
+																Save
+															</Button>
+														</DialogClose>
+													</DialogFooter>
+												</DialogContent>
+												<FormMessage />
+											</Dialog>
 										</FormItem>
 									)}
 								/>
 							</div>
-
-							<FormField
-								control={form.control}
-								name="approval_date"
-								render={({ field }) => (
-									<FormItem className="flex flex-col">
-										<FormLabel>Declaration Date</FormLabel>
-										<Popover>
-											<PopoverTrigger asChild>
-												<FormControl>
-													<Button
-														variant={"outline"}
-														className={cn(
-															"w-full pl-3 text-left font-normal",
-															!field.value &&
-															"text-muted-foreground",
-														)}>
-														{field.value ? (
-															format(field.value, "PPP")
-														) : (
-															<span>Pick a date</span>
-														)}
-													</Button>
-												</FormControl>
-											</PopoverTrigger>
-											<PopoverContent
-												className="w-auto p-0"
-												align="start">
-												<Calendar
-													mode="single"
-													selected={field.value}
-													onSelect={field.onChange}
-													disabled={date => date <= new Date()}
-													initialFocus
-												/>
-											</PopoverContent>
-										</Popover>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="approval_signature"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Signature</FormLabel>
-										<Dialog>
-											<FormControl>
-												<DialogTrigger asChild>
-													<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-														{imageURL && (
-															<Image
-																src={imageURL}
-																width={300}
-																height={200}
-																alt="Signature"
-															/>
-														)}
-													</div>
-												</DialogTrigger>
-											</FormControl>
-											<DialogContent>
-												<DialogHeader>
-													<DialogTitle>Signature</DialogTitle>
-													<DialogClose />
-												</DialogHeader>
-												<DialogDescription>
-													Please sign below
-												</DialogDescription>
-												<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-													<SignaturePad
-														ref={sigCanvas}
-														canvasProps={{
-															className: "w-full h-full",
-														}}
-													/>
-												</div>
-												<DialogFooter>
-													<Button
-														variant="outline"
-														onClick={clear}>
-														Clear
-													</Button>
-													<DialogClose asChild>
-														<Button
-															onClick={() => {
-																save();
-																field.onChange(
-																	sigCanvas.current
-																		.getTrimmedCanvas()
-																		.toDataURL(
-																			"image/png",
-																		),
-																);
-																field.value =
-																	sigCanvas.current
-																		.getTrimmedCanvas()
-																		.toDataURL(
-																			"image/png",
-																		);
-																console.log(
-																	"Field Value: " +
-																	field.value,
-																);
-															}}>
-															Save
-														</Button>
-													</DialogClose>
-												</DialogFooter>
-											</DialogContent>
-											<FormMessage />
-										</Dialog>
-									</FormItem>
-								)}
-							/>
-						</div>
-					</section>
+						</section>
+					) : (
+						null
+					)}
 
 					<Button type="submit">Submit</Button>
 					<Button type="submit">Reject</Button>

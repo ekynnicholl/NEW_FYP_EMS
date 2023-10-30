@@ -1,3 +1,5 @@
+"use client";
+
 import AdminExternalForm from "@/components/forms/AdminExternalForm";
 import ExternalForm from "@/components/forms/ApplicantExternalForm";
 import Image from "next/image";
