@@ -147,7 +147,7 @@ export default function FeedbackForm() {
 		} = formData;
 
 		// Validate form fields
-		if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider) {
+		if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider || !fbSectionA1 || !fbSectionA2 || !fbSectionA3 || !fbSectionA4 || !fbSectionA5 || !fbSectionB1 || !fbSectionB2 || !fbSectionB3 || !fbSectionB4 || !fbSectionC1 || !fbSectionD1 || !fbSectionESuggestions || !fbSectionEChanges || !fbSectionEAdditional || !fbFullName || !fbEmailAddress) {
 			return;
 		}
 
@@ -703,7 +703,7 @@ export default function FeedbackForm() {
 							<span className="text-red-500"> *</span>
 						</label>
 						<input
-							type="text"
+							type="email"
 							name="emailAddress"
 							id="emailAddress"
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
@@ -730,7 +730,25 @@ export default function FeedbackForm() {
 								formData.fbCompletionDate &&
 								formData.fbDuration &&
 								formData.fbTrainersName &&
-								formData.fbTrainingProvider
+								formData.fbTrainingProvider &&
+								formData.fbSectionA1 &&
+								formData.fbSectionA2 &&
+								formData.fbSectionA3 &&
+								formData.fbSectionA4 &&
+								formData.fbSectionA5 &&
+								formData.fbSectionB1 &&
+								formData.fbSectionB2 &&
+								formData.fbSectionB3 &&
+								formData.fbSectionB4 &&
+								formData.fbSectionC1 &&
+								formData.fbSectionD1 &&
+								formData.fbSectionESuggestions &&
+								formData.fbSectionEChanges &&
+								formData.fbSectionEAdditional &&
+								formData.fbFullName &&
+								formData.fbEmailAddress
+
+
 							) {
 								setShowModalSuccess(true);
 							}
@@ -741,7 +759,24 @@ export default function FeedbackForm() {
 							!formData.fbCompletionDate ||
 							!formData.fbDuration ||
 							!formData.fbTrainersName ||
-							!formData.fbTrainingProvider
+							!formData.fbTrainingProvider ||
+							!formData.fbSectionA1 ||
+							!formData.fbSectionA2 ||
+							!formData.fbSectionA3 ||
+							!formData.fbSectionA4 ||
+							!formData.fbSectionA5 ||
+							!formData.fbSectionB1 ||
+							!formData.fbSectionB2 ||
+							!formData.fbSectionB3 ||
+							!formData.fbSectionB4 ||
+							!formData.fbSectionC1 ||
+							!formData.fbSectionD1 ||
+							!formData.fbSectionESuggestions ||
+							!formData.fbSectionEChanges ||
+							!formData.fbSectionEAdditional ||
+							!formData.fbFullName ||
+							!formData.fbEmailAddress
+							
 						}
 					>
 						Submit
