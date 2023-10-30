@@ -48,9 +48,11 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 
-export default function AdminExternalForm({ id } : { id: number }) {
+export default function AdminExternalForm({ id }: { id: string }) {
 	const supabase = createClientComponentClient();
+	const router = useRouter();
 
 	const [externalForm, setExternalForm] = useState<ExternalForm>({});
 	const [imageURL, setImageURL] = useState("");
@@ -67,8 +69,11 @@ export default function AdminExternalForm({ id } : { id: number }) {
 		const fetchForm = async () => {
 			const { data } = await supabase.from("external_form").select("*").eq("id", id);
 
+			console.log("testing");
 			if (data) {
 				setExternalForm(data[0]);
+			} else {
+				// router.push("/notFound?from=ext_forms");
 			}
 		};
 
@@ -158,8 +163,8 @@ export default function AdminExternalForm({ id } : { id: number }) {
 	return (
 		<div className="grid grid-cols-[240px_auto] gap-8 items-start">
 			<div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
-				<a className="block" href="#Persona Details">
-					Persona Details
+				<a className="block" href="#Personal Details">
+					Personal Details
 				</a>
 				<a className="block" href="#Travel Details">
 					Travel Details
@@ -187,7 +192,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="mt-8 space-y-8 w-full">
-					<section className="section-1" id="Persona Details">
+					<section className="section-1" id="Personal Details">
 						<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 						<div className="grid gap-8">
 							<FormField
@@ -418,7 +423,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -463,7 +468,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -581,7 +586,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -704,7 +709,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -749,7 +754,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -1191,7 +1196,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-																1,
+															1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1276,7 +1281,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1378,7 +1383,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1466,7 +1471,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 																		);
 																console.log(
 																	"Field Value: " +
-																		field.value,
+																	field.value,
 																);
 															}}>
 															Save
@@ -1531,7 +1536,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1619,7 +1624,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 																		);
 																console.log(
 																	"Field Value: " +
-																		field.value,
+																	field.value,
 																);
 															}}>
 															Save
@@ -1636,6 +1641,7 @@ export default function AdminExternalForm({ id } : { id: number }) {
 					</section>
 
 					<Button type="submit">Submit</Button>
+					<Button type="submit">Reject</Button>
 				</form>
 			</Form>
 		</div>

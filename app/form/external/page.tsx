@@ -59,8 +59,8 @@ export default function ExternalFormPage() {
 
 			<hr className="mt-8" />
 
-			<ExternalForm />
-			{/* <AdminExternalForm id={1} /> */}
+			{/* <ExternalForm /> */}
+			<AdminExternalForm id={1} />
 
 			{/* <div className="flex justify-between">
 				<div className="space-y-8 h-[150vh] top-0 px-8 py-8 whitespace-nowrap text-slate-800 hidden lg:inline">
