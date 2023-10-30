@@ -541,7 +541,7 @@ export default function Page() {
                                 <button
                                     onClick={handleSubmit}
                                     disabled={!inputMatchesSecurityKey}
-                                    className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5"
+                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 p-4 w-[120px] mt-5 ${inputMatchesSecurityKey ? 'bg-slate-800' : 'bg-gray-400'}`}
                                 >
                                     Submit
                                 </button>
