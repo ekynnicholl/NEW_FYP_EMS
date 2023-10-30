@@ -169,6 +169,7 @@ export default function Page() {
                             >
                                 <option value="" className="text-slate-800">Please select an option</option>
                                 <option value="hos@gmail.com" className="text-slate-800">hos@gmail.com</option>
+                                <option value="jadpichoo@outlook.com" className="text-slate-800">jadpichoo@outlook.com</option>
                             </select>
                         </div>
                     </div>

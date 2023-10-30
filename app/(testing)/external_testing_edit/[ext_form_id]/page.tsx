@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import cookie from 'js-cookie';
 import { sendContactForm } from '@/lib/api';
 import { toast } from 'react-hot-toast';
+import { v4 as uuidv4 } from 'uuid';
 
 type FormDetails = {
     fundSourceName: string,
@@ -15,6 +16,7 @@ type FormDetails = {
     cappedAmount: number,
     hosEmail: string,
     formStage: number,
+    securityKey: string,
     revertComment: string,
     hosName: string,
     deanEmail: string
@@ -29,6 +31,7 @@ export default function Page() {
         cappedAmount: 0,
         hosEmail: '',
         formStage: 0,
+        securityKey: '',
         revertComment: '',
         hosName: '',
         deanEmail: '',
@@ -55,9 +58,9 @@ export default function Page() {
                 .select('*')
                 .eq('formID', ext_form_id);
 
-            if (error) {
+            if (error || data.length === 0) {
                 console.error("Error fetching data:", error);
-                router.push("/error-404")
+                router.push("/notFound?from=ext_forms")
             } else {
                 const row = data[0];
                 if (row) {
@@ -65,11 +68,20 @@ export default function Page() {
                     setFetchedFormStage(row.formStage);
                 }
             }
-            console.log(data);
         }
 
         fetchData();
     }, []);
+
+    // This is for the security key input validation,
+    const [inputMatchesSecurityKey, setInputMatchesSecurityKey] = useState(false);
+
+    const handleInputValidation = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;
+        console.log(formDetails.securityKey);
+        console.log(inputValue);
+        setInputMatchesSecurityKey(inputValue === formDetails.securityKey);
+    };
 
     // const showSuccessToast = (message: string) => {
     //     toast.success(message, {
@@ -89,7 +101,11 @@ export default function Page() {
 
     // 1 - form exists (revert), 2 - AAO, 3 - HOS, 4 - Dean, 5 - approved, 6 - rejected
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        // Only update specific fields if they click on submit.
+        // Generate the security key,
+        const securityKeyUID = uuidv4();
+        e.preventDefault();
+
+        // Only update specific fields if they click on submit. This part is from AAO to HOS/ ADCR/ MGR,
         if (formDetails.formStage === 2) {
             const { data, error } = await supabase
                 .from('external_testing')
@@ -98,6 +114,7 @@ export default function Page() {
                         expenditureCapped: formDetails.expenditureCapped,
                         fundAmount: formDetails.fundAmount,
                         revertComment: "None",
+                        securityKey: securityKeyUID,
                         formStage: 3
                     }
                 ])
@@ -115,10 +132,13 @@ export default function Page() {
                     revertComment: '',
                     expenditureCapped: formDetails.expenditureCapped,
                     fundAmount: formDetails.fundAmount,
+                    securityKey: securityKeyUID,
                     formStage: 3,
                 });
                 window.location.reload();
             }
+
+            // This part is when the staff re-submits the form to the AAO after being reverted,
         } else if (formDetails.formStage === 1) {
             const { data, error } = await supabase
                 .from("external_testing")
@@ -146,36 +166,39 @@ export default function Page() {
                 });
                 window.location.reload();
             }
-        } else if (formDetails.formStage === 2) {
-            const { data, error } = await supabase
-                .from("external_testing")
-                .update([
-                    {
-                        formStage: 4,
-                    },
-                ])
-                .eq('formID', ext_form_id);
 
-            if (error) {
-                console.error("Error inserting data:", error);
-            } else {
-                console.log("Data inserted successfully:", data);
+            // } else if (formDetails.formStage === 2) {
+            //     const { data, error } = await supabase
+            //         .from("external_testing")
+            //         .update([
+            //             {
+            //                 formStage: 4,
+            //             },
+            //         ])
+            //         .eq('formID', ext_form_id);
 
-                // showSuccessToast('Your form has successfully been submitted for review.');
+            //     if (error) {
+            //         console.error("Error inserting data:", error);
+            //     } else {
+            //         console.log("Data inserted successfully:", data);
 
-                setFormDetails({
-                    ...formDetails,
-                    formStage: 4
-                });
-                window.location.reload();
-            }
+            //         // showSuccessToast('Your form has successfully been submitted for review.');
+
+            //         setFormDetails({
+            //             ...formDetails,
+            //             formStage: 4
+            //         });
+            //         window.location.reload();
+            //     }
         }
+        // This is for approving the forms, stage 5 by the HOS/ MGR/ ADCR.
         else if (formDetails.formStage === 3) {
             const { data, error } = await supabase
                 .from("external_testing")
                 .update([
                     {
                         formStage: 5,
+                        securityKey: null,
                         hosName: formDetails.hosName
                     },
                 ])
@@ -198,12 +221,14 @@ export default function Page() {
     };
 
     const handleRevert = async () => {
+        // This is for rejecting the forms by HOS/ ADCR/ MGR,
         if (formDetails.formStage === 3) {
             const { data, error } = await supabase
                 .from('external_testing')
                 .update([
                     {
                         formStage: 6,
+                        securityKey: null,
                         hosName: formDetails.hosName
                     }
                 ])
@@ -225,6 +250,7 @@ export default function Page() {
             }
         }
 
+        // This is for the AAO to revert to the staff with the comments,
         if (formDetails.formStage === 2 && (showCommentInput == true || formDetails.revertComment != "None")) {
             const { data, error } = await supabase
                 .from('external_testing')
@@ -386,6 +412,7 @@ export default function Page() {
                                         >
                                             <option value="" className="text-slate-800">Please select an option</option>
                                             <option value="hos@gmail.com" className="text-slate-800">hos@gmail.com</option>
+                                            <option value="jadpichoo@outlook.com" className="text-slate-800">jadpichoo@outlook.com</option>
                                         </select>
                                     ) : formDetails.formStage === 2 ? (
                                         <input
@@ -448,12 +475,13 @@ export default function Page() {
                             </div>
                         </div>
 
-                        {formDetails.formStage === 2 && (
+                        {/* This is what the AAO sees, */}
+                        {(formDetails.formStage === 2) && (
                             <div>
                                 <button
                                     type="button"
                                     onClick={handleSubmit}
-                                    className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5"
+                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5 ${showCommentInput === true ? 'hidden' : 'visible'}`}
                                 >
                                     Submit
                                 </button>
@@ -467,6 +495,7 @@ export default function Page() {
                             </div>
                         )}
 
+                        {/* This is what a staff will see after it is reverted. The AAO cannot have the submit button. */}
                         {(formDetails.formStage === 1 && !authToken) && (
                             <div>
                                 {formDetails.revertComment !== "None" && (
@@ -493,6 +522,7 @@ export default function Page() {
                             </div>
                         )}
 
+                        {/* This is what the HOS/ ADCR/ MGR sees, */}
                         {formDetails.formStage === 3 && (
                             <div>
                                 <div className="mt-5">
@@ -509,16 +539,40 @@ export default function Page() {
                                         }
                                     />
                                 </div>
+                                <p className="text-sm text-slate-800 font-medium">
+                                </p>
+                                <div className="">
+                                    <div className="group relative w-max">
+                                        Security Key <button className="bg-slate-100 rounded-lg p-1 font-bold">!</button>
+                                        <span
+                                            className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2"
+                                        >
+                                            This is to ensure that you are the appropriate individual for the authorization or rejection of this form. It can be found in your email.
+                                        </span>
+                                    </div>
+                                </div>
+                                <input
+                                    type="text"
+                                    id="securityKey"
+                                    placeholder="Security Key"
+                                    className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${inputMatchesSecurityKey ? '' : 'border-red-500'
+                                        }`}
+                                    onChange={(event) => {
+                                        handleInputValidation(event);
+                                    }}
+                                />
                                 <button
                                     onClick={handleSubmit}
-                                    className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5"
+                                    disabled={!inputMatchesSecurityKey}
+                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 p-4 w-[120px] mt-5 ${inputMatchesSecurityKey ? 'bg-slate-800' : 'bg-gray-400'}`}
                                 >
                                     Submit
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleRevert}
-                                    className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5 ml-5"
+                                    disabled={!inputMatchesSecurityKey}
+                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 p-4 w-[120px] mt-5 ml-5 ${inputMatchesSecurityKey ? 'bg-slate-800' : 'bg-gray-400'}`}
                                 >
                                     Reject
                                 </button>
@@ -542,6 +596,7 @@ export default function Page() {
                     </div>
                 </form>
             ) : (
+                // This is the final stage of the form,
                 <div>
                     <p>Show PDF!</p>
                     {formDetails.formStage === 5 ? (

@@ -48,28 +48,54 @@ export default function AttendanceForm() {
 				return;
 			}
 
-			const eventEndTime = new Date(attendanceListData[0].sub_eventsEndTime);
+			// Get the end date of the event,
 			const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
+			const currentDate = new Date(eventEndDate.toDateString());
+
+			// Get the start time and end time of the event,
+			const eventEndTimeStr = attendanceListData[0].sub_eventsEndTime;
+			const eventStartTimeStr = attendanceListData[0].sub_eventsStartTime;
+
+			// Split the time to hours, minutes and seconds.
+			const [hoursEnd, minutesEnd, secondsEnd] = eventEndTimeStr.split(':');
+			const [hoursStart, minutesStart, secondsStart] = eventStartTimeStr.split(':');
+
+			// Set the end time,
+			const eventEndTime = new Date(currentDate);
+			eventEndTime.setHours(Number(hoursEnd));
+			eventEndTime.setMinutes(Number(minutesEnd));
+			eventEndTime.setSeconds(Number(secondsEnd));
+
+			// Set the start time,
+			const eventStartTime = new Date(currentDate);
+			eventStartTime.setHours(Number(hoursStart));
+			eventStartTime.setMinutes(Number(minutesStart));
+			eventStartTime.setSeconds(Number(secondsStart));
+
 			const currentTime = new Date();
 
+			console.log("test1" + eventEndTime)
+			console.log("test2" + eventEndDate)
+			console.log("test3" + eventStartTime)
+			console.log("test4" + currentTime)
+
 			// Check if the event end date has passed
-			if (currentTime > eventEndDate) {
+			if (currentTime > eventEndDate || currentTime > eventEndTime) {
 				// Event has already ended, redirect or display a message
-				router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
+				router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
 				return;
 			}
 
 			// Check if the event end date is today and the event end time has passed
 			if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
 				// Event has already ended today, redirect or display a message
-				router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
+				router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
 				return;
 			}
 
-			// Check if the event start time has already passed
-			if (currentTime > eventEndTime) {
-				// Event has already started, redirect or display a message
-				router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
+			// Check if the current time is before the event start time
+			if (currentTime < eventStartTime) {
+				router.push('/notFound?from=start_att');
 				return;
 			}
 
@@ -96,7 +122,6 @@ export default function AttendanceForm() {
 				}
 			}
 		};
-
 		fetchEventData();
 	}, [sub_id, supabase, router]);
 
@@ -160,7 +185,7 @@ export default function AttendanceForm() {
 						<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
 							{eventData && (
 								<div>
-									<p>Event Name: <span className="font-bold">{eventData.intFEventName}</span></p>
+									<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
 									<p>Date: <span className="font-bold">{eventData.sub_eventsStartDate} - {eventData.sub_eventsEndDate}</span></p>
 									<p>Time: <span className="font-bold">{eventData.sub_eventsStartTime} - {eventData.sub_eventsEndTime}</span></p>
 									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>

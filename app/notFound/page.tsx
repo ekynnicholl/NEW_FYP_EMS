@@ -13,11 +13,25 @@ const PageNotFound = () => {
     <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900 p-5 -mt-12 lg:-mt-5">
       <img src={image_404.src} alt="" className="w-[300px] lg:w-[420px]" />
       <div className="max-w-[546px] mx-auto w-full mt-6">
-        {search == 'att' ? (
+        {search == 'end_att' ? (
           <div>
             <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">OOPSIES!</p>
             <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
               The forms you&rsquo;re currently accessing is <span className="font-bold">no longer accepting new responses.</span> <br /> Contact the event organizer(s) if you think this was a mistake.
+            </div>
+          </div>
+        ) : search == 'start_att' ? (
+          <div>
+            <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">OOPSIES!</p>
+            <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
+              Hey! The forms you&rsquo;re currently accessing <span className="font-bold">has not yet opened for submission</span>! <br /> Contact the event organizer(s) if you think this was a mistake.
+            </div>
+          </div>
+        ) : search == 'ext_forms' ? (
+          <div>
+            <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">OOPSIES!</p>
+            <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
+              Hey! The Nominations/ Travelling Form you're trying to access <span className="font-bold">does not exist</span>. <br /> Contact the office if you think this was a mistake.
             </div>
           </div>
         ) : (
@@ -35,7 +49,6 @@ const PageNotFound = () => {
               </div>
             </div>
           </div>
-
         )}
       </div>
     </div>

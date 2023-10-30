@@ -10,6 +10,15 @@ export async function GET(request: Request) {
 function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string) {
     const link = `http://localhost:3000/external_testing_edit/${formID}`;
     if (type == 1) {
+        let securityKeySentence = '';
+
+        if (optionalFields && optionalFields.trim() !== '') {
+            securityKeySentence = `
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to approve/ reject: <span style="font-weight: bold;">${optionalFields}</span></p>
+                <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+            `;
+        }
+
         return `
         <html>
             <head>
@@ -27,7 +36,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2>Dear sir/ ma'am,</h2>
                     <p>There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you. Please visit the link below to take action: </p>
                     <p>${link}</p>
-                    <br/>
+                    ${securityKeySentence}
                     <p>Thank you for using our system.</p>
                     <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -217,7 +226,10 @@ export async function POST(request: Request) {
         const formStage = requestData.formStage;
         const formID = requestData.formID;
 
+        // console.log('Received request data:', requestData);
+
         if (formStage === 2) {
+            mailOptions.to = 'fypemsmaster369@gmail.com';
             await transporter.sendMail({
                 ...mailOptions,
                 subject: "[NTF] Nominations Travelling Form",
@@ -225,13 +237,15 @@ export async function POST(request: Request) {
                 html: generateEmailHTML("[Staff to Academic Administration Office]", formID, 1)
             });
         } else if (formStage === 3) {
+            mailOptions.to = requestData.hosEmail;
             await transporter.sendMail({
                 ...mailOptions,
                 subject: "[NTF] Nominations Travelling Form",
                 text: "AAO to Head of School",
-                html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1)
+                html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey)
             });
         } else if (formStage === 6) {
+            mailOptions.to = 'fypemsmaster369@gmail.com';
             await transporter.sendMail({
                 ...mailOptions,
                 subject: "[NTF] Nominations Travelling Form",
