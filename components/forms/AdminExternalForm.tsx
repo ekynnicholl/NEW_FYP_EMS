@@ -50,11 +50,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 
-export default function AdminExternalForm({ id }: { id: string }) {
+export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
-	const [externalForm, setExternalForm] = useState<ExternalForm>({});
+	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
 	const [imageURL, setImageURL] = useState("");
 
 	const sigCanvas = useRef({});
@@ -65,37 +65,19 @@ export default function AdminExternalForm({ id }: { id: string }) {
 		setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
 	};
 
-	useEffect(() => {
-		const fetchForm = async () => {
-			const { data } = await supabase
-				.from("external_forms")
-				.select("*")
-				.eq("id", id);
-
-			console.log(data);
-			if (data) {
-				setExternalForm(data[0]);
-			} else {
-				// router.push("/notFound?from=ext_forms");
-			}
-		};
-
-		fetchForm();
-	}, []);
-
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
 		defaultValues: {
-			revertComment: externalForm.revertComment,
-			formStage: externalForm.formStage,
-			securityKey: externalForm.securityKey,
+			revertComment: externalForm.revertComment ?? "",
+			formStage: externalForm.formStage?.toString(),
+			securityKey: externalForm.securityKey!,
 
-			name: externalForm.name,
-			email: "example@gmail.com",
-			staff_id: externalForm.staff_id,
-			course: externalForm.course,
-			faculty: externalForm.faculty,
-			transport: externalForm.transport,
+			name: externalForm.full_name!,
+			email: externalForm.email ?? "",
+			staff_id: externalForm.staff_id!,
+			course: externalForm.course!,
+			faculty: externalForm.faculty!,
+			transport: externalForm.transport!,
 			traveling: externalForm.traveling,
 			other_member: externalForm.other_member,
 
@@ -151,6 +133,9 @@ export default function AdminExternalForm({ id }: { id: string }) {
 			approval_date: undefined,
 		},
 	});
+
+	console.log(form.control._fields);
+	console.log(form);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
 		console.log("Form updated successfully.");
@@ -424,41 +409,20 @@ export default function AdminExternalForm({ id }: { id: string }) {
 								render={({ field }) => (
 									<FormItem className="flex flex-col">
 										<FormLabel>Commencement Date</FormLabel>
-										<Popover>
-											<PopoverTrigger asChild>
-												<FormControl>
-													<Button
-														disabled
-														variant={"outline"}
-														className={cn(
-															"w-full pl-3 text-left font-normal",
-															!field.value &&
-															"text-muted-foreground",
-														)}>
-														{field.value ? (
-															format(field.value, "PPP")
-														) : (
-															<span>Pick a date</span>
-														)}
-													</Button>
-												</FormControl>
-											</PopoverTrigger>
-											<PopoverContent
-												className="w-auto p-0"
-												align="start">
-												<Calendar
-													mode="single"
-													selected={field.value}
-													onSelect={field.onChange}
-													disabled={date => {
-														const today = new Date();
-														today.setHours(0, 0, 0, 0);
-														return date < today;
-													}}
-													initialFocus
-												/>
-											</PopoverContent>
-										</Popover>
+										<FormControl>
+											<Button
+												disabled
+												variant={"outline"}
+												className={cn(
+													"w-full pl-3 text-left font-normal",
+													!field.value &&
+														"text-muted-foreground",
+												)}>
+												<span>
+													{field.value.toLocaleString()}
+												</span>
+											</Button>
+										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
@@ -469,41 +433,18 @@ export default function AdminExternalForm({ id }: { id: string }) {
 								render={({ field }) => (
 									<FormItem className="flex flex-col">
 										<FormLabel>Completion Date</FormLabel>
-										<Popover>
-											<PopoverTrigger asChild>
-												<FormControl>
-													<Button
-														disabled
-														variant={"outline"}
-														className={cn(
-															"w-full pl-3 text-left font-normal",
-															!field.value &&
-															"text-muted-foreground",
-														)}>
-														{field.value ? (
-															format(field.value, "PPP")
-														) : (
-															<span>Pick a date</span>
-														)}
-													</Button>
-												</FormControl>
-											</PopoverTrigger>
-											<PopoverContent
-												className="w-auto p-0"
-												align="start">
-												<Calendar
-													mode="single"
-													selected={field.value}
-													onSelect={field.onChange}
-													disabled={date => {
-														const today = new Date();
-														today.setHours(0, 0, 0, 0);
-														return date < today;
-													}}
-													initialFocus
-												/>
-											</PopoverContent>
-										</Popover>
+										<FormControl>
+											<Button
+												disabled
+												variant={"outline"}
+												className={cn(
+													"w-full pl-3 text-left font-normal",
+													!field.value &&
+														"text-muted-foreground",
+												)}>
+												{field.value.toLocaleString()}
+											</Button>
+										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
@@ -587,41 +528,18 @@ export default function AdminExternalForm({ id }: { id: string }) {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Flight Date</FormLabel>
-											<Popover>
-												<PopoverTrigger asChild>
-													<FormControl>
-														<Button
-															disabled
-															variant={"outline"}
-															className={cn(
-																"w-full pl-3 text-left font-normal",
-																!field.value &&
-																"text-muted-foreground",
-															)}>
-															{field.value ? (
-																format(field.value, "PPP")
-															) : (
-																<span>Pick a date</span>
-															)}
-														</Button>
-													</FormControl>
-												</PopoverTrigger>
-												<PopoverContent
-													className="w-auto p-0"
-													align="start">
-													<Calendar
-														mode="single"
-														selected={field.value}
-														onSelect={field.onChange}
-														disabled={date => {
-															const today = new Date();
-															today.setHours(0, 0, 0, 0);
-															return date < today;
-														}}
-														initialFocus
-													/>
-												</PopoverContent>
-											</Popover>
+											<FormControl>
+												<Button
+													disabled
+													variant={"outline"}
+													className={cn(
+														"w-full pl-3 text-left font-normal",
+														!field.value &&
+															"text-muted-foreground",
+													)}>
+													{field.value.toLocaleString()}
+												</Button>
+											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -710,41 +628,18 @@ export default function AdminExternalForm({ id }: { id: string }) {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Check In</FormLabel>
-											<Popover>
-												<PopoverTrigger asChild>
-													<FormControl>
-														<Button
-															disabled
-															variant={"outline"}
-															className={cn(
-																"w-full pl-3 text-left font-normal",
-																!field.value &&
-																"text-muted-foreground",
-															)}>
-															{field.value ? (
-																format(field.value, "PPP")
-															) : (
-																<span>Pick a date</span>
-															)}
-														</Button>
-													</FormControl>
-												</PopoverTrigger>
-												<PopoverContent
-													className="w-auto p-0"
-													align="start">
-													<Calendar
-														mode="single"
-														selected={field.value}
-														onSelect={field.onChange}
-														disabled={date => {
-															const today = new Date();
-															today.setHours(0, 0, 0, 0);
-															return date < today;
-														}}
-														initialFocus
-													/>
-												</PopoverContent>
-											</Popover>
+											<FormControl>
+												<Button
+													disabled
+													variant={"outline"}
+													className={cn(
+														"w-full pl-3 text-left font-normal",
+														!field.value &&
+															"text-muted-foreground",
+													)}>
+													{field.value.toLocaleString()}
+												</Button>
+											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -755,41 +650,18 @@ export default function AdminExternalForm({ id }: { id: string }) {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Check Out</FormLabel>
-											<Popover>
-												<PopoverTrigger asChild>
-													<FormControl>
-														<Button
-															disabled
-															variant={"outline"}
-															className={cn(
-																"w-full pl-3 text-left font-normal",
-																!field.value &&
-																"text-muted-foreground",
-															)}>
-															{field.value ? (
-																format(field.value, "PPP")
-															) : (
-																<span>Pick a date</span>
-															)}
-														</Button>
-													</FormControl>
-												</PopoverTrigger>
-												<PopoverContent
-													className="w-auto p-0"
-													align="start">
-													<Calendar
-														mode="single"
-														selected={field.value}
-														onSelect={field.onChange}
-														disabled={date => {
-															const today = new Date();
-															today.setHours(0, 0, 0, 0);
-															return date < today;
-														}}
-														initialFocus
-													/>
-												</PopoverContent>
-											</Popover>
+											<FormControl>
+												<Button
+													disabled
+													variant={"outline"}
+													className={cn(
+														"w-full pl-3 text-left font-normal",
+														!field.value &&
+															"text-muted-foreground",
+													)}>
+													{field.value.toLocaleString()}
+												</Button>
+											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -1206,7 +1078,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-															1,
+																1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1291,7 +1163,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1394,7 +1266,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -1411,7 +1283,9 @@ export default function AdminExternalForm({ id }: { id: string }) {
 														mode="single"
 														selected={field.value}
 														onSelect={field.onChange}
-														disabled={date => date <= new Date()}
+														disabled={date =>
+															date <= new Date()
+														}
 														initialFocus
 													/>
 												</PopoverContent>
@@ -1443,7 +1317,9 @@ export default function AdminExternalForm({ id }: { id: string }) {
 												</FormControl>
 												<DialogContent>
 													<DialogHeader>
-														<DialogTitle>Signature</DialogTitle>
+														<DialogTitle>
+															Signature
+														</DialogTitle>
 														<DialogClose />
 													</DialogHeader>
 													<DialogDescription>
@@ -1453,7 +1329,8 @@ export default function AdminExternalForm({ id }: { id: string }) {
 														<SignaturePad
 															ref={sigCanvas}
 															canvasProps={{
-																className: "w-full h-full",
+																className:
+																	"w-full h-full",
 															}}
 														/>
 													</div>
@@ -1482,7 +1359,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 																			);
 																	console.log(
 																		"Field Value: " +
-																		field.value,
+																			field.value,
 																	);
 																}}>
 																Save
@@ -1497,9 +1374,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 								/>
 							</div>
 						</section>
-					) : (
-						null
-					)}
+					) : null}
 
 					{externalForm.formStage >= 4 ? (
 						<section className="section-8" id="Approval">
@@ -1551,7 +1426,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -1568,7 +1443,9 @@ export default function AdminExternalForm({ id }: { id: string }) {
 														mode="single"
 														selected={field.value}
 														onSelect={field.onChange}
-														disabled={date => date <= new Date()}
+														disabled={date =>
+															date <= new Date()
+														}
 														initialFocus
 													/>
 												</PopoverContent>
@@ -1600,7 +1477,9 @@ export default function AdminExternalForm({ id }: { id: string }) {
 												</FormControl>
 												<DialogContent>
 													<DialogHeader>
-														<DialogTitle>Signature</DialogTitle>
+														<DialogTitle>
+															Signature
+														</DialogTitle>
 														<DialogClose />
 													</DialogHeader>
 													<DialogDescription>
@@ -1610,7 +1489,8 @@ export default function AdminExternalForm({ id }: { id: string }) {
 														<SignaturePad
 															ref={sigCanvas}
 															canvasProps={{
-																className: "w-full h-full",
+																className:
+																	"w-full h-full",
 															}}
 														/>
 													</div>
@@ -1639,7 +1519,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 																			);
 																	console.log(
 																		"Field Value: " +
-																		field.value,
+																			field.value,
 																	);
 																}}>
 																Save
@@ -1654,9 +1534,7 @@ export default function AdminExternalForm({ id }: { id: string }) {
 								/>
 							</div>
 						</section>
-					) : (
-						null
-					)}
+					) : null}
 
 					<Button type="submit">Submit</Button>
 					<Button type="submit">Reject</Button>

@@ -1,13 +1,20 @@
-"use client";
+// "use client";
 
 import AdminExternalForm from "@/components/forms/AdminExternalForm";
 import ExternalForm from "@/components/forms/ApplicantExternalForm";
 import Image from "next/image";
-import { useParams } from 'next/navigation';
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
-export default function ExternalFormPage() {
-    const { ext_id } = useParams();
-    const id = Array.isArray(ext_id) ? ext_id.join() : ext_id;
+export default async function ExternalFormPage({ params }: { params: { ext_id: string } }) {
+    const id = params.ext_id;
+    const supabase = createServerComponentClient({ cookies });
+    const { data } = await supabase
+        .from("external_forms")
+        .select("*")
+        .eq("id", id);
+
+    console.log(data[0]);
 
     return (
         <div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
@@ -64,7 +71,7 @@ export default function ExternalFormPage() {
 
             <hr className="mt-8" />
 
-            <AdminExternalForm id={id} />
+            <AdminExternalForm data={data?.[0]} />
         </div>
     );
 }
