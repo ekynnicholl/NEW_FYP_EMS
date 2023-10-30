@@ -103,7 +103,6 @@ export default function Page() {
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         // Generate the security key,
         const securityKeyUID = uuidv4();
-        e.preventDefault();
 
         // Only update specific fields if they click on submit. This part is from AAO to HOS/ ADCR/ MGR,
         if (formDetails.formStage === 2) {
@@ -147,6 +146,7 @@ export default function Page() {
                         fundSourceName: formDetails.fundSourceName,
                         fundAmount: formDetails.fundAmount,
                         formStage: 2,
+                        securityKey: null,
                         hosEmail: formDetails.hosEmail,
                         deanEmail: formDetails.deanEmail
                     },
@@ -221,6 +221,8 @@ export default function Page() {
     };
 
     const handleRevert = async () => {
+        const securityKeyUID = uuidv4();
+
         // This is for rejecting the forms by HOS/ ADCR/ MGR,
         if (formDetails.formStage === 3) {
             const { data, error } = await supabase
@@ -258,6 +260,7 @@ export default function Page() {
                     {
                         formStage: 1,
                         revertComment: formDetails.revertComment,
+                        securityKey: securityKeyUID,
                         expenditureCapped: formDetails.expenditureCapped,
                         cappedAmount: formDetails.cappedAmount
                     }
@@ -273,7 +276,8 @@ export default function Page() {
 
                 setFormDetails({
                     ...formDetails,
-                    formStage: 1
+                    formStage: 1,
+                    securityKey: securityKeyUID
                 });
 
                 window.location.reload();
@@ -481,14 +485,14 @@ export default function Page() {
                                 <button
                                     type="button"
                                     onClick={handleSubmit}
-                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5 ${showCommentInput === true ? 'hidden' : 'visible'}`}
+                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 p-4 w-[120px] mt-5 ${showCommentInput === true ? 'hidden' : 'visible'}`}
                                 >
                                     Submit
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleRevert}
-                                    className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5 ml-5"
+                                    className={`rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 p-4 w-[120px] mt-5 ${showCommentInput === true ? '' : 'ml-5'}`}
                                 >
                                     Revert
                                 </button>
@@ -496,7 +500,7 @@ export default function Page() {
                         )}
 
                         {/* This is what a staff will see after it is reverted. The AAO cannot have the submit button. */}
-                        {(formDetails.formStage === 1 && !authToken) && (
+                        {(formDetails.formStage === 1) && (
                             <div>
                                 {formDetails.revertComment !== "None" && (
                                     <div className="mt-5">
@@ -513,8 +517,30 @@ export default function Page() {
                                         />
                                     </div>
                                 )}
+                                <div className="">
+                                    <div className="group relative w-max">
+                                        Security Key <button className="bg-slate-100 rounded-lg p-1 font-bold">!</button>
+                                        <span
+                                            className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2"
+                                        >
+                                            This is to ensure that you are the appropriate individual for the authorization or rejection of this form. It can be found in your email.
+                                        </span>
+                                    </div>
+                                </div>
+                                <input
+                                    type="text"
+                                    id="securityKey"
+                                    placeholder="Security Key"
+                                    autoComplete="off"
+                                    className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${inputMatchesSecurityKey ? '' : 'border-red-500'
+                                        }`}
+                                    onChange={(event) => {
+                                        handleInputValidation(event);
+                                    }}
+                                />
                                 <button
                                     onClick={handleSubmit}
+                                    disabled={!inputMatchesSecurityKey}
                                     className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px] bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[120px] mt-5"
                                 >
                                     Submit
@@ -533,14 +559,13 @@ export default function Page() {
                                         id="hos_name"
                                         placeholder="Your Name"
                                         value={formDetails.hosName || ''}
+                                        autoComplete="off"
                                         className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
                                         onChange={event =>
                                             setFormDetails({ ...formDetails, hosName: event.target.value })
                                         }
                                     />
                                 </div>
-                                <p className="text-sm text-slate-800 font-medium">
-                                </p>
                                 <div className="">
                                     <div className="group relative w-max">
                                         Security Key <button className="bg-slate-100 rounded-lg p-1 font-bold">!</button>
@@ -555,6 +580,7 @@ export default function Page() {
                                     type="text"
                                     id="securityKey"
                                     placeholder="Security Key"
+                                    autoComplete="off"
                                     className={`border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] ${inputMatchesSecurityKey ? '' : 'border-red-500'
                                         }`}
                                     onChange={(event) => {
@@ -585,6 +611,7 @@ export default function Page() {
                                 <input
                                     type="text"
                                     id="comment"
+                                    autoComplete="off"
                                     onChange={event =>
                                         setFormDetails({ ...formDetails, revertComment: event.target.value })
                                     }

@@ -7,15 +7,16 @@ export async function GET(request: Request) {
 }
 
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
-function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string) {
+function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string) {
     const link = `http://localhost:3000/external_testing_edit/${formID}`;
     if (type == 1) {
         let securityKeySentence = '';
 
         if (optionalFields && optionalFields.trim() !== '') {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to approve/ reject: <span style="font-weight: bold;">${optionalFields}</span></p>
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to approve/ reject: <br/><span style="font-weight: bold;">${optionalFields}</span></p>
                 <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+                <br/>
             `;
         }
 
@@ -28,19 +29,26 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                         max-width: 1400px; 
                         margin: 0 auto;
                     }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
                 </style>
             </head>
             <body>
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
-                    <h2>Dear sir/ ma'am,</h2>
-                    <p>There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you. Please visit the link below to take action: </p>
-                    <p>${link}</p>
-                    ${securityKeySentence}
-                    <p>Thank you for using our system.</p>
-                    <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
-                    <p style="color: red; text-align: justify;">[NOTICE] <br/>
+                    <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you. Please visit the link below to take action: </p>
+                    <p class="no-p-m">${link}</p>
+                    <br/>
+                    ${securityKeySentence}
+                    <p class="no-p-m">Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <br/>
+                    <p class="no-p-m" style="color: red; text-align: justify;">[NOTICE] <br/>
                     This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
                     If you are not the intended recipient, any dissemination, distribution, printing, copying or use is strictly prohibited. 
                     The University does not warrant that this e-mail and any attachments are secure and there is also a risk that it may be corrupted in transmission. 
@@ -63,17 +71,23 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                         max-width: 1400px; 
                         margin: 0 auto;
                     }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
                 </style>
             </head>
             <body>
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
-                    <h2>Dear sir/ ma'am,</h2>
-                    <p>We regret to inform you that your Nominations/ Travelling Form has been rejected. You may review the PDF version of it here: </p>
-                    <p>${link}</p>
+                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
-                    <p>Thank you for using our system.</p>
-                    <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <p class="no-p-m">We regret to inform you that your Nominations/ Travelling Form has been rejected. You may review the PDF version of it here: </p>
+                    <p class="no-p-m">${link}</p>
+                    <br/>
+                    <p class="no-p-m">Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
                     <p style="color: red; text-align: justify;">[NOTICE] <br/>
                     This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
@@ -98,18 +112,23 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                         max-width: 1400px; 
                         margin: 0 auto;
                     }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
                 </style>
             </head>
             <body>
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
-                    <h2>Dear sir/ ma'am,</h2>
-                    <p>Congratulations! Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here:</p>
-                    <p>${link}</p>
+                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <p class="no-p-m">Congratulations! Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here:</p>
+                    <p class="no-p-m">${link}</p>
                     <br/>
-                    <p>Thank you for using our system.</p>
-                    <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <p class="no-p-m">Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
                     <p style="color: red; text-align: justify;">[NOTICE] <br/>
                     This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
@@ -126,6 +145,14 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         `;
     }
     else if (type = 4) {
+        let securityKeySentence = '';
+
+        if (optionalFields2 && optionalFields2.trim() !== '') {
+            securityKeySentence = `
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to re-submit your form: <br/><span style="font-weight: bold;">${optionalFields2}</span></p>
+                <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+            `;
+        }
         return `
         <html>
             <head>
@@ -135,23 +162,29 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                         max-width: 1400px; 
                         margin: 0 auto;
                     }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
                 </style>
             </head>
             <body>
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
-                    <h2>Dear sir/ ma'am,</h2>
-                    <p>Your form has been reverted for further changes. Please refer to the link below to make changes: </p>
-                    <p>${link}</p>
+                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <p class="no-p-m">Your form has been reverted for further changes. Please refer to the link below to make changes: </p>
+                    <p class="no-p-m">${link}</p>
                     <br/>
-                    <p style="font-weight:bold;"> Reason(s) of reverting: </p>
-                    <p style="font-weight:bold;">${optionalFields}</p>
+                    <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
+                    <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                     <br/>
-                    <p>Thank you for using our system.</p>
-                    <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    ${securityKeySentence}
+                    <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
-                    <p style="color: red; text-align: justify;">[NOTICE] <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <br/>
+                    <p class="no-p-m" style="color: red; text-align: justify;">[NOTICE] <br/>
                     This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
                     If you are not the intended recipient, any dissemination, distribution, printing, copying or use is strictly prohibited. 
                     The University does not warrant that this e-mail and any attachments are secure and there is also a risk that it may be corrupted in transmission. 
@@ -229,7 +262,6 @@ export async function POST(request: Request) {
         // console.log('Received request data:', requestData);
 
         if (formStage === 2) {
-            mailOptions.to = 'fypemsmaster369@gmail.com';
             await transporter.sendMail({
                 ...mailOptions,
                 subject: "[NTF] Nominations Travelling Form",
@@ -237,35 +269,45 @@ export async function POST(request: Request) {
                 html: generateEmailHTML("[Staff to Academic Administration Office]", formID, 1)
             });
         } else if (formStage === 3) {
-            mailOptions.to = requestData.hosEmail;
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = requestData.hosEmail;
             await transporter.sendMail({
-                ...mailOptions,
+                ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
                 text: "AAO to Head of School",
                 html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey)
             });
         } else if (formStage === 6) {
-            mailOptions.to = 'fypemsmaster369@gmail.com';
-            await transporter.sendMail({
-                ...mailOptions,
-                subject: "[NTF] Nominations Travelling Form",
-                text: "NTF Reject",
-                html: generateEmailHTML("[Rejection Email]", formID, 2)
-            });
+            const recipients = ['fypemsmaster369@gmail.com', 'jadpichoo@outlook.com'];
+            for (const recipient of recipients) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipient;
+                await transporter.sendMail({
+                    ...mailOptionsCopy,
+                    subject: "[NTF] Nominations Travelling Form",
+                    text: "NTF Reject",
+                    html: generateEmailHTML("[Rejection Email]", formID, 2)
+                });
+            }
         } else if (formStage === 1) {
             await transporter.sendMail({
                 ...mailOptions,
                 subject: "[NTF] Nominations Travelling Form",
                 text: "AAO to Staff",
-                html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment)
+                html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
             });
         } else if (formStage === 5) {
-            await transporter.sendMail({
-                ...mailOptions,
-                subject: "[NTF] Nominations Travelling Form",
-                text: "AAO to Staff",
-                html: generateEmailHTML("[Accepted Email]", formID, 3)
-            });
+            const recipients = ['fypemsmaster369@gmail.com', 'jadpichoo@outlook.com'];
+            for (const recipient of recipients) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipient;
+                await transporter.sendMail({
+                    ...mailOptionsCopy,
+                    subject: "[NTF] Nominations Travelling Form",
+                    text: "AAO to Staff",
+                    html: generateEmailHTML("[Accepted Email]", formID, 3)
+                });
+            }
         }
 
         return NextResponse.json({ success: true }, { status: 200 });
