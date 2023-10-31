@@ -12,8 +12,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const setIsDarkMode = darkLightStorage((state) => state.toggleDarkMode)
 
     useEffect(() => {
-        console.log('Current viewMode:', useViewModeStore.getState().viewMode);
-        console.log('Current viewMode:', darkLightStorage.getState().isDarkMode);
+        // console.log('Current viewMode:', useViewModeStore.getState().viewMode);
+        // console.log('Current viewMode:', darkLightStorage.getState().isDarkMode);
     }, []);
 
     // Define a function to change the view mode

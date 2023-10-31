@@ -300,7 +300,15 @@ export default function Homepage() {
 				.select(
 					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsMaxSeats, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer",
 				)
-				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
+				.in("sub_eventsMainID", mainEventData.map(event => event.intFID))
+				.gte(
+					"sub_eventsEndDate",
+					new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }),
+				)
+				.order("sub_eventsEndDate", { ascending: false }) // Sort by sub_eventsEndDate in descending order
+				.limit(1); // Limit to 1 result (the latest sub-event)
+
+				console.log("Sub-event Query:", subEventQuery[0]);
 
 			if (subEventQuery.error) {
 				console.error("Error fetching sub_events:", subEventQuery.error);
