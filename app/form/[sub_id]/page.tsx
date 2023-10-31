@@ -48,6 +48,7 @@ export default function AttendanceForm() {
 				return;
 			}
 
+
 			// Get the end date of the event,
 			const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
 			const currentDate = new Date(eventEndDate.toDateString());
@@ -74,26 +75,26 @@ export default function AttendanceForm() {
 
 			const currentTime = new Date();
 
-			console.log("test1" + eventEndTime)
-			console.log("test2" + eventEndDate)
-			console.log("test3" + eventStartTime)
-			console.log("test4" + currentTime)
+			console.log("end time " + eventEndTime)
+			console.log("start time " + eventStartTime)
+			console.log("current time " + currentTime)
 
-			// Check if the event end date has passed
-			if (currentTime > eventEndDate || currentTime > eventEndTime) {
-				// Event has already ended, redirect or display a message
+			// Check if the current time is AFTER the event start date and time,
+			if (currentTime > eventEndTime) {
 				router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
+				console.log("triggered c1")
 				return;
 			}
 
 			// Check if the event end date is today and the event end time has passed
-			if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
-				// Event has already ended today, redirect or display a message
-				router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
-				return;
-			}
+			// if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
+			// 	// Event has already ended today, redirect or display a message
+			// 	// router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
+			// 	console.log("triggered c2")
+			// 	return;
+			// }
 
-			// Check if the current time is before the event start time
+			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < eventStartTime) {
 				router.push('/notFound?from=start_att');
 				return;
