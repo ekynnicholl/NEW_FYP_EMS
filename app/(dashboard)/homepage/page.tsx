@@ -2059,12 +2059,12 @@ export default function Homepage() {
 										<span className="ml-2.5">Feedback Summary</span>
 									</div>
 								</div>
-								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px]">
+								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px] pb-5">
 									Total Feedback Received: {feedbackData.length}
 								</div>
-								<div className="flex flex-wrap">
+								<div className="flex flex-wrap ml-9">
 									<button
-										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 											}`}
 										onClick={() => {
 											setIsAllButtonActive(true);
@@ -2076,7 +2076,7 @@ export default function Homepage() {
 									{subEventsForFeedback.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
@@ -2105,7 +2105,7 @@ export default function Homepage() {
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select> */}
-										<div className="h-[600px] overflow-y-auto">
+										<div className="h-[500px] overflow-y-auto">
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
 									</div>
