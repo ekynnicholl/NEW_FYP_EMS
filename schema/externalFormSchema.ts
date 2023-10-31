@@ -137,10 +137,7 @@ const externalFormSchema = z.object({
 	applicant_position_title: z
 		.string()
 		.nonempty({ message: "Position title is required" }),
-	applicant_declaration_date: z.date({
-		required_error: "Date is required.",
-		invalid_type_error: "Oops that's not a date!",
-	}),
+	applicant_declaration_date: z.string(),
 	applicant_signature: z.string(),
 });
 

@@ -26,36 +26,20 @@ const externalFormSchema = z.object({
 	// Section 2
 	program_title: z.string().min(1, { message: "Program / Event title is required" }),
 	program_description: z.string().optional(),
-	commencement_date: z
-		.date({
-			required_error: "Please select a date.",
-			invalid_type_error: "Oops that's not a date!",
-		})
-		.min(today, { message: "Date must be today or in the future." }),
-	completion_date: z
-		.date()
-		.refine(val => val >= today, { message: "Date must be today or in the future." }),
+	commencement_date: z.string(),
+	completion_date: z.string(),
 	organiser: z.string().min(1, { message: "Organiser is required" }),
 	venue: z.string().min(1, { message: "Venue is required" }),
 	HRDF_claimable: z.string().min(1, { message: "Please select one of the option." }),
 
 	// Section 3
-	flight_date: z.date({
-		required_error: "Flight Date is required.",
-		invalid_type_error: "Oops that's not a date!",
-	}),
+	flight_date: z.string(),
 	flight_time: z.string().min(1, { message: "Flight time is required" }),
 	flight_number: z.string().min(1, { message: "Flight number is required" }),
 	destination_from: z.string().min(1, { message: "Destination is required" }),
 	destination_to: z.string().min(1, { message: "Destination is required" }),
-	check_in_date: z.date({
-		required_error: "Check-in date is required.",
-		invalid_type_error: "Oops that's not a date!",
-	}),
-	check_out_date: z.date({
-		required_error: "Check-out date is required.",
-		invalid_type_error: "Oops that's not a date!",
-	}),
+	check_in_date: z.string(),
+	check_out_date: z.string(),
 	hotel: z.string().min(1, { message: "Hotel is required" }),
 
 	// // Section 4
@@ -110,7 +94,7 @@ const externalFormSchema = z.object({
 	travel_fund: z.string().optional(),
 	student_council_fund: z.string().optional(),
 	other_fund: z.string().optional(),
-	expenditure_cap: z.enum(["Yes", "No"]).optional(),
+	expenditure_cap: z.string().optional(),
 	expenditure_cap_amount: z
 		.number()
 		.nonnegative({ message: "Expenditure cap cannot be negative value." })
@@ -149,14 +133,8 @@ const externalFormSchema = z.object({
 	applicant_signature: z.string(),
 
 	// Section 7
-	verification_name: z
-		.string()
-		.optional()
-		.nullable(),
-	verification_position_title: z
-		.string()
-		.optional()
-		.nullable(),
+	verification_name: z.string().optional().nullable(),
+	verification_position_title: z.string().optional().nullable(),
 	verification_signature: z.string().optional().nullable(),
 	verification_date: z
 		.date({
@@ -167,14 +145,8 @@ const externalFormSchema = z.object({
 		.nullable(),
 
 	// Section 8
-	approval_name: z
-		.string()
-		.optional()
-		.nullable(),
-	approval_position_title: z
-		.string()
-		.optional()
-		.nullable(),
+	approval_name: z.string().optional().nullable(),
+	approval_position_title: z.string().optional().nullable(),
 	approval_signature: z.string().optional().nullable(),
 	approval_date: z
 		.date({
@@ -183,6 +155,14 @@ const externalFormSchema = z.object({
 		})
 		.optional()
 		.nullable(),
+
+	// Section 9
+	staff_email: z
+		.string()
+		.email({ message: "Please enter a valid email address." })
+		.min(1, { message: "Email is required" }),
+	verification_email: z.string().min(1, { message: "Applicant email is required" }),
+	approval_email: z.string().min(1, { message: "Applicant email is required" }),
 });
 
 export default externalFormSchema;

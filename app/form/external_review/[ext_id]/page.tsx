@@ -1,7 +1,4 @@
-// "use client";
-
 import AdminExternalForm from "@/components/forms/AdminExternalForm";
-import ExternalForm from "@/components/forms/ApplicantExternalForm";
 import Image from "next/image";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -14,7 +11,7 @@ export default async function ExternalFormPage({ params }: { params: { ext_id: s
         .select("*")
         .eq("id", id);
 
-    console.log(data[0]);
+    console.log(data?.[0]);
 
     return (
         <div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
