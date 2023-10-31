@@ -2872,7 +2872,7 @@ export default function Homepage() {
 
 			{
 				viewMode === 1 ? (
-					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-[300px] lg:pb-28 gap-4 dark:bg-dark_mode_bg">
+					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-[400px] lg:pb-28 gap-4 dark:bg-dark_mode_bg">
 
 						{/* PC View */}
 						<div className="hidden md:grid grid-auto-fit-lg lg:grid-cols-2 gap-4 ml-1 ">
@@ -3963,7 +3963,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -4010,7 +4010,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[6px] relative">
+									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?party"
@@ -4021,10 +4021,10 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[0] && (
-										<div className="mt-4">
+										<div className="mt-5">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800 dark:text-dark_text">
+												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
 													{latestEvent[0].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -4053,7 +4053,7 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px] dark:text-dark_text">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[0].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
