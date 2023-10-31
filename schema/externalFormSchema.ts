@@ -6,6 +6,9 @@ today.setHours(0, 0, 0, 0);
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
 
 const externalFormSchema = z.object({
+	// Additional Fields,
+	formStage: z.number().optional(),
+
 	// Section 1
 	email: z.string().email({ message: "Please enter a valid email address." }).nonempty({
 		message: "Email is required",
