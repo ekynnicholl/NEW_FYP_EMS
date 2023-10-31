@@ -1801,7 +1801,7 @@ export default function Homepage() {
 
 					<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
 						<div className="ml-2 p-5 z-[999]">
-							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-300">
+							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
 								Attendance
 							</h3>
 							<QRCodeSVG
@@ -1813,7 +1813,7 @@ export default function Homepage() {
 										`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`
 									)
 								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px] dark:bg-[#242729] dark:text-[#C1C7C1]"
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
 							>
 								Copy Link
 							</button>
@@ -1822,7 +1822,7 @@ export default function Homepage() {
 
 					<Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
 						<div className="ml-2 p-5 z-[999]">
-							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-300">
+							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
 								Feedback
 							</h3>
 							<QRCodeSVG
