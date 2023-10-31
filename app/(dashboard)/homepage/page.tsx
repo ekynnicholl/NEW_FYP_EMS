@@ -269,8 +269,6 @@ export default function Homepage() {
 	const percentage = (currentAttendees / maxAttendees) * 100;
 	const isOverCapacity = percentage > 100;
 
-
-
 	// Function to fetch the 6 latest events
 	useEffect(() => {
 		const fetchLatestEvent = async () => {
@@ -562,48 +560,50 @@ export default function Homepage() {
 		}
 	}, [attendanceData]);
 
-	const handleSubEventClick = async (subEvent: subEvents) => {
-		try {
-			// Fetch attendance data for the selected sub-event
-			setSelectedSubEvent(subEvent.sub_eventsID);
-			const { data: attendanceForms, error: formsError } = await supabase
-				.from("attendance_forms")
-				.select()
-				.eq("attFSubEventID", subEvent.sub_eventsID);
+	// 1 is for attendance forms, 2 is for feedback forms,
+	const handleSubEventClick = async (subEvent: subEvents, type: number) => {
+		if (type == 1) {
+			try {
+				// Fetch attendance data for the selected sub-event
+				setSelectedSubEvent(subEvent.sub_eventsID);
+				const { data: attendanceForms, error: formsError } = await supabase
+					.from("attendance_forms")
+					.select()
+					.eq("attFSubEventID", subEvent.sub_eventsID);
 
-			if (formsError) {
-				console.error("Error fetching attendance forms:", formsError);
-				return;
+				if (formsError) {
+					console.error("Error fetching attendance forms:", formsError);
+					return;
+				}
+
+				// Set the attendance data for the selected sub-event
+				setAttendanceData(attendanceForms);
+
+			} catch (error) {
+				const typedError = error as Error;
+				console.error("Error:", typedError.message);
 			}
+		} else if (type == 2) {
+			try {
+				// Fetch attendance data for the selected sub-event
+				setSelectedSubEvent(subEvent.sub_eventsID);
+				const { data: feedbackForms, error: formsError } = await supabase
+					.from("feedback_forms")
+					.select()
+					.eq("fbSubEventID", subEvent.sub_eventsID);
 
-			// Set the attendance data for the selected sub-event
-			setAttendanceData(attendanceForms);
+				if (formsError) {
+					console.error("Error fetching feedback forms:", formsError);
+					return;
+				}
 
-			// // Calculate labels (faculty/unit) and label data (counts)
-			// const facultyCounts: { [key: string]: number } = {};
+				// Set the attendance data for the selected sub-event
+				setFeedbackData(feedbackForms);
 
-			// attendanceForms.forEach(attendanceItem => {
-			// 	const faculty = attendanceItem.attFormsFacultyUnit;
-			// 	if (facultyCounts[faculty]) {
-			// 		facultyCounts[faculty]++;
-			// 	} else {
-			// 		facultyCounts[faculty] = 1;
-			// 	}
-			// });
-
-			// const facultyLabels = Object.keys(facultyCounts);
-			// const facultyData = facultyLabels.map(label => facultyCounts[label]);
-
-			// const canvas = chartContainer.current;
-			// createPieChart(canvas, facultyLabels, facultyData);
-			// if (attendanceData.length === 0) {
-			// 	console.log("the data is empty");
-			// }
-
-			// console.log("Attendance forms data for selected sub-event:", attendanceForms);
-		} catch (error) {
-			const typedError = error as Error;
-			console.error("Error:", typedError.message);
+			} catch (error) {
+				const typedError = error as Error;
+				console.error("Error:", typedError.message);
+			}
 		}
 	};
 
@@ -1290,7 +1290,7 @@ export default function Homepage() {
 	const [feedbackMainEventID, setFeedbackMainEventID] = useState("");
 	const [subEventsForFeedback, setSubEventsForFeedback] = useState<subEvents[]>([]);
 
-	// This function fetches ALL the forms,
+	// This function fetches ALL the feedback forms,
 	const openFeedbackModal = async (event_id: string) => {
 		try {
 			// Fetch sub-events for the given event
@@ -2050,32 +2050,48 @@ export default function Homepage() {
 						isVisible={showFeedbackModal}
 						onClose={() => setShowFeedbackModal(false)}>
 						<div className="flex">
-							<div className="h-[450px] lg:h-[700px] w-full mr-3">
+							<div className="h-[600px] lg:h-[700px] w-full mr-3">
 								<div className="flex items-left justify-start">
 									<div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center">
 										<PencilNoteIcon />{" "}
 										<span className="ml-2.5">Feedback Summary</span>
 									</div>
 								</div>
-								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px]">
+								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px] pb-5">
 									Total Feedback Received: {feedbackData.length}
+								</div>
+								<div className="flex flex-wrap ml-9">
+									<button
+										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+											}`}
+										onClick={() => {
+											setIsAllButtonActive(true);
+											fetchFeedbackList(feedbackMainEventID);
+										}}
+									>
+										All
+									</button>
+									{subEventsForFeedback.map((subEvent) => (
+										<div
+											key={subEvent.sub_eventsID}
+											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+												}`}
+										>
+											<button
+												onClick={() => {
+													setIsAllButtonActive(false);
+													handleSubEventClick(subEvent, 2);
+												}}
+											>
+												{subEvent.sub_eventsName}
+											</button>
+										</div>
+									))}
 								</div>
 								{/* This is to loop through the attendance data. */}
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
-										{/* <label htmlFor="itemsPerPageSelect">Show entries:</label>
-										<select
-											id="itemsPerPageSelect"
-											name="itemsPerPage"
-											value={itemsPerPage}
-											onChange={handleItemsPerPageChange}
-											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
-										>
-											<option value="5">5</option>
-											<option value="10">10</option>
-											<option value="20">20</option>
-										</select> */}
-										<div className="h-[600px] overflow-y-auto">
+										<div className={`lg:h-[550px] h-[400px]  overflow-y-auto`}>
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
 									</div>
@@ -2086,14 +2102,6 @@ export default function Homepage() {
 
 								)}
 							</div>
-							{/* {attendanceData && attendanceData.length > 0 ? (
-								<div className="w-1/2 flex flex-col items-center justify-center">
-									<div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
-									<div className="w-[500px] h-[500px] flex items-center justify-center mt-5">
-										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
-									</div>
-								</div>
-							) : null} */}
 						</div>
 					</ViewEventFeedback>
 
@@ -2129,7 +2137,7 @@ export default function Homepage() {
 											<button
 												onClick={() => {
 													setIsAllButtonActive(false);
-													handleSubEventClick(subEvent);
+													handleSubEventClick(subEvent, 1);
 												}}
 											>
 												{subEvent.sub_eventsName}
