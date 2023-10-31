@@ -199,7 +199,7 @@ export default function Login() {
 						</span>
 					</button>
 
-					<div className="my-5 border-b border-gray-300 lg:mb-8 text-center">
+					<div className="my-5 border-b border-gray-300 lg:mb-8 text-center dark:border-[#3B4043]">
 						<div className="leading-none px-2 inline-block text-xs lg:text-sm text-gray-500 tracking-wide font-medium bg-white transform translate-y-1/2 dark:text-slate-400 dark:bg-dark_mode_card">
 							Or login with e-mail
 						</div>
