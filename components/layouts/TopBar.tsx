@@ -105,10 +105,10 @@ const BreadCrumb = () => {
 
 	if (pathname === "/homepage") {
 		return (
-			<div className="flex items-center space-x-2 text-sm">
+			<div className="flex items-center space-x-2 text-sm ml-[9px]">
 				<Link href="/homepage">Home</Link>
 				<p>/</p>
-				<Link href="/homepage" className="underline underline-offset-4">
+				<Link href="/homepage" className="underline underline-offset-4 font-medium">
 					Dashboard
 				</Link>
 			</div>
@@ -123,10 +123,10 @@ const BreadCrumb = () => {
 	const lastPathCapitalized = lastPath.charAt(0).toUpperCase() + lastPath.slice(1);
 
 	return (
-		<div className="flex items-center space-x-2 text-sm">
+		<div className="flex items-center space-x-2 text-sm ml-[9px]">
 			<Link href="/homepage">Home</Link>
 			<p>/</p>
-			<Link href={pathname} className="underline underline-offset-4">
+			<Link href={pathname} className="underline underline-offset-4 font-medium">
 				{lastPathCapitalized}
 			</Link>
 		</div>

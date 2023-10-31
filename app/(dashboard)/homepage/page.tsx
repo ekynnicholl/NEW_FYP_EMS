@@ -269,6 +269,8 @@ export default function Homepage() {
 	const percentage = (currentAttendees / maxAttendees) * 100;
 	const isOverCapacity = percentage > 100;
 
+
+
 	// Function to fetch the 6 latest events
 	useEffect(() => {
 		const fetchLatestEvent = async () => {
@@ -319,7 +321,70 @@ export default function Homepage() {
 		fetchLatestEvent();
 	}, [supabase]);
 
-	// 
+
+	// Fetch the total of upcoming events
+	const [upcomingEventCounts, setUpcomingEventCounts] = useState(0);
+
+	useEffect(() => {
+		const fetchTotalUpcomingEvents = async () => {
+			const currentDate = new Date();
+
+			const { count, error } = await supabase
+				.from("internal_events")
+				.select('intFID', { count: 'exact' })
+				.gte(
+					'intFEventEndDate',
+					currentDate.toISOString(),
+				);
+
+			if (error) {
+				throw new Error(`Error fetching total upcoming events: ${error.message}`);
+			}
+
+			if (count) {
+				setUpcomingEventCounts(count);
+			} else {
+				// console.warn('No upcoming events found.');
+				setUpcomingEventCounts(0);
+			}
+		};
+
+		fetchTotalUpcomingEvents();
+	}, [supabase]);
+
+
+	// Count the total past events
+	const [pastEventCounts, setPastEventCounts] = useState(0);
+
+	useEffect(() => {
+		const fetchTotalPastEvents = async () => {
+
+			const currentDate = new Date();
+
+			const { count, error } = await supabase
+				.from("internal_events")
+				.select('intFID', { count: 'exact' })
+				.lt(
+					'intFEventEndDate',
+					currentDate.toISOString(),
+				);
+
+			if (error) {
+				throw new Error(`Error fetching total past events: ${error.message}`);
+			}
+
+			if (count) {
+				setPastEventCounts(count);
+			} else {
+				// console.warn('No past events found.');
+				setPastEventCounts(0);
+			}
+		};
+
+		fetchTotalPastEvents();
+	}, [supabase]);
+
+
 	// This is for the GRID VIEW,
 	//
 	const [todayEvents, setTodayEvents] = useState<any[]>([]);
@@ -1353,7 +1418,7 @@ export default function Homepage() {
 								</div>
 								<div className="ml-1">
 									<p className="text-[15px]">Upcoming Events</p>
-									<p className="font-medium">2</p>
+									<p className="font-medium">{upcomingEventCounts}</p>
 								</div>
 							</a>
 						</div>
@@ -1371,7 +1436,7 @@ export default function Homepage() {
 								</div>
 								<div className="ml-1">
 									<p className="text-[15px]">Past Events</p>
-									<p className="font-medium">2</p>
+									<p className="font-medium">{pastEventCounts}</p>
 								</div>
 							</a>
 						</div>
@@ -1393,7 +1458,7 @@ export default function Homepage() {
 									</div>
 									<div className="ml-[2px] -mt-1">
 										<p className="text-[11px]">Upcoming Events</p>
-										<p className="font-medium text-[11px]">2</p>
+										<p className="font-medium text-[11px]">{upcomingEventCounts}</p>
 									</div>
 								</a>
 							</div>
@@ -1411,7 +1476,7 @@ export default function Homepage() {
 									</div>
 									<div className="ml-[2px] -mt-1">
 										<p className="text-[11px]">Past Events</p>
-										<p className="font-medium text-[11px]">2</p>
+										<p className="font-medium text-[11px]">{pastEventCounts}</p>
 									</div>
 								</a>
 							</div>
