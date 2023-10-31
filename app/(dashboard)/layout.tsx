@@ -6,7 +6,6 @@ import TopBar from "@/components/layouts/TopBar"
 import React, { useEffect } from "react";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
 import darkLightStorage from '@/components/zustand/darkLightStorage';
-// npm install zustand
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const setViewMode = useViewModeStore((state) => state.setViewMode);

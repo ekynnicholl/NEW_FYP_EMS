@@ -162,7 +162,7 @@ export default function Homepage() {
 		const checkIsUserLoggedIn = () => {
 			const authToken = cookie.get('authToken');
 			if (!authToken) {
-				router.push("/unauthorizedAccess");
+				// router.push("/unauthorizedAccess");
 			}
 		};
 
@@ -1511,7 +1511,7 @@ export default function Homepage() {
 										</span>
 									</p>
 									<input
-										className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
+										className="w-full py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left"
 										type="text"
 										placeholder="What is your event called?"
 										id="event_name"
