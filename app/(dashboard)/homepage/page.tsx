@@ -2008,16 +2008,16 @@ export default function Homepage() {
 													{subEvent.sub_eventsVenue}
 												</p>
 											</div>
-											<div className="flex items-center mt-[8px] lg:mt-[14px]">
-												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0 dark:text-dark_text">
-													Attendees
-												</p>
-											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
 												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
 												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsMaxSeats} Seats
+												</p>
+											</div>
+											<div className="flex items-center mt-[8px] lg:mt-[14px]">
+												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0 dark:text-dark_text">
+													Attendees
 												</p>
 											</div>
 										</div>
@@ -2862,7 +2862,7 @@ export default function Homepage() {
 					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4 lg:dark:bg-dark_mode_bg">
 
 						{/* PC View */}
-						<div className="hidden md:grid grid-auto-fit-lg gap-4 ml-1">
+						<div className="hidden md:grid grid-auto-fit-lg gap-4 ml-1 ">
 
 							{latestEvent[0] && (
 								<div

@@ -210,7 +210,7 @@ export default function Login() {
 
 							{/* Email Input*/}
 							<input
-								className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300"
+								className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 								type="email"
 								placeholder="Email address"
 								name="email"
@@ -218,14 +218,14 @@ export default function Login() {
 								onChange={e => setEmail(e.target.value)}
 								required
 							/>
-							<p className="text-red-500 text-left ml-3 text-[0.65rem] lg:text-xs -mt-4">
+							<p className="text-red-500 text-left ml-3 text-[0.65rem] lg:text-xs -mt-4 dark:text-red-600">
 								{errorMessageLogin}
 							</p>
 
 							{/* Password Input*/}
 							<div className="relative">
 								<input
-									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300"
+									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 									type={showPassword ? "password" : "text"}
 									placeholder="Password"
 									id="password"
@@ -271,7 +271,7 @@ export default function Login() {
 									strokeLinejoin="round">
 									{/* Submit SVG Path */}
 								</svg>
-								<span className="mr-4 text-base lg:text-lg dark:-mt-[3px]">Login</span>
+								<span className="mr-4 text-base lg:text-lg text-slate-200 dark:-mt-[3px]">Login</span>
 							</button>
 						</form>
 					</div>
