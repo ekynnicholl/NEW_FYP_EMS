@@ -17,6 +17,8 @@ import ReportIcon from "@/components/icons/ReportIcon";
 import EventsIcon from "@/components/icons/EventsIcon";
 import ChatIcon from "@/components/icons/ChatIcon";
 import BsFillChatLeftTextFill from "react-icons/bs"
+import FaHome from "react-icons/fa6"
+
 // IMPORT THIS TO USE THE DARK/ LIGHT MODE STATE,
 import darkLightStorage from '@/components/zustand/darkLightStorage';
 
@@ -109,7 +111,7 @@ const NavigationBarDesktop = () => {
 			style={{ transition: "width 300ms cubic-bezier(0.2, 0, 0, 1)" }}
 		>
 			<div className="flex flex-col">
-				<div className="flex justify-between relative w-">
+				<div className="flex justify-between relative">
 					{/* {(closeNav) && (
                         <div className="items-center h-10 absolute right-0 left-0 transform -rotate-90 text-lg font-bold text-text whitespace-nowrap w-10">
                             Event Management System
@@ -155,7 +157,7 @@ const NavigationBarDesktop = () => {
 			</div>
 
 			{/* Use loop to loop through the navigation links, */}
-			<div className="flex flex-col items-start mt-8">
+			<div className="flex flex-col items-start mt-8 ">
 				{NavLinks.map(({ icon: Icon, ...nav }) => {
 					const NavLinkResults = displayNavItems(nav);
 					return (
