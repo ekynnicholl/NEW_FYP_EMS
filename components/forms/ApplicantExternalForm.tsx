@@ -55,7 +55,7 @@ export default function ExternalForm() {
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
-	const [externalForm, setExternalForm] = useState<any>()
+	const [externalForm, setExternalForm] = useState<any>();
 
 	// const [externalForm, setExternalForm] = useState<z.infer<typeof externalFormSchema>>({
 	// 	formStage: 2,
@@ -123,14 +123,14 @@ export default function ExternalForm() {
 		// defaultValues: externalForm,
 		defaultValues: {
 			formStage: 2,
-			name: "",
+			full_name: "",
 			email: "",
 			staff_id: "",
 			course: "",
 			faculty: "",
 			transport: "",
-			traveling: "",
-			other_member: "",
+			travelling: "",
+			other_members: "",
 
 			program_title: "",
 			program_description: "",
@@ -138,7 +138,7 @@ export default function ExternalForm() {
 			completion_date: undefined,
 			organiser: "",
 			venue: "",
-			HRDF_claimable: "",
+			hrdf_claimable: "",
 
 			flight_date: undefined,
 			flight_time: "",
@@ -147,7 +147,7 @@ export default function ExternalForm() {
 			destination_to: "",
 			check_in_date: undefined,
 			check_out_date: undefined,
-			hotel: "",
+			hotel_name: "",
 
 			course_fee: 0,
 			airfare_fee: 0,
@@ -155,22 +155,22 @@ export default function ExternalForm() {
 			per_diem_fee: 0,
 			transportation_fee: 0,
 			travel_insurance_fee: 0,
-			other_fee: 0,
-			total_fee: 0,
+			other_fees: 0,
+			grand_total_fees: 0,
 			staff_development_fund: "",
 			consolidated_pool_fund: "",
 			research_fund: "",
 			travel_fund: "",
 			student_council_fund: "",
-			other_fund: "",
-			has_expenditure_cap: "No",
+			other_funds: "",
+			expenditure_cap: "No",
 			expenditure_cap_amount: undefined,
 
 			supporting_documents: null,
 
-			applicant_signature: "",
-			applicant_name: "",
-			applicant_position_title: "",
+			applicant_declaration_signature: "",
+			applicant_declaration_name: "",
+			applicant_declaration_position_title: "",
 			applicant_declaration_date: undefined,
 		},
 	});
@@ -186,17 +186,17 @@ export default function ExternalForm() {
 		console.log("Form sent");
 		setExternalForm(values);
 
-		const { error } = await supabase.from("external_form").insert([
+		const { error } = await supabase.from("external_forms").insert([
 			{
 				...values,
-				formStage: 2
+				formStage: 2,
 			},
 		]);
 
 		setExternalForm({
 			...externalForm,
-			formStage: 2
-		})
+			formStage: 2,
+		});
 
 		if (error) {
 			console.log(error);
@@ -253,7 +253,7 @@ export default function ExternalForm() {
 							<div className="grid grid-auto-fit-lg gap-8">
 								<FormField
 									control={form.control}
-									name="name"
+									name="full_name"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
@@ -337,7 +337,7 @@ export default function ExternalForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="traveling"
+									name="travelling"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Traveling in</FormLabel>
@@ -365,7 +365,7 @@ export default function ExternalForm() {
 							</div>
 							<FormField
 								control={form.control}
-								name="other_member"
+								name="other_members"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>
@@ -375,7 +375,7 @@ export default function ExternalForm() {
 										<FormControl>
 											<Input
 												disabled={
-													form.getValues("traveling") !==
+													form.getValues("travelling") !==
 													"group"
 												}
 												placeholder=""
@@ -434,7 +434,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -478,7 +478,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -536,7 +536,7 @@ export default function ExternalForm() {
 							/>
 							<FormField
 								control={form.control}
-								name="HRDF_claimable"
+								name="hrdf_claimable"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>HDRF Claimable</FormLabel>
@@ -586,7 +586,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -623,7 +623,7 @@ export default function ExternalForm() {
 										<FormItem>
 											<FormLabel>Flight Time</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input type="time" {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -698,7 +698,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -742,7 +742,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -776,7 +776,7 @@ export default function ExternalForm() {
 
 							<FormField
 								control={form.control}
-								name="hotel"
+								name="hotel_name"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>Hotel</FormLabel>
@@ -803,6 +803,7 @@ export default function ExternalForm() {
 										<FormLabel>Course Fee</FormLabel>
 										<FormControl>
 											<Input
+												type="number"
 												{...field}
 												onChange={e => {
 													field.onChange(
@@ -823,6 +824,7 @@ export default function ExternalForm() {
 										<FormLabel>Airfare Fee</FormLabel>
 										<FormControl>
 											<Input
+												type="number"
 												{...field}
 												onChange={e => {
 													field.onChange(
@@ -843,6 +845,7 @@ export default function ExternalForm() {
 										<FormLabel>Accommodation Fee</FormLabel>
 										<FormControl>
 											<Input
+												type="number"
 												{...field}
 												onChange={e => {
 													field.onChange(
@@ -863,6 +866,7 @@ export default function ExternalForm() {
 										<FormLabel>Per Diem Fee</FormLabel>
 										<FormControl>
 											<Input
+												type="number"
 												{...field}
 												onChange={e => {
 													field.onChange(
@@ -883,6 +887,7 @@ export default function ExternalForm() {
 										<FormLabel>Transportation Fee</FormLabel>
 										<FormControl>
 											<Input
+												type="number"
 												{...field}
 												onChange={e => {
 													field.onChange(
@@ -903,6 +908,7 @@ export default function ExternalForm() {
 										<FormLabel>Travel Insurance Fee</FormLabel>
 										<FormControl>
 											<Input
+												type="number"
 												{...field}
 												onChange={e => {
 													field.onChange(
@@ -916,7 +922,7 @@ export default function ExternalForm() {
 								)}
 							/>
 							<FormField
-								name="other_fee"
+								name="other_fees"
 								control={form.control}
 								render={({ field }) => (
 									<FormItem>
@@ -936,7 +942,7 @@ export default function ExternalForm() {
 								)}
 							/>
 							<FormField
-								name="total_fee"
+								name="grand_total_fees"
 								control={form.control}
 								render={({ field }) => (
 									<FormItem>
@@ -953,7 +959,7 @@ export default function ExternalForm() {
 													form.getValues(
 														"travel_insurance_fee",
 													) +
-													form.getValues("other_fee")
+													form.getValues("other_fees")
 												}
 											/>
 										</FormControl>
@@ -1038,7 +1044,7 @@ export default function ExternalForm() {
 									)}
 								/>
 								<FormField
-									name="other_fund"
+									name="other_funds"
 									control={form.control}
 									render={({ field }) => (
 										<FormItem>
@@ -1056,7 +1062,7 @@ export default function ExternalForm() {
 						<div className="mt-8 space-y-4">
 							<FormField
 								control={form.control}
-								name="has_expenditure_cap"
+								name="expenditure_cap"
 								render={({ field }) => (
 									<FormItem className="space-y-3">
 										<FormLabel>
@@ -1065,7 +1071,6 @@ export default function ExternalForm() {
 										</FormLabel>
 										<FormControl>
 											<RadioGroup
-												disabled
 												onValueChange={field.onChange}
 												defaultValue={field.value}
 												className="flex space-x-1">
@@ -1101,7 +1106,7 @@ export default function ExternalForm() {
 											<Input
 												disabled={
 													form.getValues(
-														"has_expenditure_cap",
+														"expenditure_cap",
 													) !== "Yes"
 												}
 												type="number"
@@ -1185,7 +1190,7 @@ export default function ExternalForm() {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-															1,
+																1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1221,7 +1226,7 @@ export default function ExternalForm() {
 							<div className="grid grid-auto-fit-lg gap-8">
 								<FormField
 									control={form.control}
-									name="applicant_name"
+									name="applicant_declaration_name"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Name</FormLabel>
@@ -1234,7 +1239,7 @@ export default function ExternalForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="applicant_position_title"
+									name="applicant_declaration_position_title"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Position title</FormLabel>
@@ -1261,7 +1266,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1293,7 +1298,7 @@ export default function ExternalForm() {
 							/>
 							<FormField
 								control={form.control}
-								name="applicant_signature"
+								name="applicant_declaration_signature"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>Signature</FormLabel>
@@ -1353,7 +1358,7 @@ export default function ExternalForm() {
 																		);
 																console.log(
 																	"Field Value: " +
-																	field.value,
+																		field.value,
 																);
 															}}>
 															Save
