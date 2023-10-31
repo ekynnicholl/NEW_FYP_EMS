@@ -233,7 +233,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						// deanEmail: formDetails.deanEmail
 						staff_email: values.staff_email,
 						hosEmail: values.verification_email,
-						deanEmail: values.approval_email
+						deanEmail: values.approval_email,
 					},
 				])
 				.eq("id", externalForm.id);
@@ -296,7 +296,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						securityKey: null,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						staff_email: values.staff_email,
-						
+
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
 						verification_position_title: values.verification_position_title,
@@ -2037,110 +2037,18 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 							{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
 							{externalForm.formStage == 2 ? (
 								<div>
-									<Button className="mr-5" onClick={form.handleSubmit(handleRevert)}>
+									<Button
+										className="mr-5"
+										onClick={form.handleSubmit(handleRevert)}>
 										Revert
 									</Button>
-									<Dialog open={open} onOpenChange={setOpen}>
-										<DialogTrigger>
-											<Button type="button">
-												Submit for Review
-											</Button>
-										</DialogTrigger>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>
-													Please ensure your information is
-													correct
-												</DialogTitle>
-												<DialogDescription>
-													Entering wrong email will result in
-													the form being sent to the wrong
-													person.
-												</DialogDescription>
-											</DialogHeader>
-											<div className="flex justify-between">
-												<div>Staff Email: </div>
-												<div>{form.getValues("staff_email")}</div>
-											</div>
-											<div className="flex justify-between">
-												<div>Verification Email: </div>
-												<div>
-													{form.getValues("verification_email")}
-												</div>
-											</div>
-											<div className="flex justify-between">
-												<div>Approval Email: </div>
-												<div>
-													{form.getValues("approval_email")}
-												</div>
-											</div>
-											<DialogFooter>
-												<DialogClose>
-													<Button variant="outline">Cancel</Button>
-												</DialogClose>
-												<Button
-													onMouseUp={() => {
-														setOpen(false);
-													}}
-													onClick={form.handleSubmit(onSubmit)}>
-													Submit
-												</Button>
-											</DialogFooter>
-										</DialogContent>
-									</Dialog>
+									<Button type="submit">Submit for Review</Button>
 								</div>
 							) : externalForm.formStage == 3 ||
 							  externalForm.formStage == 4 ? (
 								<div>
 									<Button type="submit">Reject</Button>
-									<Dialog open={open} onOpenChange={setOpen}>
-										<DialogTrigger>
-											<Button type="button">
-												Submit for Review
-											</Button>
-										</DialogTrigger>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>
-													Please ensure your information is
-													correct
-												</DialogTitle>
-												<DialogDescription>
-													Entering wrong email will result in
-													the form being sent to the wrong
-													person.
-												</DialogDescription>
-											</DialogHeader>
-											<div className="flex justify-between">
-												<div>Staff Email: </div>
-												<div>{form.getValues("staff_email")}</div>
-											</div>
-											<div className="flex justify-between">
-												<div>Verification Email: </div>
-												<div>
-													{form.getValues("verification_email")}
-												</div>
-											</div>
-											<div className="flex justify-between">
-												<div>Approval Email: </div>
-												<div>
-													{form.getValues("approval_email")}
-												</div>
-											</div>
-											<DialogFooter>
-												<DialogClose>
-													<Button variant="outline">Cancel</Button>
-												</DialogClose>
-												<Button
-													onMouseUp={() => {
-														setOpen(false);
-													}}
-													onClick={form.handleSubmit(onSubmit)}>
-													Submit
-												</Button>
-											</DialogFooter>
-										</DialogContent>
-									</Dialog>
+									<Button type="button">Submit for Review</Button>
 								</div>
 							) : externalForm.formStage == 4 ? (
 								<div>

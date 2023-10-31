@@ -51,8 +51,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function ExternalForm() {
 	const supabase = createClientComponentClient();
-	const [fileChanged, setFileChanged] = useState(false);
 
+	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
 
 	const sigCanvas = useRef({});
@@ -136,12 +136,24 @@ export default function ExternalForm() {
 	return (
 		<div className="grid grid-cols-[240px_auto] gap-8 items-start">
 			<div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
-				<a className="block" href="#Persona Details">Persona Details</a>
-				<a className="block" href="#Travel Details">Travel Details</a>
-				<a className="block" href="#Logistic Arrangement">Logistic Arrangement</a>
-				<a className="block" href="#Funding">Funding</a>
-				<a className="block" href="#Supporting Documents">Supporting Documents</a>
-				<a className="block" href="#Applicant Declaration">Applicant Declaration</a>
+				<a className="block" href="#Persona Details">
+					Persona Details
+				</a>
+				<a className="block" href="#Travel Details">
+					Travel Details
+				</a>
+				<a className="block" href="#Logistic Arrangement">
+					Logistic Arrangement
+				</a>
+				<a className="block" href="#Funding">
+					Funding
+				</a>
+				<a className="block" href="#Supporting Documents">
+					Supporting Documents
+				</a>
+				<a className="block" href="#Applicant Declaration">
+					Applicant Declaration
+				</a>
 			</div>
 			<Form {...form}>
 				<form
@@ -867,7 +879,9 @@ export default function ExternalForm() {
 													form.getValues("accommodation_fee") +
 													form.getValues("per_diem_fee") +
 													form.getValues("transportation_fee") +
-													form.getValues("travel_insurance_fee") +
+													form.getValues(
+														"travel_insurance_fee",
+													) +
 													form.getValues("other_fee")
 												}
 											/>
@@ -1279,7 +1293,33 @@ export default function ExternalForm() {
 						</div>
 					</section>
 
-					<Button type="submit">Submit</Button>
+					<Dialog open={open} onOpenChange={setOpen}>
+						<DialogTrigger>
+							<Button type="button">Submit for Review</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>
+									Please ensure your information is correct.
+								</DialogTitle>
+								<DialogDescription>
+									Incorrect information may result in your application.
+								</DialogDescription>
+							</DialogHeader>
+							<DialogFooter>
+								<DialogClose>
+									<Button variant="outline">Cancel</Button>
+								</DialogClose>
+								<Button
+									onMouseUp={() => {
+										setOpen(false);
+									}}
+									onClick={form.handleSubmit(onSubmit)}>
+									Submit
+								</Button>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
 				</form>
 			</Form>
 		</div>
