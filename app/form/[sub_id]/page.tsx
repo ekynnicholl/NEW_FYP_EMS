@@ -25,7 +25,6 @@ export default function AttendanceForm() {
 	const [authToken, setAuthToken] = useState<any>("")
 
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
-	const [showModalFailure, setShowModalFailure] = useState(false);
 
 	// const [attendance_id, setAttendanceID] = useState("");
 
@@ -49,31 +48,8 @@ export default function AttendanceForm() {
 				return;
 			}
 
-			// const eventEndTime = new Date(attendanceListData[0].sub_eventsEndTime);
-			// const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
-			// const currentTime = new Date();
 
-			// // Check if the event end date has passed
-			// if (currentTime > eventEndDate) {
-			// 	// Event has already ended, redirect or display a message
-			// 	router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
-			// 	return;
-			// }
-
-			// // Check if the event end date is today and the event end time has passed
-			// if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
-			// 	// Event has already ended today, redirect or display a message
-			// 	router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
-			// 	return;
-			// }
-
-			// // Check if the event start time has already passed
-			// if (currentTime > eventEndTime) {
-			// 	// Event has already started, redirect or display a message
-			// 	router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
-			// 	return;
-			// }
-
+			// Get the end date of the event,
 			const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
 			const currentDate = new Date(eventEndDate.toDateString());
 
@@ -99,11 +75,24 @@ export default function AttendanceForm() {
 
 			const currentTime = new Date();
 
+			console.log("end time " + eventEndTime)
+			console.log("start time " + eventStartTime)
+			console.log("current time " + currentTime)
+
 			// Check if the current time is AFTER the event start date and time,
 			if (currentTime > eventEndTime) {
-				router.push('/notFound?from=end_att');
+				router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
+				console.log("triggered c1")
 				return;
 			}
+
+			// Check if the event end date is today and the event end time has passed
+			// if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
+			// 	// Event has already ended today, redirect or display a message
+			// 	// router.push('/notFound?from=end_att'); // Redirect to a page indicating that the event has passed
+			// 	console.log("triggered c2")
+			// 	return;
+			// }
 
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < eventStartTime) {
@@ -134,7 +123,6 @@ export default function AttendanceForm() {
 				}
 			}
 		};
-
 		fetchEventData();
 	}, [sub_id, supabase, router]);
 
@@ -146,41 +134,29 @@ export default function AttendanceForm() {
 			return;
 		}
 
-		let attFormsStaffID = info.attFormsStaffID.trim().toUpperCase();
-		attFormsStaffID = attFormsStaffID.replace(/\s/g, '');
+		let attFormsStaffID = info.attFormsStaffID;
 
 		if (!attFormsStaffID.startsWith("SS")) {
 			attFormsStaffID = "SS" + attFormsStaffID;
 		}
 
-		const { data: existingForms, error: existingFormsError } = await supabase
+		const { data, error } = await supabase
 			.from("attendance_forms")
-			.select()
-			.eq("attFSubEventID", sub_id)
-			.eq("attFormsStaffID", attFormsStaffID);
+			.upsert([
+				{
+					attFSubEventID: sub_id,
+					attFormsStaffName: info.attFormsStaffName,
+					attFormsStaffID: attFormsStaffID,
+					attFormsFacultyUnit: info.attFormsFacultyUnit,
+				},
+			]);
 
-		if (existingForms && existingForms.length > 0) {
-			setShowModalFailure(true);
-			return;
+		if (error) {
+			console.error("Error inserting data:", error);
 		} else {
-			const { data, error } = await supabase
-				.from("attendance_forms")
-				.upsert([
-					{
-						attFSubEventID: sub_id,
-						attFormsStaffName: info.attFormsStaffName,
-						attFormsStaffID: attFormsStaffID,
-						attFormsFacultyUnit: info.attFormsFacultyUnit,
-					},
-				]);
-
-			if (error) {
-				console.error("Error inserting data:", error);
-			} else {
-				console.log("Data inserted successfully:", data);
-				setInfo({} as Info);
-				setShowModalSuccess(true);
-			}
+			console.log("Data inserted successfully:", data);
+			setInfo({} as Info);
+			setShowModalSuccess(true);
 		}
 
 		setInfo({} as Info);
@@ -189,7 +165,6 @@ export default function AttendanceForm() {
 
 	const handleOK = () => {
 		setShowModalSuccess(false);
-		setShowModalFailure(false);
 		window.location.reload();
 	};
 
@@ -286,14 +261,13 @@ export default function AttendanceForm() {
 						<select
 							name="facultyUnit"
 							id="facultyUnit"
-							defaultValue=""
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
 							required
 							onChange={event =>
 								setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 							}
 						>
-							<option value="" disabled>Select Faculty/Unit</option>
+							<option value="" disabled selected>Select Faculty/Unit</option>
 							<option value="Academic Office">Academic Office</option>
 							<option value="Audit and Risk">Audit and Risk</option>
 							<option value="Building Facilities">Building Facilities</option>
@@ -336,7 +310,7 @@ export default function AttendanceForm() {
 							className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
 							onClick={() => {
 								if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
-									handleSubmit
+									setShowModalSuccess(true);
 								}
 							}}
 							disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
@@ -361,33 +335,6 @@ export default function AttendanceForm() {
 						</h3>
 						<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
 							Your attendance has been successfully recorded!
-						</p>
-						<div className="text-center ml-4">
-							<button
-								className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
-								onClick={handleOK}>
-								OK
-							</button>
-						</div>
-					</div>
-				</Modal>
-
-				<Modal
-					isVisible={showModalFailure}
-					onClose={() => setShowModalFailure(false)}>
-					<div className="p-4">
-						<Image
-							src="/images/cross_mark.png"
-							alt="cross_mark"
-							width={200}
-							height={250}
-							className="mx-auto -mt-[39px] lg:-mt-[45px]"
-						/>
-						<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
-							Failed.
-						</h3>
-						<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-							An attendance form already exists associated with your staff ID. Please contact the organizer if you think this was a mistake.
 						</p>
 						<div className="text-center ml-4">
 							<button

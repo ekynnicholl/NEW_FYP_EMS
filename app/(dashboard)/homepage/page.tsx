@@ -1486,7 +1486,7 @@ export default function Homepage() {
 					{/* PC View */}
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden md:inline">
 						<button
-							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-[#18212F]"
+							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800 dark:focus:shadow-outline-dark"
 							onClick={() => setShowModalCreateEvent(true)}>
 							<IoIosAddCircleOutline className="text-3xl text-slate-100 -ml-1 mr-1" />
 							<span className="text-slate-100 ml-[2px]">Add Events</span>
@@ -1801,7 +1801,7 @@ export default function Homepage() {
 
 					<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
 						<div className="ml-2 p-5 z-[999]">
-							<h3 className="lg:text-2xl font-medium text-gray-600 mb-2 text-center">
+							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-300">
 								Attendance
 							</h3>
 							<QRCodeSVG
@@ -1813,7 +1813,7 @@ export default function Homepage() {
 										`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`
 									)
 								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px]"
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px] dark:bg-[#242729] dark:text-[#C1C7C1]"
 							>
 								Copy Link
 							</button>
@@ -1822,7 +1822,7 @@ export default function Homepage() {
 
 					<Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
 						<div className="ml-2 p-5 z-[999]">
-							<h3 className="lg:text-2xl font-medium text-gray-600 mb-2 text-center">
+							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-300">
 								Feedback
 							</h3>
 							<QRCodeSVG
@@ -1834,7 +1834,7 @@ export default function Homepage() {
 										`https://new-fyp-ems.vercel.app/form/feedback/${selectedSubEventID}`
 									)
 								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px]"
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg p-2 px-[26px] dark:bg-[#242729] dark:text-[#C1C7C1]"
 							>
 								Copy Link
 							</button>
@@ -1844,7 +1844,7 @@ export default function Homepage() {
 					<ViewEvent_Modal
 						isVisible={showModalViewEvent}
 						onClose={() => setShowModalViewEvent(false)}>
-						<div className="py-[30px] lg:py-[100px] relative z-[50]">
+						<div className="py-[30px] lg:py-[100px] relative z-[50] dark:bg-dark_mode_card">
 							<img
 								src={selectedEventImage}
 								alt="Random"
@@ -1852,10 +1852,10 @@ export default function Homepage() {
 							/>
 
 							<div className="ml-[6px] lg:ml-[9px]">
-								<h3 className="text-[15px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px]">
+								<h3 className="text-[15px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px] dark:text-dark_text">
 									About This Event
 								</h3>
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px]">
+								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
 									{selectedEvent.intFEventDescription}
 								</p>
 
@@ -1907,77 +1907,77 @@ export default function Homepage() {
 											)}
 
 											<div className="flex items-center gap-[0px] lg:gap-[6px]">
-												<p className="text-[13px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px]">‣ Session {index + 1}</p>
+												<p className="text-[13px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px] dark:text-dark_text2">‣ Session {index + 1}</p>
 
 												<button
 													type="button"
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
 													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
 												>
-													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px] text-[15px] lg:text-[18px]" />
+													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px] text-[15px] lg:text-[18px] dark:text-dark_text2" />
 												</button>
 												<button
 													type="button"
 													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
 													className="text-sm lg:text-base ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[12.5px]"
 												>
-													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px] text-[13px] lg:text-base" />
+													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px] text-[13px] lg:text-base dark:text-dark_text2" />
 												</button>
 												<button
 													type="button"
 													onClick={(e) => handleEditSubEventButton(e, subEvent.sub_eventsID)}
 													className="text-base lg:text-lg ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[12.6px]"
 												>
-													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base" />
+													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
 												</button>
 											</div>
 											<div className="flex -mt-[6px] lg:-mt-3 mb-2 lg:mb-4">
 												<button
 													type="button"
-													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3"
+													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 dark:bg-[#242729]"
 													onClick={() => {
 														setSelectedSubEventID(subEvent.sub_eventsID);
 														setShowQRCodesAttendance(true);
 													}}
 												>
-													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
+													<span className="ml-2 mt-[1px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1 text-[11px] lg:text-[13px]">
+														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1] -mt-[2px]">
 															Attendance
 														</span>
 													</span>
 												</button>
 												<button
 													type="button"
-													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px]"
+													className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
 													onClick={() => {
 														setSelectedSubEventID(subEvent.sub_eventsID);
 														setShowQRCodesFeedback(true);
 													}}
 												>
-													<span className="ml-2 mt-[1.3px] text-slate-800 flex items-center mr-2">
+													<span className="ml-2 text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1 text-[11px] lg:text-[13px]">
+														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1] -mt-[1.5px]">
 															Feedback
 														</span>
 													</span>
 												</button>
 											</div>
 
-											<div className="hidden lg:flex items-center mt-1">
-												<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px]">
+											<div className="hidden lg:flex items-center mt-1 ">
+												<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px] dark:text-dark_text">
 													{formatDate(subEvent.sub_eventsStartDate)}
 												</p>
-												<span className="mx-2 text-slate-800 ml-[15px] lg:ml-[57px] mr-6">
+												<span className="mx-2 text-slate-800 ml-[15px] lg:ml-[57px] mr-6 dark:text-dark_text">
 													|
 												</span>
-												<FiClock className="text-[30px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px]">
+												<FiClock className="text-[30px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[12px] lg:text-[13px] dark:text-dark_text">
 													{formatTime(subEvent.sub_eventsStartTime)}
 												</p>
 												<span className="mx-2 text-slate-800 -mt-[2px]">-</span>
-												<p className="text-slate-600 text-[12px] lg:text-[13px]">
+												<p className="text-slate-600 text-[12px] lg:text-[13px] dark:text-dark_text">
 													{formatTime(subEvent.sub_eventsEndTime)}
 												</p>
 											</div>
@@ -2003,20 +2003,20 @@ export default function Homepage() {
 											</div>
 
 											<div className="flex items-center mt-[10px] lg:mt-[14px]">
-												<FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px]">
+												<FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsVenue}
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[14px]">
-												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px]" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0">
+												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0 dark:text-dark_text">
 													Attendees
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
-												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px]" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px]">
+												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsMaxSeats} Seats
 												</p>
 											</div>
@@ -2024,10 +2024,10 @@ export default function Homepage() {
 
 									))}
 
-								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white">
+								<div className="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-dark_mode_card">
 									<div className="flex justify-center">
 										<button
-											className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium"
+											className="rounded-lg px-[7px] py-[5px] lg:px-[10px] lg:py-[5px] border border-slate-800 hover:bg-slate-100 mr-4 text-[12px] lg:text-[15px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 font-medium dark:text-slate-200 dark:border-[#7D7467]"
 											onClick={() =>
 												setShowModalConfirmation(true)
 											}>

@@ -105,7 +105,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             </div>
 
             {/* Pagination */}
-            <div className="pagination flex justify-end items-end mt-5 pb-5">
+            <div className="pagination flex justify-end items-end mt-5">
                 <button
                     className="opacity-70 ml-2"
                     onClick={() => handlePageChange(1)}
