@@ -2887,7 +2887,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?party",
+												"https://source.unsplash.com/600x300?social",
 												latestEvent[0]?.intFID,
 												latestEvent[0]?.intFEventName,
 												latestEvent[0]?.intFEventDescription,
@@ -2906,7 +2906,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?party",
+												"https://source.unsplash.com/600x300?social",
 												latestEvent[0]?.intFID,
 												latestEvent[0]?.intFEventName,
 												latestEvent[0]?.intFEventDescription,
@@ -2928,7 +2928,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?party"
+												src="https://source.unsplash.com/600x300?social"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3427,7 +3427,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												"https://source.unsplash.com/600x300?events",
 												latestEvent[3]?.intFID,
 												latestEvent[3]?.intFEventName,
 												latestEvent[3]?.intFEventDescription,
@@ -3446,7 +3446,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												"https://source.unsplash.com/600x300?events",
 												latestEvent[3]?.intFID,
 												latestEvent[3]?.intFEventName,
 												latestEvent[3]?.intFEventDescription,
@@ -3468,7 +3468,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?new+year"
+												src="https://source.unsplash.com/600x300?events"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3607,7 +3607,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												"https://source.unsplash.com/600x300?balloon",
 												latestEvent[4]?.intFID,
 												latestEvent[4]?.intFEventName,
 												latestEvent[4]?.intFEventDescription,
@@ -3626,7 +3626,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												"https://source.unsplash.com/600x300?balloon",
 												latestEvent[4]?.intFID,
 												latestEvent[4]?.intFEventName,
 												latestEvent[4]?.intFEventDescription,
@@ -3648,7 +3648,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?new+year"
+												src="https://source.unsplash.com/600x300?balloon"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3787,7 +3787,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												"https://source.unsplash.com/600x300?beers",
 												latestEvent[5]?.intFID,
 												latestEvent[5]?.intFEventName,
 												latestEvent[5]?.intFEventDescription,
@@ -3806,7 +3806,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												"https://source.unsplash.com/600x300?beers",
 												latestEvent[5]?.intFID,
 												latestEvent[5]?.intFEventName,
 												latestEvent[5]?.intFEventDescription,
@@ -3828,7 +3828,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?new+year"
+												src="https://source.unsplash.com/600x300?beers"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3971,7 +3971,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?party",
+												"https://source.unsplash.com/600x300?social",
 												latestEvent[0]?.intFID,
 												latestEvent[0]?.intFEventName,
 												latestEvent[0]?.intFEventDescription,
@@ -3990,7 +3990,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?party",
+												"https://source.unsplash.com/600x300?social",
 												latestEvent[0]?.intFID,
 												latestEvent[0]?.intFEventName,
 												latestEvent[0]?.intFEventDescription,
@@ -4013,7 +4013,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?party"
+												src="https://source.unsplash.com/600x300?social"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -4120,7 +4120,7 @@ export default function Homepage() {
 
 							{latestEvent[1] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID);
 
@@ -4167,7 +4167,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[6px] relative">
+									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?birthday"
@@ -4178,16 +4178,17 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[1] && (
-										<div className="mt-4">
+										<div className="mt-5">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
 													{latestEvent[1].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -4209,12 +4210,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[1].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[8px] -ml-1">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 													{formatDate(latestEvent[1].intFEventStartDate)}
 												</p>
 											</div>
@@ -4226,8 +4227,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4240,8 +4241,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4254,16 +4255,17 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className="h-full bg-orange-300 rounded-full"
+																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																		}`}
 																	style={{
-																		width: `${(20 / 60) * 100}%`,
+																		width: `${Math.min(percentage, 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
@@ -4275,7 +4277,7 @@ export default function Homepage() {
 
 							{latestEvent[2] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID);
 
@@ -4322,7 +4324,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[6px] relative">
+									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?new+year"
@@ -4333,16 +4335,17 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[2] && (
-										<div className="mt-4">
+										<div className="mt-5">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
 													{latestEvent[2].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -4364,12 +4367,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[2].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 -mt-[1px]" />
-												<p className="text-slate-600 text-[8px] -ml-1">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 													{formatDate(latestEvent[2].intFEventStartDate)}
 												</p>
 											</div>
@@ -4381,8 +4384,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4395,8 +4398,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4409,16 +4412,17 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className="h-full bg-orange-300 rounded-full"
+																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																		}`}
 																	style={{
-																		width: `${(20 / 60) * 100}%`,
+																		width: `${Math.min(percentage, 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
@@ -4430,7 +4434,7 @@ export default function Homepage() {
 
 							{latestEvent[3] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID);
 
@@ -4477,7 +4481,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[6px] relative">
+									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?events"
@@ -4488,16 +4492,17 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[3] && (
-										<div className="mt-4">
+										<div className="mt-5">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
 													{latestEvent[3].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -4519,12 +4524,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[3].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[8px] -ml-1">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 													{formatDate(latestEvent[3].intFEventStartDate)}
 												</p>
 											</div>
@@ -4536,8 +4541,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4550,8 +4555,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4564,16 +4569,17 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className="h-full bg-orange-300 rounded-full"
+																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																		}`}
 																	style={{
-																		width: `${(20 / 60) * 100}%`,
+																		width: `${Math.min(percentage, 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
@@ -4585,7 +4591,7 @@ export default function Homepage() {
 
 							{latestEvent[4] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID);
 
@@ -4632,7 +4638,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[6px] relative">
+									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?balloon"
@@ -4643,16 +4649,17 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[4] && (
-										<div className="mt-4">
+										<div className="mt-5">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
 													{latestEvent[4].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -4674,12 +4681,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[4].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[8px] -ml-1">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 													{formatDate(latestEvent[4].intFEventStartDate)}
 												</p>
 											</div>
@@ -4691,8 +4698,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4705,8 +4712,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4719,16 +4726,17 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className="h-full bg-orange-300 rounded-full"
+																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																		}`}
 																	style={{
-																		width: `${(20 / 60) * 100}%`,
+																		width: `${Math.min(percentage, 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
@@ -4740,7 +4748,7 @@ export default function Homepage() {
 
 							{latestEvent[5] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID);
 
@@ -4787,7 +4795,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[6px] relative">
+									<div className="w-full h-[300px] mb-[12px] relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?beers"
@@ -4798,16 +4806,17 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[5] && (
-										<div className="mt-4">
+										<div className="mt-5">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
 													{latestEvent[5].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -4829,12 +4838,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[5].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[8px] -ml-1">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 													{formatDate(latestEvent[5].intFEventStartDate)}
 												</p>
 											</div>
@@ -4846,8 +4855,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4860,8 +4869,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4874,16 +4883,17 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className="h-full bg-orange-300 rounded-full"
+																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																		}`}
 																	style={{
-																		width: `${(20 / 60) * 100}%`,
+																		width: `${Math.min(percentage, 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))

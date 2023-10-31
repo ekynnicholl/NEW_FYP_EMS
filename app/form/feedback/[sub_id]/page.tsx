@@ -198,7 +198,7 @@ export default function FeedbackForm() {
 				<div className="mb-4 bg-white rounded-md relative"
 					style={{ height: "200px" }}>
 					<img
-						src="https://source.unsplash.com/600x300?party"
+						src="https://source.unsplash.com/600x300?social"
 						alt="Random"
 						className="w-full h-full object-cover rounded-lg"
 						style={{ objectPosition: "center top" }}
