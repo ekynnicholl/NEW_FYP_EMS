@@ -213,7 +213,7 @@ export default function FeedbackForm() {
 						<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
 							{eventData && (
 								<div>
-									<p>Event Name: <span className="font-bold">{eventData.intFEventName}</span></p>
+									<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
 									<p>Date: <span className="font-bold">{eventData.sub_eventsStartDate} - {eventData.sub_eventsEndDate}</span></p>
 									<p>Time: <span className="font-bold">{eventData.sub_eventsStartTime} - {eventData.sub_eventsEndTime}</span></p>
 									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
@@ -776,7 +776,7 @@ export default function FeedbackForm() {
 							!formData.fbSectionEAdditional ||
 							!formData.fbFullName ||
 							!formData.fbEmailAddress
-							
+
 						}
 					>
 						Submit

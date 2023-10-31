@@ -562,48 +562,50 @@ export default function Homepage() {
 		}
 	}, [attendanceData]);
 
-	const handleSubEventClick = async (subEvent: subEvents) => {
-		try {
-			// Fetch attendance data for the selected sub-event
-			setSelectedSubEvent(subEvent.sub_eventsID);
-			const { data: attendanceForms, error: formsError } = await supabase
-				.from("attendance_forms")
-				.select()
-				.eq("attFSubEventID", subEvent.sub_eventsID);
+	// 1 is for attendance forms, 2 is for feedback forms,
+	const handleSubEventClick = async (subEvent: subEvents, type: number) => {
+		if (type == 1) {
+			try {
+				// Fetch attendance data for the selected sub-event
+				setSelectedSubEvent(subEvent.sub_eventsID);
+				const { data: attendanceForms, error: formsError } = await supabase
+					.from("attendance_forms")
+					.select()
+					.eq("attFSubEventID", subEvent.sub_eventsID);
 
-			if (formsError) {
-				console.error("Error fetching attendance forms:", formsError);
-				return;
+				if (formsError) {
+					console.error("Error fetching attendance forms:", formsError);
+					return;
+				}
+
+				// Set the attendance data for the selected sub-event
+				setAttendanceData(attendanceForms);
+
+			} catch (error) {
+				const typedError = error as Error;
+				console.error("Error:", typedError.message);
 			}
+		} else if (type == 2) {
+			try {
+				// Fetch attendance data for the selected sub-event
+				setSelectedSubEvent(subEvent.sub_eventsID);
+				const { data: feedbackForms, error: formsError } = await supabase
+					.from("feedback_forms")
+					.select()
+					.eq("fbSubEventID", subEvent.sub_eventsID);
 
-			// Set the attendance data for the selected sub-event
-			setAttendanceData(attendanceForms);
+				if (formsError) {
+					console.error("Error fetching feedback forms:", formsError);
+					return;
+				}
 
-			// // Calculate labels (faculty/unit) and label data (counts)
-			// const facultyCounts: { [key: string]: number } = {};
+				// Set the attendance data for the selected sub-event
+				setFeedbackData(feedbackForms);
 
-			// attendanceForms.forEach(attendanceItem => {
-			// 	const faculty = attendanceItem.attFormsFacultyUnit;
-			// 	if (facultyCounts[faculty]) {
-			// 		facultyCounts[faculty]++;
-			// 	} else {
-			// 		facultyCounts[faculty] = 1;
-			// 	}
-			// });
-
-			// const facultyLabels = Object.keys(facultyCounts);
-			// const facultyData = facultyLabels.map(label => facultyCounts[label]);
-
-			// const canvas = chartContainer.current;
-			// createPieChart(canvas, facultyLabels, facultyData);
-			// if (attendanceData.length === 0) {
-			// 	console.log("the data is empty");
-			// }
-
-			// console.log("Attendance forms data for selected sub-event:", attendanceForms);
-		} catch (error) {
-			const typedError = error as Error;
-			console.error("Error:", typedError.message);
+			} catch (error) {
+				const typedError = error as Error;
+				console.error("Error:", typedError.message);
+			}
 		}
 	};
 
@@ -1290,7 +1292,7 @@ export default function Homepage() {
 	const [feedbackMainEventID, setFeedbackMainEventID] = useState("");
 	const [subEventsForFeedback, setSubEventsForFeedback] = useState<subEvents[]>([]);
 
-	// This function fetches ALL the forms,
+	// This function fetches ALL the feedback forms,
 	const openFeedbackModal = async (event_id: string) => {
 		try {
 			// Fetch sub-events for the given event
@@ -2060,6 +2062,34 @@ export default function Homepage() {
 								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px]">
 									Total Feedback Received: {feedbackData.length}
 								</div>
+								<div className="flex flex-wrap">
+									<button
+										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+											}`}
+										onClick={() => {
+											setIsAllButtonActive(true);
+											fetchFeedbackList(feedbackMainEventID);
+										}}
+									>
+										All
+									</button>
+									{subEventsForFeedback.map((subEvent) => (
+										<div
+											key={subEvent.sub_eventsID}
+											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+												}`}
+										>
+											<button
+												onClick={() => {
+													setIsAllButtonActive(false);
+													handleSubEventClick(subEvent, 2);
+												}}
+											>
+												{subEvent.sub_eventsName}
+											</button>
+										</div>
+									))}
+								</div>
 								{/* This is to loop through the attendance data. */}
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
@@ -2129,7 +2159,7 @@ export default function Homepage() {
 											<button
 												onClick={() => {
 													setIsAllButtonActive(false);
-													handleSubEventClick(subEvent);
+													handleSubEventClick(subEvent, 1);
 												}}
 											>
 												{subEvent.sub_eventsName}
