@@ -269,8 +269,6 @@ export default function Homepage() {
 	const percentage = (currentAttendees / maxAttendees) * 100;
 	const isOverCapacity = percentage > 100;
 
-
-
 	// Function to fetch the 6 latest events
 	useEffect(() => {
 		const fetchLatestEvent = async () => {
@@ -2093,18 +2091,6 @@ export default function Homepage() {
 								{/* This is to loop through the attendance data. */}
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
-										{/* <label htmlFor="itemsPerPageSelect">Show entries:</label>
-										<select
-											id="itemsPerPageSelect"
-											name="itemsPerPage"
-											value={itemsPerPage}
-											onChange={handleItemsPerPageChange}
-											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
-										>
-											<option value="5">5</option>
-											<option value="10">10</option>
-											<option value="20">20</option>
-										</select> */}
 										<div className="h-[500px] overflow-y-auto">
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
@@ -2116,14 +2102,6 @@ export default function Homepage() {
 
 								)}
 							</div>
-							{/* {attendanceData && attendanceData.length > 0 ? (
-								<div className="w-1/2 flex flex-col items-center justify-center">
-									<div className="text-center font-bold">Number of Attendees Each Faculty/ Unit</div>
-									<div className="w-[500px] h-[500px] flex items-center justify-center mt-5">
-										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
-									</div>
-								</div>
-							) : null} */}
 						</div>
 					</ViewEventFeedback>
 
