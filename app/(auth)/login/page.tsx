@@ -151,9 +151,9 @@ export default function Login() {
 	};
 
 	return (
-		<div className="min-h-screen bg-slate-200 text-gray-900 flex justify-center">
-			<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1 lg:flex-row">
-				<div className="hidden lg:flex flex-1 bg-slate-100 text-center">
+		<div className="min-h-screen bg-slate-200 text-gray-900 flex justify-center dark:bg-[#242729]">
+			<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1 lg:flex-row dark:bg-[#1E2021]">
+				<div className="hidden lg:flex flex-1 bg-slate-100 text-center dark:bg-[#1E2021]">
 					<div
 						className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat h-full"
 						style={{
@@ -163,17 +163,17 @@ export default function Login() {
 						}}></div>
 				</div>
 
-				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-[80px] lg:-mt-4">
+				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-[80px] lg:-mt-4 dark:bg-dark_mode_card">
 					<Image src={swin_logo} alt="logo" width={260} height={280} className="mb-5 lg:w-[280px] mx-auto lg:hidden" />
-					<h1 className="text-2xl lg:text-3xl font-extrabold mb-6 lg:mb-8 text-center">
+					<h1 className="text-2xl lg:text-3xl font-extrabold mb-6 lg:mb-8 text-center text-slate-800 dark:text-[#D6D2CD]">
 						Sign In
 					</h1>
 
 					{/* Sign in With Google */}
 					<button
 						onClick={() => handleGoogleSignIn(info)}
-						className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-slate-200 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mx-auto">
-						<div className="bg-white py-2 px-[6px] lg:px-2 rounded-full">
+						className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-slate-200 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mx-auto dark:bg-[#242729]">
+						<div className="bg-white py-2 px-[6px] lg:px-2 rounded-full dark:bg-dark_mode_card">
 							<svg className="w-4" viewBox="0 0 533.5 544.3">
 								{/* Google SVG Paths */}
 								<path
@@ -194,13 +194,13 @@ export default function Login() {
 								/>
 							</svg>
 						</div>
-						<span className="ml-4 text-sm lg:text-base">
+						<span className="ml-4 text-sm lg:text-base text-slate-800 dark:text-[#C5C5C1] -mt-[2px]">
 							Sign In with Google
 						</span>
 					</button>
 
 					<div className="my-5 border-b border-gray-300 lg:mb-8 text-center">
-						<div className="leading-none px-2 inline-block text-xs lg:text-sm text-gray-500 tracking-wide font-medium bg-white transform translate-y-1/2">
+						<div className="leading-none px-2 inline-block text-xs lg:text-sm text-gray-500 tracking-wide font-medium bg-white transform translate-y-1/2 dark:text-slate-400 dark:bg-dark_mode_card">
 							Or login with e-mail
 						</div>
 					</div>
@@ -210,7 +210,7 @@ export default function Login() {
 
 							{/* Email Input*/}
 							<input
-								className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1"
+								className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300"
 								type="email"
 								placeholder="Email address"
 								name="email"
@@ -225,7 +225,7 @@ export default function Login() {
 							{/* Password Input*/}
 							<div className="relative">
 								<input
-									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6"
+									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300"
 									type={showPassword ? "password" : "text"}
 									placeholder="Password"
 									id="password"
@@ -240,9 +240,9 @@ export default function Login() {
 									id="password-toggle"
 									onClick={togglePasswordVisibility}>
 									{showPassword ? (
-										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px]" />
+										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
 									) : (
-										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px]" />
+										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
 									)}
 								</button>
 							</div>
@@ -252,7 +252,7 @@ export default function Login() {
 								<p className="text-right">
 									<a
 										href="/forgotPassword"
-										className="text-xs lg:text-sm text-slate-700 font-semibold">
+										className="text-xs lg:text-sm text-slate-700 font-semibold dark:text-dark_text2">
 										Forgot password
 									</a>
 								</p>
@@ -261,7 +261,7 @@ export default function Login() {
 							{/* Submit Button */}
 							<button
 								type="submit"
-								className="mt-6 lg:mt-8 tracking-wide font-semibold bg-slate-900 text-gray-100 w-full py-[15px] lg:py-4 rounded-lg hover:bg-slate-950 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900">
+								className="mt-6 lg:mt-8 tracking-wide font-semibold bg-slate-900 text-gray-100 w-full py-[15px] lg:py-4 rounded-lg hover:bg-slate-950 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:bg-slate-800">
 								<svg
 									className="w-6 h-6 -ml-2"
 									fill="none"
@@ -271,7 +271,7 @@ export default function Login() {
 									strokeLinejoin="round">
 									{/* Submit SVG Path */}
 								</svg>
-								<span className="mr-4 text-base lg:text-lg">Login</span>
+								<span className="mr-4 text-base lg:text-lg dark:-mt-[3px]">Login</span>
 							</button>
 						</form>
 					</div>

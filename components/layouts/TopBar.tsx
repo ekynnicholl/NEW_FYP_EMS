@@ -272,7 +272,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<div className="flex items-center gap-3 cursor-pointer">
-								<p className=" text-slate-700 text-sm font-medium">
+								<p className=" text-slate-700 text-sm font-medium dark:text-dark_text2">
 									Administrator
 								</p>
 								<ArrowDownIcon />
