@@ -92,14 +92,14 @@ const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
         <div>
             <div className="mb-5">
                 <button
-                    className={`flex rounded-md items-center py-1 px-2 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'summary' ? 'bg-slate-300' : 'bg-slate-200'
+                    className={`flex rounded-md items-center py-1 px-2 mr-3 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'summary' ? 'bg-slate-300' : 'bg-slate-200'
                         }`}
                     onClick={() => toggleTab('summary')}
                 >
                     Summary
                 </button>
                 <button
-                    className={`flex rounded-md items-center py-1 px-2 ml-3 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'individual' ? 'bg-slate-300' : 'bg-slate-200'
+                    className={`flex rounded-md items-center py-1 px-2 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'individual' ? 'bg-slate-300' : 'bg-slate-200'
                         }`}
                     onClick={() => toggleTab('individual')}
                 >

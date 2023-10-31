@@ -2050,7 +2050,7 @@ export default function Homepage() {
 						isVisible={showFeedbackModal}
 						onClose={() => setShowFeedbackModal(false)}>
 						<div className="flex">
-							<div className="h-[450px] lg:h-[700px] w-full mr-3">
+							<div className="h-[700px] lg:h-[700px] w-full mr-3">
 								<div className="flex items-left justify-start">
 									<div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center">
 										<PencilNoteIcon />{" "}
@@ -2091,7 +2091,7 @@ export default function Homepage() {
 								{/* This is to loop through the attendance data. */}
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
-										<div className="h-[500px] overflow-y-auto">
+										<div className={`lg:h-[550px] h-[480px]  overflow-y-auto`}>
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
 									</div>
