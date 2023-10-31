@@ -46,6 +46,7 @@ import { useRouter } from "next/navigation";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
 import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ViewEventFeedback from "@/components/ViewEventFeedback";
 import FeedbackList from "@/components/tables/feedbackTable";
@@ -1383,7 +1384,7 @@ export default function Homepage() {
 
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
-		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 lg:dark:bg-dark_mode_bg bg-slate-100">
+		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
 			<div className="mx-auto w-full">
 				<div className="w-full flex ml-1">
 
@@ -1443,16 +1444,16 @@ export default function Homepage() {
 					</div>
 
 					{/* Mobile View */}
-					<div className="bg-white border border-slate-200 rounded p-2 gap-2 w-full md:hidden">
+					<div className="bg-white border border-slate-200 rounded p-2 gap-2 w-full md:hidden dark:bg-dark_mode_card dark:border-[#27374C]">
 						<div className="grid grid-cols-2 gap-2 h-[49px]">
 							<div className="text-left transition transform hover:scale-105 h-[48px]">
 								<a
 									href="/upcomingEvents"
-									className="bg-[#FFEDE5] h-full p-3 text-slate-700 rounded flex hover:bg-[#ffdcce]">
+									className="bg-[#FFEDE5] h-full p-3 text-slate-700 rounded flex hover:bg-[#ffdcce] dark:bg-[#431400] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faUsers}
-											className="w-[19px] -mt-[4px] text-slate-700"
+											className="w-[19px] -mt-[4px] text-slate-700 dark:text-slate-300"
 											size="2x"
 										/>
 									</div>
@@ -1466,11 +1467,11 @@ export default function Homepage() {
 							<div className="text-left transition transform hover:scale-105 h-[48px]">
 								<a
 									href="/pastEvents"
-									className="bg-[#EAE5FF] p-3 h-full text-slate-700 rounded flex hover:bg-[#e0d8ff]">
+									className="bg-[#EAE5FF] p-3 h-full text-slate-700 rounded flex hover:bg-[#e0d8ff] dark:bg-[#1F2223] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faCheckCircle}
-											className="w-[19px] -mt-[4px] text-slate-700"
+											className="w-[19px] -mt-[4px] text-slate-700 dark:text-slate-300"
 											size="2x"
 										/>
 									</div>
@@ -1942,7 +1943,7 @@ export default function Homepage() {
 												>
 													<span className="ml-2 mt-[1px] text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1] -mt-[2px]">
+														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1]">
 															Attendance
 														</span>
 													</span>
@@ -1957,7 +1958,7 @@ export default function Homepage() {
 												>
 													<span className="ml-2 text-slate-800 flex items-center mr-2">
 														<QRCodeIcon />
-														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1] -mt-[1.5px]">
+														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1]">
 															Feedback
 														</span>
 													</span>
@@ -2859,7 +2860,7 @@ export default function Homepage() {
 				{/* Mobile View */}
 				<div className="md:hidden mt-2">
 					<button
-						className="bg-slate-800 rounded h-[35px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1"
+						className="bg-slate-800 rounded h-[35px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1 dark:hover:bg-slate-800"
 						onClick={() => setShowModalCreateEvent(true)}
 					>
 						<IoIosAddCircleOutline className="text-[18px] text-slate-100" />
@@ -2871,7 +2872,7 @@ export default function Homepage() {
 
 			{
 				viewMode === 1 ? (
-					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4 lg:dark:bg-dark_mode_bg">
+					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-[300px] lg:pb-28 gap-4 dark:bg-dark_mode_bg">
 
 						{/* PC View */}
 						<div className="hidden md:grid grid-auto-fit-lg lg:grid-cols-2 gap-4 ml-1 ">
@@ -2942,8 +2943,9 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3121,8 +3123,9 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3300,8 +3303,9 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3479,8 +3483,9 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3658,8 +3663,9 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3837,8 +3843,9 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3956,7 +3963,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105"
+									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[230px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -4017,13 +4024,14 @@ export default function Homepage() {
 										<div className="mt-4">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800">
+												<h2 className="text-[13px] font-semibold mb-[6px] text-slate-800 dark:text-dark_text">
 													{latestEvent[0].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-															<ThreeDotIcon />
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[6px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -4045,12 +4053,12 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px]">
+											<p className="text-gray-500 mb-2 text-[8px] -mt-[9px] dark:text-dark_text">
 												{latestEvent[0].intFEventDescription}
 											</p>
 											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800" />
-												<p className="text-slate-600 text-[8px] -ml-1">
+												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 													{formatDate(latestEvent[0].intFEventStartDate)}
 												</p>
 											</div>
@@ -4062,8 +4070,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{formatTime(subEvent.sub_eventsStartTime)}
 															</p>
 														</div>
@@ -4076,8 +4084,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800" />
-															<p className="text-slate-600 text-[8px] -ml-1">
+															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -4090,16 +4098,17 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative">
+															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className="h-full bg-orange-300 rounded-full"
+																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																		}`}
 																	style={{
-																		width: `${(20 / 60) * 100}%`,
+																		width: `${Math.min(percentage, 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px]">Current Attendees: {currentAttendees}/50</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
 															</div>
 														</div>
 													))
