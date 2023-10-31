@@ -137,6 +137,15 @@ module.exports = {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
 			},
+			width: {
+				a4: '210mm',
+			},
+			height: {
+			    a4: '297mm',
+			},
+			fontFamily: {
+				'arial-narrow': ['Arial Narrow', 'sans-serif'],
+			},
 		},
 	},
 	plugins: [
