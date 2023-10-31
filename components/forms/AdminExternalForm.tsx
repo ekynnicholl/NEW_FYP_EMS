@@ -57,7 +57,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
-	const [open, setOpen] = useState(false);
+	const [revertOpen, setRevertOpen] = useState(false);
+	const [submitOpen, setSubmitOpen] = useState(false);
 	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
 	const [imageURL, setImageURL] = useState("");
 
@@ -1967,7 +1968,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 							{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
 							{externalForm.formStage == 2 ? (
 								<div>
-									<Dialog open={open} onOpenChange={setOpen}>
+									<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 										<DialogTrigger>
 											<Button className="mr-5">Revert</Button>
 										</DialogTrigger>
@@ -1997,17 +1998,47 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<Button>Cancel</Button>
 												</DialogClose>
 												<Button
-													// onMouseUp={() => {
-													// 	setOpen(false);
-													// }}
-													onClick={form.handleSubmit(handleRevert)}>
+													onMouseUp={() => {
+														setRevertOpen(false);
+													}}
+													onClick={form.handleSubmit(
+														handleRevert,
+													)}>
 													Revert
 												</Button>
 											</DialogFooter>
 										</DialogContent>
 									</Dialog>
 
-									<Button type="submit">Submit for Review</Button>
+									<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
+										<DialogTrigger>
+											<Button type="submit">
+												Submit for Review
+											</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Please ensure your email information</DialogTitle>
+											</DialogHeader>
+											<DialogDescription>
+												Wrong email information will result in the form being sent to the wrong person.
+											</DialogDescription>
+											<DialogFooter>
+												<DialogClose asChild>
+													<Button variant="outline">Cancel</Button>
+												</DialogClose>
+												<Button
+													onMouseUp={() => {
+														setSubmitOpen(false);
+													}}
+													onClick={form.handleSubmit(
+														onSubmit
+													)}>
+													Submit
+												</Button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
 								</div>
 							) : externalForm.formStage == 3 ||
 							  externalForm.formStage == 4 ? (
