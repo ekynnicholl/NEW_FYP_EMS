@@ -2870,7 +2870,7 @@ export default function Homepage() {
 					<div className="w-full bg-slate-100 grid lg:grid-cols-[1fr_32%] pb-28 gap-4 lg:dark:bg-dark_mode_bg">
 
 						{/* PC View */}
-						<div className="hidden md:grid grid-auto-fit-lg gap-4 ml-1 ">
+						<div className="hidden md:grid grid-auto-fit-lg lg:grid-cols-2 gap-4 ml-1 ">
 
 							{latestEvent[0] && (
 								<div
