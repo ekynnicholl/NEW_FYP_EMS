@@ -117,7 +117,11 @@ module.exports = {
 				"dark_mode_card": "#181A1B",
 				"dark_text": "#CCC7C1",
 				"dark_text2": "#A9BACA",
-				"dark_left_bar_icon": "#C1C0BE"
+				"dark_left_bar_icon": "#C1C0BE",
+				"dark_textbox_title": "#9D9487",
+				"dark_textbox": "#1D2021",
+				"dark_textbox_line": "#363B3D",
+				"dark_placeholder_text": "#56544E"
 			},
 			keyframes: {
 				"accordion-down": {
