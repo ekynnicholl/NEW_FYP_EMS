@@ -4029,7 +4029,7 @@ export default function Homepage() {
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[6px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
 															{/* <ThreeDotIcon /> */}
 															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
 														</div>
