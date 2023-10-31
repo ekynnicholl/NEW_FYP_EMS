@@ -89,6 +89,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
 		defaultValues: {
+			// TO-DO: PLEASE FIX ALL THE ERRORS HERE, TQ.
 			revertComment: externalForm.revertComment ?? "",
 			formStage: externalForm.formStage?.toString(),
 			securityKey: externalForm.securityKey!,
@@ -99,8 +100,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			course: externalForm.course!,
 			faculty: externalForm.faculty!,
 			transport: externalForm.transport!,
-			traveling: externalForm.traveling,
-			other_member: externalForm.other_member,
+			traveling: externalForm.travelling,
+			other_member: externalForm.other_members,
 
 			program_title: externalForm.program_title,
 			program_description: externalForm.program_description,
@@ -388,6 +389,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	return (
 		<div>
+			{/* TO-DO: ADD 3 MORE ADDITIONAL FIELDS. I DON'T THINK THIS EXIST IN THE DATABASE YET. */}
+			{/* 1. STAFF EMAIL (INPUT FIELD WITH EMAIL VALIDATION), 2. HOS/ MGR/ ADCR EMAIL (DROPDOWN SELECT), 3. HMU/ DEAN EMAIL (DROPDOWN SELECT) */}
 			{(externalForm.formStage !== 5 && externalForm.formStage !== 6) ? (
 				<div className="grid grid-cols-[240px_auto] gap-8 items-start">
 					<div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
