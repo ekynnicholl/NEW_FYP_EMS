@@ -134,13 +134,19 @@ export default function AttendanceForm() {
 			return;
 		}
 
+		let attFormsStaffID = info.attFormsStaffID;
+
+		if (!attFormsStaffID.startsWith("SS")) {
+			attFormsStaffID = "SS" + attFormsStaffID;
+		}
+
 		const { data, error } = await supabase
 			.from("attendance_forms")
 			.upsert([
 				{
 					attFSubEventID: sub_id,
 					attFormsStaffName: info.attFormsStaffName,
-					attFormsStaffID: info.attFormsStaffID,
+					attFormsStaffID: attFormsStaffID,
 					attFormsFacultyUnit: info.attFormsFacultyUnit,
 				},
 			]);
