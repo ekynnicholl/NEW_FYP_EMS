@@ -20,7 +20,7 @@ const externalFormSchema = z.object({
 	course: z.string().min(1, { message: "Designation / Course is required" }),
 	faculty: z.string().min(1, { message: "Faculty is required" }),
 	transport: z.string().min(1, { message: "Please select your transport type." }),
-	traveling: z.string().min(1, { message: "Please choose an item." }),
+	travelling: z.string().min(1, { message: "Please choose an item." }),
 	other_member: z.string().optional(),
 
 	// Section 2
@@ -110,7 +110,7 @@ const externalFormSchema = z.object({
 	travel_fund: z.string().optional(),
 	student_council_fund: z.string().optional(),
 	other_fund: z.string().optional(),
-	has_expenditure_cap: z.enum(["Yes", "No"]).optional(),
+	expenditure_cap: z.enum(["Yes", "No"]).optional(),
 	expenditure_cap_amount: z
 		.number()
 		.nonnegative({ message: "Expenditure cap cannot be negative value." })
