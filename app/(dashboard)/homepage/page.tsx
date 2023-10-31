@@ -300,15 +300,15 @@ export default function Homepage() {
 				.select(
 					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsMaxSeats, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer",
 				)
-				.in("sub_eventsMainID", mainEventData.map(event => event.intFID))
-				.gte(
-					"sub_eventsEndDate",
-					new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }),
-				)
-				.order("sub_eventsEndDate", { ascending: false }) // Sort by sub_eventsEndDate in descending order
-				.limit(1); // Limit to 1 result (the latest sub-event)
+				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
+			// .gte(
+			// 	"sub_eventsEndDate",
+			// 	new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }),
+			// )
+			// .order("sub_eventsEndDate", { ascending: false }) // Sort by sub_eventsEndDate in descending order
+			// .limit(1); // Limit to 1 result (the latest sub-event)
 
-				console.log("Sub-event Query:", subEventQuery[0]);
+			// console.log("Sub-event Query:", subEventQuery.data);
 
 			if (subEventQuery.error) {
 				console.error("Error fetching sub_events:", subEventQuery.error);
@@ -2978,17 +2978,40 @@ export default function Homepage() {
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B]">
 												{latestEvent[0].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-4">
+											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
 													{formatDate(latestEvent[0].intFEventStartDate)}
 												</p>
-											</div>
+											</div> */}
 
 											{subEvents.length > 0 && (
-												subEvents.length > 0 &&
 												subEvents
-													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															new Date(subEvent.sub_eventsEndDate) > new Date()
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-sm dark:text-dark_text">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															new Date(subEvent.sub_eventsEndDate) > new Date()
+														);
+													})
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
@@ -3002,7 +3025,12 @@ export default function Homepage() {
 
 											{subEvents.length > 0 && (
 												subEvents
-													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															new Date(subEvent.sub_eventsEndDate) > new Date()
+														);
+													})
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
@@ -3016,14 +3044,18 @@ export default function Homepage() {
 
 											{subEvents.length > 0 && (
 												subEvents
-													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															new Date(subEvent.sub_eventsEndDate) > new Date()
+														);
+													})
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																		}`}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"} `}
 																	style={{
 																		width: `${Math.min(percentage, 100)}%`,
 																	}}
