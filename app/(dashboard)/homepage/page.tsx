@@ -2389,7 +2389,7 @@ export default function Homepage() {
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[505px] dark:border-[#253345]" />
 
-								<div>
+								<div className="w-full pr-[13px]">
 									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] mt-0 lg:mt-1 dark:text-dark_textbox_title">
 										Event Name
 										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] dark:text-red-600">
@@ -2397,7 +2397,7 @@ export default function Homepage() {
 										</span>
 									</p>
 									<input
-										className="w-full py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="text"
 										placeholder="Event name"
 										id="event_name"
@@ -2419,7 +2419,7 @@ export default function Homepage() {
 										</span>
 									</p>
 									<input
-										className="w-full py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="text"
 										placeholder="Description"
 										name="event_description"
@@ -2506,171 +2506,173 @@ export default function Homepage() {
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[285px] lg:w-[477px] dark:border-[#253345]" />
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-0 ml-[2px] lg:mt-1 dark:text-dark_textbox_title">
-									Event Name
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Event name"
-									value={editSubEventInfo.sub_eventsName}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsName: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-								/>
+								<div className="w-full pr-[15px]">
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-0 ml-[2px] lg:mt-1 dark:text-dark_textbox_title">
+										Event Name
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+									</p>
+									<input
+										type="text"
+										placeholder="Event name"
+										value={editSubEventInfo.sub_eventsName}
+										required
+										onChange={e =>
+											setEditSubEventInfo({
+												...editSubEventInfo,
+												sub_eventsName: e.target.value,
+											})
+										}
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+									/>
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px] dark:text-dark_textbox_title">
-									Venue
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Venue"
-									value={editSubEventInfo.sub_eventsVenue}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsVenue: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-								/>
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Venue
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+									</p>
+									<input
+										type="text"
+										placeholder="Venue"
+										value={editSubEventInfo.sub_eventsVenue}
+										required
+										onChange={e =>
+											setEditSubEventInfo({
+												...editSubEventInfo,
+												sub_eventsVenue: e.target.value,
+											})
+										}
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+									/>
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[1px] dark:text-dark_textbox_title">
-									Maximum Seats
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="number"
-									placeholder="Maximum seats"
-									value={editSubEventInfo.sub_eventsMaxSeats}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsMaxSeats: e.target.value,
-										})
-									}
-									className="pr-[106px] lg:pr-[290px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-								/>
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[1px] dark:text-dark_textbox_title">
+										Maximum Seats
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+									</p>
+									<input
+										type="number"
+										placeholder="Maximum seats"
+										value={editSubEventInfo.sub_eventsMaxSeats}
+										required
+										onChange={e =>
+											setEditSubEventInfo({
+												...editSubEventInfo,
+												sub_eventsMaxSeats: e.target.value,
+											})
+										}
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+									/>
 
 
-								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
-									<div className="flex">
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[87px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px] dark:text-dark_textbox_title">
-											Start Date
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[87px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px] dark:text-dark_textbox_title">
-											End Date
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
+									<div className="flex flex-col mt-[5px] lg:mt-[10px]">
+										<div className="flex">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[87px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px] dark:text-dark_textbox_title">
+												Start Date
+												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+													*
+												</span>
+											</p>
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[87px] lg:mr-[90px] mb-[2px] -ml-[4px] lg:ml-[1px] dark:text-dark_textbox_title">
+												End Date
+												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+													*
+												</span>
+											</p>
+										</div>
+										<div className="flex">
+
+											<input
+												className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+												type="date"
+												name="event_start_date"
+												value={editSubEventInfo.sub_eventsStartDate}
+												required
+												onChange={e =>
+													setEditSubEventInfo({
+														...editSubEventInfo,
+														sub_eventsStartDate: e.target.value,
+													})
+												}
+											/>
+
+											<input
+												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2 dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+												type="date"
+												name="event_end_date"
+												value={editSubEventInfo.sub_eventsEndDate}
+												required
+												onChange={e =>
+													setEditSubEventInfo({
+														...editSubEventInfo,
+														sub_eventsEndDate: e.target.value,
+													})
+												}
+											/>
+										</div>
 									</div>
-									<div className="flex">
 
-										<input
-											className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-											type="date"
-											name="event_start_date"
-											value={editSubEventInfo.sub_eventsStartDate}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsStartDate: e.target.value,
-												})
-											}
-										/>
+									<div className="flex flex-col mt-[5px] lg:mt-[10px]">
+										<div className="flex">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px] dark:text-dark_textbox_title">
+												Start Time
+												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+													*
+												</span>
+											</p>
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[80px] lg:ml-[38.5px] mb-[2px] dark:text-dark_textbox_title">
+												End Time
+												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+													*
+												</span>
+											</p>
+										</div>
+										<div className="flex">
+											<input
+												className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+												type="time"
+												name="event_start_time"
+												value={editSubEventInfo.sub_eventsStartTime}
+												required
+												onChange={e =>
+													setEditSubEventInfo({
+														...editSubEventInfo,
+														sub_eventsStartTime: e.target.value,
+													})
+												}
+											/>
 
-										<input
-											className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2 dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-											type="date"
-											name="event_end_date"
-											value={editSubEventInfo.sub_eventsEndDate}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsEndDate: e.target.value,
-												})
-											}
-										/>
+											<input
+												className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+												type="time"
+												name="event_end_time"
+												value={editSubEventInfo.sub_eventsEndTime}
+												required
+												onChange={e =>
+													setEditSubEventInfo({
+														...editSubEventInfo,
+														sub_eventsEndTime: e.target.value,
+													})
+												}
+											/>
+										</div>
 									</div>
+
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Organizer
+										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
+									</p>
+									<input
+										type="text"
+										placeholder="Organizer"
+										value={editSubEventInfo.sub_eventsOrganizer}
+										required
+										onChange={e =>
+											setEditSubEventInfo({
+												...editSubEventInfo,
+												sub_eventsOrganizer: e.target.value,
+											})
+										}
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+									/>
 								</div>
-
-								<div className="flex flex-col mt-[5px] lg:mt-[10px]">
-									<div className="flex">
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] ml-[1.5px] lg:ml-[2px] dark:text-dark_textbox_title">
-											Start Time
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-										<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[80px] lg:ml-[38.5px] mb-[2px] dark:text-dark_textbox_title">
-											End Time
-											<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-												*
-											</span>
-										</p>
-									</div>
-									<div className="flex">
-										<input
-											className="py-[5px] pl-3 pr-2 lg:pr-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white lg:mr-[91.5px] mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-											type="time"
-											name="event_start_time"
-											value={editSubEventInfo.sub_eventsStartTime}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsStartTime: e.target.value,
-												})
-											}
-										/>
-
-										<input
-											className="py-[5px] lg:pr-2 lg:py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-3 ml-[18px] lg:-ml-[71.5px] pr-2 dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-											type="time"
-											name="event_end_time"
-											value={editSubEventInfo.sub_eventsEndTime}
-											required
-											onChange={e =>
-												setEditSubEventInfo({
-													...editSubEventInfo,
-													sub_eventsEndTime: e.target.value,
-												})
-											}
-										/>
-									</div>
-								</div>
-
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-1 lg:mt-2 ml-[2px] dark:text-dark_textbox_title">
-									Organizer
-									<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">*</span>
-								</p>
-								<input
-									type="text"
-									placeholder="Organizer"
-									value={editSubEventInfo.sub_eventsOrganizer}
-									required
-									onChange={e =>
-										setEditSubEventInfo({
-											...editSubEventInfo,
-											sub_eventsOrganizer: e.target.value,
-										})
-									}
-									className="pr-[102px] lg:pr-[290px] py-[6px] lg:py-2 pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-								/>
 							</div>
 
 							<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mt-[68px] lg:mt-0 dark:bg-dark_mode_card">
