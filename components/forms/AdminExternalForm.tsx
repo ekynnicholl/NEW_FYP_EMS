@@ -158,9 +158,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		},
 	});
 
-	// console.log(form.control._fields);
-	// console.log(form);
-
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
 		const { error } = await supabase
 			.from("external_form")

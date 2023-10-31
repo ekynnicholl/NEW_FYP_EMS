@@ -55,6 +55,7 @@ export default function ExternalForm() {
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
+	const [externalForm, setExternalForm] = useState<any>()
 
 	// const [externalForm, setExternalForm] = useState<z.infer<typeof externalFormSchema>>({
 	// 	formStage: 2,
@@ -184,6 +185,7 @@ export default function ExternalForm() {
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
 		setExternalForm(values);
+
 		const { error } = await supabase.from("external_form").insert([
 			{
 				...values,
@@ -1276,7 +1278,11 @@ export default function ExternalForm() {
 													mode="single"
 													selected={field.value}
 													onSelect={field.onChange}
-													disabled={date => date <= new Date()}
+													disabled={date => {
+														const today = new Date();
+														today.setHours(0, 0, 0, 0);
+														return date < today;
+													}}
 													initialFocus
 												/>
 											</PopoverContent>

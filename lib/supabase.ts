@@ -103,6 +103,7 @@ export interface Database {
           applicant_declaration_position_title: string | null
           applicant_declaration_signature: string | null
           approval_date: string | null
+          approval_email: string | null
           approval_name: string | null
           approval_position_title: string | null
           approval_signature: string | null
@@ -150,6 +151,7 @@ export interface Database {
           travelling: string | null
           venue: string | null
           verification_date: string | null
+          verification_email: string | null
           verification_name: string | null
           verification_position_title: string | null
           verification_signature: string | null
@@ -162,6 +164,7 @@ export interface Database {
           applicant_declaration_position_title?: string | null
           applicant_declaration_signature?: string | null
           approval_date?: string | null
+          approval_email?: string | null
           approval_name?: string | null
           approval_position_title?: string | null
           approval_signature?: string | null
@@ -209,6 +212,7 @@ export interface Database {
           travelling?: string | null
           venue?: string | null
           verification_date?: string | null
+          verification_email?: string | null
           verification_name?: string | null
           verification_position_title?: string | null
           verification_signature?: string | null
@@ -221,6 +225,7 @@ export interface Database {
           applicant_declaration_position_title?: string | null
           applicant_declaration_signature?: string | null
           approval_date?: string | null
+          approval_email?: string | null
           approval_name?: string | null
           approval_position_title?: string | null
           approval_signature?: string | null
@@ -268,6 +273,7 @@ export interface Database {
           travelling?: string | null
           venue?: string | null
           verification_date?: string | null
+          verification_email?: string | null
           verification_name?: string | null
           verification_position_title?: string | null
           verification_signature?: string | null
