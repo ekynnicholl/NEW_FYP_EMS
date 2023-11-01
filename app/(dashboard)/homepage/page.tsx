@@ -3146,7 +3146,7 @@ export default function Homepage() {
 											<div className="flex justify-between items-end mt-5">
 												{eventsWithDaysLeft.map((event, index) => (
 													<div key={index}>
-														<span className={`relative px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center ${shouldShake ? 'shake' : ''}`}>
+														<span className={`relative -mt-[32px] px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center ${shouldShake ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
 															<FiClock className="mr-1 text-xl font-bold relative" />
 															<span className="relative -mt-[1px] leading-3 ml-1">{event.daysLeft} Days Left</span>
