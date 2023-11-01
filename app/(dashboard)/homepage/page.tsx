@@ -2053,7 +2053,7 @@ export default function Homepage() {
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
 												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
 												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
-													{subEvent.sub_eventsMaxSeats} Seats
+													{subEvent.sub_eventsMaxSeats} Maximum Seats
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[14px]">

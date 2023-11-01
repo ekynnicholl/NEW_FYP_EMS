@@ -105,7 +105,7 @@ const BreadCrumb = () => {
 
 	if (pathname === "/homepage") {
 		return (
-			<div className="flex items-center space-x-2 text-sm ml-[9px]">
+			<div className="flex items-center space-x-2 text-sm ml-[10px]">
 				<Link href="/homepage">Home</Link>
 				<p>/</p>
 				<Link href="/homepage" className="underline underline-offset-4 font-medium">

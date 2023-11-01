@@ -7,7 +7,7 @@ import arrowRight from "@/public/images/arrow_right.png";
 import skipLeft from "@/public/images/skip_left.png";
 import skipRight from "@/public/images/skip_right.png";
 import { FaSortAlphaDown, FaSortAlphaUp, FaCalendarAlt, FaCheck } from 'react-icons/fa'; // Import icons from react-icons
-import { IoMdRefresh, IoIosArrowBack } from 'react-icons/io'; // Import icons from react-icons
+import { IoMdRefresh, IoIosArrowBack, IoIosAddCircleOutline } from 'react-icons/io'; // Import icons from react-icons
 
 import { useState } from 'react'
 
@@ -155,10 +155,11 @@ export default function Home() {
                         {/* Refresh Button */}
                         <button
                             type="button"
-                            className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden"
-                        >
+                            className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105">
                             <IoMdRefresh className="text-xl text-slate-800" />
-                            <span className="ml-2 -mt-[1.25px] text-slate-800">Refresh</span>
+                            <span className="ml-2 -mt-[1.25px] text-slate-800">
+                                Refresh
+                            </span>
                         </button>
 
                         <div className="flex items-center">
@@ -225,15 +226,12 @@ export default function Home() {
                             {/* Export Button */}
                             <button
                                 type="button"
-                                className="flex items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden"
-                                onClick={exportToCSV}
-                            >
-                                <img src={exportCSV.src} alt="" width={20} className="text-slate-800" />
-                                <span className="ml-2 text-slate-800">Export to CSV</span>
+                                className="flex items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden">
+                                <IoIosAddCircleOutline className="text-2xl text-slate-800" />
+                                <span className="ml-2 -mt-[1.25px] text-slate-800">New Admin</span>
                             </button>
 
                         </div>
-
                     </div>
 
                     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
