@@ -563,7 +563,7 @@ export default function Home() {
 
     return (
         <div className="h-screen flex flex-row justify-start">
-            <div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
+            <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100">
                 <div className="bg-white rounded p-8">
                     <div className="inline-flex">
                         <span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
