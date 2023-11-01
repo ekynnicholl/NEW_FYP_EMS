@@ -2989,7 +2989,7 @@ export default function Homepage() {
 													.filter(subEvent => {
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															new Date(subEvent.sub_eventsEndDate) > new Date()
+															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
 														);
 													})
 													.slice(0, 1) // Take only the first sub event
