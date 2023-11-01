@@ -1,5 +1,7 @@
 "use client"
 
+import AddAdmin_Modal from "@/components/AddAdmin_Modal";
+
 import filterBar from "@/public/images/filter_bar_black.png";
 import exportCSV from "@/public/images/export_csv.png";
 import arrowLeft from "@/public/images/arrow_left.png";
@@ -9,7 +11,12 @@ import skipRight from "@/public/images/skip_right.png";
 import { FaSortAlphaDown, FaSortAlphaUp, FaCalendarAlt, FaCheck } from 'react-icons/fa'; // Import icons from react-icons
 import { IoMdRefresh, IoIosArrowBack, IoIosAddCircleOutline } from 'react-icons/io'; // Import icons from react-icons
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { auth, provider } from "../../../google_config";
+import { signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Home() {
     // All dummy data
@@ -41,6 +48,8 @@ export default function Home() {
     const [sortBy, setSortBy] = useState(''); // Initialize state for sorting
     const [sortOrder, setSortOrder] = useState('asc'); // Initialize sort order (asc or desc)
     const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
+
+    const [showModalAddAdmin, setShowModalAddAdmin] = useState(false);
 
     // handle search input
     const handleSearch = (query) => {
@@ -142,8 +151,172 @@ export default function Home() {
         return 0;
     });
 
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [value, setValue] = useState<string | null>(null);
+    const [errorMessageEmailAddress, setErrorMessageEmailAddress] = useState<string | null>(null);
+    const [errorMessagePassword, setErrorMessagePassword] = useState<string | null>(null);
+    const [errorMessageConfirmPassword, setErrorMessageConfirmPassword] = useState<string | null>(null);
+    const [successMessageEmailVerification, setSuccessMessageEmailVerification] = useState<string | null>(null);
+
+    const supabase = createClientComponentClient();
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+
+    const handleCreateAccount = async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+        const confirmPassword = e.target.confirmPassword.value;
+
+        if (password.length >= 6) {
+            setErrorMessagePassword(null); // Clear password error message if length is >= 6
+        }
+
+        if (password === confirmPassword) {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                const email_address = user.email;
+
+                await sendEmailVerification(user);
+                setErrorMessageConfirmPassword(null);
+                console.log("Email verification sent!");
+                setSuccessMessageEmailVerification("Email verification sent. Please check your inbox.");
+
+                // Retrieve firebase_uid from Firebase Authentication
+                const userId = user.uid;
+
+                // Check if the user with this firebase_uid already exists in Supabase
+                const { data, error } = await supabase
+                    .from('login')
+                    .select('firebase_uid, email_address')
+                    .eq('firebase_uid', userId);
+
+                if (error) {
+                    console.error('Error fetching user data:', error.message);
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    // User with this firebase_uid already exists, handle it accordingly
+                    console.log('User with this firebase_uid already exists:', data);
+                } else {
+                    // User with this firebase_uid does not exist, proceed with inserting it
+                    const { data, error } = await supabase
+                        .from('login')
+                        .upsert([{ firebase_uid: userId, email_address: email }]);
+
+                    if (error) {
+                        console.error('Error inserting data into Supabase:', error.message);
+                    }
+                }
+
+            } catch (error) {
+                // Handle Firebase authentication errors
+                if (error.code === 'auth/email-already-in-use') {
+                    setErrorMessageEmailAddress("Email is already in use.");
+                    setErrorMessagePassword(null);
+                    setErrorMessageConfirmPassword(null);
+                } else if (error.code === 'auth/weak-password') {
+                    setErrorMessagePassword("Password must be at least 6 characters.");
+                } else if (error.code === 'auth/invalid-email') {
+                    setErrorMessageEmailAddress("Invalid email address.");
+                } else {
+                    console.error('Sign-up error: ', error);
+                }
+            }
+        } else {
+            setErrorMessageConfirmPassword("Passwords do not match.");
+        }
+    }
+
+
+    const handlePasswordChange = (e) => {
+        const password = e.target.value;
+
+        if (password.length >= 6) {
+            setErrorMessagePassword(null); // Clear password error message if length is >= 6
+        }
+    }
+
+    const handleConfirmPasswordChange = (e) => {
+        const confirmPassword = e.target.value;
+        const password = document.getElementById('password').value;
+
+        if (password === confirmPassword) {
+            setErrorMessageConfirmPassword(null);
+        } else {
+            setErrorMessageConfirmPassword("Passwords do not match.");
+        }
+    };
+
     return (
         <div className="h-screen flex flex-row justify-start bg-slate-100">
+
+            <AddAdmin_Modal isVisible={showModalAddAdmin} onClose={() => setShowModalAddAdmin(false)}>
+                <form onSubmit={(e) => handleCreateAccount(e)}>
+
+                    <div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
+                        <div className="mx-auto max-w-xs ">
+                            <p className="text-2xl font-medium mb-6 text-center">Create an Account</p>
+                            <input
+                                className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                                type="email" placeholder="Email address" name="email" required />
+                            <p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessageEmailAddress}</p>
+
+                            <div className="relative">
+                                <input
+                                    className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                                    type={showPassword ? 'password' : 'text'} placeholder="Random password" id="password" name="password" required onChange={handlePasswordChange} />
+                                <button className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4" type="button"
+                                    id="password-toggle" onClick={togglePasswordVisibility}>
+                                    {showPassword ? <FaEyeSlash style={{ fontSize: '20px' }} /> : <FaEye style={{ fontSize: '20px' }} />}
+                                </button>
+
+                                <p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
+                            </div>
+                            <div className="relative">
+                                <input
+                                    className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                                    type={showConfirmPassword ? 'password' : 'text'}
+                                    placeholder="Confirm random password"
+                                    id="confirmPassword"
+                                    onChange={handleConfirmPasswordChange}
+                                    required
+                                />
+
+                                <button className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4" type="button"
+                                    id="confirm-password-toggle" onClick={toggleConfirmPasswordVisibility}>
+                                    {showConfirmPassword ? <FaEyeSlash style={{ fontSize: '20px' }} /> : <FaEye style={{ fontSize: '20px' }} />}
+                                </button>
+
+                                <p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessageConfirmPassword}</p>
+                                <p className="text-green-500 text-left ml-2 mt-1 text-sm">{successMessageEmailVerification}</p>
+                            </div>
+                            <button
+                                className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                                <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
+                                    strokeLinecap="round" strokeLinejoin="round">
+                                </svg>
+                                <span className="mr-4 text-[16px]">
+                                    Register
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </AddAdmin_Modal >
+
             <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100">
                 <div className="bg-white rounded p-8">
                     <div className="inline-flex">
@@ -223,10 +396,10 @@ export default function Home() {
                                 )}
                             </div>
 
-                            {/* Export Button */}
+                            {/* Add Admin Button */}
                             <button
                                 type="button"
-                                className="flex items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden">
+                                className="flex items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden" onClick={() => setShowModalAddAdmin(true)}>
                                 <IoIosAddCircleOutline className="text-2xl text-slate-800" />
                                 <span className="ml-2 -mt-[1.25px] text-slate-800">New Admin</span>
                             </button>
@@ -431,7 +604,7 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 
     { /* dont delete this, it will have funny bugs if you delete it */ }
