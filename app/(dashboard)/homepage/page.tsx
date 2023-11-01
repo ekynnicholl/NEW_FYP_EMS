@@ -322,7 +322,6 @@ export default function Homepage() {
 			// 	"Matching Sub Events:",
 			// 	subEvents.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
 			// );
-
 		};
 
 		fetchLatestEvent();
@@ -3063,7 +3062,7 @@ export default function Homepage() {
 															</div>
 															<div className="text-xs text-gray-600 mt-2 flex justify-between">
 																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}</span>
-																<span className="mr-[2px] dark:text-dark_text">Max Attendees: {maxAttendees}</span>
+																<span className="mr-[2px] dark:text-dark_text">Max Attendees: {subEvent.sub_eventsMaxSeats}</span>
 															</div>
 														</div>
 													))
