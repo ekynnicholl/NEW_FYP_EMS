@@ -185,6 +185,7 @@ export default function Home() {
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
+                const email_address = user.email;
 
                 await sendEmailVerification(user);
                 setErrorMessageConfirmPassword(null);
@@ -194,14 +195,31 @@ export default function Home() {
                 // Retrieve firebase_uid from Firebase Authentication
                 const userId = user.uid;
 
-                // Insert into Supabase
+                // Check if the user with this firebase_uid already exists in Supabase
                 const { data, error } = await supabase
                     .from('login')
-                    .upsert([{ firebase_uid: userId, email_address: email }]);
+                    .select('firebase_uid, email_address')
+                    .eq('firebase_uid', userId);
 
                 if (error) {
-                    console.error('Error inserting data into Supabase:', error.message);
+                    console.error('Error fetching user data:', error.message);
+                    return;
                 }
+
+                if (data && data.length > 0) {
+                    // User with this firebase_uid already exists, handle it accordingly
+                    console.log('User with this firebase_uid already exists:', data);
+                } else {
+                    // User with this firebase_uid does not exist, proceed with inserting it
+                    const { data, error } = await supabase
+                        .from('login')
+                        .upsert([{ firebase_uid: userId, email_address: email }]);
+
+                    if (error) {
+                        console.error('Error inserting data into Supabase:', error.message);
+                    }
+                }
+
             } catch (error) {
                 // Handle Firebase authentication errors
                 if (error.code === 'auth/email-already-in-use') {
