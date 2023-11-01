@@ -4609,7 +4609,7 @@ export default function Homepage() {
 																	></div>
 																</div>
 																<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																	<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
+																	<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/{maxAttendees}</span>
 																</div>
 															</div>
 														);
