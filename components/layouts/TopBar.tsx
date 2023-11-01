@@ -279,7 +279,11 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
-							<DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+							<a href="/admin_registration">
+								<DropdownMenuLabel>My Account</DropdownMenuLabel>
+							</a>
+
 							<DropdownMenuSeparator />
 							<DropdownMenuItem onClick={handleLogoutClick}>
 								Logout
