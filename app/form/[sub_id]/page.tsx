@@ -49,31 +49,6 @@ export default function AttendanceForm() {
 				return;
 			}
 
-			// const eventEndTime = new Date(attendanceListData[0].sub_eventsEndTime);
-			// const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
-			// const currentTime = new Date();
-
-			// // Check if the event end date has passed
-			// if (currentTime > eventEndDate) {
-			// 	// Event has already ended, redirect or display a message
-			// 	router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
-			// 	return;
-			// }
-
-			// // Check if the event end date is today and the event end time has passed
-			// if (currentTime.toDateString() === eventEndDate.toDateString() && currentTime > eventEndTime) {
-			// 	// Event has already ended today, redirect or display a message
-			// 	router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
-			// 	return;
-			// }
-
-			// // Check if the event start time has already passed
-			// if (currentTime > eventEndTime) {
-			// 	// Event has already started, redirect or display a message
-			// 	router.push('/notFound?from=att'); // Redirect to a page indicating that the event has passed
-			// 	return;
-			// }
-
 			const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
 			const currentDate = new Date(eventEndDate.toDateString());
 
@@ -107,7 +82,9 @@ export default function AttendanceForm() {
 
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < eventStartTime) {
-				router.push('/notFound?from=start_att');
+				const eventStartTimeString = eventStartTime.toISOString();
+				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
+				// router.push('/notFound?from=start_att');
 				return;
 			}
 
