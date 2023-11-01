@@ -8,7 +8,7 @@ export async function GET(request: Request) {
 
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
 function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string) {
-    const link = `http://localhost:3000/external_testing_edit/${formID}`;
+    const link = `http://localhost:3000/form/external_review/${formID}`;
     if (type == 1) {
         let securityKeySentence = '';
 
@@ -18,6 +18,12 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
                 <br/>
             `;
+        }
+
+        let staffDetails = "";
+
+        if (optionalFields2 && optionalFields2.trim() !== '') {
+            staffDetails = optionalFields2;
         }
 
         return `
@@ -40,7 +46,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
-                    <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you. Please visit the link below to take action: </p>
+                    <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
                     <p class="no-p-m">${link}</p>
                     <br/>
                     ${securityKeySentence}
@@ -61,7 +67,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-    } else if (type == 2) {
+    }
+    else if (type == 2) {
         return `
         <html>
             <head>
@@ -102,7 +109,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-    } else if (type == 3) {
+    }
+    else if (type == 3) {
         return `
         <html>
             <head>
@@ -123,6 +131,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <br/>
                     <p class="no-p-m">Congratulations! Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here:</p>
                     <p class="no-p-m">${link}</p>
                     <br/>
@@ -144,7 +153,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         </html>
         `;
     }
-    else if (type = 4) {
+    else if (type == 4) {
         let securityKeySentence = '';
 
         if (optionalFields2 && optionalFields2.trim() !== '') {
@@ -198,7 +207,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         </html>
         `;
     }
-    else if (type = 5) {
+    else if (type == 5) {
         return `
         <html>
             <head>
@@ -215,10 +224,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
                     <h2>Dear sir/ ma'am,</h2>
-                    <p>This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
+                    <p style="text-align: justify;">This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
                     approved or rejected. If you have any questions, please do not hesitate to contact us at ...@...</p>
-                    <br/>
-                    <br/>
                     <p>Thank you for using our system.</p>
                     <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -258,53 +265,78 @@ export async function POST(request: Request) {
 
         const formStage = requestData.formStage;
         const formID = requestData.id;
+        const staffEmail = requestData.email;
+        const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
 
-        // console.log('Received request data:', requestData);
+        console.log('Received request data:', requestData);
 
         if (formStage === 2) {
-            await transporter.sendMail({
-                ...mailOptions,
-                subject: "[NTF] Nominations Travelling Form",
-                text: "Staff to AAO",
-                html: generateEmailHTML("[Staff to Academic Administration Office]", formID, 1)
-            });
+            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            const formIDs = [1, 5];
+
+            for (let i = 0; i < recipients.length; i++) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipients[i];
+
+                const formIDForRecipient = formIDs[i];
+
+                await transporter.sendMail({
+                    ...mailOptionsCopy,
+                    subject: "[NTF] Nominations Travelling Form",
+                    text: "[Staff to Academic Administration Office]",
+                    html: generateEmailHTML("[Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
+                });
+            }
         } else if (formStage === 3) {
             const mailOptionsCopy = { ...mailOptions };
-            mailOptionsCopy.to = requestData.hosEmail;
+            mailOptionsCopy.to = requestData.verification_email;
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
-                text: "AAO to Head of School",
-                html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey)
+                text: "[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]",
+                html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey, formDetails)
+            });
+
+        } else if (formStage === 4) {
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = requestData.approval_email;
+            await transporter.sendMail({
+                ...mailOptionsCopy,
+                subject: "[NTF] Nominations Travelling Form",
+                text: "[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
+                html: generateEmailHTML("[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
             });
         } else if (formStage === 6) {
-            const recipients = ['fypemsmaster369@gmail.com', 'jadpichoo@outlook.com'];
+            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            // const recipients = ['fypemsmaster369@gmail.com', 'jadpichoo@outlook.com'];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
                     subject: "[NTF] Nominations Travelling Form",
-                    text: "NTF Reject",
+                    text: "[Rejection Email]",
                     html: generateEmailHTML("[Rejection Email]", formID, 2)
                 });
             }
         } else if (formStage === 1) {
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = requestData.staffEmail;
             await transporter.sendMail({
-                ...mailOptions,
+                ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
-                text: "AAO to Staff",
+                text: "[Academic Administration Office to Staff]",
                 html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
             });
         } else if (formStage === 5) {
-            const recipients = ['fypemsmaster369@gmail.com', 'jadpichoo@outlook.com'];
+            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
                     subject: "[NTF] Nominations Travelling Form",
-                    text: "AAO to Staff",
+                    text: "[Accepted Email]",
                     html: generateEmailHTML("[Accepted Email]", formID, 3)
                 });
             }

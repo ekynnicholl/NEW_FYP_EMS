@@ -124,8 +124,10 @@ export default function ExternalForm() {
 	});
 
 	useEffect(() => {
-		console.log("Email has been sent out!");
-		sendContactForm(externalForm);
+		if (externalForm.id != "" || externalForm.id != null) {
+			console.log("Email has been sent out!");
+			sendContactForm(externalForm);
+		}
 	}, [externalForm.id])
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
@@ -1328,10 +1330,10 @@ export default function ExternalForm() {
 						<DialogContent>
 							<DialogHeader>
 								<DialogTitle>
-									Please ensure your information is correct.
+									Please re-confirm your details!
 								</DialogTitle>
 								<DialogDescription>
-									Incorrect information may result in your application.
+									Please confirm your email is correct: {form.getValues("email")}. <br />Wrong email will result in you not receiving any updates of your form status.
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
@@ -1343,6 +1345,7 @@ export default function ExternalForm() {
 										setOpen(false);
 									}}
 									onClick={form.handleSubmit(onSubmit)}>
+									{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
 									Submit
 								</Button>
 							</DialogFooter>

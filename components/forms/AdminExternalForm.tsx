@@ -11,6 +11,8 @@ import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import cookie from "js-cookie";
 import { useRouter } from "next/navigation";
+import NTFPDF from '@/components/forms/NTFPDF';
+import TooltipIcon from '@/components/icons/TooltipIcon';
 
 import { SiMicrosoftword } from "react-icons/si";
 import { BsFiletypePdf } from "react-icons/bs";
@@ -57,6 +59,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
+	// useEffect(() => {
+	// 	if(data.formStage == 2 && !authToken){
+
+	// 	}
+	// })
+
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [submitOpen, setSubmitOpen] = useState(false);
 	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
@@ -68,8 +76,23 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// Check whether the user is logged in,
 	const authToken = cookie.get("authToken");
 
+	// Real-time security key validation,
+	const [securityKeyInput, setSecurityKeyInput] = useState('');
+	const [securityKeyError, setSecurityKeyError] = useState(true);
+
+	const handleChange = (e: { target: { value: any; }; }) => {
+		const inputValue = e.target.value;
+		setSecurityKeyInput(inputValue);
+
+		if (inputValue === data.securityKey) {
+			setSecurityKeyError(false); e
+		} else {
+			setSecurityKeyError(true);
+		}
+	};
+
 	// Fetch the current stage of the form to capture whether the stage has changed to submit email,
-	const [fetchedFormStage, setFetchedFormStage] = useState<number>(0);
+	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -82,12 +105,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// TO-DO: UNCOMMENT THIS TO ENABLE THE EMAIL SENDING FEATURE. YOU DON'T NEED TO UPDATE ANYTHING IN THE API, JUST ENSURE THE FORM CAN BE PASSED INTO IT,
 	// I'M USING USEEFFECT TO CHECK WHETHER THE EXTERNALFORM IS UPDATED THROUGH SETEXTERNALFORM IN THE onSubmit or onRevert, IF ANY CHANGES,
 	// PASS INTO THE API AND SEND THE EMAIL.
-	// useEffect(() => {
-	// 	if (externalForm.formStage != fetchedFormStage) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.formStage])
+	useEffect(() => {
+		if (externalForm.formStage != fetchedFormStage) {
+			console.log(externalForm);
+			sendContactForm(externalForm);
+		}
+	}, [externalForm.formStage])
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
@@ -95,7 +118,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			// TO-DO: PLEASE FIX ALL THE ERRORS HERE, TQ.
 			revertComment: externalForm.revertComment ?? "",
 			formStage: externalForm.formStage!,
-			securityKey: "testing-security-key",
+			securityKey: "",
+			verification_email: externalForm.verification_email!,
+			approval_email: externalForm.approval_email!,
 
 			full_name: externalForm.full_name!,
 			email: externalForm.email!,
@@ -166,21 +191,21 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	}, [form.formState.errors]);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
-		const { error } = await supabase
-			.from("external_form")
-			.update([
-				{
-					...values,
-				},
-			])
-			.eq("id", externalForm.id);
+		// const { error } = await supabase
+		// 	.from("external_form")
+		// 	.update([
+		// 		{
+		// 			...values,
+		// 		},
+		// 	])
+		// 	.eq("id", externalForm.id);
 
-		if (error) {
-			console.log(error);
-		}
+		// if (error) {
+		// 	console.log(error);
+		// }
 
-		console.log("Form updated successfully.");
-		console.log(values);
+		// console.log("Form updated successfully.");
+		// console.log(values);
 
 		// Generate the security key,
 		const securityKeyUID = uuidv4();
@@ -188,7 +213,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
 		if (externalForm.formStage === 2) {
 			const { data, error } = await supabase
-				.from("external_testing")
+				.from("external_forms")
 				.update([
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
@@ -197,6 +222,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						revertComment: "None",
 						securityKey: securityKeyUID,
 						formStage: 3,
+						verification_email: values.verification_email,
+						approval_email: values.approval_email,
 					},
 				])
 				.eq("id", externalForm.id);
@@ -221,7 +248,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		// This part is when the staff re-submits the form to the AAO after being reverted,
 		else if (externalForm.formStage === 1) {
 			const { error } = await supabase
-				.from("external_form")
+				.from("external_forms")
 				.update([
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
@@ -235,26 +262,26 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						// securityKey: null,
 						// hosEmail: formDetails.hosEmail,
 						// deanEmail: formDetails.deanEmail
-						verification_email: values.verification_email,
-						approval_email: values.approval_email,
 					},
 				])
 				.eq("id", externalForm.id);
 
 			if (error) {
 				console.log(error);
+			} else {
+				// window.location.reload();
 			}
 		}
 
 		// This is for submitting the forms for further review to HMU/ Dean BY HOS/ MGR/ ADCR, Stage 3 -> Stage 4,
 		else if (externalForm.formStage === 3) {
 			const { data, error } = await supabase
-				.from("external_testing")
+				.from("external_forms")
 				.update([
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 4,
-						securityKey: null,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 
 						verification_email: values.verification_email,
@@ -280,17 +307,18 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				setExternalForm({
 					...externalForm,
 					formStage: 4,
+					securityKey: securityKeyUID
 				});
 
-				router.refresh();
-				// window.location.reload();
+				// router.refresh();
+				window.location.reload();
 			}
 		}
 
 		// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
 		else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
-				.from("external_testing")
+				.from("external_forms")
 				.update([
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
@@ -426,6 +454,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						revertComment: values.revertComment,
 						securityKey: securityKeyUID,
 						formStage: 1,
+						verification_email: values.verification_email,
+						approval_email: values.approval_email,
 					},
 				])
 				.eq("id", externalForm.id);
@@ -500,7 +530,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Email</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -520,7 +550,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -539,7 +569,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -558,7 +588,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -577,7 +607,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -596,7 +626,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -613,7 +643,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Traveling in</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -634,7 +664,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -663,7 +693,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -680,7 +710,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Description</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -697,12 +727,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Commencement Date</FormLabel>
 												<FormControl>
 													<Button
-														disabled
+														disabled={externalForm.formStage != 1}
 														variant={"outline"}
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														<span>
 															{field.value.toLocaleString()}
@@ -721,12 +751,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Completion Date</FormLabel>
 												<FormControl>
 													<Button
-														disabled
+														disabled={externalForm.formStage != 1}
 														variant={"outline"}
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value.toLocaleString()}
 													</Button>
@@ -743,7 +773,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Organiser</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -760,7 +790,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Venue</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -776,7 +806,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<FormItem>
 												<FormLabel>HDRF Claimable</FormLabel>
 												<Select
-													disabled
+													disabled={externalForm.formStage != 1}
 													onValueChange={field.onChange}
 													defaultValue={field.value}>
 													<FormControl>
@@ -820,12 +850,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Flight Date</FormLabel>
 													<FormControl>
 														<Button
-															disabled
+															disabled={externalForm.formStage != 1}
 															variant={"outline"}
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value.toLocaleString()}
 														</Button>
@@ -842,7 +872,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Flight Time</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -861,7 +891,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Flight Number</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -882,7 +912,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>From</FormLabel>
 														<FormControl>
 															<Input
-																disabled
+																disabled={externalForm.formStage != 1}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -899,7 +929,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>To</FormLabel>
 														<FormControl>
 															<Input
-																disabled
+																disabled={externalForm.formStage != 1}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -920,12 +950,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Check In</FormLabel>
 													<FormControl>
 														<Button
-															disabled
+															disabled={externalForm.formStage != 1}
 															variant={"outline"}
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value.toLocaleString()}
 														</Button>
@@ -942,12 +972,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Check Out</FormLabel>
 													<FormControl>
 														<Button
-															disabled
+															disabled={externalForm.formStage != 1}
 															variant={"outline"}
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value.toLocaleString()}
 														</Button>
@@ -966,7 +996,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Hotel</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 													/>
@@ -991,7 +1021,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Course Fee</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1013,7 +1043,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Airfare Fee</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1035,7 +1065,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Accommodation Fee</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1057,7 +1087,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Per Diem Fee</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1079,7 +1109,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Transportation Fee</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1103,7 +1133,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1125,7 +1155,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Other Fee</FormLabel>
 												<FormControl>
 													<Input
-														disabled
+														disabled={externalForm.formStage != 1}
 														className="disabled:text-black-500 disabled:opacity-100"
 														{...field}
 														onChange={e => {
@@ -1194,7 +1224,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1213,7 +1243,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1230,7 +1260,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Research Fund</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1247,7 +1277,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Travel Fund</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1266,7 +1296,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1283,7 +1313,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Other Fund</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1435,7 +1465,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Name</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1452,7 +1482,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Position title</FormLabel>
 													<FormControl>
 														<Input
-															disabled
+															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1471,12 +1501,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormLabel>Declaration Date</FormLabel>
 												<FormControl>
 													<Button
-														disabled
+														disabled={externalForm.formStage != 1}
 														variant={"outline"}
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value}
 													</Button>
@@ -1574,7 +1604,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value &&
-																			"text-muted-foreground",
+																		"text-muted-foreground",
 																	)}>
 																	{field.value ? (
 																		format(
@@ -1676,7 +1706,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																					);
 																			console.log(
 																				"Field Value: " +
-																					field.value,
+																				field.value,
 																			);
 																		}}>
 																		Save
@@ -1755,7 +1785,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value &&
-																			"text-muted-foreground",
+																		"text-muted-foreground",
 																	)}>
 																	{field.value ? (
 																		format(
@@ -1854,7 +1884,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																					);
 																			console.log(
 																				"Field Value: " +
-																					field.value,
+																				field.value,
 																			);
 																		}}>
 																		Save
@@ -1871,73 +1901,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 								</section>
 							) : null}
 
-							<section className="submission-details">
-								<h1 className="text-2xl font-bold mb-4">
-									Submission Details
-								</h1>
-								<div className="grid grid-auto-fit-lg gap-8">
-									<FormField
-										control={form.control}
-										name="verification_email"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Verification Email</FormLabel>
-												<Select
-													onValueChange={field.onChange}
-													defaultValue={field.value}>
-													<FormControl>
-														<SelectTrigger>
-															<SelectValue placeholder="Please select an option" />
-														</SelectTrigger>
-													</FormControl>
-													<SelectContent>
-														<SelectItem value="email1@gmail.com">
-															email1@gmail.com
-														</SelectItem>
-														<SelectItem value="email2@gmail.com">
-															email2@gmail.com
-														</SelectItem>
-														<SelectItem value="email3@gmail.com">
-															email3@gmail.com
-														</SelectItem>
-													</SelectContent>
-												</Select>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="approval_email"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Approval Email</FormLabel>
-												<Select
-													onValueChange={field.onChange}
-													defaultValue={field.value}>
-													<FormControl>
-														<SelectTrigger>
-															<SelectValue placeholder="Please select an option" />
-														</SelectTrigger>
-													</FormControl>
-													<SelectContent>
-														<SelectItem value="email1@gmail.com">
-															email1@gmail.com
-														</SelectItem>
-														<SelectItem value="email2@gmail.com">
-															email2@gmail.com
-														</SelectItem>
-														<SelectItem value="email3@gmail.com">
-															email3@gmail.com
-														</SelectItem>
-													</SelectContent>
-												</Select>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
+							{externalForm.formStage == 1 ? (
+								<div>
+									<Button type="submit" onClick={form.handleSubmit(
+										onSubmit
+									)}>Submit</Button>
 								</div>
-							</section>
+							) : null}
 
 							{/* TO-DO: THIS INPUT WILL ONLY BE SHOWN IF THEY CLICK ON THE REVERT BUTTON IN STAGE 2. */}
 							{/* THEY NEED TO CLICK ON REVERT AGAIN TO REVERT IT. THIS CHECK ALREADY EXISTS IN onRevert. */}
@@ -1945,29 +1915,97 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 							{(showCommentInput ||
 								(externalForm.revertComment != "None" &&
 									externalForm.formStage == 2)) && (
-								<FormField
-									control={form.control}
-									name="revertComment"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Comments</FormLabel>
-											<FormControl>
-												<Input
-													disabled={externalForm.formStage == 1}
-													className="disabled:text-black-500 disabled:opacity-100"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							)}
+									<FormField
+										control={form.control}
+										name="revertComment"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Comments</FormLabel>
+												<FormControl>
+													<Input
+														disabled={externalForm.formStage == 1}
+														className="disabled:text-black-500 disabled:opacity-100"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								)}
 
 							{/* Show the buttons according to the current form stage, */}
 							{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
 							{externalForm.formStage == 2 ? (
 								<div>
+									<section className="submission-details mb-5">
+										<h1 className="text-2xl font-bold mb-4">
+											Submission Details
+										</h1>
+										<div className="grid grid-auto-fit-lg gap-8">
+											<FormField
+												control={form.control}
+												name="verification_email"
+												render={({ field }) => (
+													<FormItem>
+														<FormLabel>Verification Email</FormLabel>
+														<Select
+															onValueChange={field.onChange}
+															defaultValue={field.value}>
+															<FormControl>
+																<SelectTrigger>
+																	<SelectValue placeholder="Please select an option" />
+																</SelectTrigger>
+															</FormControl>
+															<SelectContent>
+																<SelectItem value="fypemsmaster369@gmail.com">
+																	fypemsmaster369@gmail.com
+																</SelectItem>
+																<SelectItem value="newfypems369@gmail.com">
+																	newfypems369@gmail.com
+																</SelectItem>
+																<SelectItem value="email3@gmail.com">
+																	email3@gmail.com
+																</SelectItem>
+															</SelectContent>
+														</Select>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+											<FormField
+												control={form.control}
+												name="approval_email"
+												render={({ field }) => (
+													<FormItem>
+														<FormLabel>Approval Email</FormLabel>
+														<Select
+															onValueChange={field.onChange}
+															defaultValue={field.value}>
+															<FormControl>
+																<SelectTrigger>
+																	<SelectValue placeholder="Please select an option" />
+																</SelectTrigger>
+															</FormControl>
+															<SelectContent>
+																<SelectItem value="fypemsmaster369@gmail.com">
+																	fypemsmaster369@gmail.com
+																</SelectItem>
+																<SelectItem value="newfypems369@gmail.com">
+																	newfypems369@gmail.com
+																</SelectItem>
+																<SelectItem value="email3@gmail.com">
+																	email3@gmail.com
+																</SelectItem>
+															</SelectContent>
+														</Select>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+										</div>
+									</section>
+
 									<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 										<DialogTrigger>
 											<Button className="mr-5">Revert</Button>
@@ -2041,15 +2079,207 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									</Dialog>
 								</div>
 							) : externalForm.formStage == 3 ||
-							  externalForm.formStage == 4 ? (
+								externalForm.formStage == 4 ? (
 								<div>
-									<Button type="submit">Reject</Button>
-									<Button type="button">Submit for Review</Button>
-								</div>
-							) : externalForm.formStage == 4 ? (
-								<div>
-									<Button type="submit">Reject</Button>
-									<Button type="submit">Approve</Button>
+									<FormField
+										control={form.control}
+										name="securityKey"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													<div className="group relative w-max cursor-pointer">
+														<span className="flex items-center">
+															<span className="mr-2">Security Key</span>
+															<TooltipIcon />
+														</span>
+														<span
+															className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2"
+														>
+															This is to ensure that you are the appropriate individual for the authorization or rejection of this form. It can be found in your email.
+														</span>
+													</div>
+												</FormLabel>
+												<FormControl>
+													<Input
+														autoComplete="off"
+														placeholder=""
+														{...field}
+														value={securityKeyInput}
+														onChange={handleChange}
+													/>
+												</FormControl>
+												<FormMessage>
+													{securityKeyError && <div className="error-message mb-5">The security key doesn't match.</div>}
+												</FormMessage>
+											</FormItem>
+										)}
+									/>
+									{externalForm.formStage == 3 ? (
+										<div>
+											<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
+												<DialogTrigger>
+													<Button className="mr-5" disabled={securityKeyError}>Reject</Button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Please confirm your action.</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														You are trying to REJECT this Nominations/ Travelling Form, is this correct?
+													</DialogDescription>
+													<FormField
+														control={form.control}
+														name="revertComment"
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Comments</FormLabel>
+																<FormControl>
+																	<Input {...field} />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<DialogFooter>
+														<DialogClose asChild>
+															<Button>Cancel</Button>
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																setRevertOpen(false);
+															}}
+															onClick={form.handleSubmit(
+																handleRevert,
+															)}>
+															Reject
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+
+											<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
+												<DialogTrigger>
+													<Button disabled={securityKeyError}>
+														Submit for Review
+													</Button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Please confirm your action.</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														You are trying to SUBMIT this Nominations/ Travelling Form FOR FURTHER REVIEW, is this correct?
+													</DialogDescription>
+													<DialogFooter>
+														<DialogClose asChild>
+															<Button variant="outline">Cancel</Button>
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																setSubmitOpen(false);
+															}}
+															onClick={form.handleSubmit(
+																onSubmit
+															)}>
+															Submit
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+										</div>
+									) : externalForm.formStage == 4 ? (
+										<div>
+											<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
+												<DialogTrigger>
+													<Button className="mr-5" disabled={securityKeyError}>Reject</Button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Please confirm your action.</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														You are trying to REJECT this Nominations/ Travelling Form, is this correct?
+													</DialogDescription>
+													<FormField
+														control={form.control}
+														name="revertComment"
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Comments</FormLabel>
+																<FormControl>
+																	<Input {...field} />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<DialogFooter>
+														<DialogClose asChild>
+															<Button>Cancel</Button>
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																setRevertOpen(false);
+															}}
+															onClick={form.handleSubmit(
+																handleRevert,
+															)}>
+															Reject
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+
+											<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
+												<DialogTrigger>
+													<Button disabled={securityKeyError}>
+														Approve
+													</Button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Please confirm your action.</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														You are trying to APPROVE this Nominations/ Travelling Form, is this correct?
+													</DialogDescription>
+													<DialogFooter>
+														<DialogClose asChild>
+															<Button variant="outline">Cancel</Button>
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																setSubmitOpen(false);
+															}}
+															onClick={form.handleSubmit(
+																onSubmit
+															)}>
+															Submit
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+										</div>
+									) : null}
+									{/* <div className="mt-3">
+										<Button
+											className="mr-3 mt-3"
+											type="submit"
+											disabled={securityKeyError}
+											onClick={form.handleSubmit(
+												handleRevert
+											)}>
+											Reject
+										</Button>
+										<Button
+											type="button"
+											disabled={securityKeyError}
+											onClick={form.handleSubmit(
+												onSubmit
+											)}>
+											Submit for Review
+										</Button>
+									</div> */}
 								</div>
 							) : null}
 						</form>
@@ -2059,12 +2289,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				// DO NOT TOUCH THIS.
 				// This is the final stage of the form,
 				<div>
-					<p>Show PDF!</p>
-					{externalForm.formStage === 5 ? (
-						<p className="bg-green-500">Status: Approved</p>
-					) : externalForm.formStage === 6 ? (
-						<p className="bg-red-500">Status: Rejected</p>
-					) : null}
+					<NTFPDF id={data.id} />
 				</div>
 			)}
 		</div>
