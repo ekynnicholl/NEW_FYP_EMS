@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { auth, provider } from "../../../google_config";
-import { signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Home() {
@@ -171,7 +171,7 @@ export default function Home() {
     };
 
 
-    const handleCreateAccount = async (e) => {
+    const handleCreateAccount2 = async (e) => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
@@ -240,6 +240,76 @@ export default function Home() {
     }
 
 
+    const handleCreateAccount = async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+        const confirmPassword = e.target.confirmPassword.value;
+
+        if (password.length >= 6) {
+            setErrorMessagePassword(null); // Clear password error message if length is >= 6
+        }
+
+        if (password === confirmPassword) {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user_credential = userCredential.user;
+
+                await sendEmailVerification(user_credential);
+                setErrorMessageConfirmPassword(null);
+                console.log("Email verification sent!");
+                setSuccessMessageEmailVerification("Email verification sent. Please check your inbox.");
+
+                // Retrieve firebase_uid from Firebase Authentication
+                const userId = user_credential.uid;
+
+                // Check if the user with this firebase_uid already exists in Supabase
+                const { data, error } = await supabase
+                    .from('login')
+                    .select('firebase_uid, email_address')
+                    .eq('firebase_uid', userId);
+
+               
+
+                if (error) {
+                    console.error('Error fetching user data:', error.message);
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    // User with this firebase_uid already exists, handle it accordingly
+                    console.log('User with this firebase_uid already exists:', data);
+                } else {
+                    // User with this firebase_uid does not exist, proceed with inserting it
+                    const { data, error } = await supabase
+                        .from('login')
+                        .upsert([{ firebase_uid: userId, email_address: email }]);
+
+                    if (error) {
+                        console.error('Error inserting data into Supabase:', error.message);
+                    }
+                }
+
+            } catch (error) {
+                // Handle Firebase authentication errors
+                if (error.code === 'auth/email-already-in-use') {
+                    setErrorMessageEmailAddress("Email is already in use.");
+                    setErrorMessagePassword(null);
+                    setErrorMessageConfirmPassword(null);
+                } else if (error.code === 'auth/weak-password') {
+                    setErrorMessagePassword("Password must be at least 6 characters.");
+                } else if (error.code === 'auth/invalid-email') {
+                    setErrorMessageEmailAddress("Invalid email address.");
+                } else {
+                    console.error('Sign-up error: ', error);
+                }
+            }
+        } else {
+            setErrorMessageConfirmPassword("Passwords do not match.");
+        }
+    }
+
+
     const handlePasswordChange = (e) => {
         const password = e.target.value;
 
@@ -259,6 +329,7 @@ export default function Home() {
         }
     };
 
+
     return (
         <div className="h-screen flex flex-row justify-start bg-slate-100">
 
@@ -271,7 +342,7 @@ export default function Home() {
                             <input
                                 className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                                 type="email" placeholder="Email address" name="email" required />
-                            <p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessageEmailAddress}</p>
+                            <p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
 
                             <div className="relative">
                                 <input
@@ -299,8 +370,8 @@ export default function Home() {
                                     {showConfirmPassword ? <FaEyeSlash style={{ fontSize: '20px' }} /> : <FaEye style={{ fontSize: '20px' }} />}
                                 </button>
 
-                                <p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessageConfirmPassword}</p>
-                                <p className="text-green-500 text-left ml-2 mt-1 text-sm">{successMessageEmailVerification}</p>
+                                <p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
+                                <p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
                             </div>
                             <button
                                 className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
