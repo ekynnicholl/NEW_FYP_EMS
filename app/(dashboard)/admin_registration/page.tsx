@@ -143,15 +143,15 @@ export default function Home() {
     });
 
     return (
-        <div className="h-screen flex flex-row justify-start">
+        <div className="h-screen flex flex-row justify-start bg-slate-100">
             <div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
                 <div className="bg-white rounded p-8">
                     <div className="inline-flex">
-                        <span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
-                        <h1 className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800">Upcoming Events</span></h1>
+                        <span className="mt-[7px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
+                        <p className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800">Admin Registration</span></p>
                     </div>
 
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between mb-8 mt-5">
                         {/* Refresh Button */}
                         <button
                             type="button"

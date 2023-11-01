@@ -55,22 +55,16 @@ import FeedbackList from "@/components/tables/feedbackTable";
 // import {Calendar} from "@/components/layouts/calendar";
 
 const currentDate = new Date();
-const formattedDate = currentDate.toLocaleDateString("en-US", {
-	weekday: "long",
-	year: "numeric",
-	month: "long",
-	day: "numeric",
-});
 
 const formatDate = (dateString: string): string => {
-	const options: Intl.DateTimeFormatOptions = {
-		weekday: "long",
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	};
-	return new Date(dateString).toLocaleDateString("en-US", options);
+	const date = new Date(dateString);
+	const month = date.toLocaleDateString("en-GB", { month: "long" });
+	const day = date.toLocaleDateString("en-GB", { day: "numeric" });
+	const dayOfWeek = date.toLocaleDateString("en-GB", { weekday: "long" });
+	return `${dayOfWeek}, ${day} ${month} ${date.getFullYear()}`;
 };
+
+const formattedDate = formatDate(currentDate.toISOString());
 
 const formatTime = (timeString: string): string => {
 	const options: Intl.DateTimeFormatOptions = {
