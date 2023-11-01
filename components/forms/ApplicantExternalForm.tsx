@@ -55,60 +55,9 @@ export default function ExternalForm() {
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
-	const [externalForm, setExternalForm] = useState<any>();
-
-	// const [externalForm, setExternalForm] = useState<z.infer<typeof externalFormSchema>>({
-	// 	formStage: 2,
-	// 	name: "",
-	// 	email: "",
-	// 	staff_id: "",
-	// 	course: "",
-	// 	faculty: "",
-	// 	transport: "",
-	// 	traveling: "",
-	// 	other_member: "",
-
-	// 	program_title: "",
-	// 	program_description: "",
-	// 	commencement_date: undefined,
-	// 	completion_date: undefined,
-	// 	organiser: "",
-	// 	venue: "",
-	// 	HRDF_claimable: "",
-
-	// 	flight_date: undefined,
-	// 	flight_time: "",
-	// 	flight_number: "",
-	// 	destination_from: "",
-	// 	destination_to: "",
-	// 	check_in_date: undefined,
-	// 	check_out_date: undefined,
-	// 	hotel: "",
-
-	// 	course_fee: 0,
-	// 	airfare_fee: 0,
-	// 	accommodation_fee: 0,
-	// 	per_diem_fee: 0,
-	// 	transportation_fee: 0,
-	// 	travel_insurance_fee: 0,
-	// 	other_fee: 0,
-	// 	total_fee: 0,
-	// 	staff_development_fund: "",
-	// 	consolidated_pool_fund: "",
-	// 	research_fund: "",
-	// 	travel_fund: "",
-	// 	student_council_fund: "",
-	// 	other_fund: "",
-	// 	has_expenditure_cap: "No",
-	// 	expenditure_cap_amount: undefined,
-
-	// 	supporting_documents: null,
-
-	// 	applicant_signature: "",
-	// 	applicant_name: "",
-	// 	applicant_position_title: "",
-	// 	applicant_declaration_date: undefined,
-	// });
+	const [externalForm, setExternalForm] = useState<any>({
+		id: ""
+	});
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -120,7 +69,6 @@ export default function ExternalForm() {
 
 	const form = useForm<z.infer<typeof externalFormSchema>>({
 		resolver: zodResolver(externalFormSchema),
-		// defaultValues: externalForm,
 		defaultValues: {
 			formStage: 2,
 			full_name: "",
@@ -175,31 +123,30 @@ export default function ExternalForm() {
 		},
 	});
 
-	// useEffect(() => {
-	// 	if (externalForm) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm!.formStage!]);
+	useEffect(() => {
+		console.log("Email has been sent out!");
+		sendContactForm(externalForm);
+	}, [externalForm.id])
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
-		setExternalForm(values);
 
-		const { error } = await supabase.from("external_forms").insert([
-			{
-				...values,
-				formStage: 2,
-			},
-		]);
-
-		setExternalForm({
-			...externalForm,
-			formStage: 2,
-		});
+		const { data, error } = await supabase
+			.from("external_forms")
+			.insert([
+				{
+					...values,
+					formStage: 2,
+				},
+			])
+			.select();
 
 		if (error) {
 			console.log(error);
+		} else {
+			setExternalForm({ ...values, id: data[0].id });
+
+			window.location.reload();
 		}
 		console.log(values);
 	}
@@ -434,7 +381,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -478,7 +425,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -586,7 +533,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -698,7 +645,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -742,7 +689,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -1190,7 +1137,7 @@ export default function ExternalForm() {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-																1,
+															1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1266,7 +1213,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1358,7 +1305,7 @@ export default function ExternalForm() {
 																		);
 																console.log(
 																	"Field Value: " +
-																		field.value,
+																	field.value,
 																);
 															}}>
 															Save

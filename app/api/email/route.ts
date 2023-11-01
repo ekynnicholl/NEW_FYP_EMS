@@ -257,7 +257,7 @@ export async function POST(request: Request) {
         const requestData = await request.json();
 
         const formStage = requestData.formStage;
-        const formID = requestData.formID;
+        const formID = requestData.id;
 
         // console.log('Received request data:', requestData);
 
