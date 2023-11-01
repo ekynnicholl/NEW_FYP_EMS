@@ -3069,16 +3069,8 @@ export default function Homepage() {
 											)}
 
 											<div className="flex justify-between items-end mt-5">
-												<div
-													className="cursor-pointer text-slate-500 dark:text-[#7B756B] hover:font-medium text-[14.5px] ml-[1px]"
-													onClick={e => {
-														e.stopPropagation(); // This line prevents the event from propagating
-														openAttendanceModal(
-															latestEvent[0].intFID,
-														);
-														fetchAttendanceList(latestEvent[0].intFID);
-													}}>
-													Attendance List
+												<div>
+
 												</div>
 
 												<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
