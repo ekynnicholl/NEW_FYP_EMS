@@ -129,6 +129,7 @@ type subEvents = {
 	sub_eventsEndTime: string;
 	sub_eventsOrganizer: string;
 	sub_eventsMaxSeats: string;
+	sub_eventsCurrentAttendees: string;
 }
 
 type FeedbackDataType = {
@@ -298,7 +299,7 @@ export default function Homepage() {
 			const subEventQuery = await supabase
 				.from("sub_events")
 				.select(
-					"sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsMaxSeats, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer",
+					"*",
 				)
 				.in("sub_eventsMainID", mainEventData.map(event => event.intFID));
 			// .gte(
@@ -315,7 +316,25 @@ export default function Homepage() {
 				return;
 			}
 
-			setSubEvents(subEventQuery.data);
+			const updatedSubEvents = await Promise.all(
+				subEventQuery.data.map(async (subEvent) => {
+					const { data: attendanceForms, error: formsError } = await supabase
+						.from("attendance_forms")
+						.select()
+						.eq("attFSubEventID", subEvent.sub_eventsID);
+
+					if (formsError) {
+						console.error("Error fetching attendance forms:", formsError);
+						return subEvent; // Return the original sub-event if there's an error
+					}
+
+					// Update the sub-event with current attendees
+					subEvent.sub_eventsCurrentAttendees = attendanceForms.length;
+					return subEvent;
+				})
+			);
+
+			setSubEvents(updatedSubEvents);
 			// console.log("SubEvents:", subEventQuery.data)
 
 			// console.log(
@@ -3060,12 +3079,12 @@ export default function Homepage() {
 																<div
 																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"} `}
 																	style={{
-																		width: `${Math.min(percentage, 100)}%`,
+																		width: `${Math.min((parseInt(subEvent.sub_eventsCurrentAttendees) / parseInt(subEvent.sub_eventsMaxSeats)), 100)}%`,
 																	}}
 																></div>
 															</div>
 															<div className="text-xs text-gray-600 mt-2 flex justify-between">
-																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}</span>
+																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {subEvent.sub_eventsCurrentAttendees}</span>
 																<span className="mr-[2px] dark:text-dark_text">Max Attendees: {subEvent.sub_eventsMaxSeats}</span>
 															</div>
 														</div>
