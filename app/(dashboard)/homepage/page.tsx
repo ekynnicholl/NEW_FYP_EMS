@@ -3079,7 +3079,7 @@ export default function Homepage() {
 																<div
 																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"} `}
 																	style={{
-																		width: `${Math.min((parseInt(subEvent.sub_eventsCurrentAttendees ?? 0) / parseInt(subEvent.sub_eventsMaxSeats)), 100)}%`,
+																		width: `${Math.min((parseInt(subEvent.sub_eventsCurrentAttendees ?? '0') / parseInt(subEvent.sub_eventsMaxSeats)), 100)}%`,
 																	}}
 																></div>
 															</div>
