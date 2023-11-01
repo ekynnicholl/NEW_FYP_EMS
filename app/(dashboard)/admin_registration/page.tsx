@@ -7,7 +7,7 @@ import arrowRight from "@/public/images/arrow_right.png";
 import skipLeft from "@/public/images/skip_left.png";
 import skipRight from "@/public/images/skip_right.png";
 import { FaSortAlphaDown, FaSortAlphaUp, FaCalendarAlt, FaCheck } from 'react-icons/fa'; // Import icons from react-icons
-import { IoMdRefresh, IoIosArrowBack } from 'react-icons/io'; // Import icons from react-icons
+import { IoMdRefresh, IoIosArrowBack, IoIosAddCircleOutline } from 'react-icons/io'; // Import icons from react-icons
 
 import { useState } from 'react'
 
@@ -143,22 +143,23 @@ export default function Home() {
     });
 
     return (
-        <div className="h-screen flex flex-row justify-start">
-            <div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
+        <div className="h-screen flex flex-row justify-start bg-slate-100">
+            <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100">
                 <div className="bg-white rounded p-8">
                     <div className="inline-flex">
-                        <span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
-                        <h1 className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800">Upcoming Events</span></h1>
+                        <span className="mt-[7px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
+                        <p className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800">Admin Registration</span></p>
                     </div>
 
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between mb-8 mt-5">
                         {/* Refresh Button */}
                         <button
                             type="button"
-                            className="flex items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden"
-                        >
+                            className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105">
                             <IoMdRefresh className="text-xl text-slate-800" />
-                            <span className="ml-2 -mt-[1.25px] text-slate-800">Refresh</span>
+                            <span className="ml-2 -mt-[1.25px] text-slate-800">
+                                Refresh
+                            </span>
                         </button>
 
                         <div className="flex items-center">
@@ -225,15 +226,12 @@ export default function Home() {
                             {/* Export Button */}
                             <button
                                 type="button"
-                                className="flex items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden"
-                                onClick={exportToCSV}
-                            >
-                                <img src={exportCSV.src} alt="" width={20} className="text-slate-800" />
-                                <span className="ml-2 text-slate-800">Export to CSV</span>
+                                className="flex items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden">
+                                <IoIosAddCircleOutline className="text-2xl text-slate-800" />
+                                <span className="ml-2 -mt-[1.25px] text-slate-800">New Admin</span>
                             </button>
 
                         </div>
-
                     </div>
 
                     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">

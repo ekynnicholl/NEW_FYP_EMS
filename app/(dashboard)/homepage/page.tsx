@@ -55,22 +55,16 @@ import FeedbackList from "@/components/tables/feedbackTable";
 // import {Calendar} from "@/components/layouts/calendar";
 
 const currentDate = new Date();
-const formattedDate = currentDate.toLocaleDateString("en-US", {
-	weekday: "long",
-	year: "numeric",
-	month: "long",
-	day: "numeric",
-});
 
 const formatDate = (dateString: string): string => {
-	const options: Intl.DateTimeFormatOptions = {
-		weekday: "long",
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	};
-	return new Date(dateString).toLocaleDateString("en-US", options);
+	const date = new Date(dateString);
+	const month = date.toLocaleDateString("en-GB", { month: "long" });
+	const day = date.toLocaleDateString("en-GB", { day: "numeric" });
+	const dayOfWeek = date.toLocaleDateString("en-GB", { weekday: "long" });
+	return `${dayOfWeek}, ${day} ${month} ${date.getFullYear()}`;
 };
+
+const formattedDate = formatDate(currentDate.toISOString());
 
 const formatTime = (timeString: string): string => {
 	const options: Intl.DateTimeFormatOptions = {
@@ -2059,7 +2053,7 @@ export default function Homepage() {
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
 												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
 												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
-													{subEvent.sub_eventsMaxSeats} Seats
+													{subEvent.sub_eventsMaxSeats} Maximum Seats
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[14px]">

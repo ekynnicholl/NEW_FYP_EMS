@@ -65,15 +65,16 @@ export default function Home() {
 		<div className="h-screen flex flex-row justify-start bg-slate-100">
 			<div className="flex-1">
 				<div className="flex-1 mx-auto px-5 py-5 bg-slate-100">
-					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg">
+					{/* <div className="p-4 mb-4 bg-white rounded-lg shadow-lg">
 						<div className="text-center font-bold p-5">
 							<h1>Budget Expediture/ Year</h1>
 						</div>
 						<LineGraphExpenditure1 />
-					</div>
+					</div> */}
 					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg">
 						<div className="text-center font-bold p-5">
 							<h1>Number of Attendees each Faculty/ Unit by Date</h1>
+
 						</div>
 						<div className="justify-center items-center flex">
 							<div className="">
