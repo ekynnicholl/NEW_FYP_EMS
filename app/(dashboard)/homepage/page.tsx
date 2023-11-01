@@ -1580,7 +1580,7 @@ export default function Homepage() {
 											*
 										</span>
 									</p>
-									<input
+									<textarea
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="text"
 										placeholder="This event is about..."
@@ -1594,7 +1594,7 @@ export default function Homepage() {
 										}
 									/>
 
-									<div className="flex flex-col mt-[10px]">
+									<div className="flex flex-col mt-[2px]">
 										<div className="flex">
 											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px] dark:text-dark_textbox_title">
 												Start Date
@@ -2467,7 +2467,7 @@ export default function Homepage() {
 											*
 										</span>
 									</p>
-									<input
+									<textarea
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="text"
 										placeholder="Description"
@@ -2482,7 +2482,7 @@ export default function Homepage() {
 										}
 									/>
 
-									<div className="flex flex-col mt-[10px]">
+									<div className="flex flex-col mt-[2px]">
 										<div className="flex">
 											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px] dark:text-dark_textbox_title">
 												Start Date
@@ -4423,7 +4423,7 @@ export default function Homepage() {
 
 						{/* Mobile View */}
 						<div className="grid md:hidden grid-cols-2 gap-[6px] ml-1 -mr-[4.5px] -mt-2">
-							
+
 							{latestEvent[0] && (
 								<div
 									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
