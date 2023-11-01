@@ -276,15 +276,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				console.log(error);
 
+				toast.error("Error submitting form");
+			} else {
+				toast.success("Form submitted successfully");
+
 				setExternalForm({
 					...externalForm,
 					formStage: 2,
 					securityKey: null
 				});
 
-				toast.error("Error submitting form");
-			} else {
-				toast.success("Form submitted successfully");
 				window.location.reload();
 			}
 		}

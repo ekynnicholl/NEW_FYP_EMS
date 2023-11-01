@@ -269,16 +269,19 @@ export async function POST(request: Request) {
         const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
         const verificationEmail = requestData.verification_email;
         const approvalEmail = requestData.approval_email;
+        console.log("debugging stage" + formStage);
 
         console.log('Received request data:', requestData);
 
         if (formStage === 2) {
             const recipients = ['fypemsmaster369@gmail.com', staffEmail];
             const formIDs = [1, 5];
+            console.log("sending email starting process")
 
             for (let i = 0; i < recipients.length; i++) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipients[i];
+                console.log("sending email" + recipients[i])
 
                 const formIDForRecipient = formIDs[i];
 
