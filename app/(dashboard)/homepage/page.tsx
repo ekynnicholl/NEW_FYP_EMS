@@ -3214,20 +3214,41 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
+
 											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
 												{latestEvent[0].intFEventDescription}
 											</p>
-											<div className="flex items-center mt-[6px]">
-												<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
-												</p>
-											</div>
+
 
 											{subEvents.length > 0 && (
-												subEvents.length > 0 &&
 												subEvents
-													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															// new Date(subEvent.sub_eventsStartDate) > new Date()
+															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[6px]">
+															<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
+																{formatDate(latestEvent[0].intFEventStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															// new Date(subEvent.sub_eventsStartDate) > new Date()
+															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+														);
+													})
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
@@ -3241,7 +3262,13 @@ export default function Homepage() {
 
 											{subEvents.length > 0 && (
 												subEvents
-													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
+													.filter(subEvent => {
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															// new Date(subEvent.sub_eventsEndDate) > new Date()
+															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+														);
+													})
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
@@ -3253,33 +3280,47 @@ export default function Homepage() {
 													))
 											)}
 
-											{/* {subEvents.length > 0 && (
+											{subEvents.length > 0 && (
 												subEvents
-													.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
-													.slice(0, 1) // Take only the first sub event
-													.map((subEvent, index) => (
-														<div key={index}>
-															<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
-																<div
-																	className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
-																		}`}
-																	style={{
-																		width: `${Math.min(percentage, 100)}%`,
-																	}}
-																></div>
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															startDate.toDateString() === currentDate.toDateString()
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = subEvent.sub_eventsCurrentAttendees || 0;
+														const maxAttendees = subEvent.sub_eventsMaxSeats || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+														const percentage = (currentAttendees / maxAttendees) * 100;
+
+														return (
+															<div key={index}>
+																<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
+																			}`}
+																		style={{
+																			width: `${Math.min(percentage, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
+																</div>
 															</div>
-															<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/50</span>
-															</div>
-														</div>
-													))
-											)} */}
+														);
+													})
+											)}
+
 										</div>
 									)}
 								</div>
 							)}
-
-
 						</div>
 
 						<div className="w-full bg-white border border-slate-200 rounded-lg p-6 h-[500px] transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
