@@ -3156,15 +3156,33 @@ export default function Homepage() {
 													</div>
 												))}
 
-												<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
-													<span
-														aria-hidden
-														className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
-													<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-													<span className="relative mt-[0px] leading-3 tracking-wider">
-														Upcoming
+												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-[#BF7B5F] text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+														<span className="relative -mt-[1px] leading-3 tracking-wider">
+															Today
+														</span>
 													</span>
-												</span>
+												) : (
+													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Tomorrow
+															</span>
+														</span>
+													) : (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Upcoming
+															</span>
+														</span>
+													)
+												)}
 											</div>
 										</div>
 									)}
