@@ -107,12 +107,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// TO-DO: UNCOMMENT THIS TO ENABLE THE EMAIL SENDING FEATURE. YOU DON'T NEED TO UPDATE ANYTHING IN THE API, JUST ENSURE THE FORM CAN BE PASSED INTO IT,
 	// I'M USING USEEFFECT TO CHECK WHETHER THE EXTERNALFORM IS UPDATED THROUGH SETEXTERNALFORM IN THE onSubmit or onRevert, IF ANY CHANGES,
 	// PASS INTO THE API AND SEND THE EMAIL.
-	// useEffect(() => {
-	// 	if (externalForm.formStage != fetchedFormStage) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.formStage]);
+	useEffect(() => {
+		if (externalForm.formStage != fetchedFormStage) {
+			console.log(externalForm);
+			sendContactForm(externalForm);
+		}
+	}, [externalForm.formStage]);
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
