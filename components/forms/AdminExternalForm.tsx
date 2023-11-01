@@ -11,8 +11,8 @@ import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import NTFPDF from '@/components/forms/NTFPDF';
-import TooltipIcon from '@/components/icons/TooltipIcon';
+import NTFPDF from "@/components/forms/NTFPDF";
+import TooltipIcon from "@/components/icons/TooltipIcon";
 
 import { SiMicrosoftword } from "react-icons/si";
 import { BsFiletypePdf } from "react-icons/bs";
@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
+import { toast } from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 
@@ -77,15 +78,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const authToken = cookie.get("authToken");
 
 	// Real-time security key validation,
-	const [securityKeyInput, setSecurityKeyInput] = useState('');
+	const [securityKeyInput, setSecurityKeyInput] = useState("");
 	const [securityKeyError, setSecurityKeyError] = useState(true);
 
-	const handleChange = (e: { target: { value: any; }; }) => {
+	const handleChange = (e: { target: { value: any } }) => {
 		const inputValue = e.target.value;
 		setSecurityKeyInput(inputValue);
 
 		if (inputValue === data.securityKey) {
-			setSecurityKeyError(false); e
+			setSecurityKeyError(false);
+			e;
 		} else {
 			setSecurityKeyError(true);
 		}
@@ -105,12 +107,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// TO-DO: UNCOMMENT THIS TO ENABLE THE EMAIL SENDING FEATURE. YOU DON'T NEED TO UPDATE ANYTHING IN THE API, JUST ENSURE THE FORM CAN BE PASSED INTO IT,
 	// I'M USING USEEFFECT TO CHECK WHETHER THE EXTERNALFORM IS UPDATED THROUGH SETEXTERNALFORM IN THE onSubmit or onRevert, IF ANY CHANGES,
 	// PASS INTO THE API AND SEND THE EMAIL.
-	useEffect(() => {
-		if (externalForm.formStage != fetchedFormStage) {
-			console.log(externalForm);
-			sendContactForm(externalForm);
-		}
-	}, [externalForm.formStage])
+	// useEffect(() => {
+	// 	if (externalForm.formStage != fetchedFormStage) {
+	// 		console.log(externalForm);
+	// 		sendContactForm(externalForm);
+	// 	}
+	// }, [externalForm.formStage]);
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
@@ -133,19 +135,19 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 			program_title: externalForm.program_title!,
 			program_description: externalForm.program_description!,
-			commencement_date: externalForm.commencement_date!,
-			completion_date: externalForm.completion_date!,
+			commencement_date: new Date(externalForm.commencement_date!),
+			completion_date: new Date(externalForm.completion_date!),
 			organiser: externalForm.organiser!,
 			venue: externalForm.venue!,
 			hrdf_claimable: externalForm.hrdf_claimable!,
 
-			flight_date: externalForm.flight_date!,
+			flight_date: new Date(externalForm.flight_date!),
 			flight_time: externalForm.flight_time!,
 			flight_number: externalForm.flight_number!,
 			destination_from: externalForm.destination_from!,
 			destination_to: externalForm.destination_to!,
-			check_in_date: externalForm.check_in_date!,
-			check_out_date: externalForm.check_out_date!,
+			check_in_date: new Date(externalForm.check_in_date!),
+			check_out_date: new Date(externalForm.check_out_date!),
 			hotel_name: externalForm.hotel_name!,
 
 			course_fee: externalForm.course_fee!,
@@ -172,7 +174,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			applicant_declaration_name: externalForm.applicant_declaration_name!,
 			applicant_declaration_position_title:
 				externalForm.applicant_declaration_position_title!,
-			applicant_declaration_date: externalForm.applicant_declaration_date!,
+			applicant_declaration_date: new Date(
+				externalForm.applicant_declaration_date!,
+			),
 
 			verification_signature: "",
 			verification_name: "",
@@ -191,22 +195,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	}, [form.formState.errors]);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
-		// const { error } = await supabase
-		// 	.from("external_form")
-		// 	.update([
-		// 		{
-		// 			...values,
-		// 		},
-		// 	])
-		// 	.eq("id", externalForm.id);
-
-		// if (error) {
-		// 	console.log(error);
-		// }
-
-		// console.log("Form updated successfully.");
-		// console.log(values);
-
 		// Generate the security key,
 		const securityKeyUID = uuidv4();
 
@@ -229,8 +217,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.eq("id", externalForm.id);
 
 			if (error) {
+				toast.error("Error submitting form");
 				console.error("Error updating data:", error);
 			} else {
+				toast.success("Form submitted successfully");
 				console.log("Data updated successfully:", data);
 
 				setExternalForm({
@@ -268,7 +258,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 			if (error) {
 				console.log(error);
+				toast.error("Error submitting form");
 			} else {
+				toast.success("Form submitted successfully");
 				// window.location.reload();
 			}
 		}
@@ -307,7 +299,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				setExternalForm({
 					...externalForm,
 					formStage: 4,
-					securityKey: securityKeyUID
+					securityKey: securityKeyUID,
 				});
 
 				// router.refresh();
@@ -511,10 +503,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									*
 								</span>
 								<span>
-									Before completing this form, please refer to the separate
-									document on “General Instructions for completing Nomination /
-									Travelling Application Form”, which is available on
-									SharePoint.
+									Before completing this form, please refer to the
+									separate document on “General Instructions for
+									completing Nomination / Travelling Application Form”,
+									which is available on SharePoint.
 								</span>
 							</p>
 							<p className="mb-2">
@@ -522,8 +514,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									*
 								</span>
 								<span>
-									All fields are mandatory to complete as required for each
-									applicable section.
+									All fields are mandatory to complete as required for
+									each applicable section.
 								</span>
 							</p>
 							<p>
@@ -531,8 +523,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									*
 								</span>
 								<span>
-									This form is also to be used for any contracted individual as
-									consultant, and is to be completed where applicable.
+									This form is also to be used for any contracted
+									individual as consultant, and is to be completed where
+									applicable.
 								</span>
 							</p>
 						</div>
@@ -582,7 +575,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Email</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -598,11 +594,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>
-															Full Name (Same as I.C / Passport)
+															Full Name (Same as I.C /
+															Passport)
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -621,7 +621,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -640,7 +643,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -659,7 +665,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -676,13 +685,30 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>
 															Type of Transportation
 														</FormLabel>
-														<FormControl>
-															<Input
-																disabled={externalForm.formStage != 1}
-																className="disabled:text-black-500 disabled:opacity-100"
-																{...field}
-															/>
-														</FormControl>
+														<Select
+															disabled={
+																externalForm.formStage !=
+																1
+															}
+															onValueChange={field.onChange}
+															defaultValue={field.value}>
+															<FormControl>
+																<SelectTrigger>
+																	<SelectValue placeholder="Please select an option" />
+																</SelectTrigger>
+															</FormControl>
+															<SelectContent>
+																<SelectItem value="aeroplane">
+																	Aeroplane
+																</SelectItem>
+																<SelectItem value="company vehicle">
+																	Company vehicle
+																</SelectItem>
+																<SelectItem value="own transport">
+																	Own transport
+																</SelectItem>
+															</SelectContent>
+														</Select>
 														<FormMessage />
 													</FormItem>
 												)}
@@ -692,14 +718,30 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="travelling"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Traveling in</FormLabel>
-														<FormControl>
-															<Input
-																disabled={externalForm.formStage != 1}
-																className="disabled:text-black-500 disabled:opacity-100"
-																{...field}
-															/>
-														</FormControl>
+														<FormLabel>
+															Traveling in
+														</FormLabel>
+														<Select
+															disabled={
+																externalForm.formStage !=
+																1
+															}
+															onValueChange={field.onChange}
+															defaultValue={field.value}>
+															<FormControl>
+																<SelectTrigger>
+																	<SelectValue placeholder="Please select an option" />
+																</SelectTrigger>
+															</FormControl>
+															<SelectContent>
+																<SelectItem value="alone">
+																	Alone
+																</SelectItem>
+																<SelectItem value="group">
+																	Group
+																</SelectItem>
+															</SelectContent>
+														</Select>
 														<FormMessage />
 													</FormItem>
 												)}
@@ -716,7 +758,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -745,7 +790,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -762,7 +810,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Description</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -776,21 +827,54 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="commencement_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Commencement Date</FormLabel>
-													<FormControl>
-														<Button
-															disabled={externalForm.formStage != 1}
-															variant={"outline"}
-															className={cn(
-																"w-full pl-3 text-left font-normal",
-																!field.value &&
-																"text-muted-foreground",
-															)}>
-															<span>
-																{field.value.toLocaleString()}
-															</span>
-														</Button>
-													</FormControl>
+													<FormLabel>
+														Commencement Date
+													</FormLabel>
+													<Popover>
+														<PopoverTrigger asChild>
+															<FormControl>
+																<Button
+																	variant={"outline"}
+																	className={cn(
+																		"w-full pl-3 text-left font-normal",
+																		!field.value &&
+																			"text-muted-foreground",
+																	)}>
+																	{field.value ? (
+																		format(
+																			field.value,
+																			"PPP",
+																		)
+																	) : (
+																		<span>
+																			Pick a date
+																		</span>
+																	)}
+																</Button>
+															</FormControl>
+														</PopoverTrigger>
+														<PopoverContent
+															className="w-auto p-0"
+															align="start">
+															<Calendar
+																mode="single"
+																selected={field.value}
+																onSelect={field.onChange}
+																disabled={date => {
+																	const today =
+																		new Date();
+																	today.setHours(
+																		0,
+																		0,
+																		0,
+																		0,
+																	);
+																	return date < today;
+																}}
+																initialFocus
+															/>
+														</PopoverContent>
+													</Popover>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -801,18 +885,55 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
 													<FormLabel>Completion Date</FormLabel>
-													<FormControl>
-														<Button
-															disabled={externalForm.formStage != 1}
-															variant={"outline"}
-															className={cn(
-																"w-full pl-3 text-left font-normal",
-																!field.value &&
-																"text-muted-foreground",
-															)}>
-															{field.value.toLocaleString()}
-														</Button>
-													</FormControl>
+													<Popover>
+														<PopoverTrigger asChild>
+															<FormControl>
+																<Button
+																	disabled={
+																		externalForm.formStage !=
+																		1
+																	}
+																	variant={"outline"}
+																	className={cn(
+																		"w-full pl-3 text-left font-normal",
+																		!field.value &&
+																			"text-muted-foreground",
+																	)}>
+																	{field.value ? (
+																		format(
+																			field.value,
+																			"PPP",
+																		)
+																	) : (
+																		<span>
+																			Pick a date
+																		</span>
+																	)}
+																</Button>
+															</FormControl>
+														</PopoverTrigger>
+														<PopoverContent
+															className="w-auto p-0"
+															align="start">
+															<Calendar
+																mode="single"
+																selected={field.value}
+																onSelect={field.onChange}
+																disabled={date => {
+																	const today =
+																		new Date();
+																	today.setHours(
+																		0,
+																		0,
+																		0,
+																		0,
+																	);
+																	return date < today;
+																}}
+																initialFocus
+															/>
+														</PopoverContent>
+													</Popover>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -825,7 +946,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Organiser</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -842,7 +966,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Venue</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -858,7 +985,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormItem>
 													<FormLabel>HDRF Claimable</FormLabel>
 													<Select
-														disabled={externalForm.formStage != 1}
+														disabled={
+															externalForm.formStage != 1
+														}
 														onValueChange={field.onChange}
 														defaultValue={field.value}>
 														<FormControl>
@@ -875,7 +1004,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															</SelectItem>
 															<SelectItem value="not indicated in event brochure / registration form">
 																Not indicated in event
-																brochure / registration form
+																brochure / registration
+																form
 															</SelectItem>
 														</SelectContent>
 													</Select>
@@ -901,16 +1031,61 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormItem>
 														<FormLabel>Flight Date</FormLabel>
 														<FormControl>
-															<Button
-																disabled={externalForm.formStage != 1}
-																variant={"outline"}
-																className={cn(
-																	"w-full pl-3 text-left font-normal",
-																	!field.value &&
-																	"text-muted-foreground",
-																)}>
-																{field.value.toLocaleString()}
-															</Button>
+															<Popover>
+																<PopoverTrigger asChild>
+																	<FormControl>
+																		<Button
+																			disabled={
+																				externalForm.formStage !=
+																				1
+																			}
+																			variant={
+																				"outline"
+																			}
+																			className={cn(
+																				"w-full pl-3 text-left font-normal",
+																				!field.value &&
+																					"text-muted-foreground",
+																			)}>
+																			{field.value ? (
+																				format(
+																					field.value,
+																					"PPP",
+																				)
+																			) : (
+																				<span>
+																					Pick a
+																					date
+																				</span>
+																			)}
+																		</Button>
+																	</FormControl>
+																</PopoverTrigger>
+																<PopoverContent
+																	className="w-auto p-0"
+																	align="start">
+																	<Calendar
+																		mode="single"
+																		selected={
+																			field.value
+																		}
+																		onSelect={
+																			field.onChange
+																		}
+																		disabled={date => {
+																			const today =
+																				form.getValues(
+																					"flight_date",
+																				);
+																			return (
+																				date <
+																				today
+																			);
+																		}}
+																		initialFocus
+																	/>
+																</PopoverContent>
+															</Popover>
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -924,7 +1099,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>Flight Time</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -943,7 +1121,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Flight Number</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -954,7 +1135,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										/>
 
 										<div>
-											<h2 className="font-medium mb-3">Destination</h2>
+											<h2 className="font-medium mb-3">
+												Destination
+											</h2>
 											<div className="grid grid-auto-fit-lg gap-8 ">
 												<FormField
 													control={form.control}
@@ -964,7 +1147,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormLabel>From</FormLabel>
 															<FormControl>
 																<Input
-																	disabled={externalForm.formStage != 1}
+																	disabled={
+																		externalForm.formStage !=
+																		1
+																	}
 																	className="disabled:text-black-500 disabled:opacity-100"
 																	{...field}
 																/>
@@ -981,7 +1167,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormLabel>To</FormLabel>
 															<FormControl>
 																<Input
-																	disabled={externalForm.formStage != 1}
+																	disabled={
+																		externalForm.formStage !=
+																		1
+																	}
 																	className="disabled:text-black-500 disabled:opacity-100"
 																	{...field}
 																/>
@@ -1000,18 +1189,62 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Check In</FormLabel>
-														<FormControl>
-															<Button
-																disabled={externalForm.formStage != 1}
-																variant={"outline"}
-																className={cn(
-																	"w-full pl-3 text-left font-normal",
-																	!field.value &&
-																	"text-muted-foreground",
-																)}>
-																{field.value.toLocaleString()}
-															</Button>
-														</FormControl>
+														<Popover>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		disabled={
+																			externalForm.formStage !=
+																			1
+																		}
+																		variant={
+																			"outline"
+																		}
+																		className={cn(
+																			"w-full pl-3 text-left font-normal",
+																			!field.value &&
+																				"text-muted-foreground",
+																		)}>
+																		{field.value ? (
+																			format(
+																				field.value,
+																				"PPP",
+																			)
+																		) : (
+																			<span>
+																				Pick a
+																				date
+																			</span>
+																		)}
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto p-0"
+																align="start">
+																<Calendar
+																	mode="single"
+																	selected={field.value}
+																	onSelect={
+																		field.onChange
+																	}
+																	disabled={date => {
+																		const today =
+																			new Date();
+																		today.setHours(
+																			0,
+																			0,
+																			0,
+																			0,
+																		);
+																		return (
+																			date < today
+																		);
+																	}}
+																	initialFocus
+																/>
+															</PopoverContent>
+														</Popover>
 														<FormMessage />
 													</FormItem>
 												)}
@@ -1022,18 +1255,58 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Check Out</FormLabel>
-														<FormControl>
-															<Button
-																disabled={externalForm.formStage != 1}
-																variant={"outline"}
-																className={cn(
-																	"w-full pl-3 text-left font-normal",
-																	!field.value &&
-																	"text-muted-foreground",
-																)}>
-																{field.value.toLocaleString()}
-															</Button>
-														</FormControl>
+														<Popover>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		disabled={
+																			externalForm.formStage !=
+																			1
+																		}
+																		variant={
+																			"outline"
+																		}
+																		className={cn(
+																			"w-full pl-3 text-left font-normal",
+																			!field.value &&
+																				"text-muted-foreground",
+																		)}>
+																		{field.value ? (
+																			format(
+																				field.value,
+																				"PPP",
+																			)
+																		) : (
+																			<span>
+																				Pick a
+																				date
+																			</span>
+																		)}
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto p-0"
+																align="start">
+																<Calendar
+																	mode="single"
+																	selected={field.value}
+																	onSelect={
+																		field.onChange
+																	}
+																	disabled={date => {
+																		const today =
+																			form.getValues(
+																				"check_in_date",
+																			);
+																		return (
+																			date < today
+																		);
+																	}}
+																	initialFocus
+																/>
+															</PopoverContent>
+														</Popover>
 														<FormMessage />
 													</FormItem>
 												)}
@@ -1048,7 +1321,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Hotel</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 														/>
@@ -1063,7 +1339,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 								<Separator className="my-8" />
 
 								<section className="section-4" id="Funding">
-									<h2 className="text-2xl font-bold mb-4">4. Funding</h2>
+									<h2 className="text-2xl font-bold mb-4">
+										4. Funding
+									</h2>
 									<div className="grid grid-auto-fit-lg gap-8">
 										<FormField
 											control={form.control}
@@ -1073,12 +1351,17 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Course Fee</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1095,12 +1378,17 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Airfare Fee</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1114,15 +1402,22 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											control={form.control}
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Accommodation Fee</FormLabel>
+													<FormLabel>
+														Accommodation Fee
+													</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1139,12 +1434,17 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Per Diem Fee</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1158,15 +1458,22 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											control={form.control}
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Transportation Fee</FormLabel>
+													<FormLabel>
+														Transportation Fee
+													</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1185,12 +1492,17 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1207,12 +1519,17 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Other Fee</FormLabel>
 													<FormControl>
 														<Input
-															disabled={externalForm.formStage != 1}
+															disabled={
+																externalForm.formStage !=
+																1
+															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1231,7 +1548,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<Input
 															disabled
 															value={
-																form.getValues("course_fee") +
+																form.getValues(
+																	"course_fee",
+																) +
 																form.getValues(
 																	"airfare_fee",
 																) +
@@ -1247,7 +1566,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																form.getValues(
 																	"travel_insurance_fee",
 																) +
-																form.getValues("other_fees")
+																form.getValues(
+																	"other_fees",
+																)
 															}
 														/>
 													</FormControl>
@@ -1261,8 +1582,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										<h2 className="font-medium mb-3">
 											Source of Fund -
 											<span className="text-gray-500 text-sm">
-												Details of account(s) to be debited. (It is
-												encouraged to have a single source of funding)
+												Details of account(s) to be debited. (It
+												is encouraged to have a single source of
+												funding)
 											</span>
 										</h2>
 										<div className="grid grid-auto-fit-lg gap-8">
@@ -1276,7 +1598,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1295,7 +1620,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1309,10 +1637,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												control={form.control}
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Research Fund</FormLabel>
+														<FormLabel>
+															Research Fund
+														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1329,7 +1662,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>Travel Fund</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1348,7 +1684,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1365,7 +1704,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>Other Fund</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1384,13 +1726,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											render={({ field }) => (
 												<FormItem className="space-y-3">
 													<FormLabel>
-														Any expenditure cap? If yes, please
-														specify below
+														Any expenditure cap? If yes,
+														please specify below
 													</FormLabel>
 													<FormControl>
 														<RadioGroup
 															disabled={
-																externalForm.formStage !== 2
+																externalForm.formStage !==
+																2
 															}
 															onValueChange={field.onChange}
 															defaultValue={field.value}
@@ -1427,17 +1770,20 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormLabel>
 													<FormControl>
 														<Input
-															// disabled={
-															// 	form.getValues("has_expenditure_cap") !== "Yes" || externalForm.formStage !== 2
-															// }
 															disabled={
-																externalForm.formStage !== 2
+																form.getValues(
+																	"expenditure_cap",
+																) !== "Yes" ||
+																externalForm.formStage !==
+																	2
 															}
 															type="number"
 															{...field}
 															onChange={e => {
 																field.onChange(
-																	Number(e.target.value),
+																	Number(
+																		e.target.value,
+																	),
 																);
 															}}
 														/>
@@ -1462,7 +1808,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<FormItem>
 												<FormMessage />
 												<div className="flex flex-col gap-2 mt-2 items-start">
-													{form.getValues("supporting_documents") &&
+													{form.getValues(
+														"supporting_documents",
+													) &&
 														Array.from(
 															form.getValues(
 																"supporting_documents",
@@ -1502,10 +1850,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										6. Applicant Declaration
 									</h1>
 									<p className="text-gray-500 dark:text-gray-400 mb-8">
-										I (or acting as representative of group travelling)
-										hereby confirm the accuracy of the information
-										(including any attachments) provided for this
-										application.
+										I (or acting as representative of group
+										travelling) hereby confirm the accuracy of the
+										information (including any attachments) provided
+										for this application.
 									</p>
 									<div className="grid gap-8">
 										<div className="grid grid-auto-fit-lg gap-8">
@@ -1517,7 +1865,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormLabel>Name</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1531,10 +1882,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="applicant_declaration_position_title"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Position title</FormLabel>
+														<FormLabel>
+															Position title
+														</FormLabel>
 														<FormControl>
 															<Input
-																disabled={externalForm.formStage != 1}
+																disabled={
+																	externalForm.formStage !=
+																	1
+																}
 																className="disabled:text-black-500 disabled:opacity-100"
 																{...field}
 															/>
@@ -1550,19 +1906,58 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="applicant_declaration_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Declaration Date</FormLabel>
-													<FormControl>
-														<Button
-															disabled={externalForm.formStage != 1}
-															variant={"outline"}
-															className={cn(
-																"w-full pl-3 text-left font-normal",
-																!field.value &&
-																"text-muted-foreground",
-															)}>
-															{field.value}
-														</Button>
-													</FormControl>
+													<FormLabel>
+														Declaration Date
+													</FormLabel>
+													<Popover>
+														<PopoverTrigger asChild>
+															<FormControl>
+																<Button
+																	disabled={
+																		externalForm.formStage !=
+																		1
+																	}
+																	variant={"outline"}
+																	className={cn(
+																		"w-full pl-3 text-left font-normal",
+																		!field.value &&
+																			"text-muted-foreground",
+																	)}>
+																	{field.value ? (
+																		format(
+																			field.value,
+																			"PPP",
+																		)
+																	) : (
+																		<span>
+																			Pick a date
+																		</span>
+																	)}
+																</Button>
+															</FormControl>
+														</PopoverTrigger>
+														<PopoverContent
+															className="w-auto p-0"
+															align="start">
+															<Calendar
+																mode="single"
+																selected={field.value}
+																onSelect={field.onChange}
+																disabled={date => {
+																	const today =
+																		new Date();
+																	today.setHours(
+																		0,
+																		0,
+																		0,
+																		0,
+																	);
+																	return date < today;
+																}}
+																initialFocus
+															/>
+														</PopoverContent>
+													</Popover>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -1600,7 +1995,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											7. Verification
 										</h1>
 										<p className="text-gray-500 dark:text-gray-400 mb-8">
-											I have verified and support of this application.
+											I have verified and support of this
+											application.
 										</p>
 										<div className="grid gap-8">
 											<div className="grid grid-auto-fit-lg gap-8">
@@ -1652,11 +2048,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
-																		variant={"outline"}
+																		variant={
+																			"outline"
+																		}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value &&
-																			"text-muted-foreground",
+																				"text-muted-foreground",
 																		)}>
 																		{field.value ? (
 																			format(
@@ -1665,7 +2063,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			)
 																		) : (
 																			<span>
-																				Pick a date
+																				Pick a
+																				date
 																			</span>
 																		)}
 																	</Button>
@@ -1677,7 +2076,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<Calendar
 																	mode="single"
 																	selected={field.value}
-																	onSelect={field.onChange}
+																	onSelect={
+																		field.onChange
+																	}
 																	disabled={date =>
 																		date <= new Date()
 																	}
@@ -1701,9 +2102,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
 																		{imageURL && (
 																			<Image
-																				src={imageURL}
-																				width={300}
-																				height={200}
+																				src={
+																					imageURL
+																				}
+																				width={
+																					300
+																				}
+																				height={
+																					200
+																				}
 																				alt="Signature"
 																			/>
 																		)}
@@ -1758,7 +2165,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																						);
 																				console.log(
 																					"Field Value: " +
-																					field.value,
+																						field.value,
 																				);
 																			}}>
 																			Save
@@ -1833,11 +2240,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
-																		variant={"outline"}
+																		variant={
+																			"outline"
+																		}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value &&
-																			"text-muted-foreground",
+																				"text-muted-foreground",
 																		)}>
 																		{field.value ? (
 																			format(
@@ -1846,7 +2255,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			)
 																		) : (
 																			<span>
-																				Pick a date
+																				Pick a
+																				date
 																			</span>
 																		)}
 																	</Button>
@@ -1858,7 +2268,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<Calendar
 																	mode="single"
 																	selected={field.value}
-																	onSelect={field.onChange}
+																	onSelect={
+																		field.onChange
+																	}
 																	disabled={date =>
 																		date <= new Date()
 																	}
@@ -1882,9 +2294,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
 																		{imageURL && (
 																			<Image
-																				src={imageURL}
-																				width={300}
-																				height={200}
+																				src={
+																					imageURL
+																				}
+																				width={
+																					300
+																				}
+																				height={
+																					200
+																				}
 																				alt="Signature"
 																			/>
 																		)}
@@ -1923,6 +2341,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																				save();
 																				field.onChange(
 																					sigCanvas.current
+																						// @ts-ignore
 																						.getTrimmedCanvas()
 																						.toDataURL(
 																							"image/png",
@@ -1930,13 +2349,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																				);
 																				field.value =
 																					sigCanvas.current
+																						// @ts-ignore
 																						.getTrimmedCanvas()
 																						.toDataURL(
 																							"image/png",
 																						);
 																				console.log(
 																					"Field Value: " +
-																					field.value,
+																						field.value,
 																				);
 																			}}>
 																			Save
@@ -1955,9 +2375,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 								{externalForm.formStage == 1 ? (
 									<div>
-										<Button type="submit" onClick={form.handleSubmit(
-											onSubmit
-										)}>Submit</Button>
+										<Button type="submit">Submit</Button>
 									</div>
 								) : null}
 
@@ -1967,24 +2385,26 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 								{(showCommentInput ||
 									(externalForm.revertComment != "None" &&
 										externalForm.formStage == 2)) && (
-										<FormField
-											control={form.control}
-											name="revertComment"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Comments</FormLabel>
-													<FormControl>
-														<Input
-															disabled={externalForm.formStage == 1}
-															className="disabled:text-black-500 disabled:opacity-100"
-															{...field}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									)}
+									<FormField
+										control={form.control}
+										name="revertComment"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Comments</FormLabel>
+												<FormControl>
+													<Input
+														disabled={
+															externalForm.formStage == 1
+														}
+														className="disabled:text-black-500 disabled:opacity-100"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								)}
 
 								{/* Show the buttons according to the current form stage, */}
 								{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
@@ -2000,10 +2420,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													name="verification_email"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Verification Email</FormLabel>
+															<FormLabel>
+																Verification Email
+															</FormLabel>
 															<Select
-																onValueChange={field.onChange}
-																defaultValue={field.value}>
+																onValueChange={
+																	field.onChange
+																}
+																defaultValue={
+																	field.value
+																}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2030,10 +2456,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													name="approval_email"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Approval Email</FormLabel>
+															<FormLabel>
+																Approval Email
+															</FormLabel>
 															<Select
-																onValueChange={field.onChange}
-																defaultValue={field.value}>
+																onValueChange={
+																	field.onChange
+																}
+																defaultValue={
+																	field.value
+																}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2058,24 +2490,30 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											</div>
 										</section>
 
-										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
+										<Dialog
+											open={revertOpen}
+											onOpenChange={setRevertOpen}>
 											<DialogTrigger>
-												<Button className="mr-5">Revert</Button>
+												<Button type="button" className="mr-5">
+													Revert
+												</Button>
 											</DialogTrigger>
 											<DialogContent>
 												<DialogHeader>
 													<DialogTitle>Revert</DialogTitle>
 												</DialogHeader>
 												<DialogDescription>
-													Are you sure you want to revert this form?
-													Please enter a comment below.
+													Are you sure you want to revert this
+													form? Please enter a comment below.
 												</DialogDescription>
 												<FormField
 													control={form.control}
 													name="revertComment"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Comments</FormLabel>
+															<FormLabel>
+																Comments
+															</FormLabel>
 															<FormControl>
 																<Input {...field} />
 															</FormControl>
@@ -2100,29 +2538,38 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											</DialogContent>
 										</Dialog>
 
-										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
+										<Dialog
+											open={submitOpen}
+											onOpenChange={setSubmitOpen}>
 											<DialogTrigger>
-												<Button type="submit">
+												<Button type="button">
 													Submit for Review
 												</Button>
 											</DialogTrigger>
 											<DialogContent>
 												<DialogHeader>
-													<DialogTitle>Please ensure your email information</DialogTitle>
+													<DialogTitle>
+														Please ensure your email
+														information
+													</DialogTitle>
 												</DialogHeader>
 												<DialogDescription>
-													Wrong email information will result in the form being sent to the wrong person.
+													Wrong email information will result in
+													the form being sent to the wrong
+													person.
 												</DialogDescription>
 												<DialogFooter>
 													<DialogClose asChild>
-														<Button variant="outline">Cancel</Button>
+														<Button variant="outline">
+															Cancel
+														</Button>
 													</DialogClose>
 													<Button
 														onMouseUp={() => {
 															setSubmitOpen(false);
 														}}
 														onClick={form.handleSubmit(
-															onSubmit
+															onSubmit,
 														)}>
 														Submit
 													</Button>
@@ -2131,7 +2578,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</Dialog>
 									</div>
 								) : externalForm.formStage == 3 ||
-									externalForm.formStage == 4 ? (
+								  externalForm.formStage == 4 ? (
 									<div>
 										<FormField
 											control={form.control}
@@ -2141,13 +2588,18 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>
 														<div className="group relative w-max cursor-pointer">
 															<span className="flex items-center">
-																<span className="mr-2">Security Key</span>
+																<span className="mr-2">
+																	Security Key
+																</span>
 																<TooltipIcon />
 															</span>
-															<span
-																className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2"
-															>
-																This is to ensure that you are the appropriate individual for the authorization or rejection of this form. It can be found in your email.
+															<span className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
+																This is to ensure that you
+																are the appropriate
+																individual for the
+																authorization or rejection
+																of this form. It can be
+																found in your email.
 															</span>
 														</div>
 													</FormLabel>
@@ -2161,32 +2613,53 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														/>
 													</FormControl>
 													<FormMessage>
-														{securityKeyError && <div className="error-message mb-5">The security key doesn't match.</div>}
+														{securityKeyError && (
+															<div className="error-message mb-5">
+																The security key does not
+																match.
+															</div>
+														)}
 													</FormMessage>
 												</FormItem>
 											)}
 										/>
 										{externalForm.formStage == 3 ? (
 											<div>
-												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
+												<Dialog
+													open={revertOpen}
+													onOpenChange={setRevertOpen}>
 													<DialogTrigger>
-														<Button className="mr-5" disabled={securityKeyError}>Reject</Button>
+														<Button
+															type="button"
+															className="mr-5"
+															disabled={securityKeyError}>
+															Reject
+														</Button>
 													</DialogTrigger>
 													<DialogContent>
 														<DialogHeader>
-															<DialogTitle>Please confirm your action.</DialogTitle>
+															<DialogTitle>
+																Please confirm your
+																action.
+															</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to REJECT this Nominations/ Travelling Form, is this correct?
+															You are trying to REJECT this
+															Nominations/ Travelling Form,
+															is this correct?
 														</DialogDescription>
 														<FormField
 															control={form.control}
 															name="revertComment"
 															render={({ field }) => (
 																<FormItem>
-																	<FormLabel>Comments</FormLabel>
+																	<FormLabel>
+																		Comments
+																	</FormLabel>
 																	<FormControl>
-																		<Input {...field} />
+																		<Input
+																			{...field}
+																		/>
 																	</FormControl>
 																	<FormMessage />
 																</FormItem>
@@ -2209,29 +2682,41 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</DialogContent>
 												</Dialog>
 
-												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
+												<Dialog
+													open={submitOpen}
+													onOpenChange={setSubmitOpen}>
 													<DialogTrigger>
-														<Button disabled={securityKeyError}>
+														<Button
+															type="button"
+															disabled={securityKeyError}>
 															Submit for Review
 														</Button>
 													</DialogTrigger>
 													<DialogContent>
 														<DialogHeader>
-															<DialogTitle>Please confirm your action.</DialogTitle>
+															<DialogTitle>
+																Please confirm your
+																action.
+															</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to SUBMIT this Nominations/ Travelling Form FOR FURTHER REVIEW, is this correct?
+															You are trying to SUBMIT this
+															Nominations/ Travelling Form
+															FOR FURTHER REVIEW, is this
+															correct?
 														</DialogDescription>
 														<DialogFooter>
 															<DialogClose asChild>
-																<Button variant="outline">Cancel</Button>
+																<Button variant="outline">
+																	Cancel
+																</Button>
 															</DialogClose>
 															<Button
 																onMouseUp={() => {
 																	setSubmitOpen(false);
 																}}
 																onClick={form.handleSubmit(
-																	onSubmit
+																	onSubmit,
 																)}>
 																Submit
 															</Button>
@@ -2241,25 +2726,41 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											</div>
 										) : externalForm.formStage == 4 ? (
 											<div>
-												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
+												<Dialog
+													open={revertOpen}
+													onOpenChange={setRevertOpen}>
 													<DialogTrigger>
-														<Button className="mr-5" disabled={securityKeyError}>Reject</Button>
+														<Button
+															type="button"
+															className="mr-5"
+															disabled={securityKeyError}>
+															Reject
+														</Button>
 													</DialogTrigger>
 													<DialogContent>
 														<DialogHeader>
-															<DialogTitle>Please confirm your action.</DialogTitle>
+															<DialogTitle>
+																Please confirm your
+																action.
+															</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to REJECT this Nominations/ Travelling Form, is this correct?
+															You are trying to REJECT this
+															Nominations/ Travelling Form,
+															is this correct?
 														</DialogDescription>
 														<FormField
 															control={form.control}
 															name="revertComment"
 															render={({ field }) => (
 																<FormItem>
-																	<FormLabel>Comments</FormLabel>
+																	<FormLabel>
+																		Comments
+																	</FormLabel>
 																	<FormControl>
-																		<Input {...field} />
+																		<Input
+																			{...field}
+																		/>
 																	</FormControl>
 																	<FormMessage />
 																</FormItem>
@@ -2282,29 +2783,40 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</DialogContent>
 												</Dialog>
 
-												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
+												<Dialog
+													open={submitOpen}
+													onOpenChange={setSubmitOpen}>
 													<DialogTrigger>
-														<Button disabled={securityKeyError}>
+														<Button
+															type="button"
+															disabled={securityKeyError}>
 															Approve
 														</Button>
 													</DialogTrigger>
 													<DialogContent>
 														<DialogHeader>
-															<DialogTitle>Please confirm your action.</DialogTitle>
+															<DialogTitle>
+																Please confirm your
+																action.
+															</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to APPROVE this Nominations/ Travelling Form, is this correct?
+															You are trying to APPROVE this
+															Nominations/ Travelling Form,
+															is this correct?
 														</DialogDescription>
 														<DialogFooter>
 															<DialogClose asChild>
-																<Button variant="outline">Cancel</Button>
+																<Button variant="outline">
+																	Cancel
+																</Button>
 															</DialogClose>
 															<Button
 																onMouseUp={() => {
 																	setSubmitOpen(false);
 																}}
 																onClick={form.handleSubmit(
-																	onSubmit
+																	onSubmit,
 																)}>
 																Submit
 															</Button>

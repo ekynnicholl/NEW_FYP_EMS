@@ -26,20 +26,36 @@ const adminExternalFormSchema = z.object({
 	// Section 2
 	program_title: z.string().min(1, { message: "Program / Event title is required" }),
 	program_description: z.string().optional(),
-	commencement_date: z.string(),
-	completion_date: z.string(),
+	commencement_date: z
+		.date({
+			required_error: "Please select a date.",
+			invalid_type_error: "Oops that's not a date!",
+		})
+		.min(today, { message: "Date must be today or in the future." }),
+	completion_date: z
+		.date()
+		.refine(val => val >= today, { message: "Date must be today or in the future." }),
 	organiser: z.string().min(1, { message: "Organiser is required" }),
 	venue: z.string().min(1, { message: "Venue is required" }),
 	hrdf_claimable: z.string().min(1, { message: "Please select one of the option." }),
 
 	// Section 3
-	flight_date: z.string(),
+	flight_date: z.date({
+		required_error: "Flight Date is required.",
+		invalid_type_error: "Oops that's not a date!",
+	}),
 	flight_time: z.string().min(1, { message: "Flight time is required" }),
 	flight_number: z.string().min(1, { message: "Flight number is required" }),
 	destination_from: z.string().min(1, { message: "Destination is required" }),
 	destination_to: z.string().min(1, { message: "Destination is required" }),
-	check_in_date: z.string(),
-	check_out_date: z.string(),
+	check_in_date: z.date({
+		required_error: "Check-in date is required.",
+		invalid_type_error: "Oops that's not a date!",
+	}),
+	check_out_date: z.date({
+		required_error: "Check-out date is required.",
+		invalid_type_error: "Oops that's not a date!",
+	}),
 	hotel_name: z.string().min(1, { message: "Hotel is required" }),
 
 	// // Section 4
@@ -128,7 +144,10 @@ const adminExternalFormSchema = z.object({
 	applicant_declaration_position_title: z
 		.string()
 		.min(1, { message: "Position title is required" }),
-	applicant_declaration_date: z.string(),
+	applicant_declaration_date: z.date({
+		required_error: "Declaration date is required.",
+		invalid_type_error: "Oops that's not a date!",
+	}),
 	applicant_declaration_signature: z.string(),
 
 	// Section 7

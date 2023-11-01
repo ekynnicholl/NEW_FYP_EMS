@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +13,7 @@ import Image from "next/image";
 import { SiMicrosoftword } from "react-icons/si";
 import { BsFiletypePdf } from "react-icons/bs";
 
+import { toast } from "react-hot-toast";
 import externalFormSchema from "@/schema/externalFormSchema";
 import { Input } from "@/components/ui/input";
 import {
@@ -52,11 +54,12 @@ import { sendContactForm } from "@/lib/api";
 
 export default function ExternalForm() {
 	const supabase = createClientComponentClient();
+	const router = useRouter();
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
 	const [externalForm, setExternalForm] = useState<any>({
-		id: ""
+		id: "",
 	});
 
 	const sigCanvas = useRef({});
@@ -128,7 +131,26 @@ export default function ExternalForm() {
 			console.log("Email has been sent out!");
 			sendContactForm(externalForm);
 		}
-	}, [externalForm.id])
+	}, [externalForm.id]);
+
+	const checkFormStatus = () => {
+		setOpen(false);
+		if (form.formState.errors) {
+			toast.error("Please ensure all fields are filled up correctly");
+		}
+		if (form.getValues("check_out_date") < form.getValues("check_in_date")) {
+			toast.error("Check out date cannot be earlier than check in date");
+		}
+		if (form.getValues("completion_date") < form.getValues("commencement_date")) {
+			toast.error("Commencement date must be before completion date.");
+		}
+		if (form.getValues("flight_date") < form.getValues("check_in_date")) {
+			toast.error("Flight date cannot be earlier than check in date");
+		}
+		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
+			toast.error("Please enter the name of other members traveling together");
+		}
+	}
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
@@ -145,13 +167,18 @@ export default function ExternalForm() {
 
 		if (error) {
 			console.log(error);
+			toast.error("Error submitting form");
 		} else {
 			setExternalForm({ ...values, id: data[0].id });
+			toast.success("Form submitted successfully");
 
+			// router.refresh();
 			window.location.reload();
 		}
 		console.log(values);
 	}
+
+	const [group, setGroup] = useState(true);
 
 	return (
 		<div className="grid grid-cols-[240px_auto] gap-8 items-start">
@@ -291,7 +318,14 @@ export default function ExternalForm() {
 										<FormItem>
 											<FormLabel>Traveling in</FormLabel>
 											<Select
-												onValueChange={field.onChange}
+												onValueChange={e => {
+													field.onChange(e);
+													if (e === "group") {
+														setGroup(false);
+													} else {
+														setGroup(true);
+													}
+												}}
 												defaultValue={field.value}>
 												<FormControl>
 													<SelectTrigger>
@@ -323,10 +357,7 @@ export default function ExternalForm() {
 										</FormLabel>
 										<FormControl>
 											<Input
-												disabled={
-													form.getValues("travelling") !==
-													"group"
-												}
+												disabled={group}
 												placeholder=""
 												{...field}
 											/>
@@ -383,7 +414,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -427,7 +458,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -445,9 +476,13 @@ export default function ExternalForm() {
 													selected={field.value}
 													onSelect={field.onChange}
 													disabled={date => {
-														const today = new Date();
-														today.setHours(0, 0, 0, 0);
-														return date < today;
+														const today =
+															form.getValues(
+																"commencement_date"
+															);
+														return (
+															date < today
+														);
 													}}
 													initialFocus
 												/>
@@ -535,7 +570,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -647,7 +682,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -691,7 +726,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																"text-muted-foreground",
+																	"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -709,9 +744,13 @@ export default function ExternalForm() {
 														selected={field.value}
 														onSelect={field.onChange}
 														disabled={date => {
-															const today = new Date();
-															today.setHours(0, 0, 0, 0);
-															return date < today;
+															const today =
+																form.getValues(
+																	"check_in_date",
+																);
+															return (
+																date < today
+															);
 														}}
 														initialFocus
 													/>
@@ -1054,9 +1093,8 @@ export default function ExternalForm() {
 										<FormControl>
 											<Input
 												disabled={
-													form.getValues(
-														"expenditure_cap",
-													) !== "Yes"
+													form.getValues("expenditure_cap") !==
+													"Yes"
 												}
 												type="number"
 												{...field}
@@ -1139,7 +1177,7 @@ export default function ExternalForm() {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-															1,
+																1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1215,7 +1253,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-															"text-muted-foreground",
+																"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1307,7 +1345,7 @@ export default function ExternalForm() {
 																		);
 																console.log(
 																	"Field Value: " +
-																	field.value,
+																		field.value,
 																);
 															}}>
 															Save
@@ -1329,11 +1367,12 @@ export default function ExternalForm() {
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>
-									Please re-confirm your details!
-								</DialogTitle>
+								<DialogTitle>Please re-confirm your details!</DialogTitle>
 								<DialogDescription>
-									Please confirm your email is correct: {form.getValues("email")}. <br />Wrong email will result in you not receiving any updates of your form status.
+									Please confirm your email is correct:{" "}
+									{form.getValues("email")}. <br />
+									Wrong email will result in you not receiving any
+									updates of your form status.
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
@@ -1341,9 +1380,7 @@ export default function ExternalForm() {
 									<Button variant="outline">Cancel</Button>
 								</DialogClose>
 								<Button
-									onMouseUp={() => {
-										setOpen(false);
-									}}
+									onMouseUp={checkFormStatus}
 									onClick={form.handleSubmit(onSubmit)}>
 									{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
 									Submit

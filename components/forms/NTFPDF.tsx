@@ -86,8 +86,8 @@ export default function Home({ id }: { id: string }) {
     }
 
     return (
-        <div className="bg-white w-full h-full">
-            <div className="p-4 m-auto bg-white w-a4 h-a4">
+        <div className="bg-white w-full h-screen">
+            <div className="p-4 m-auto bg-white w-a4 h-full">
                 <div>
                     <span className="float-left mr-4">
                         <Image
@@ -168,7 +168,7 @@ export default function Home({ id }: { id: string }) {
                                         <label className="col-span-2 row-span-1 flex items-center justify-center border-b border-r border-slate-950">Destination</label>
                                         <label className="col-span-1 row-span-1 flex items-center justify-center border-b border-r border-slate-950">From</label>
                                         <label className="col-span-1 row-span-1 flex items-center justify-center border-b border-r border-slate-950">To</label>
-                                        <input typeof="text" className="col-span-1 border border-t-0 border-slate-950 p-1 text-center" value={details.flight_number} />
+                                        <input typeof="text" className="col-span-1 border border-t-0 border-slate-950 p-1 text-center" value={details.flight_date} />
                                         <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.flight_time} />
                                         <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.flight_number} />
                                         <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.destination_from} />
@@ -264,9 +264,9 @@ export default function Home({ id }: { id: string }) {
 
                                     <label className="col-span-3 p-1 flex items-center border-b border-r border-slate-950">
                                         Any expenditure cap?
-                                        <input type="checkbox" className="ml-2" checked={details && details.expenditure_cap === "None" ? true : false} />
+                                        <input type="checkbox" className="ml-2" checked={details && details.expenditure_cap ? true : false} />
                                         <label className="ml-2">No</label>
-                                        <input type="checkbox" className="ml-4" checked={details && details.expenditure_cap === "Yes" ? true : false} />
+                                        <input type="checkbox" className="ml-4" checked={details && details.expenditure_cap ? true : false} />
                                         <label className="ml-2">Yes</label>
                                         <p className="italic text-xs font-normal ml-20">if yes, please specify below</p>
                                     </label>
