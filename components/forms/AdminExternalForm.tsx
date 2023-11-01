@@ -68,6 +68,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [submitOpen, setSubmitOpen] = useState(false);
+	const [applicantOpen, setApplicantOpen] = useState(false);
 	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
 	const [imageURL, setImageURL] = useState("");
 
@@ -189,6 +190,22 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			approval_date: undefined,
 		},
 	});
+
+	const checkFormStatus = () => {
+		setApplicantOpen(false);
+		if (form.getValues("check_out_date") < form.getValues("check_in_date")) {
+			toast.error("Check out date cannot be earlier than check in date");
+		}
+		if (form.getValues("completion_date") < form.getValues("commencement_date")) {
+			toast.error("Commencement date must be before completion date.");
+		}
+		if (
+			form.getValues("travelling") === "group" &&
+			form.getValues("other_members") === ""
+		) {
+			toast.error("Please enter the name of other members traveling together");
+		}
+	};
 
 	useEffect(() => {
 		console.log(form.formState.errors);
@@ -473,6 +490,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		}
 	};
 
+	const [group, setGroup] = useState(true);
+
 	return (
 		<div>
 			{/* TO-DO: ADD 3 MORE ADDITIONAL FIELDS. I DON'T THINK THIS EXIST IN THE DATABASE YET. */}
@@ -726,7 +745,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																externalForm.formStage !=
 																1
 															}
-															onValueChange={field.onChange}
+															onValueChange={e => {
+																field.onChange(e);
+																if (e === "group") {
+																	setGroup(false);
+																} else {
+																	setGroup(true);
+																}
+															}}
 															defaultValue={field.value}>
 															<FormControl>
 																<SelectTrigger>
@@ -760,7 +786,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<Input
 															disabled={
 																externalForm.formStage !=
-																1
+																	1 || group
 															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
@@ -1719,80 +1745,85 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</div>
 									</div>
 
-									<div className="mt-8 space-y-4">
-										<FormField
-											control={form.control}
-											name="expenditure_cap"
-											render={({ field }) => (
-												<FormItem className="space-y-3">
-													<FormLabel>
-														Any expenditure cap? If yes,
-														please specify below
-													</FormLabel>
-													<FormControl>
-														<RadioGroup
-															disabled={
-																externalForm.formStage !==
-																2
-															}
-															onValueChange={field.onChange}
-															defaultValue={field.value}
-															className="flex space-x-1">
-															<FormItem className="flex items-center space-x-3 space-y-0">
-																<FormControl>
-																	<RadioGroupItem value="Yes" />
-																</FormControl>
-																<FormLabel className="font-normal">
-																	Yes
-																</FormLabel>
-															</FormItem>
-															<FormItem className="flex items-center space-x-3 space-y-0">
-																<FormControl>
-																	<RadioGroupItem value="No" />
-																</FormControl>
-																<FormLabel className="font-normal">
-																	No
-																</FormLabel>
-															</FormItem>
-														</RadioGroup>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="expenditure_cap_amount"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Expenditure Cap Amount
-													</FormLabel>
-													<FormControl>
-														<Input
-															disabled={
-																form.getValues(
-																	"expenditure_cap",
-																) !== "Yes" ||
-																externalForm.formStage !==
+									{externalForm.formStage !== 1 && (
+										<div className="mt-8 space-y-4">
+											<FormField
+												control={form.control}
+												name="expenditure_cap"
+												render={({ field }) => (
+													<FormItem className="space-y-3">
+														<FormLabel>
+															Any expenditure cap? If yes,
+															please specify below
+														</FormLabel>
+														<FormControl>
+															<RadioGroup
+																disabled={
+																	externalForm.formStage !==
 																	2
-															}
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(
-																	Number(
-																		e.target.value,
-																	),
-																);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
+																}
+																onValueChange={
+																	field.onChange
+																}
+																defaultValue={field.value}
+																className="flex space-x-1">
+																<FormItem className="flex items-center space-x-3 space-y-0">
+																	<FormControl>
+																		<RadioGroupItem value="Yes" />
+																	</FormControl>
+																	<FormLabel className="font-normal">
+																		Yes
+																	</FormLabel>
+																</FormItem>
+																<FormItem className="flex items-center space-x-3 space-y-0">
+																	<FormControl>
+																		<RadioGroupItem value="No" />
+																	</FormControl>
+																	<FormLabel className="font-normal">
+																		No
+																	</FormLabel>
+																</FormItem>
+															</RadioGroup>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+											<FormField
+												control={form.control}
+												name="expenditure_cap_amount"
+												render={({ field }) => (
+													<FormItem>
+														<FormLabel>
+															Expenditure Cap Amount
+														</FormLabel>
+														<FormControl>
+															<Input
+																disabled={
+																	form.getValues(
+																		"expenditure_cap",
+																	) !== "Yes" ||
+																	externalForm.formStage !==
+																		2
+																}
+																type="number"
+																{...field}
+																onChange={e => {
+																	field.onChange(
+																		Number(
+																			e.target
+																				.value,
+																		),
+																	);
+																}}
+															/>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+										</div>
+									)}
 								</section>
 
 								<Separator className="my-8" />
@@ -2375,7 +2406,43 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 								{externalForm.formStage == 1 ? (
 									<div>
-										<Button type="submit">Submit</Button>
+										<Dialog open={applicantOpen} onOpenChange={setApplicantOpen}>
+											<DialogTrigger>
+												<Button type="button">
+													Submit for Review
+												</Button>
+											</DialogTrigger>
+											<DialogContent>
+												<DialogHeader>
+													<DialogTitle>
+														Please re-confirm your details!
+													</DialogTitle>
+													<DialogDescription>
+														Please confirm your email is
+														correct: {form.getValues("email")}
+														. <br />
+														Wrong email will result in you not
+														receiving any updates of your form
+														status.
+													</DialogDescription>
+												</DialogHeader>
+												<DialogFooter>
+													<DialogClose>
+														<Button variant="outline">
+															Cancel
+														</Button>
+													</DialogClose>
+													<Button
+														onMouseUp={checkFormStatus}
+														onClick={form.handleSubmit(
+															onSubmit,
+														)}>
+														{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
+														Submit
+													</Button>
+												</DialogFooter>
+											</DialogContent>
+										</Dialog>
 									</div>
 								) : null}
 
@@ -2494,9 +2561,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											open={revertOpen}
 											onOpenChange={setRevertOpen}>
 											<DialogTrigger>
-												<Button type="button" className="mr-5" onClick={() => {
-													setShowCommentInput(true);
-												}}>
+												<Button
+													type="button"
+													className="mr-5"
+													onClick={() => {
+														setShowCommentInput(true);
+													}}>
 													Revert
 												</Button>
 											</DialogTrigger>

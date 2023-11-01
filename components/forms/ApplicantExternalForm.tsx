@@ -135,17 +135,11 @@ export default function ExternalForm() {
 
 	const checkFormStatus = () => {
 		setOpen(false);
-		if (form.formState.errors) {
-			toast.error("Please ensure all fields are filled up correctly");
-		}
 		if (form.getValues("check_out_date") < form.getValues("check_in_date")) {
 			toast.error("Check out date cannot be earlier than check in date");
 		}
 		if (form.getValues("completion_date") < form.getValues("commencement_date")) {
 			toast.error("Commencement date must be before completion date.");
-		}
-		if (form.getValues("flight_date") < form.getValues("check_in_date")) {
-			toast.error("Flight date cannot be earlier than check in date");
 		}
 		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
 			toast.error("Please enter the name of other members traveling together");
