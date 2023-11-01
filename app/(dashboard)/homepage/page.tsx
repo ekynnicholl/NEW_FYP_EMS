@@ -1582,7 +1582,6 @@ export default function Homepage() {
 									</p>
 									<textarea
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-										type="text"
 										placeholder="This event is about..."
 										name="event_description"
 										required
@@ -2469,7 +2468,6 @@ export default function Homepage() {
 									</p>
 									<textarea
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-										type="text"
 										placeholder="Description"
 										name="event_description"
 										value={editEventInfo.intFEventDescription}
@@ -4595,10 +4593,9 @@ export default function Homepage() {
 													.slice(0, 1)
 													.map((subEvent, index) => {
 														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
-														const maxAttendees = (subEvent.sub_eventsMaxSeats) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
 
 														const isOverCapacity = currentAttendees > maxAttendees;
-														const percentage = (currentAttendees / maxAttendees) * 100;
 
 														return (
 															<div key={index}>
@@ -4607,7 +4604,7 @@ export default function Homepage() {
 																		className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
 																			}`}
 																		style={{
-																			width: `${Math.min(percentage, 100)}%`,
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																		}}
 																	></div>
 																</div>
