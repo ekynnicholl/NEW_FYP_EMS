@@ -88,7 +88,7 @@ const PageNotFound = () => {
           <div>
             <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">OOPSIES!</p>
             <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
-              Hey! The Nominations/ Travelling Form you're trying to access <span className="font-bold">does not exist</span>. <br /> Contact the office if you think this was a mistake.
+              Hey! The Nominations/ Travelling Form you&rsquo;re trying to access <span className="font-bold">does not exist</span>. <br /> Contact the office if you think this was a mistake.
             </div>
           </div>
         ) : (
