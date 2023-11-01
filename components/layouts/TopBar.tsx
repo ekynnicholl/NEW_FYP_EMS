@@ -281,7 +281,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 						<DropdownMenuContent>
 
 							<a href="/admin_registration">
-								<DropdownMenuLabel>My Account</DropdownMenuLabel>
+								<DropdownMenuLabel>Admin Registration</DropdownMenuLabel>
 							</a>
 
 							<DropdownMenuSeparator />
