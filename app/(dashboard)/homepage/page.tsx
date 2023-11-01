@@ -4423,6 +4423,7 @@ export default function Homepage() {
 
 						{/* Mobile View */}
 						<div className="grid md:hidden grid-cols-2 gap-[6px] ml-1 -mr-[4.5px] -mt-2">
+							
 							{latestEvent[0] && (
 								<div
 									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
@@ -4622,6 +4623,7 @@ export default function Homepage() {
 									)}
 								</div>
 							)}
+
 						</div>
 
 						<div className="w-full bg-white border border-slate-200 rounded-lg p-6 h-[500px] transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
