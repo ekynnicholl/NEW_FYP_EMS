@@ -87,7 +87,7 @@ export default function Home({ id }: { id: string }) {
 
     return (
         <div className="bg-white w-full h-screen">
-            <div className="p-4 m-auto bg-white w-a4 h-full">
+            <div className="p-4 m-auto bg-white w-a4 h-a4">
                 <div>
                     <span className="float-left mr-4">
                         <Image
@@ -264,9 +264,9 @@ export default function Home({ id }: { id: string }) {
 
                                     <label className="col-span-3 p-1 flex items-center border-b border-r border-slate-950">
                                         Any expenditure cap?
-                                        <input type="checkbox" className="ml-2" checked={details && details.expenditure_cap ? true : false} />
+                                        <input type="checkbox" className="ml-2" checked={details && details.expenditure_cap === "No" ? true : false} />
                                         <label className="ml-2">No</label>
-                                        <input type="checkbox" className="ml-4" checked={details && details.expenditure_cap ? true : false} />
+                                        <input type="checkbox" className="ml-4" checked={details && details.expenditure_cap === "Yes" ? true : false} />
                                         <label className="ml-2">Yes</label>
                                         <p className="italic text-xs font-normal ml-20">if yes, please specify below</p>
                                     </label>
@@ -283,7 +283,7 @@ export default function Home({ id }: { id: string }) {
                                 <div className="col-span-1 normal-case text-[10.5px] bg-gray-200 leading-3 border-r border-l border-slate-950">
                                     <p className="mx-2 p-1 text-justify">I &#40;or acting as representative of group travelling&#41; hereby confirm the accuracy of the information &#40;including any attachments&#41; provided for this application.</p>
                                     <div className="ml-6 mt-1">
-                                        <label>Signature<span className="ml-8">:</span></label>
+                                        <label>Signature<span className="ml-8">:</span><img src={details.applicant_declaration_posision_title} alt="" /></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_posision_title} /><br />

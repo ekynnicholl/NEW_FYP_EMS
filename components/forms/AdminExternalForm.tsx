@@ -261,7 +261,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				toast.error("Error submitting form");
 			} else {
 				toast.success("Form submitted successfully");
-				// window.location.reload();
+				window.location.reload();
 			}
 		}
 
@@ -342,8 +342,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 5,
 				});
 
-				router.refresh();
-				// window.location.reload();
+				// router.refresh();
+				window.location.reload();
 			}
 		}
 	}
@@ -387,8 +387,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 6,
 				});
 
-				router.refresh();
-				// window.location.reload();
+				// router.refresh();
+				window.location.reload();
 			}
 		} else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
@@ -425,8 +425,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 6,
 				});
 
-				router.refresh();
-				// window.location.reload();
+				// router.refresh();
+				window.location.reload();
 			}
 		}
 
@@ -2494,7 +2494,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											open={revertOpen}
 											onOpenChange={setRevertOpen}>
 											<DialogTrigger>
-												<Button type="button" className="mr-5">
+												<Button type="button" className="mr-5" onClick={() => {
+													setShowCommentInput(true);
+												}}>
 													Revert
 												</Button>
 											</DialogTrigger>
