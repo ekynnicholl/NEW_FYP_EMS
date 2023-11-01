@@ -188,6 +188,9 @@ export default function Homepage() {
 	// const [latestEvent, setLatestEvent] = useState<Info | null>(null);
 	const [latestEvent, setLatestEvent] = useState<mainEvent[]>([]);
 
+	// Count how many days left on each event
+	const [eventsWithDaysLeft, setEventsWithDaysLeft] = useState<any[]>([]);
+
 	const [numberOfAttendees, setNumberOfAttendees] = useState<number>(0);
 	const [selectedEvent, setSelectedEvent] = useState({
 		intFID: "",
@@ -335,6 +338,19 @@ export default function Homepage() {
 			// 	"Matching Sub Events:",
 			// 	subEvents.filter(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID)
 			// );
+
+			const updatedMainEventData = await Promise.all(
+				mainEventData.map(async (event) => {
+					const startDate = new Date(event.intFEventStartDate);
+					const currentDate = new Date();
+					const timeDiff = startDate.getTime() - currentDate.getTime();
+					const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+
+					return { ...event, daysLeft };
+				})
+			);
+
+			setEventsWithDaysLeft(updatedMainEventData);
 		};
 
 		fetchLatestEvent();
@@ -3110,13 +3126,15 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												<div>
-													<span className={`relative px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center ${shouldShake ? 'shake' : ''}`}>
-														<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
-														<FiClock className="mr-1 text-xl font-bold relative" />
-														<span className="relative -mt-[1px] leading-3 ml-1">0 Days Left</span>
-													</span>
-												</div>
+												{eventsWithDaysLeft.map((event, index) => (
+													<div key={index}>
+														<span className={`relative px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center ${shouldShake ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+															<FiClock className="mr-1 text-xl font-bold relative" />
+															<span className="relative -mt-[1px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+														</span>
+													</div>
+												))}
 
 												<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
 													<span
