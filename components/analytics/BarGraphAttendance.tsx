@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { format, startOfMonth, endOfMonth } from "date-fns";
+import { format, startOfMonth, endOfMonth, setHours, setMinutes, setSeconds } from "date-fns";
 
 interface BarChartProps {
     startDate: string | null;
@@ -40,8 +40,11 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
             endDate = format(endOfMonth(new Date()), "yyyy-MM-dd")
         }
 
-        let formattedStartDate = startDate ? format(new Date(startDate), "yyyy-MM-dd HH:mm:ss") : null;
-        let formattedEndDate = endDate ? format(new Date(endDate), "yyyy-MM-dd HH:mm:ss") : null;
+        const startOfDay = setHours(setMinutes(setSeconds(new Date(startDate), 0), 0), 0);
+        const endOfDayTime = setHours(setMinutes(setSeconds(new Date(endDate), 59), 59), 23);
+
+        let formattedStartDate = format(startOfDay, "yyyy-MM-dd HH:mm:ss");
+        let formattedEndDate = format(endOfDayTime, "yyyy-MM-dd HH:mm:ss");
 
         if (formattedStartDate === formattedEndDate) {
             formattedEndDate = format(new Date(endDate), "yyyy-MM-dd 23:59:59");
@@ -52,6 +55,10 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
             .select("*")
             .gte("attDateSubmitted", formattedStartDate)
             .lte("attDateSubmitted", formattedEndDate);
+
+        console.log("lalatest" + JSON.stringify(data));
+        console.log("start date" + formattedStartDate);
+        console.log("end date" + formattedStartDate);
 
         if (error) {
             console.error("Error fetching data:", error);
