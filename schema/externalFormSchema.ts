@@ -161,7 +161,7 @@ const externalFormSchema = z
 	.refine(
 		data => {
 			if (data.check_in_date && data.check_out_date) {
-				return data.check_in_date < data.check_out_date;
+				return data.check_in_date <= data.check_out_date;
 			}
 			return true;
 		},
@@ -175,27 +175,13 @@ const externalFormSchema = z
 	.refine(
 		data => {
 			if (data.commencement_date && data.completion_date) {
-				return data.commencement_date < data.completion_date;
+				return data.commencement_date <= data.completion_date;
 			}
 			return true;
 		},
 		{
 			message: "Commencement date must be before Completion date.",
 			path: ["commencement_date"],
-		},
-	)
-	// if flight date is before check in date, then return true
-	// else return false
-	.refine(
-		data => {
-			if (data.flight_date && data.check_in_date) {
-				return data.flight_date < data.check_in_date;
-			}
-			return true;
-		},
-		{
-			message: "Flight date must be before Check-in date.",
-			path: ["flight_date"],
 		},
 	)
 	// if travelling is in group, then other members is required
