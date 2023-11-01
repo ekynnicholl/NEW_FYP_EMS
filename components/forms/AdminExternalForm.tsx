@@ -275,6 +275,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 			if (error) {
 				console.log(error);
+
+				setExternalForm({
+					...externalForm,
+					formStage: 2,
+					securityKey: null
+				});
+
 				toast.error("Error submitting form");
 			} else {
 				toast.success("Form submitted successfully");
@@ -478,12 +485,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				setExternalForm({
 					...externalForm,
-					formStage: 1,
 					securityKey: securityKeyUID,
+					formStage: 1,
 				});
 
-				router.refresh();
-				// window.location.reload();
+				// router.refresh();
+				window.location.reload();
 			}
 		} else if (showCommentInput == false) {
 			setShowCommentInput(true);
@@ -786,7 +793,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<Input
 															disabled={
 																externalForm.formStage !=
-																	1 || group
+																1 || group
 															}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
@@ -864,7 +871,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value &&
-																			"text-muted-foreground",
+																		"text-muted-foreground",
 																	)}>
 																	{field.value ? (
 																		format(
@@ -923,7 +930,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value &&
-																			"text-muted-foreground",
+																		"text-muted-foreground",
 																	)}>
 																	{field.value ? (
 																		format(
@@ -1071,7 +1078,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			className={cn(
 																				"w-full pl-3 text-left font-normal",
 																				!field.value &&
-																					"text-muted-foreground",
+																				"text-muted-foreground",
 																			)}>
 																			{field.value ? (
 																				format(
@@ -1229,7 +1236,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value &&
-																				"text-muted-foreground",
+																			"text-muted-foreground",
 																		)}>
 																		{field.value ? (
 																			format(
@@ -1295,7 +1302,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value &&
-																				"text-muted-foreground",
+																			"text-muted-foreground",
 																		)}>
 																		{field.value ? (
 																			format(
@@ -1804,7 +1811,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		"expenditure_cap",
 																	) !== "Yes" ||
 																	externalForm.formStage !==
-																		2
+																	2
 																}
 																type="number"
 																{...field}
@@ -1952,7 +1959,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value &&
-																			"text-muted-foreground",
+																		"text-muted-foreground",
 																	)}>
 																	{field.value ? (
 																		format(
@@ -2085,7 +2092,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value &&
-																				"text-muted-foreground",
+																			"text-muted-foreground",
 																		)}>
 																		{field.value ? (
 																			format(
@@ -2196,7 +2203,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																						);
 																				console.log(
 																					"Field Value: " +
-																						field.value,
+																					field.value,
 																				);
 																			}}>
 																			Save
@@ -2277,7 +2284,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value &&
-																				"text-muted-foreground",
+																			"text-muted-foreground",
 																		)}>
 																		{field.value ? (
 																			format(
@@ -2387,7 +2394,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																						);
 																				console.log(
 																					"Field Value: " +
-																						field.value,
+																					field.value,
 																				);
 																			}}>
 																			Save
@@ -2406,9 +2413,52 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 								{externalForm.formStage == 1 ? (
 									<div>
+										<FormField
+											control={form.control}
+											name="securityKey"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>
+														<div className="group relative w-max cursor-pointer">
+															<span className="flex items-center">
+																<span className="mr-2">
+																	Security Key
+																</span>
+																<TooltipIcon />
+															</span>
+															<span className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
+																This is to ensure that you
+																are the appropriate
+																individual for the
+																authorization or rejection
+																of this form. It can be
+																found in your email.
+															</span>
+														</div>
+													</FormLabel>
+													<FormControl>
+														<Input
+															autoComplete="off"
+															placeholder=""
+															{...field}
+															value={securityKeyInput}
+															onChange={handleChange}
+														/>
+													</FormControl>
+													<FormMessage>
+														{securityKeyError && (
+															<div className="error-message">
+																The security key does not
+																match.
+															</div>
+														)}
+													</FormMessage>
+												</FormItem>
+											)}
+										/>
 										<Dialog open={applicantOpen} onOpenChange={setApplicantOpen}>
 											<DialogTrigger>
-												<Button type="button">
+												<Button className="mt-5" type="button">
 													Submit for Review
 												</Button>
 											</DialogTrigger>
@@ -2452,26 +2502,26 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 								{(showCommentInput ||
 									(externalForm.revertComment != "None" &&
 										externalForm.formStage == 2)) && (
-									<FormField
-										control={form.control}
-										name="revertComment"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Comments</FormLabel>
-												<FormControl>
-													<Input
-														disabled={
-															externalForm.formStage == 1
-														}
-														className="disabled:text-black-500 disabled:opacity-100"
-														{...field}
-													/>
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								)}
+										<FormField
+											control={form.control}
+											name="revertComment"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Comments</FormLabel>
+													<FormControl>
+														<Input
+															disabled={
+																externalForm.formStage == 1
+															}
+															className="disabled:text-black-500 disabled:opacity-100"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									)}
 
 								{/* Show the buttons according to the current form stage, */}
 								{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
@@ -2575,7 +2625,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<DialogTitle>Revert</DialogTitle>
 												</DialogHeader>
 												<DialogDescription>
-													Are you sure you want to revert this
+													Are you sure you want to REVERT this
 													form? Please enter a comment below.
 												</DialogDescription>
 												<FormField
@@ -2621,8 +2671,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<DialogContent>
 												<DialogHeader>
 													<DialogTitle>
-														Please ensure your email
-														information
+														Confirm your action!
 													</DialogTitle>
 												</DialogHeader>
 												<DialogDescription>
@@ -2650,7 +2699,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</Dialog>
 									</div>
 								) : externalForm.formStage == 3 ||
-								  externalForm.formStage == 4 ? (
+									externalForm.formStage == 4 ? (
 									<div>
 										<FormField
 											control={form.control}
@@ -2686,7 +2735,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</FormControl>
 													<FormMessage>
 														{securityKeyError && (
-															<div className="error-message mb-5">
+															<div className="error-message">
 																The security key does not
 																match.
 															</div>
@@ -2696,7 +2745,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											)}
 										/>
 										{externalForm.formStage == 3 ? (
-											<div>
+											<div className="mt-5">
 												<Dialog
 													open={revertOpen}
 													onOpenChange={setRevertOpen}>
@@ -2797,7 +2846,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</Dialog>
 											</div>
 										) : externalForm.formStage == 4 ? (
-											<div>
+											<div className="mt-5">
 												<Dialog
 													open={revertOpen}
 													onOpenChange={setRevertOpen}>
