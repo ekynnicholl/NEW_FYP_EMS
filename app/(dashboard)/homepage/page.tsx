@@ -738,6 +738,26 @@ export default function Homepage() {
 
 				Chart.register(ChartDataLabels);
 
+				const getRandomColor = () => {
+					const letters = '0123456789ABCDEF';
+					let color = '#';
+					for (let i = 0; i < 6; i++) {
+						color += letters[Math.floor(Math.random() * 16)];
+					}
+					return color;
+				};
+
+				const backgroundColor = [];
+				const colorSet = new Set();
+
+				while (backgroundColor.length < 21) {
+					const color = getRandomColor();
+					if (!colorSet.has(color)) {
+						backgroundColor.push(color);
+						colorSet.add(color);
+					}
+				}
+
 				chartInstanceRef.current = new Chart(ctx, {
 					type: 'pie',
 					data: {
@@ -745,27 +765,7 @@ export default function Homepage() {
 						datasets: [
 							{
 								data: data,
-								backgroundColor: [
-									'red',
-									'blue',
-									'green',
-									'orange',
-									'purple',
-									'pink',
-									'yellow',
-									'teal',
-									'brown',
-									'cyan',
-									'lime',
-									'indigo',
-									'violet',
-									'magenta',
-									'amber',
-									'lightblue',
-									'deeporange',
-									'lightgreen',
-									'bluegrey',
-								],
+								backgroundColor: backgroundColor,
 							},
 						],
 					},
