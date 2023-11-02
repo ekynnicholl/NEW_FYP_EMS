@@ -284,7 +284,9 @@ export default function Home({ id }: { id: string }) {
                                     <p className="mx-2 p-1 text-justify">I &#40;or acting as representative of group travelling&#41; hereby confirm the accuracy of the information &#40;including any attachments&#41; provided for this application.</p>
                                     <div className="ml-6 mt-1">
                                         <label>Signature<span className="ml-8">:</span></label>
-                                        <img src={details.applicant_declaration_signature} className="absolute w-4 h-4 ml-40 -mt-6"/>
+                                        {details && details.applicant_declaration_signature === null ?
+                                            <></> : <img src={details.applicant_declaration_signature} className="absolute w-4 h-4 ml-40 -mt-6"/> }
+
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_name} /><br />
@@ -299,7 +301,8 @@ export default function Home({ id }: { id: string }) {
                                     <p className="ml-2 p-1">I have verified and support of this application.</p>
                                     <div className="mx-4 mt-4">
                                         <label>Signature<span className="ml-8">:</span></label>
-                                        <img src={details.verification_signature} className="absolute w-4 h-4 ml-40 -mt-6"/>
+                                        {details && details.verification_signature === null ?
+                                            <></> : <img src={details.verification_signature} className="absolute w-4 h-4 ml-40 -mt-6"/>}
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.verification_name} /><br />
@@ -319,7 +322,9 @@ export default function Home({ id }: { id: string }) {
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_name} /><br />
                                     <label>Position Title<span className="ml-[16px]">:</span></label>
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_position_title} />
-                                    <img src={details.verification_signature} className="absolute w-8 h-8 ml-[90vh] -mt-8"/>
+                                    {details && details.approval_signature === null ?
+                                        <></> : <img src={details.approval_signature} className="absolute w-8 h-8 ml-[90vh] -mt-8"/>}
+
                                     <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
                                     <br />
                                     <label>Date<span className="ml-[54px]">:</span></label>
