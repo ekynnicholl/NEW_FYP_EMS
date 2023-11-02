@@ -56,6 +56,7 @@
 	}
 }
 
+// Shaking the days left
 @keyframes shake {
 
 	0%,
@@ -83,6 +84,7 @@
 	animation: shake 3s infinite;
 }
 
+// Blinking the progress bar
 @keyframes blink {
 
 	0%,
