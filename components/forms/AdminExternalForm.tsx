@@ -249,7 +249,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 3,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		}
@@ -287,7 +287,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					securityKey: null
 				});
 
-				router.refresh();
+				router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
 				// window.location.reload();
 			}
 		}
@@ -329,7 +329,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					securityKey: securityKeyUID,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		}
@@ -492,7 +492,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 1,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		} else if (showCommentInput == false) {

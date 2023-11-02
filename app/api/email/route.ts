@@ -69,6 +69,15 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         `;
     }
     else if (type == 2) {
+        let rejectMessage = '';
+
+        if (optionalFields && optionalFields.trim() !== '') {
+            rejectMessage = `
+                <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
+                <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
+                <br/>
+            `;
+        }
         return `
         <html>
             <head>
@@ -91,6 +100,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <p class="no-p-m">We regret to inform you that your Nominations/ Travelling Form has been rejected. You may review the PDF version of it here: </p>
                     <p class="no-p-m">${link}</p>
+                    ${rejectMessage}
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
@@ -321,12 +331,13 @@ export async function POST(request: Request) {
                     ...mailOptionsCopy,
                     subject: "[NTF] Nominations Travelling Form",
                     text: "[Rejection Email]",
-                    html: generateEmailHTML("[Rejection Email]", formID, 2)
+                    html: generateEmailHTML("[Rejection Email]", formID, 2, requestData.revertComment)
                 });
             }
         } else if (formStage === 1) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = staffEmail;
+            console.log("test revert comment" + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
