@@ -103,7 +103,7 @@ export default function Home({ id }: { id: string }) {
                     </div>
                 </div>
                 <div className="text-[10px] mt-1 leading-3">
-                    <p>&#8226;Before completing this form, please refer tot eh separate document on "General Instructions for completing Nomination / Travelling Application Form", which is available on SharePoint.</p>
+                    <p>&#8226;Before completing this form, please refer tot eh separate document on &quot;General Instructions for completing Nomination / Travelling Application Form&quot;, which is available on SharePoint.</p>
                     <p>&#8226;All fields are amndatory to compplete as required for each applicable section.</p>
                     <p>&#8226;This form is also to be used for any contracted individual as consultant, and is to be completed where applicable.</p>
                 </div>
