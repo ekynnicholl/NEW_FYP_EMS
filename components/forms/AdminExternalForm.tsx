@@ -329,7 +329,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					securityKey: securityKeyUID,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		}
