@@ -3,65 +3,98 @@
 @tailwind utilities;
 
 @layer components {
-  @import "components/form";
+	@import "components/form";
 }
 
 /* Set up default scrollbar colors */
 :root {
-  --scrollbar-thumb-color: #848484;
-  --scrollbar-track-color: #ccc;
+	--scrollbar-thumb-color: #848484;
+	--scrollbar-track-color: #ccc;
 }
 
 /* Dark mode */
 .dark {
-  --scrollbar-thumb-color: #5D6569;
-  --scrollbar-track-color: #35393B;
+	--scrollbar-thumb-color: #5D6569;
+	--scrollbar-track-color: #35393B;
 }
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-  width: 10px;
+	width: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-thumb-color);
-  border-radius: 5px;
+	background-color: var(--scrollbar-thumb-color);
+	border-radius: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--scrollbar-track-color);
+	background-color: var(--scrollbar-track-color);
 }
 
 /* print mode */
-@media print{
-	body{
+@media print {
+	body {
 		margin: 0;
 		-webkit-print-color-adjust: exact;
 	}
 
-	.print-button{
+	.print-button {
 		display: none;
 	}
 
-	.section-bg{
+	.section-bg {
 		background-color: black;
 	}
 
-	.fieldset{
+	.fieldset {
 		background-color: black !important;
 	}
 
 	@page {
 		size: A4 protrait;
-	}	
+	}
 }
 
 @keyframes shake {
-	0%, 100% { transform: translateX(0); }
-	10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-	20%, 40%, 60%, 80% { transform: translateX(10px); }
-  }
-  .shake {
+
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+
+	10%,
+	30%,
+	50%,
+	70%,
+	90% {
+		transform: translateX(-10px);
+	}
+
+	20%,
+	40%,
+	60%,
+	80% {
+		transform: translateX(10px);
+	}
+}
+
+.shake {
 	animation: shake 3s infinite;
-  }
-  
+}
+
+@keyframes blink {
+
+	0%,
+	100% {
+		opacity: 0.3;
+	}
+
+	50% {
+		opacity: 1;
+	}
+}
+
+.animate-blink {
+	animation: blink 1s infinite;
+}

@@ -3119,7 +3119,7 @@ export default function Homepage() {
 																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																	<div
 																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																			} `}
+																			} animate-blink `}
 																		style={{
 																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																		}}
