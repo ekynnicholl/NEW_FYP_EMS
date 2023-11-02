@@ -381,6 +381,8 @@ export default function Homepage() {
 		fetchTotalUpcomingEvents();
 	}, [supabase]);
 
+	// console.log(upcomingEventCounts);
+
 
 	// Count the total past events
 	const [pastEventCounts, setPastEventCounts] = useState(0);
@@ -1847,12 +1849,12 @@ export default function Homepage() {
 								Attendance
 							</h3>
 							<QRCodeSVG
-								value={`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`}
+								value={`https://fyp-hosting.vercel.app/form/${selectedSubEventID}`}
 							/>
 							<button
 								onClick={() =>
 									copyToClipboard(
-										`https://new-fyp-ems.vercel.app/form/${selectedSubEventID}`
+										`https://fyp-hosting.vercel.app/form/${selectedSubEventID}`
 									)
 								}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
@@ -1868,12 +1870,12 @@ export default function Homepage() {
 								Feedback
 							</h3>
 							<QRCodeSVG
-								value={`https://new-fyp-ems.vercel.app/form/feedback/${selectedSubEventID}`}
+								value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
 							/>
 							<button
 								onClick={() =>
 									copyToClipboard(
-										`https://new-fyp-ems.vercel.app/form/feedback/${selectedSubEventID}`
+										`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
 									)
 								}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
@@ -3119,7 +3121,7 @@ export default function Homepage() {
 																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																	<div
 																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																			} `}
+																			} animate-blink `}
 																		style={{
 																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																		}}
@@ -3140,8 +3142,8 @@ export default function Homepage() {
 											<div className="flex justify-between items-end mt-5">
 												{eventsWithDaysLeft.map((event, index) => (
 													<div key={index}>
-														<span className={`relative -mt-[32px] px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center ${shouldShake ? 'shake' : ''}`}>
-															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+														<span className={`relative -mt-[32px] px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center dark:text-red-200 ${shouldShake ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
 															<FiClock className="mr-1 text-xl font-bold relative" />
 															<span className="relative -mt-[1px] leading-3 ml-1">{event.daysLeft} Days Left</span>
 														</span>
@@ -3149,8 +3151,8 @@ export default function Homepage() {
 												))}
 
 												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
-													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-[#BF7B5F] text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
 														<span className="relative -mt-[1px] leading-3 tracking-wider">
 															Today
@@ -4528,31 +4530,51 @@ export default function Homepage() {
 														<div key={index} className="flex items-center mt-[6px]">
 															<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
 															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
-																{formatDate(latestEvent[0].intFEventStartDate)}
+																{formatDate(subEvent.sub_eventsStartDate)}
 															</p>
 														</div>
 													))
 											)}
 
-											{subEvents.length > 0 && (
-												subEvents
-													.filter(subEvent => {
-														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															// new Date(subEvent.sub_eventsStartDate) > new Date()
-															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
-														);
-													})
-													.slice(0, 1) // Take only the first sub event
-													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-[6px]">
-															<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
-																{formatTime(subEvent.sub_eventsStartTime)}
-															</p>
-														</div>
-													))
-											)}
+											<div className="flex">
+												{subEvents.length > 0 && (
+													subEvents
+														.filter(subEvent => {
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																// new Date(subEvent.sub_eventsStartDate) > new Date()
+																new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+															);
+														})
+														.slice(0, 1) // Take only the first sub event
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[6px]">
+																<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))
+												)}
+												{subEvents.length > 0 && (
+													subEvents
+														.filter(subEvent => {
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																// new Date(subEvent.sub_eventsStartDate) > new Date()
+																new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+															);
+														})
+														.slice(0, 1) // Take only the first sub event
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[6px]">
+																<p className="text-slate-600 text-[8px] ml-[3px] dark:text-dark_text">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))
+												)}
+											</div>
 
 											{subEvents.length > 0 && (
 												subEvents

@@ -103,14 +103,14 @@ export default function Home({ id }: { id: string }) {
                     </div>
                 </div>
                 <div className="text-[10px] mt-1 leading-3">
-                    <p>&#8226;Before completing this form, please refer tot eh separate document on "General Instructions for completing Nomination / Travelling Application Form", which is available on SharePoint.</p>
+                    <p>&#8226;Before completing this form, please refer tot eh separate document on &quot;General Instructions for completing Nomination / Travelling Application Form&quot;, which is available on SharePoint.</p>
                     <p>&#8226;All fields are amndatory to compplete as required for each applicable section.</p>
                     <p>&#8226;This form is also to be used for any contracted individual as consultant, and is to be completed where applicable.</p>
                 </div>
 
                 <div>
-                    {formDetails.map((details, index) =>
-                        <form>
+                    {formDetails.map((details) =>
+                        <form key={details.formID}>
                             {/* Section 1: Personal details */}
                             <fieldset className="p-[0.5px] bg-slate-950 text-[12px]"><span className="text-slate-50 font-semibold uppercase ml-2">Section 1: Personal Details</span></fieldset>
                             <div className="grid grid-cols-8 text-[11px] font-bold bg-gray-200 leading-3">
@@ -127,7 +127,7 @@ export default function Home({ id }: { id: string }) {
                                 <label className="col-span-2 p-1 border border-slate-950 border-t-0">Traveling in</label>
                                 <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={details.travelling} />
                                 <label className="col-start-1 col-span-2 p-1 border-r border-l border-slate-950">Name of other staff / student travelling together in group<sup>1</sup></label>
-                                <input typeof="text" className="col-span-6 border-r border-slate-950 p-2" value={details && details.other_members.length > 0 ? "-" : details.other_members} />
+                                <input typeof="text" className="col-span-6 border-r border-slate-950 p-2" value={details && details.other_members.length > 0 ? details.other_members : "-"} />
                             </div>
 
                             {/* Section 2: Travel details */}
@@ -136,22 +136,22 @@ export default function Home({ id }: { id: string }) {
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Program title / Event</label>
                                 <input typeof="text" className="col-span-6 border-r border-b border-slate-950 p-2" value={details.program_title} />
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Description</label>
-                                <input typeof="text" className="col-span-6 border-b border-r border-slate-950 p-2" value={details && details.program_description === 'None' ? "-" : details.program_description} />
+                                <input typeof="text" className="col-span-6 border-b border-r border-slate-950 p-2" value={details && details.program_description.length > 0 ? details.program_description : "-"} />
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Commencement date of event</label>
                                 <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details.commencement_date} />
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Completion date of event</label>
                                 <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={details.completion_date} />
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Organiser</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details && details.organiser === 'None' ? "-" : details.organiser} />
+                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details && details.organiser.length > 0 ? details.organiser : "-" } />
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Venue</label>
                                 <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={details.venue} />
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border-l border-r border-slate-950">HRDF Claimable</label>
                                 <label className="flex col-span-6 items-center justify-center bg-slate-50 border-r border-slate-950">
-                                    <input type="checkbox" className="-ml-28" checked={details.hrdf_claimable && details.hrdf_claimable === "Yes" ? true : false} />
+                                    <input type="checkbox" className="-ml-28" checked={details.hrdf_claimable && details.hrdf_claimable === "yes" ? true : false} />
                                     <label className="px-2">Yes</label>
-                                    <input type="checkbox" className="ml-6" checked={details.hrdf_claimable && details.hrdf_claimable === "None" ? true : false} />
+                                    <input type="checkbox" className="ml-6" checked={details.hrdf_claimable && details.hrdf_claimable === "no" ? true : false} />
                                     <label className="px-2">No</label>
-                                    <input type="checkbox" className="ml-6" checked={details.hrdf_claimable && details.hrdf_claimable === "Not indicated" ? true : false} />
+                                    <input type="checkbox" className="ml-6" checked={details.hrdf_claimable && details.hrdf_claimable === "not indicated in event brochure / registration form" ? true : false} />
                                     <label className="whitespace-nowrap px-2">Not indicated in event brochure / registration form</label>
                                 </label>
                             </div>
@@ -221,46 +221,46 @@ export default function Home({ id }: { id: string }) {
                                 <div className="col-span-3 grid grid-cols-3 grid-rows-10 bg-slate-50">
                                     <label className="col-span-3 row-start-1 row-span-2  p-[9.4px] bg-gray-200 border-r border-b border-slate-950">Source of Fund - <span className="font-normal">Details of account&#40;s&#41; to be debited. </span><span className="italic font-normal">&#40;It is encouraged to have a single source of funding&#41;</span></label>
                                     <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-[1px] px-1 text-xs"><input type="checkbox" /></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-[1px] px-1 text-xs"><input type="checkbox" checked={details && details.staff_development_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Staff Development Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.staff_development_fund === "None" ? 0 : details.staff_development_fund} />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.staff_development_fund > "0" ?  details.staff_development_fund : 0 } />
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.staff_development_fund === "None" ? false : true} /></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false}/></span>
                                         <span className="ml-2">Consolidated Pool Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.consolidated_pool_fund === "None" ? 0 : details.consolidated_pool_fund} />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.consolidated_pool_fund > "0" ? details.consolidated_pool_fund : 0} />
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund === "None" ? false : true} /></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Research Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.research_fund === "None" ? 0 : details.research_fund} />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.research_fund === "0" ? details.research_fund : 0}/>
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.research_fund === "None" ? false : true} /></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.research_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Travel / Accommodation Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.travel_fund === "None" ? 0 : details.travel_fund} />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.travel_fund === "0" ? details.travel_fund : 0} />
 
                                     <label className="col-span-2 whitespace-nowrap border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] px-1 pt-1"><input type="checkbox" checked={details && details.travel_fund === "None" ? false : true} /></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] px-1 pt-1"><input type="checkbox" checked={details && details.travel_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Student Council / Student Welfare Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.student_council_fund === "None" ? 0 : details.student_council_fund} />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.student_council_fund === "0" ? details.student_council_fund : 0 } />
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.student_council_fund === "None" ? false : true} /></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.student_council_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Others<sup>3</sup></span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.other_funds === "None" ? 0 : details.other_funds} />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.other_funds === "0" ? details.other_funds : 0} />
 
                                     <label className="col-span-3 p-1 flex items-center border-b border-r border-slate-950">
                                         Any expenditure cap?
@@ -283,12 +283,15 @@ export default function Home({ id }: { id: string }) {
                                 <div className="col-span-1 normal-case text-[10.5px] bg-gray-200 leading-3 border-r border-l border-slate-950">
                                     <p className="mx-2 p-1 text-justify">I &#40;or acting as representative of group travelling&#41; hereby confirm the accuracy of the information &#40;including any attachments&#41; provided for this application.</p>
                                     <div className="ml-6 mt-1">
-                                        <label>Signature<span className="ml-8">:</span><img src={details.applicant_declaration_posision_title} alt="" /></label>
+                                        <label>Signature<span className="ml-8">:</span></label>
+                                        {details && details.applicant_declaration_signature === null ?
+                                            <></> : <img src={details.applicant_declaration_signature} className="absolute w-4 h-4 ml-40 -mt-6"/> }
+
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
-                                        <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_posision_title} /><br />
+                                        <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_name} /><br />
                                         <label>Position Title<span className="ml-[16px]">:</span></label>
-                                        <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_date} /><br />
+                                        <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_posision_title} /><br />
                                         <label>Date<span className="ml-[54px]">:</span></label>
                                         <input type="text" className="bg-gray-200 ml-2 w-60" value={details.applicant_declaration_date} /><br />
                                     </div>
@@ -298,6 +301,8 @@ export default function Home({ id }: { id: string }) {
                                     <p className="ml-2 p-1">I have verified and support of this application.</p>
                                     <div className="mx-4 mt-4">
                                         <label>Signature<span className="ml-8">:</span></label>
+                                        {details && details.verification_signature === null ?
+                                            <></> : <img src={details.verification_signature} className="absolute w-4 h-4 ml-40 -mt-6"/>}
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.verification_name} /><br />
@@ -317,10 +322,13 @@ export default function Home({ id }: { id: string }) {
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_name} /><br />
                                     <label>Position Title<span className="ml-[16px]">:</span></label>
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_position_title} />
-                                    <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" value={details.approval_date} />
+                                    {details && details.approval_signature === null ?
+                                        <></> : <img src={details.approval_signature} className="absolute w-8 h-8 ml-[90vh] -mt-8"/>}
+
+                                    <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
                                     <br />
                                     <label>Date<span className="ml-[54px]">:</span></label>
-                                    <input type="text" className="bg-gray-200 ml-2 w-60" />
+                                    <input type="text" className="bg-gray-200 ml-2 w-60" value={details.approval_date}/>
                                     <label className="float-right mr-[135px]">Signature</label>
                                 </div>
                             </div>

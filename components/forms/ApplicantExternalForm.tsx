@@ -408,7 +408,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -452,7 +452,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -564,7 +564,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -676,7 +676,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -720,7 +720,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -1171,7 +1171,7 @@ export default function ExternalForm() {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-																1,
+															1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1247,7 +1247,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1339,7 +1339,7 @@ export default function ExternalForm() {
 																		);
 																console.log(
 																	"Field Value: " +
-																		field.value,
+																	field.value,
 																);
 															}}>
 															Save

@@ -56,10 +56,6 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
             .gte("attDateSubmitted", formattedStartDate)
             .lte("attDateSubmitted", formattedEndDate);
 
-        console.log("lalatest" + JSON.stringify(data));
-        console.log("start date" + formattedStartDate);
-        console.log("end date" + formattedStartDate);
-
         if (error) {
             console.error("Error fetching data:", error);
             return;

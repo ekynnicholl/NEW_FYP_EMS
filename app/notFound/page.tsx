@@ -68,11 +68,11 @@ const PageNotFound = () => {
         ) : search == 'start_att' ? (
           <div>
             <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">OOPSIES!</p>
-            <div className="text-sm lg:text-base font-normal mb-4 text-slate-700 whitespace-nowrap">
+            <div className="text-sm lg:text-base font-normal mb-4 text-slate-700 lg:whitespace-nowrap">
               Hey! The forms you&rsquo;re currently accessing <span className="font-bold">has not yet opened for submission</span>! <br /> Contact the event organizer(s) if you think this was a mistake.
             </div>
             <div className="text-slate-700 font-bold">
-              Time Remaining: {countdown?.days} days, {countdown?.hours} hours, {countdown?.minutes} minutes, {countdown?.seconds} seconds
+              Time Remaining: <br className="lg:hidden" />{countdown?.days} days, {countdown?.hours} hours, {countdown?.minutes} minutes, {countdown?.seconds} seconds
             </div>
             {countdown?.days === 0 && countdown?.hours === 0 && countdown?.minutes === 0 && countdown?.seconds === 0 && (
               <Link href={`/form/${event_id}`}>

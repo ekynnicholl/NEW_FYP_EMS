@@ -267,16 +267,21 @@ export async function POST(request: Request) {
         const formID = requestData.id;
         const staffEmail = requestData.email;
         const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
+        const verificationEmail = requestData.verification_email;
+        const approvalEmail = requestData.approval_email;
+        console.log("debugging stage" + formStage);
 
         console.log('Received request data:', requestData);
 
         if (formStage === 2) {
             const recipients = ['fypemsmaster369@gmail.com', staffEmail];
             const formIDs = [1, 5];
+            console.log("sending email starting process")
 
             for (let i = 0; i < recipients.length; i++) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipients[i];
+                console.log("sending email" + recipients[i])
 
                 const formIDForRecipient = formIDs[i];
 
@@ -289,7 +294,7 @@ export async function POST(request: Request) {
             }
         } else if (formStage === 3) {
             const mailOptionsCopy = { ...mailOptions };
-            mailOptionsCopy.to = requestData.verification_email;
+            mailOptionsCopy.to = verificationEmail;
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
@@ -299,7 +304,7 @@ export async function POST(request: Request) {
 
         } else if (formStage === 4) {
             const mailOptionsCopy = { ...mailOptions };
-            mailOptionsCopy.to = requestData.approval_email;
+            mailOptionsCopy.to = approvalEmail;
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
@@ -321,7 +326,7 @@ export async function POST(request: Request) {
             }
         } else if (formStage === 1) {
             const mailOptionsCopy = { ...mailOptions };
-            mailOptionsCopy.to = requestData.staffEmail;
+            mailOptionsCopy.to = staffEmail;
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
