@@ -841,7 +841,7 @@ export default function Home() {
                             <table className="min-w-full leading-normal">
                                 {/* Table Header */}
                                 <thead>
-                                    <tr className="flex justify-between  border-b-2 border-gray-200 bg-gray-100 dark:bg-[#1D2021]">
+                                    <tr className="flex justify-between  border-b-2 border-gray-200 bg-gray-100 dark:bg-[#1D2021] dark:border-[#363B3D]">
                                         <th className="flex-1 pl-4 py-3 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:text-[#B0AA9F]">
                                             No.
                                         </th>
@@ -871,7 +871,7 @@ export default function Home() {
                                             currentPage * entriesToShow,
                                         )
                                         .map((event, index) => (
-                                            <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm" key={index}>
+                                            <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
                                                 <td className="flex-1 py-5 mt-1">
                                                     <div className="flex items-center">
                                                         <div className="ml-4">
