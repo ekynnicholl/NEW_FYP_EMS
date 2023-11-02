@@ -1,0 +1,30 @@
+.custom-calendar {
+  width: 100%;
+  border: none;
+  border-radius: none;
+}
+
+.weekend {  /* Set your desired background color for weekends */
+  color: red; /* Set text color for weekends if needed */
+}
+
+/* For active date tiles */
+.react-calendar__tile--active {
+  background: none  !important;
+  border : 1px solid #1e293b !important /* Set the desired background color */ ;
+  border-radius: 80%;
+  color: black !important; /* Set the text color to black */
+}
+
+/* For weekend dates */
+/* For hover state on regular dates */
+.react-calendar__month-view__days__day:hover {
+  background-color: #e2e8f0 !important; /* Set the desired hover background color for regular dates */
+  border-radius: 80%; /* Set the desired border-radius for hover effect */
+}
+
+/* For hover state on weekend dates */
+.react-calendar__month-view__days__day--weekend:hover {
+  background-color: #e2e8f0  !important; /* Set the desired hover background color for weekend dates */
+  border-radius: 80%; /* Set the desired border-radius for hover effect */
+}
