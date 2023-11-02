@@ -249,7 +249,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 3,
 				});
 
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		}
 		// This part is when the staff re-submits the form to the AAO after being reverted,
@@ -286,7 +287,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					securityKey: null
 				});
 
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		}
 
@@ -327,8 +329,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					securityKey: securityKeyUID,
 				});
 
-				// router.refresh();
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		}
 
@@ -367,8 +369,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 5,
 				});
 
-				// router.refresh();
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		}
 	}
@@ -412,8 +414,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 6,
 				});
 
-				// router.refresh();
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		} else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
@@ -450,8 +452,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 6,
 				});
 
-				// router.refresh();
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		}
 
@@ -490,8 +492,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 1,
 				});
 
-				// router.refresh();
-				window.location.reload();
+				router.refresh();
+				// window.location.reload();
 			}
 		} else if (showCommentInput == false) {
 			setShowCommentInput(true);
