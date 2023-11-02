@@ -256,11 +256,11 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		setShowConfirmPassword(!showConfirmPassword);
 	};
 
-	const handleCreateAccount = async (e) => {
+	const handleCreateAccount = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const email = e.target.email.value;
-		const password = e.target.password.value;
-		const confirmPassword = e.target.confirmPassword.value;
+		const email = (e.target as HTMLFormElement).email.value;
+		const password = (e.target as HTMLFormElement).password.value;
+		const confirmPassword = (e.target as HTMLFormElement).confirmPassword.value;
 
 		if (password.length >= 6) {
 			setErrorMessagePassword(null); // Clear password error message if length is >= 6
@@ -306,14 +306,16 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 				}
 
 			} catch (error) {
+				const firebaseError = error as any;
+
 				// Handle Firebase authentication errors
-				if (error.code === 'auth/email-already-in-use') {
+				if (firebaseError.code === 'auth/email-already-in-use') {
 					setErrorMessageEmailAddress("Email is already in use.");
 					setErrorMessagePassword(null);
 					setErrorMessageConfirmPassword(null);
-				} else if (error.code === 'auth/weak-password') {
+				} else if (firebaseError.code === 'auth/weak-password') {
 					setErrorMessagePassword("Password must be at least 6 characters.");
-				} else if (error.code === 'auth/invalid-email') {
+				} else if (firebaseError.code === 'auth/invalid-email') {
 					setErrorMessageEmailAddress("Invalid email address.");
 				} else {
 					console.error('Sign-up error: ', error);
@@ -324,24 +326,29 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	}
 
-	const handlePasswordChange = (e) => {
+	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const password = e.target.value;
 
 		if (password.length >= 6) {
 			setErrorMessagePassword(null); // Clear password error message if length is >= 6
 		}
-	}
+	};
 
-	const handleConfirmPasswordChange = (e) => {
+	const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const confirmPassword = e.target.value;
-		const password = document.getElementById('password').value;
+		const passwordElement = document.getElementById('password');
 
-		if (password === confirmPassword) {
-			setErrorMessageConfirmPassword(null);
-		} else {
-			setErrorMessageConfirmPassword("Passwords do not match.");
+		if (passwordElement && passwordElement instanceof HTMLInputElement) {
+			const password = passwordElement.value;
+
+			if (password === confirmPassword) {
+				setErrorMessageConfirmPassword(null);
+			} else {
+				setErrorMessageConfirmPassword("Passwords do not match.");
+			}
 		}
 	};
+
 
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>

@@ -1308,7 +1308,7 @@ export default function ExternalForm() {
 												</DialogDescription>
 												<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
 													<SignaturePad
-														ref={sigCanvas}
+														// ref={sigCanvas}
 														canvasProps={{
 															className: "w-full h-full",
 														}}
@@ -1324,23 +1324,23 @@ export default function ExternalForm() {
 														<Button
 															onClick={() => {
 																save();
-																field.onChange(
-																	sigCanvas.current
-																		.getTrimmedCanvas()
-																		.toDataURL(
-																			"image/png",
-																		),
-																);
-																field.value =
-																	sigCanvas.current
-																		.getTrimmedCanvas()
-																		.toDataURL(
-																			"image/png",
-																		);
-																console.log(
-																	"Field Value: " +
-																		field.value,
-																);
+																// field.onChange(
+																	// sigCanvas.current
+																		// .getTrimmedCanvas()
+																		// .toDataURL(
+																			// "image/png",
+																		// ),
+																// );
+																// field.value =
+																	// sigCanvas.current
+																		// .getTrimmedCanvas()
+																		// .toDataURL(
+																			// "image/png",
+																		// );
+																// console.log(
+																	// "Field Value: " +
+																		// field.value,
+																// );
 															}}>
 															Save
 														</Button>

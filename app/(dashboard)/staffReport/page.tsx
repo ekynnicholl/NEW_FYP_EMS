@@ -866,7 +866,7 @@ export default function Home() {
 					<div className="grid grid-cols-1 gap-4 lg:hidden">
 						{subEventsAttended
 							.map((subEvent, index) => (
-								<div className="bg-slate-100 p-4 rounded-lg overflow-auto shadow">
+								<div key={index} className="bg-slate-100 p-4 rounded-lg overflow-auto shadow">
 									<table className="w-full overflow-auto"> 
 										<tr className="border-b-2 border-gray-200 bg-gray-100">
 											<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
