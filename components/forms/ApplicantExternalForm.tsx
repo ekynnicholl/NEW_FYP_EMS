@@ -408,7 +408,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -452,7 +452,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -564,7 +564,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -676,7 +676,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -720,7 +720,7 @@ export default function ExternalForm() {
 															className={cn(
 																"w-full pl-3 text-left font-normal",
 																!field.value &&
-																	"text-muted-foreground",
+																"text-muted-foreground",
 															)}>
 															{field.value ? (
 																format(field.value, "PPP")
@@ -1171,7 +1171,7 @@ export default function ExternalForm() {
 														// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
 														file.name.slice(
 															file.name.lastIndexOf(".") +
-																1,
+															1,
 														) === "pdf" ? (
 															<div className="flex gap-2 p-2 items-start">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
@@ -1247,7 +1247,7 @@ export default function ExternalForm() {
 														className={cn(
 															"w-full pl-3 text-left font-normal",
 															!field.value &&
-																"text-muted-foreground",
+															"text-muted-foreground",
 														)}>
 														{field.value ? (
 															format(field.value, "PPP")
@@ -1308,7 +1308,7 @@ export default function ExternalForm() {
 												</DialogDescription>
 												<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
 													<SignaturePad
-														// ref={sigCanvas}
+														ref={sigCanvas}
 														canvasProps={{
 															className: "w-full h-full",
 														}}
@@ -1324,23 +1324,23 @@ export default function ExternalForm() {
 														<Button
 															onClick={() => {
 																save();
-																// field.onChange(
-																	// sigCanvas.current
-																		// .getTrimmedCanvas()
-																		// .toDataURL(
-																			// "image/png",
-																		// ),
-																// );
-																// field.value =
-																	// sigCanvas.current
-																		// .getTrimmedCanvas()
-																		// .toDataURL(
-																			// "image/png",
-																		// );
-																// console.log(
-																	// "Field Value: " +
-																		// field.value,
-																// );
+																field.onChange(
+																	sigCanvas.current
+																		.getTrimmedCanvas()
+																		.toDataURL(
+																			"image/png",
+																		),
+																);
+																field.value =
+																	sigCanvas.current
+																		.getTrimmedCanvas()
+																		.toDataURL(
+																			"image/png",
+																		);
+																console.log(
+																	"Field Value: " +
+																	field.value,
+																);
 															}}>
 															Save
 														</Button>
