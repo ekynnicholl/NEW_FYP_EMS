@@ -110,7 +110,7 @@ export default function Home({ id }: { id: string }) {
 
                 <div>
                     {formDetails.map((details) =>
-                        <form>
+                        <form key={details.formID}>
                             {/* Section 1: Personal details */}
                             <fieldset className="p-[0.5px] bg-slate-950 text-[12px]"><span className="text-slate-50 font-semibold uppercase ml-2">Section 1: Personal Details</span></fieldset>
                             <div className="grid grid-cols-8 text-[11px] font-bold bg-gray-200 leading-3">
