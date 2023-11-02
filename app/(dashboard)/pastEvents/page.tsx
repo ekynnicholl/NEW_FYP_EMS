@@ -1001,7 +1001,7 @@ export default function Home() {
                                 </tbody>
                             </table>
 
-                            <div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card">
+                            <div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
                                 <div className="flex items-center text-[14px] text-base">
                                     <div className="mr-2 ml-3">
                                         <span className="text-sm lg:text-base dark:text-dark_text">Show</span>
