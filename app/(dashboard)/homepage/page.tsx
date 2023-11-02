@@ -381,6 +381,8 @@ export default function Homepage() {
 		fetchTotalUpcomingEvents();
 	}, [supabase]);
 
+	// console.log(upcomingEventCounts);
+
 
 	// Count the total past events
 	const [pastEventCounts, setPastEventCounts] = useState(0);
