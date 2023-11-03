@@ -38,11 +38,9 @@ const adminExternalFormSchema = z
 				invalid_type_error: "Oops that's not a date!",
 			})
 			.min(today, { message: "Date must be today or in the future." }),
-		completion_date: z
-			.date()
-			.refine(val => val >= today, {
-				message: "Date must be today or in the future.",
-			}),
+		completion_date: z.date().refine(val => val >= today, {
+			message: "Date must be today or in the future.",
+		}),
 		organiser: z.string().min(1, { message: "Organiser is required" }),
 		venue: z.string().min(1, { message: "Venue is required" }),
 		hrdf_claimable: z
@@ -224,6 +222,46 @@ const adminExternalFormSchema = z
 		{
 			message: "Other members is required.",
 			path: ["other_members"],
+		},
+	)
+	// if formStage is 3, then all verifications are required
+	// else return true
+	.refine(
+		data => {
+			if (data.formStage === 3) {
+				return (
+					data.verification_name !== "" &&
+					data.verification_position_title !== "" &&
+					data.verification_signature !== null &&
+					data.verification_signature !== "" &&
+					data.verification_date !== undefined
+				);
+			}
+			return true;
+		},
+		{
+			message: "All verification fields are required.",
+			path: ["verification_name"],
+		},
+	)
+	// if formStage is 4, then all approvals are required
+	// else return true
+	.refine(
+		data => {
+			if (data.formStage === 4) {
+				return (
+					data.approval_name !== "" &&
+					data.approval_position_title !== "" &&
+					data.approval_signature !== null &&
+					data.approval_signature !== "" &&
+					data.approval_date !== undefined
+				);
+			}
+			return true;
+		},
+		{
+			message: "All approval fields are required.",
+			path: ["approval_name"],
 		},
 	);
 

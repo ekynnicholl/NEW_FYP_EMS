@@ -482,10 +482,16 @@ export default function ExternalForm() {
 															<Calendar
 																mode="single"
 																selected={field.value}
-																onSelect={field.onChange}
+																onSelect={date => {
+																	console.log("Date: " + date)
+																	field.onChange(date);
+																	if (date !== undefined) {
+																		date.setHours(date.getHours() + 8);
+																		field.value = new Date(date);
+																	}
+																}}
 																disabled={date => {
 																	const today = new Date();
-																	today.setHours(0, 0, 0, 0);
 																	return date < today;
 																}}
 																initialFocus
@@ -526,7 +532,14 @@ export default function ExternalForm() {
 															<Calendar
 																mode="single"
 																selected={field.value}
-																onSelect={field.onChange}
+																onSelect={date => {
+																	console.log("Date: " + date)
+																	field.onChange(date);
+																	if (date !== undefined) {
+																		date.setHours(date.getHours() + 8);
+																		field.value = new Date(date);
+																	}
+																}}
 																disabled={date => {
 																	const today =
 																		form.getValues(
@@ -638,7 +651,14 @@ export default function ExternalForm() {
 																<Calendar
 																	mode="single"
 																	selected={field.value}
-																	onSelect={field.onChange}
+																	onSelect={date => {
+																		console.log("Date: " + date)
+																		field.onChange(date);
+																		if (date !== undefined) {
+																			date.setHours(date.getHours() + 8);
+																			field.value = new Date(date);
+																		}
+																	}}
 																	disabled={date => {
 																		const today = new Date();
 																		today.setHours(0, 0, 0, 0);
@@ -750,7 +770,14 @@ export default function ExternalForm() {
 																<Calendar
 																	mode="single"
 																	selected={field.value}
-																	onSelect={field.onChange}
+																	onSelect={date => {
+																		console.log("Date: " + date)
+																		field.onChange(date);
+																		if (date !== undefined) {
+																			date.setHours(date.getHours() + 8);
+																			field.value = new Date(date);
+																		}
+																	}}
 																	disabled={date => {
 																		const today = new Date();
 																		today.setHours(0, 0, 0, 0);
@@ -794,7 +821,14 @@ export default function ExternalForm() {
 																<Calendar
 																	mode="single"
 																	selected={field.value}
-																	onSelect={field.onChange}
+																	onSelect={date => {
+																		console.log("Date: " + date)
+																		field.onChange(date);
+																		if (date !== undefined) {
+																			date.setHours(date.getHours() + 8);
+																			field.value = new Date(date);
+																		}
+																	}}
 																	disabled={date => {
 																		const today =
 																			form.getValues(
@@ -1321,7 +1355,14 @@ export default function ExternalForm() {
 															<Calendar
 																mode="single"
 																selected={field.value}
-																onSelect={field.onChange}
+																onSelect={date => {
+																	console.log("Date: " + date)
+																	field.onChange(date);
+																	if (date !== undefined) {
+																		date.setHours(date.getHours() + 8);
+																		field.value = new Date(date);
+																	}
+																}}
 																disabled={date => {
 																	const today = new Date();
 																	today.setHours(0, 0, 0, 0);
