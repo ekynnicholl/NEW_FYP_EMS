@@ -55,7 +55,7 @@ import { sendContactForm } from "@/lib/api";
 
 export default function ExternalForm() {
 	const supabase = createClientComponentClient();
-	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(true);
+	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
 	const router = useRouter();
 
 	const [open, setOpen] = useState(false);

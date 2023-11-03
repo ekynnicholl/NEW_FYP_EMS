@@ -66,10 +66,10 @@ const formatDate = (dateString: string): string => {
 
 //for calendar date selection
 const handleDateChange = (date: Date) => {
-    // Handle the selected date here
-    console.log("Selected Date:", date);
+	// Handle the selected date here
+	console.log("Selected Date:", date);
 
-  };
+};
 
 
 const formattedDate = formatDate(currentDate.toISOString());
@@ -487,6 +487,7 @@ export default function Homepage() {
 				console.error('Error fetching latest event:', internalError);
 				return;
 			}
+			console.log(mainEventData);
 
 			// Filter events for today, tomorrow, and upcoming
 			const todayEvents = mainEventData.filter(
@@ -4646,7 +4647,7 @@ export default function Homepage() {
 							)}
 
 						</div>
-						<Calendar onDateChange={handleDateChange} />								
+						<Calendar onDateChange={handleDateChange} />
 
 					</div>
 
