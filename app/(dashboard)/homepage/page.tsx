@@ -434,7 +434,7 @@ export default function Homepage() {
 		return () => clearInterval(shakeInterval);
 	}, []);
 
-
+	//
 	// This is for the GRID VIEW,
 	//
 	const [todayEvents, setTodayEvents] = useState<any[]>([]);
