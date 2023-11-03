@@ -55,7 +55,7 @@ import { sendContactForm } from "@/lib/api";
 
 export default function ExternalForm() {
 	const supabase = createClientComponentClient();
-	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
+	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(true);
 	const router = useRouter();
 
 	const [open, setOpen] = useState(false);
@@ -1449,7 +1449,8 @@ export default function ExternalForm() {
 					<img src={SuccessIMG.src} alt="" className="w-[300px] lg:w-[500px] mt-10" />
 					<p className="text-center mt-5">
 						<span className="font-bold text-[20px]">We have received your form successfully!</span> <br /><br /> You should receive an email with a confirmation at <span className="font-bold">{form.getValues("email")}</span>.
-						<br />Please contact/ email us at <span className="font-bold">827-823</span> OR <span className="font-bold">emat@gmail.com</span> if you have not received anything.
+						<br />Please ensure to check your spam/ junk folder as well.
+						<br /><br />Contact/ email us at <span className="font-bold">827-823</span> OR <span className="font-bold">emat@gmail.com</span> if you have not received anything within the next hour.
 					</p>
 					<Button className="mt-5" onClick={(() => window.location.reload())}>Return</Button>
 				</div>
