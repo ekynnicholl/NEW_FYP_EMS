@@ -441,10 +441,10 @@ export default function Homepage() {
 	const [tomorrowEvents, setTomorrowEvents] = useState<any[]>([]);
 	const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
 
-	// Function to compare dates (ignores time),
+	// Function to compare dates (ignores time)
 	function isSameDate(date1: string, date2: string) {
-		const d1 = new Date(date1);
-		const d2 = new Date(date2);
+		const d1 = new Date(date1.substring(0, 10)); // Extract only the date part
+		const d2 = new Date(date2.substring(0, 10));
 		return (
 			d1.getFullYear() === d2.getFullYear() &&
 			d1.getMonth() === d2.getMonth() &&
@@ -452,23 +452,22 @@ export default function Homepage() {
 		);
 	}
 
-	// Function to check whether todays date is in range of the event,
+	// Function to check whether a date is in the range of an event (ignores time)
 	function isDateInRange(currentDate: string, startDate: string, endDate: string) {
 		const currentDateObj = new Date(currentDate.substring(0, 10));
 		const startDateObj = new Date(startDate.substring(0, 10));
 		const endDateObj = new Date(endDate.substring(0, 10));
-
 		return (
 			currentDateObj.getTime() >= startDateObj.getTime() &&
 			currentDateObj.getTime() <= endDateObj.getTime()
 		);
 	}
 
-	// Function to get tomorrow's date,
+	// Function to get tomorrow's date (ignores time)
 	function getTomorrowDate(date: string) {
 		const today = new Date(date);
 		today.setDate(today.getDate() + 1);
-		return today.toISOString();
+		return today.toISOString().substring(0, 10);
 	}
 
 	useEffect(() => {
@@ -487,7 +486,6 @@ export default function Homepage() {
 				console.error('Error fetching latest event:', internalError);
 				return;
 			}
-			console.log(mainEventData);
 
 			// Filter events for today, tomorrow, and upcoming
 			const todayEvents = mainEventData.filter(
