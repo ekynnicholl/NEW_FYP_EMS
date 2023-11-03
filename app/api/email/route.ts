@@ -14,9 +14,10 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to approve/ reject: <br/><span style="font-weight: bold;">${optionalFields}</span></p>
-                <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
                 <br/>
+                <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to approve/ reject: <br/><span style="font-weight: bold;">${optionalFields}</span></p>
+                <br/>
+                <p class="no-p-m">Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
         }
 
@@ -48,8 +49,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
                     <p class="no-p-m">${link}</p>
-                    <br/>
                     ${securityKeySentence}
+                    <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -73,6 +74,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             rejectMessage = `
+                <br/>
                 <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
                 <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                 <br/>
@@ -101,7 +103,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m">We regret to inform you that your Nominations/ Travelling Form has been rejected. You may review the PDF version of it here: </p>
                     <p class="no-p-m">${link}</p>
                     ${rejectMessage}
-                    <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -142,7 +143,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
-                    <p class="no-p-m">Congratulations! Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here:</p>
+                    <h4 class="no-p-m">Congratulations! </h4>
+                    <p class="no-p-m">Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here: </p>
                     <p class="no-p-m">${link}</p>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
@@ -227,19 +229,25 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                         max-width: 1400px; 
                         margin: 0 auto;
                     }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
                 </style>
             </head>
             <body>
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
-                    <h2>Dear sir/ ma'am,</h2>
-                    <p style="text-align: justify;">This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
+                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <p class="no-p-m" style="text-align: justify;">This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
                     approved or rejected. If you have any questions, please do not hesitate to contact us at ...@...</p>
-                    <p>Thank you for using our system.</p>
-                    <p>Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
-                    <p style="color: red; text-align: justify;">[NOTICE] <br/>
+                    <p class="no-p-m">Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <br/>
+                    <p class="no-p-m" style="color: red; text-align: justify;">[NOTICE] <br/>
                     This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
                     If you are not the intended recipient, any dissemination, distribution, printing, copying or use is strictly prohibited. 
                     The University does not warrant that this e-mail and any attachments are secure and there is also a risk that it may be corrupted in transmission. 
@@ -279,19 +287,19 @@ export async function POST(request: Request) {
         const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
         const verificationEmail = requestData.verification_email;
         const approvalEmail = requestData.approval_email;
-        console.log("debugging stage" + formStage);
+        console.log("Debugging Form Stage: " + formStage);
 
         console.log('Received request data:', requestData);
 
         if (formStage === 2) {
             const recipients = ['fypemsmaster369@gmail.com', staffEmail];
             const formIDs = [1, 5];
-            console.log("sending email starting process")
+            console.log("Started sending email process: ")
 
             for (let i = 0; i < recipients.length; i++) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipients[i];
-                console.log("sending email" + recipients[i])
+                console.log("Sending email: " + recipients[i])
 
                 const formIDForRecipient = formIDs[i];
 
@@ -305,6 +313,7 @@ export async function POST(request: Request) {
         } else if (formStage === 3) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = verificationEmail;
+            console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
@@ -315,6 +324,7 @@ export async function POST(request: Request) {
         } else if (formStage === 4) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = approvalEmail;
+            console.log("Started sending email process: " + approvalEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
@@ -323,7 +333,6 @@ export async function POST(request: Request) {
             });
         } else if (formStage === 6) {
             const recipients = ['fypemsmaster369@gmail.com', staffEmail];
-            // const recipients = ['fypemsmaster369@gmail.com', 'jadpichoo@outlook.com'];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;
@@ -337,7 +346,7 @@ export async function POST(request: Request) {
         } else if (formStage === 1) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = staffEmail;
-            console.log("test revert comment" + requestData.revertComment);
+            console.log("Debugging reverted comment: " + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",

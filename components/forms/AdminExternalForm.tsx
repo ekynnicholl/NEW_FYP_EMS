@@ -283,8 +283,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				setExternalForm({
 					...externalForm,
+					securityKey: null,
 					formStage: 2,
-					securityKey: null
 				});
 
 				router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
@@ -325,8 +325,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				setExternalForm({
 					...externalForm,
-					formStage: 4,
 					securityKey: securityKeyUID,
+					formStage: 4,
 				});
 
 				router.push("/external_status");
@@ -342,7 +342,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 5,
-						securityKey: null,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
@@ -369,7 +369,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 5,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		}
@@ -386,7 +386,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
-						securityKey: null,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
@@ -414,7 +414,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 6,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		} else if (externalForm.formStage === 4) {
@@ -424,7 +424,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
-						securityKey: null,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
@@ -452,7 +452,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 6,
 				});
 
-				router.refresh();
+				router.push("/external_status");
 				// window.location.reload();
 			}
 		}
@@ -2502,7 +2502,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 								{/* TO-DO: THIS INPUT WILL ONLY BE SHOWN IF THEY CLICK ON THE REVERT BUTTON IN STAGE 2. */}
 								{/* THEY NEED TO CLICK ON REVERT AGAIN TO REVERT IT. THIS CHECK ALREADY EXISTS IN onRevert. */}
 								{/* THE FIRST REVERT CLICK WILL ONLY DISPLAY THE COMMENT INPUT AND HIDE (OR DISABLE IDK?) THE SUBMIT BUTTON. */}
-								{(showCommentInput ||
+								{/* {(showCommentInput ||
 									(externalForm.revertComment != "None" &&
 										externalForm.formStage == 2)) && (
 										<FormField
@@ -2524,7 +2524,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</FormItem>
 											)}
 										/>
-									)}
+									)} */}
 
 								{/* Show the buttons according to the current form stage, */}
 								{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
