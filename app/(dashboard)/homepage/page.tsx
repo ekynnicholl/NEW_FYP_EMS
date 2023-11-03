@@ -519,7 +519,7 @@ export default function Homepage() {
 			setUpcomingEvents(upcomingEvents);
 		};
 		fetchGridView();
-	});
+	}, []);
 
 	// This is for attendance modal,
 	const openAttendanceModal = async (event_id: string) => {
