@@ -722,7 +722,7 @@ export default function Home() {
 
     return (
         <div className="h-screen flex flex-row justify-start">
-            <div className="flex-1mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
+            <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
                 <div className="bg-white rounded p-8 dark:bg-dark_mode_card">
                     <div className="inline-flex">
                         <span className="mt-[7px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" /></a></span>
@@ -904,10 +904,10 @@ export default function Home() {
 
                                                 <td className="flex-1 py-5 ml-12">
                                                     <div className="flex items-end">
-                                                        <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10">
-                                                            <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+                                                        <span className="relative px-3 py-[5px] font-semibold text-slate-800 text-xs flex items-center ml-10">
+                                                            <span aria-hidden className="absolute inset-0 bg-green-500 opacity-50 rounded-full"></span>
                                                             <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-                                                            <span className="relative mt-[1px] leading-3 tracking-wider ">Upcoming</span>
+                                                            <span className="relative mt-[1px] leading-3 tracking-wider ">Completed</span>
                                                         </span>
                                                     </div>
                                                 </td>
