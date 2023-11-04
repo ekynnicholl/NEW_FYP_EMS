@@ -208,7 +208,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
                                     ) : null}
                                     <p className="font-bold">{columnDisplayNames[column]}</p>
                                     <div className="border-t border-gray-300 my-2 mr-6"></div>
-                                    <p className="rounded-md bg-slate-100 p-2 mr-6 mt-2">{feedbackData[currentIndex][column]}</p>
+                                    <p className="rounded-md bg-slate-100 p-2 mr-6 mt-2">{currentIndex < feedbackData.length ? feedbackData[currentIndex][column] : 0}</p>
                                 </div>
                             ))}
                         </div>

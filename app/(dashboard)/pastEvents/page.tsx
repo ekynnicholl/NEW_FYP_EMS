@@ -959,6 +959,14 @@ export default function Home() {
                                                                 }}
                                                             >Attendance List
                                                             </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={e => {
+                                                                e.stopPropagation(); // 
+                                                                openFeedbackModal(
+                                                                    event.intFID,
+                                                                );
+                                                                fetchFeedbackList(event.intFID);
+                                                            }}>Feedback Forms</DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </td>
@@ -1578,6 +1586,14 @@ export default function Home() {
                                                             }}
                                                         >Attendance List
                                                         </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={e => {
+                                                            e.stopPropagation(); // 
+                                                            openFeedbackModal(
+                                                                event.intFID,
+                                                            );
+                                                            fetchFeedbackList(event.intFID);
+                                                        }}>Feedback Forms</DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </td>
