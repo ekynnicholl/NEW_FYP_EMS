@@ -28,6 +28,8 @@ import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import LeftArrow from "@/components/icons/LeftArrow";
 import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
+import FeedbackList from "@/components/tables/feedbackTable";
+import ViewEventFeedback from "@/components/ViewEventFeedback";
 
 type mainEvent = {
     intFID: string;
@@ -60,6 +62,34 @@ type AttendanceDataType = {
     attDateSubmitted: string;
     sub_eventName: string;
 };
+
+type FeedbackDataType = {
+    fbID: string;
+    fbSubEventID: string;
+    fbCourseName: string;
+    fbCommencementDate: string;
+    fbCompletionDate: string;
+    fbDuration: string;
+    fbTrainersName: string;
+    fbTrainingProvider: string;
+    fbSectionA1: string;
+    fbSectionA2: string;
+    fbSectionA3: string;
+    fbSectionA4: string;
+    fbSectionA5: string;
+    fbSectionB1: string;
+    fbSectionB2: string;
+    fbSectionB3: string;
+    fbSectionB4: string;
+    fbSectionC1: string;
+    fbSectionD1: string;
+    fbSectionESuggestions: string;
+    fbSectionEChanges: string;
+    fbSectionEAdditional: string;
+    fbFullName: string;
+    fbEmailAddress: string;
+}
+
 
 export default function Home() {
     const supabase = createClientComponentClient();
@@ -276,26 +306,49 @@ export default function Home() {
         }
     }, [attendanceData]);
 
-    const handleSubEventClick = async (subEvent: subEvents) => {
-        try {
-            // Fetch attendance data for the selected sub-event
-            setSelectedSubEvent(subEvent.sub_eventsID);
-            const { data: attendanceForms, error: formsError } = await supabase
-                .from("attendance_forms")
-                .select()
-                .eq("attFSubEventID", subEvent.sub_eventsID);
+    const handleSubEventClick = async (subEvent: subEvents, type: number) => {
+        if (type == 1) {
+            try {
+                // Fetch attendance data for the selected sub-event
+                setSelectedSubEvent(subEvent.sub_eventsID);
+                const { data: attendanceForms, error: formsError } = await supabase
+                    .from("attendance_forms")
+                    .select()
+                    .eq("attFSubEventID", subEvent.sub_eventsID);
 
-            if (formsError) {
-                console.error("Error fetching attendance forms:", formsError);
-                return;
+                if (formsError) {
+                    console.error("Error fetching attendance forms:", formsError);
+                    return;
+                }
+
+                // Set the attendance data for the selected sub-event
+                setAttendanceData(attendanceForms);
+
+            } catch (error) {
+                const typedError = error as Error;
+                console.error("Error:", typedError.message);
             }
+        } else if (type == 2) {
+            try {
+                // Fetch attendance data for the selected sub-event
+                setSelectedSubEvent(subEvent.sub_eventsID);
+                const { data: feedbackForms, error: formsError } = await supabase
+                    .from("feedback_forms")
+                    .select()
+                    .eq("fbSubEventID", subEvent.sub_eventsID);
 
-            // Set the attendance data for the selected sub-event
-            setAttendanceData(attendanceForms);
+                if (formsError) {
+                    console.error("Error fetching feedback forms:", formsError);
+                    return;
+                }
 
-        } catch (error) {
-            const typedError = error as Error;
-            console.error("Error:", typedError.message);
+                // Set the attendance data for the selected sub-event
+                setFeedbackData(feedbackForms);
+
+            } catch (error) {
+                const typedError = error as Error;
+                console.error("Error:", typedError.message);
+            }
         }
     };
 
@@ -561,6 +614,85 @@ export default function Home() {
         }
     });
 
+    // This is for feedback modal,
+    const [feedbackData, setFeedbackData] = useState<FeedbackDataType[]>([]);
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+    const [feedbackMainEventID, setFeedbackMainEventID] = useState("");
+    const [subEventsForFeedback, setSubEventsForFeedback] = useState<subEvents[]>([]);
+
+    // This function fetches ALL the feedback forms,
+    const openFeedbackModal = async (event_id: string) => {
+        try {
+            // Fetch sub-events for the given event
+            const { data: subEvents, error: subEventsError } = await supabase
+                .from("sub_events")
+                .select()
+                .eq("sub_eventsMainID", event_id);
+
+            if (subEventsError) {
+                console.error("Error fetching sub_events:", subEventsError);
+                return;
+            }
+            // Set the main ID for the 
+            setFeedbackMainEventID(event_id);
+            fetchFeedbackList(event_id)
+            setSubEventsForFeedback(subEvents);
+
+            // Extract the subEventID values from the fetched sub_events
+            const subEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsID);
+
+            // Fetch all attendance_forms related to those sub_events
+            const { data: feedbackForms, error: formsError } = await supabase
+                .from("feedback_forms")
+                .select()
+                .in("fbSubEventID", subEventIDs);
+
+            if (formsError) {
+                console.error("Error fetching attendance forms:", formsError);
+                return;
+            }
+
+            // Set the attendance data for the main event
+            setFeedbackData(feedbackForms);
+            fetchFeedbackList(event_id)
+        } catch (error) {
+            const typedError = error as Error;
+            console.error("Error:", typedError.message);
+        }
+
+        setShowFeedbackModal(true);
+    };
+
+    // This function fetches feedback lists for particular sub-events,
+    const fetchFeedbackList = async (event_id: string) => {
+        const { data: subEvents, error: subEventsError } = await supabase
+            .from("sub_events")
+            .select()
+            .eq("sub_eventsMainID", event_id);
+
+        if (subEventsError) {
+            console.error("Error fetching sub_events:", subEventsError);
+            return;
+        }
+
+        // Extract the subEventID values from the fetched sub_events
+        const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
+
+        // Now, fetch the attendance_forms related to those sub_events
+        const { data: feedbackForms, error: formsError } = await supabase
+            .from("feedback_forms")
+            .select()
+            .in("fbSubEventID", subEventIDs);
+
+        if (formsError) {
+            console.error("Error fetching attendance forms:", formsError);
+            return;
+        } else {
+            setFeedbackData(feedbackForms);
+            setSelectedSubEvent("");
+        }
+    };
+
     return (
         <div className="h-screen flex flex-row justify-start">
             <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
@@ -801,6 +933,14 @@ export default function Home() {
                                                                 }}
                                                             >Attendance List
                                                             </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={e => {
+                                                                e.stopPropagation(); // 
+                                                                openFeedbackModal(
+                                                                    event.intFID,
+                                                                );
+                                                                fetchFeedbackList(event.intFID);
+                                                            }}>Feedback Forms</DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </td>
@@ -1163,6 +1303,65 @@ export default function Home() {
                         </div>
                     </EventListModal>
 
+                    <ViewEventFeedback
+                        isVisible={showFeedbackModal}
+                        onClose={() => setShowFeedbackModal(false)}>
+                        <div className="flex">
+                            <div className="h-[600px] lg:h-[700px] w-full mr-3">
+                                <div className="flex items-left justify-start">
+                                    <div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center">
+                                        <PencilNoteIcon />{" "}
+                                        <span className="ml-2.5">Feedback Summary</span>
+                                    </div>
+                                </div>
+                                <div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px] pb-5">
+                                    Total Feedback Received: {feedbackData.length}
+                                </div>
+                                <div className="flex flex-wrap ml-9">
+                                    <button
+                                        className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                            }`}
+                                        onClick={() => {
+                                            setIsAllButtonActive(true);
+                                            fetchFeedbackList(feedbackMainEventID);
+                                        }}
+                                    >
+                                        All
+                                    </button>
+                                    {subEventsForFeedback.map((subEvent) => (
+                                        <div
+                                            key={subEvent.sub_eventsID}
+                                            className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                                }`}
+                                        >
+                                            <button
+                                                onClick={() => {
+                                                    setIsAllButtonActive(false);
+                                                    handleSubEventClick(subEvent, 2);
+                                                }}
+                                            >
+                                                {subEvent.sub_eventsName}
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                                {/* This is to loop through the attendance data. */}
+                                {feedbackData && feedbackData.length > 0 ? (
+                                    <div className="ml-9">
+                                        <div className={`lg:h-[550px] h-[400px]  overflow-y-auto`}>
+                                            <FeedbackList feedbackData={feedbackData} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-left text-[12px] lg:text-[14px] text-red-600 ml-[34px]">
+                                        No feedback received yet.
+                                    </div>
+
+                                )}
+                            </div>
+                        </div>
+                    </ViewEventFeedback>
+
                     <ViewAttendance_Modal
                         isVisible={showAttendanceModal}
                         onClose={() => setShowAttendanceModal(false)}>
@@ -1195,7 +1394,7 @@ export default function Home() {
                                             <button
                                                 onClick={() => {
                                                     setIsAllButtonActive(false);
-                                                    handleSubEventClick(subEvent);
+                                                    handleSubEventClick(subEvent, 2);
                                                 }}
                                             >
                                                 {subEvent.sub_eventsName}
