@@ -16,8 +16,9 @@ import GraphIcon from "@/components/icons/GraphIcon";
 import ReportIcon from "@/components/icons/ReportIcon";
 import EventsIcon from "@/components/icons/EventsIcon";
 import ChatIcon from "@/components/icons/ChatIcon";
-import BsFillChatLeftTextFill from "react-icons/bs"
-import FaHome from "react-icons/fa6"
+import BsFillChatLeftTextFill from "react-icons/bs";
+import { FaHome } from "react-icons/fa";
+import {IoAnalyticsOutline} from "react-icons/io5";
 
 // IMPORT THIS TO USE THE DARK/ LIGHT MODE STATE,
 import darkLightStorage from '@/components/zustand/darkLightStorage';
@@ -25,8 +26,8 @@ import darkLightStorage from '@/components/zustand/darkLightStorage';
 // PLEASE DON'T DELETE MY COMMENTED LINES UNTIL FINAL PHASE OF DEVELOPMENT, TQ.
 
 const NavLinks = [
-	{ id: 1, name: "Home", icon: HomeIcon, link: "/homepage" },
-	{ id: 2, name: "Analytical Visualization", icon: GraphIcon, link: "/analytics" },
+	{ id: 1, name: "Home", icon: FaHome, link: "/homepage" },
+	{ id: 2, name: "Analytical Visualization", icon: IoAnalyticsOutline, link: "/analytics" },
 	{ id: 3, name: "Reports", icon: ReportIcon, link: "/report" },
 	{ id: 4, name: "Chatbot", icon: ChatIcon, link: "/chatbot" },
 	{ id: 5, name: "Nominations Travelling Form", icon: FormsIcon, link: "/external" }
@@ -94,10 +95,10 @@ const NavigationBarDesktop = () => {
 	const displayNavItems = (nav: { link: string; id: number }) => {
 		const isActive = pathname === nav.link;
 		return classNames(
-			"flex items-center cursor-pointer hover:bg-slate-200 rounded w-full overflow-hidden whitespace-wrap",
+			"flex items-center cursor-pointer hover:bg-slate-200 rounded w-full overflow-hidden whitespace-wrap dark:hover:bg-[#242729]",
 			{
 				["bg-light-lighter"]: activeNavBar?.id === nav.id,
-				["bg-slate-200"]: isActive,
+				["bg-slate-200 dark:bg-[#242729]"]: isActive,
 			},
 		);
 	};
@@ -164,18 +165,15 @@ const NavigationBarDesktop = () => {
 						<div className={NavLinkResults} key={nav.id}>
 							{/* Use legacy behaviour to allow to wrap <a> tag inside <Link> tag, */}
 							<Link href={nav.link} legacyBehavior={true}>
-								<a className={`flex py-[14px] px-2 items-center w-full h-full text-sm -mt-1 ${isDarkMode ? 'text-white' : 'text-slate-800'} `}>
-									<div className={isDarkMode ? "opacity-100 text-white" : "opacity-80"}>
-										<Icon />
-									</div>
+								<a className="flex py-[14px] px-2 items-center w-full h-full text-sm -mt-1text-slate-800">
+									<Icon className="text-[24px] text-slate-800 dark:text-dark_text" />
 									{/* If the navigation bar is not closed OR it is hovered, display the items, */}
 									{(!closeNav || isHovered) && (
 										<span
 											className={classNames(
-												"pl-5 text-md font-medium text-text-light",
+												"pl-5 text-md font-medium text-text-light dark:text-dark_text",
 												{
-													"text-white": isDarkMode,
-													"text-slate-800": !isDarkMode,
+													"text-slate-800": true
 												}
 											)}>
 											{nav.name}
