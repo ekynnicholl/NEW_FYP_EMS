@@ -26,6 +26,7 @@ import useDarkLight from "@/components/zustand/darkLightStorage";
 import { IoIosArrowDown } from "react-icons/io"
 import { MdNotificationsActive } from "react-icons/md"
 import { BsThreeDotsVertical } from "react-icons/bs"
+import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BiSun } from "react-icons/bi"
 import { HiOutlineMoon } from "react-icons/hi"
 
@@ -428,8 +429,8 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 				<div className="cursor-pointer">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[4px] dark:bg-[#1D1F1F]">
-								<BsThreeDotsVertical className="text-[20.5px] text-slate-900 dark:text-dark_text" />
+							<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] dark:bg-[#1D1F1F]">
+								<BiDotsVerticalRounded className="text-[24px] text-slate-900 dark:text-dark_text" />
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
