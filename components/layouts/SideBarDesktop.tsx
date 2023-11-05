@@ -166,7 +166,7 @@ const NavigationBarDesktop = () => {
 							{/* Use legacy behaviour to allow to wrap <a> tag inside <Link> tag, */}
 							<Link href={nav.link} legacyBehavior={true}>
 								<a className="flex py-[14px] px-2 items-center w-full h-full text-sm text-slate-800">
-								<Icon className={`text-[${nav.id === 3 ? '28' : '26'}px] ${[4, 5].includes(nav.id) ? 'mt-[1px]' : ''} ${nav.id === 3 ? '-ml-[0.5px]' : ''} text-slate-700 dark:text-dark_text`} />
+								<Icon className={`text-[${nav.id === 3 ? '28' : '26'}px] ${[4, 5].includes(nav.id) ? 'mt-[1px]' : ''} ${nav.id === 3 ? '-ml-[0.5px]' : ''} text-slate-800 dark:text-dark_text`} />
 									{/* If the navigation bar is not closed OR it is hovered, display the items, */}
 									{(!closeNav || isHovered) && (
 										<span

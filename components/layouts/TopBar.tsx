@@ -23,6 +23,11 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
 import cookie from "js-cookie";
 import useDarkLight from "@/components/zustand/darkLightStorage";
+import { IoIosArrowDown } from "react-icons/io"
+import { MdNotificationsActive } from "react-icons/md"
+import { BsThreeDotsVertical } from "react-icons/bs"
+import { BiSun } from "react-icons/bi"
+import { HiOutlineMoon } from "react-icons/hi"
 
 import {
 	DropdownMenu,
@@ -38,11 +43,11 @@ import { usePathname } from "next/navigation";
 const Notification = () => {
 
 	return (
-		<div className="cursor-pointer mt">
+		<div className="cursor-pointer">
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<div className="rounded-full bg-slate-100 opacity-80 mt-1 p-2 hover:opacity-90">
-						<NotifIcon />
+					<div className="rounded-full bg-slate-100 opacity-80 mt-[4px] p-2 hover:opacity-90 dark:bg-[#1D1F1F]">
+						<MdNotificationsActive className="text-[24px] text-slate-800 dark:text-dark_text -mt-[2px]" />
 					</div>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent side="top" sideOffset={-4}>
@@ -91,9 +96,6 @@ const User = () => {
 		<div className="cursor-pointer">
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
-						<ProfileIcon />
-					</div>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
 					<DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -359,26 +361,29 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 					<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
 						<div className="mx-auto max-w-xs ">
-							<p className="text-2xl font-medium mb-6 text-center">Create an Account</p>
+							<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
 							<input
-								className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+								className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 								type="email" placeholder="Email address" name="email" required />
 							<p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
 
 							<div className="relative">
 								<input
-									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 									type={showPassword ? 'password' : 'text'} placeholder="Password" id="password" name="password" required onChange={handlePasswordChange} />
 								<button className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4" type="button"
 									id="password-toggle" onClick={togglePasswordVisibility}>
-									{showPassword ? <FaEyeSlash style={{ fontSize: '20px' }} /> : <FaEye style={{ fontSize: '20px' }} />}
+									{showPassword ?
+										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" /> :
+										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+									}
 								</button>
 
 								<p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
 							</div>
 							<div className="relative">
 								<input
-									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 									type={showConfirmPassword ? 'password' : 'text'}
 									placeholder="Confirm password"
 									id="confirmPassword"
@@ -386,16 +391,18 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 									required
 								/>
 
-								<button className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4" type="button"
-									id="confirm-password-toggle" onClick={toggleConfirmPasswordVisibility}>
-									{showConfirmPassword ? <FaEyeSlash style={{ fontSize: '20px' }} /> : <FaEye style={{ fontSize: '20px' }} />}
+								<button className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4" type="button" id="confirm-password-toggle" onClick={toggleConfirmPasswordVisibility}>
+									{showConfirmPassword ?
+										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" /> :
+										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+									}
 								</button>
 
 								<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
 								<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
 							</div>
 							<button
-								className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+								className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
 								<svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
 									strokeLinecap="round" strokeLinejoin="round">
 								</svg>
@@ -410,19 +417,19 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 			<BreadCrumb />
 			<div className="flex space-x-6 pr-2 pl-12">
-				<div className="rounded-full px-2 py-2 bg-slate-100 cursor-pointer mt-[2px] opacity-80 hover:opacity-90">
+				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
 					{!isDarkMode ? (
-						<LightIcon onClick={() => updateIsDarkMode(true)} />
+						<BiSun className="text-[26px] text-slate-800 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />
 					) : (
-						<DarkIcon onClick={() => updateIsDarkMode(false)} />
+						<HiOutlineMoon className="text-[26px] text-slate-800 dark:text-dark_text" onClick={() => updateIsDarkMode(false)} />
 					)}
 				</div>
 				<Notification />
 				<div className="cursor-pointer">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px]">
-								<ThreeDotIcon />
+							<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[4px] dark:bg-[#1D1F1F]">
+								<BsThreeDotsVertical className="text-[20.5px] text-slate-800 dark:text-dark_text" />
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
@@ -445,10 +452,10 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<div className="flex items-center gap-3 cursor-pointer">
-								<p className=" text-slate-700 text-sm font-medium dark:text-dark_text2">
+								<p className=" text-slate-700 text-sm font-medium dark:text-dark_text">
 									Administrator
 								</p>
-								<ArrowDownIcon />
+								<IoIosArrowDown className="text-slate-800 dark:text-dark_text mt-[2.5px]" />
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
