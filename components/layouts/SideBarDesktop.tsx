@@ -18,7 +18,12 @@ import EventsIcon from "@/components/icons/EventsIcon";
 import ChatIcon from "@/components/icons/ChatIcon";
 import BsFillChatLeftTextFill from "react-icons/bs";
 import { FaHome } from "react-icons/fa";
-import {IoAnalyticsOutline} from "react-icons/io5";
+import { IoAnalyticsOutline } from "react-icons/io5";
+import { TbReportSearch } from "react-icons/tb";
+import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2"
+import { FaWpforms } from "react-icons/fa"
+import {RxHamburgerMenu} from "react-icons/rx"
+import {IoIosArrowBack} from "react-icons/io"
 
 // IMPORT THIS TO USE THE DARK/ LIGHT MODE STATE,
 import darkLightStorage from '@/components/zustand/darkLightStorage';
@@ -28,9 +33,9 @@ import darkLightStorage from '@/components/zustand/darkLightStorage';
 const NavLinks = [
 	{ id: 1, name: "Home", icon: FaHome, link: "/homepage" },
 	{ id: 2, name: "Analytical Visualization", icon: IoAnalyticsOutline, link: "/analytics" },
-	{ id: 3, name: "Reports", icon: ReportIcon, link: "/report" },
-	{ id: 4, name: "Chatbot", icon: ChatIcon, link: "/chatbot" },
-	{ id: 5, name: "Nominations Travelling Form", icon: FormsIcon, link: "/external" }
+	{ id: 3, name: "Reports", icon: TbReportSearch, link: "/report" },
+	{ id: 4, name: "Chatbot", icon: HiOutlineChatBubbleBottomCenterText, link: "/chatbot" },
+	{ id: 5, name: "Nominations Travelling Form", icon: FaWpforms, link: "/external" }
 ];
 
 const NavigationBarDesktop = () => {
@@ -55,15 +60,15 @@ const NavigationBarDesktop = () => {
 		/* Display the whole navigation IF it is NOT CLOSED OR IT IS HOVERED, */
 		["w-72"]: !closeNav || isHovered,
 
-		["w-20"]: closeNav,
-		["bg-white border-r"]: !isDarkMode,
+		["w-21"]: closeNav,
+		["bg-white border-r dark:border-[#2D3133]"]: !isDarkMode,
 		["bg-black-500"]: isDarkMode,
 	});
 
 	const ToggleNavBarClass = classNames(
 		"mt-10 mr-1.5 items-center rounded bg-light-lighter absolute right-0",
 		{
-			"rotate-180": !closeNav,
+			// "rotate-180": !closeNav,
 		},
 	);
 
@@ -143,14 +148,9 @@ const NavigationBarDesktop = () => {
 							className={ToggleNavBarClass}
 							onClick={HandleNavBarToggle}>
 							{closeNav ? (
-								<HamburgerIcon />
+								<RxHamburgerMenu className="text-[27px] text-slate-800 dark:text-dark_text mr-[2px]"/>
 							) : (
-								<Image
-									src="/images/arrow_right.png"
-									alt=""
-									width={27}
-									height={27}
-								/>
+								<IoIosArrowBack className="text-[35px] text-slate-800 dark:text-dark_text mt-[5px]"/>
 							)}
 						</button>
 					</div>
@@ -165,8 +165,8 @@ const NavigationBarDesktop = () => {
 						<div className={NavLinkResults} key={nav.id}>
 							{/* Use legacy behaviour to allow to wrap <a> tag inside <Link> tag, */}
 							<Link href={nav.link} legacyBehavior={true}>
-								<a className="flex py-[14px] px-2 items-center w-full h-full text-sm -mt-1text-slate-800">
-									<Icon className="text-[24px] text-slate-800 dark:text-dark_text" />
+								<a className="flex py-[14px] px-2 items-center w-full h-full text-sm text-slate-800">
+								<Icon className={`text-[${nav.id === 3 ? '28' : '26'}px] ${[4, 5].includes(nav.id) ? 'mt-[1px]' : ''} ${nav.id === 3 ? '-ml-[0.5px]' : ''} text-slate-700 dark:text-dark_text`} />
 									{/* If the navigation bar is not closed OR it is hovered, display the items, */}
 									{(!closeNav || isHovered) && (
 										<span
@@ -175,7 +175,8 @@ const NavigationBarDesktop = () => {
 												{
 													"text-slate-800": true
 												}
-											)}>
+											)}
+										>
 											{nav.name}
 										</span>
 									)}
@@ -184,6 +185,7 @@ const NavigationBarDesktop = () => {
 						</div>
 					);
 				})}
+
 			</div>
 		</div>
 	);
