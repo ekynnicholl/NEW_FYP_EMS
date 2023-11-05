@@ -3029,10 +3029,12 @@ export default function Homepage() {
 											{subEvents.length > 0 && (
 												subEvents
 													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															// new Date(subEvent.sub_eventsStartDate) > new Date()
-															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
 														);
 													})
 													.slice(0, 1) // Take only the first sub event
@@ -3047,16 +3049,18 @@ export default function Homepage() {
 											)}
 
 											<div className="flex">
-												{subEvents.length > 0 && (
+												{subEvents.length > 0 &&
 													subEvents
 														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
 															return (
 																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-																// new Date(subEvent.sub_eventsEndDate) > new Date()
-																new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
 															);
 														})
-														.slice(0, 1) // Take only the first sub event
+														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
 																<FiClock className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
@@ -3064,38 +3068,40 @@ export default function Homepage() {
 																	{formatTime(subEvent.sub_eventsStartTime)}
 																</p>
 															</div>
-														))
-												)}
-												{subEvents.length > 0 && (
+														))}
+												{subEvents.length > 0 &&
 													subEvents
 														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
 															return (
 																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-																// new Date(subEvent.sub_eventsEndDate) > new Date()
-																new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
 															);
 														})
-														.slice(0, 1) // Take only the first sub event
+														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
 																<p className="text-slate-600 text-sm dark:text-dark_text ml-1">
 																	- {formatTime(subEvent.sub_eventsEndTime)}
 																</p>
 															</div>
-														))
-												)}
+														))}
 											</div>
 
-											{subEvents.length > 0 && (
+											{subEvents.length > 0 &&
 												subEvents
 													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															// new Date(subEvent.sub_eventsEndDate) > new Date()
-															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
 														);
 													})
-													.slice(0, 1) // Take only the first sub event
+													.slice(0, 1)
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
 															<FaLocationDot className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
@@ -3103,8 +3109,7 @@ export default function Homepage() {
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
-													))
-											)}
+													))}
 
 											{subEvents.length > 0 &&
 												subEvents
@@ -3113,7 +3118,7 @@ export default function Homepage() {
 														const currentDate = new Date();
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															startDate.toDateString() === currentDate.toDateString()
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
 													.slice(0, 1)
@@ -3149,7 +3154,7 @@ export default function Homepage() {
 											<div className="flex justify-between items-end mt-5">
 												{eventsWithDaysLeft.map((event, index) => (
 													<div key={index}>
-														<span className={`relative -mt-[32px] px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center dark:text-red-200 ${shouldShake ? 'shake' : ''}`}>
+														<span className={`relative -mt-[32px] px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
 															<FiClock className="mr-1 text-xl font-bold relative" />
 															<span className="relative -mt-[1px] leading-3 ml-1">{event.daysLeft} Days Left</span>

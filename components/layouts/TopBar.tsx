@@ -130,7 +130,7 @@ const BreadCrumb = () => {
 	const lastPathCapitalized = lastPath.charAt(0).toUpperCase() + lastPath.slice(1);
 
 	return (
-		<div className="flex items-center space-x-2 text-sm ml-[9px] dark:text-dark_text">
+		<div className="flex items-center space-x-2 text-sm ml-[9px]">
 			<Link href="/homepage">Home</Link>
 			<p>/</p>
 			<Link href={pathname} className="underline underline-offset-4 font-medium">
