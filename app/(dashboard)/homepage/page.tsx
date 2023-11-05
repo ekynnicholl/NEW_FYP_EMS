@@ -2103,17 +2103,17 @@ export default function Homepage() {
 						<div className="flex">
 							<div className="h-[600px] lg:h-[700px] w-full mr-3">
 								<div className="flex items-left justify-start">
-									<div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center">
+									<div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center text-slate-800 dark:text-dark_text">
 										<PencilNoteIcon />{" "}
 										<span className="ml-2.5">Feedback Summary</span>
 									</div>
 								</div>
-								<div className="text-left text-black text-[12px] lg:text-[13px] pl-[34px] pb-5">
+								<div className="text-left text-[12px] lg:text-[13px] pl-[34px] pb-5 text-slate-800 dark:text-dark_text">
 									Total Feedback Received: {feedbackData.length}
 								</div>
 								<div className="flex flex-wrap ml-9">
 									<button
-										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-3 dark:bg-[#242729] dark:text-dark_text ${isAllButtonActive ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800'
 											}`}
 										onClick={() => {
 											setIsAllButtonActive(true);
@@ -2125,7 +2125,7 @@ export default function Homepage() {
 									{subEventsForFeedback.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 dark:bg-[#242729] dark:text-dark_text ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
@@ -2142,12 +2142,12 @@ export default function Homepage() {
 								{/* This is to loop through the attendance data. */}
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
-										<div className={`lg:h-[550px] h-[400px]  overflow-y-auto`}>
+										<div className={`lg:h-[550px] h-[400px]  overflow-y-auto dark:bg-[#242729] dark:text-dark_text`}>
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
 									</div>
 								) : (
-									<div className="text-left text-[12px] lg:text-[14px] text-red-600 ml-[34px]">
+									<div className="text-left text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[34px]">
 										No feedback received yet.
 									</div>
 
@@ -2159,18 +2159,18 @@ export default function Homepage() {
 					<ViewAttendance_Modal
 						isVisible={showAttendanceModal}
 						onClose={() => setShowAttendanceModal(false)}>
-						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[700px] overflow-y-auto">
+						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[700px] overflow-y-auto dark:bg-dark_mode_card">
 							<div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
 								<div className="flex items-start justify-start text-text text-[20px] text-center">
-									<PencilNoteIcon />{" "}
-									<span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px]">Attendance List</span>
+									<PencilNoteIcon />
+									<span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px] text-slate-800 dark:text-dark_text">Attendance List</span>
 								</div>
-								<div className="text-left text-black lg:text-[13px] text-[12px] pb-5 ml-11">
+								<div className="text-left text-black lg:text-[13px] text-[12px] pb-5 ml-11 text-slate-800 dark:text-dark_text">
 									Total Attendees: {attendanceData.length}
 								</div>
 								<div className="flex flex-wrap">
 									<button
-										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 dark:bg-[#242729] dark:text-dark_text ${isAllButtonActive ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800 '
 											}`}
 										onClick={() => {
 											setIsAllButtonActive(true);
@@ -2182,7 +2182,7 @@ export default function Homepage() {
 									{subEventsForAttendance.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 dark:bg-[#242729] dark:text-dark_text ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
@@ -2202,20 +2202,20 @@ export default function Homepage() {
 										fetchAttendanceList(attendanceMainEventID);
 										setIsAllButtonActive(true);
 									}}
-									className="font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
+									className="font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-dark_text"
 								>
 									Refresh
 								</button>
 								{/* This is to loop through the attendance data. */}
 								{attendanceData && attendanceData.length > 0 ? (
-									<div className="lg:text-[16px] text-[12px]">
+									<div className="lg:text-[16px] text-[12px] text-slate-800 dark:bg-[#242729] dark:text-dark_text">
 										<label htmlFor="itemsPerPageSelect">Show entries:</label>
 										<select
 											id="itemsPerPageSelect"
 											name="itemsPerPage"
 											value={itemsPerPage}
 											onChange={handleItemsPerPageChange}
-											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-[#242729] dark:text-dark_text"
 										>
 											<option value="5">5</option>
 											<option value="10">10</option>
@@ -2230,14 +2230,14 @@ export default function Homepage() {
 										</div>
 									</div>
 								) : (
-									<div className="text-center text-gray-600 mt-4">
+									<div className="text-center text-slate-800 mt-4 dark:text-dark_text">
 										No attendance data available.
 									</div>
 								)}
 							</div>
 							{attendanceData && attendanceData.length > 0 ? (
 								<div className="w-full lg:flex flex-col items-center justify-center">
-									<div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
+									<div className="text-center font-bold lg:text-[16px] text-[14px] dark:bg-[#242729] dark:text-dark_text">Number of Attendees Each Faculty/ Unit</div>
 									<div className="w-[300px] h-[300px] lg:w-[500px] lg:h-[450px] flex items-center justify-center mt-5">
 										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
 									</div>
