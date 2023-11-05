@@ -158,7 +158,7 @@ const NavigationBarDesktop = () => {
 			</div>
 
 			{/* Use loop to loop through the navigation links, */}
-			<div className="flex flex-col items-start mt-8 dark:bg-dark_mode_card">
+			<div className="flex flex-col items-start mt-8">
 				{NavLinks.map(({ icon: Icon, ...nav }) => {
 					const NavLinkResults = displayNavItems(nav);
 					return (

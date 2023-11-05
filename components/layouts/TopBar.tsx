@@ -200,15 +200,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		} else {
 			document.documentElement.classList.remove('dark')
 		}
-
-		// Whenever the user explicitly chooses light mode
-		localStorage.theme = 'light'
-
-		// Whenever the user explicitly chooses dark mode
-		localStorage.theme = 'dark'
-
-		// Whenever the user explicitly chooses to respect the OS preference
-		localStorage.removeItem('theme')
 	};
 
 	// 0 is vanilla, 1 is dark mode.
