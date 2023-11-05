@@ -47,7 +47,7 @@ const Notification = () => {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<div className="rounded-full bg-slate-100 opacity-80 mt-[4px] p-2 hover:opacity-90 dark:bg-[#1D1F1F]">
-						<MdNotificationsActive className="text-[24px] text-slate-800 dark:text-dark_text -mt-[2px]" />
+						<MdNotificationsActive className="text-[24px] text-slate-900 dark:text-dark_text -mt-[2px]" />
 					</div>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent side="top" sideOffset={-4}>
@@ -419,9 +419,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			<div className="flex space-x-6 pr-2 pl-12">
 				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
 					{!isDarkMode ? (
-						<BiSun className="text-[26px] text-slate-800 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />
+						<BiSun className="text-[26px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />
 					) : (
-						<HiOutlineMoon className="text-[26px] text-slate-800 dark:text-dark_text" onClick={() => updateIsDarkMode(false)} />
+						<HiOutlineMoon className="text-[26px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(false)} />
 					)}
 				</div>
 				<Notification />
@@ -429,7 +429,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[4px] dark:bg-[#1D1F1F]">
-								<BsThreeDotsVertical className="text-[20.5px] text-slate-800 dark:text-dark_text" />
+								<BsThreeDotsVertical className="text-[20.5px] text-slate-900 dark:text-dark_text" />
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
