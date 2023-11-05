@@ -160,7 +160,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	useEffect(() => {
 		fetchHomepageView();
-		fetchIsDarkMode();
+		// fetchIsDarkMode();
 	}, []);
 
 	const fetchHomepageView = async () => {
@@ -193,6 +193,22 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		// Set the homepageView based on the fetched value
 		setIsDarkMode(data[0].accIsDarkMode);
 		useDarkLight.setState({ isDarkMode: data[0].accIsDarkMode });
+
+		// On page load or when changing themes, best to add inline in `head` to avoid FOUC
+		if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+			document.documentElement.classList.add('dark')
+		} else {
+			document.documentElement.classList.remove('dark')
+		}
+
+		// Whenever the user explicitly chooses light mode
+		localStorage.theme = 'light'
+
+		// Whenever the user explicitly chooses dark mode
+		localStorage.theme = 'dark'
+
+		// Whenever the user explicitly chooses to respect the OS preference
+		localStorage.removeItem('theme')
 	};
 
 	// 0 is vanilla, 1 is dark mode.
