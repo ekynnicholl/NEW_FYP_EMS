@@ -101,7 +101,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
                         x: {
                             title: {
                                 display: true,
-                                text: "Faculty",
+                                text: "Unit",
                             },
                             grid: { display: false }
                         },

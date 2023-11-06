@@ -60,29 +60,38 @@ export default function AttendanceForm() {
 			const [hoursEnd, minutesEnd, secondsEnd] = eventEndTimeStr.split(':');
 			const [hoursStart, minutesStart, secondsStart] = eventStartTimeStr.split(':');
 
-			// Set the end time,
-			const eventEndTime = new Date(currentDate);
-			eventEndTime.setHours(Number(hoursEnd));
-			eventEndTime.setMinutes(Number(minutesEnd));
-			eventEndTime.setSeconds(Number(secondsEnd));
-
 			// Set the start time,
 			const eventStartTime = new Date(currentDate);
 			eventStartTime.setHours(Number(hoursStart));
 			eventStartTime.setMinutes(Number(minutesStart));
 			eventStartTime.setSeconds(Number(secondsStart));
 
+			console.log("event start time: " + eventStartTime);
+
+			// Set the end time,
+			const eventEndTime = new Date(currentDate);
+			eventEndTime.setHours(Number(hoursEnd));
+			eventEndTime.setMinutes(Number(minutesEnd));
+			eventEndTime.setSeconds(Number(secondsEnd));
+
+			console.log("event end time: " + eventEndTime);
+
 			const currentTime = new Date();
 
+			const startTimeWindow = new Date(eventStartTime);
+			startTimeWindow.setMinutes(startTimeWindow.getMinutes() - 15);
+			const endTimeWindow = new Date(eventEndTime);
+			endTimeWindow.setMinutes(endTimeWindow.getMinutes() + 15);
+
 			// Check if the current time is AFTER the event start date and time,
-			if (currentTime > eventEndTime) {
+			if (currentTime > endTimeWindow) {
 				router.push('/notFound?from=end_att');
 				return;
 			}
 
 			// Check if the current time is BEFORE the event start date and time,
-			if (currentTime < eventStartTime) {
-				const eventStartTimeString = eventStartTime.toISOString();
+			if (currentTime < startTimeWindow) {
+				const eventStartTimeString = startTimeWindow.toISOString();
 				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
 				// router.push('/notFound?from=start_att');
 				return;
