@@ -1489,13 +1489,13 @@ export default function Homepage() {
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faCalendar}
-										className="w-8 mt-[9px] text-slate-700 dark:text-slate-300"
+										className="w-8 mt-[7px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
 								<div className="ml-1">
-									<p className="text-[17px]">Today&apos;s Date</p>
-									<p className="text-[17px] font-medium">{formattedDate}</p>
+									<p className="text-[16px]">Today&apos;s Date</p>
+									<p className="text-[16px] font-medium">{formattedDate}</p>
 								</div>
 							</div>
 						</div>
@@ -1507,13 +1507,13 @@ export default function Homepage() {
 								<div className="mr-[14px]">
 									<FontAwesomeIcon
 										icon={faUsers}
-										className="w-8 mt-[9px] text-slate-700 dark:text-slate-300"
+										className="w-8 mt-[7px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
 								<div className="ml-1">
-									<p className="text-[17px]">Upcoming Events</p>
-									<p className="text-[17px] font-medium">{upcomingEventCounts}</p>
+									<p className="text-[16px]">Upcoming Events</p>
+									<p className="text-[16px] font-medium">{upcomingEventCounts}</p>
 								</div>
 							</a>
 						</div>
@@ -1525,13 +1525,13 @@ export default function Homepage() {
 								<div className="mr-[14px]">
 									<FontAwesomeIcon
 										icon={faCheckCircle}
-										className="w-[34px] mt-[10px] text-slate-700 dark:text-slate-300"
+										className="w-[34px] mt-[7px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
 								<div className="ml-1">
-									<p className="text-[17px]">Past Events</p>
-									<p className="text-[17px] font-medium">{pastEventCounts}</p>
+									<p className="text-[16px]">Past Events</p>
+									<p className="text-[16px] font-medium">{pastEventCounts}</p>
 								</div>
 							</a>
 						</div>
@@ -1834,7 +1834,8 @@ export default function Homepage() {
 															className="pr-2 lg:pr-[8px] py-[5px] pl-2 lg:py-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[87.5px] lg:mr-[90.5px] mb-[3px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 															type="date"
 															name="event_start_date"
-
+															min={mainEvent.intFEventStartDate} // Set the minimum date to the main event start date
+															max={mainEvent.intFEventEndDate}   // Set the maximum date to the main event end date
 															onChange={(e) => handleEventStartDatesInputChange(index, startDatesIndex, e.target.value)}
 															required
 														/>
@@ -1847,7 +1848,8 @@ export default function Homepage() {
 															className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] py-[5px] pl-2 -ml-[71.5px] pr-2 lg:pr-2 lg:py-2 dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 															type="date"
 															name="event_end_date"
-
+															min={mainEvent.intFEventStartDate} // Set the minimum date to the main event start date
+															max={mainEvent.intFEventEndDate}   // Set the maximum date to the main event end date
 															onChange={(e) => handleEventEndDatesInputChange(index, endDatesIndex, e.target.value)}
 															required
 														/>
@@ -3088,7 +3090,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[525px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -3153,7 +3155,7 @@ export default function Homepage() {
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[28px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
+												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
 													{latestEvent[0].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -3182,7 +3184,7 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[20px]">
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
 												{latestEvent[0].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
@@ -3206,8 +3208,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
-															<HiMiniCalendarDays className="text-[30px] mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-[16px] dark:text-dark_text mt-[1px]">
+															<HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] dark:text-dark_text mt-[1px]">
 																{formatDate(subEvent.sub_eventsStartDate)}
 															</p>
 														</div>
@@ -3229,8 +3231,8 @@ export default function Homepage() {
 														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
-																<FiClock className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
-																<p className="text-slate-600 text-[16px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																<FiClock className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[15px] ml-[1px] -mt-[2px] dark:text-dark_text">
 																	{formatTime(subEvent.sub_eventsStartTime)}
 																</p>
 															</div>
@@ -3249,7 +3251,7 @@ export default function Homepage() {
 														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
-																<p className="text-slate-600 text-[16px] -mt-[2px] dark:text-dark_text ml-1">
+																<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text ml-1">
 																	- {formatTime(subEvent.sub_eventsEndTime)}
 																</p>
 															</div>
@@ -3270,8 +3272,8 @@ export default function Homepage() {
 													.slice(0, 1)
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
-															<FaLocationDot className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-[16px] -mt-[2px] dark:text-dark_text">
+															<FaLocationDot className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -3305,7 +3307,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-sm text-gray-600 mt-2 flex justify-between">
+																<div className="text-[13px] text-gray-600 mt-2 flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
@@ -3317,39 +3319,39 @@ export default function Homepage() {
 														);
 													})}
 
-											<div className="flex justify-between items-end mt-6">
+											<div className="flex justify-between items-end mt-5">
 												{eventsWithDaysLeft.map((event, index) => (
 													<div key={index}>
-														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-sm flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
 															<FiClock className="mr-1 text-2xl font-bold relative" />
-															<span className="relative -mt-[3px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+															<span className="relative mt-[0px] leading-3 ml-1">{event.daysLeft} Days Left</span>
 														</span>
 													</div>
 												))}
 
 												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
-													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-sm flex items-center">
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-[13px] flex items-center">
 														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
-														<AiOutlineFieldTime className="mr-1 text-3xl font-bold relative" />
-														<span className="relative -mt-[2px] leading-3 tracking-wider">
+														<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+														<span className="relative mt-[0px] leading-3 tracking-wider">
 															Today
 														</span>
 													</span>
 												) : (
 													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
-														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-sm flex items-center">
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
 															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
-															<AiOutlineFieldTime className="mr-1 text-3xl font-bold relative" />
-															<span className="relative -mt-[2px] leading-3 tracking-wider">
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
 																Tomorrow
 															</span>
 														</span>
 													) : (
-														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-sm flex items-center">
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
 															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
-															<AiOutlineFieldTime className="mr-1 text-3xl font-bold relative" />
-															<span className="relative -mt-[2px] leading-3 tracking-wider">
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
 																Upcoming
 															</span>
 														</span>
