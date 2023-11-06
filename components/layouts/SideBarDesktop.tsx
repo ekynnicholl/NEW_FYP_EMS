@@ -22,8 +22,8 @@ import { IoAnalyticsOutline } from "react-icons/io5";
 import { TbReportSearch } from "react-icons/tb";
 import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2"
 import { FaWpforms } from "react-icons/fa"
-import {RxHamburgerMenu} from "react-icons/rx"
-import {IoIosArrowBack} from "react-icons/io"
+import { RxHamburgerMenu } from "react-icons/rx"
+import { IoIosArrowBack } from "react-icons/io"
 
 // IMPORT THIS TO USE THE DARK/ LIGHT MODE STATE,
 import darkLightStorage from '@/components/zustand/darkLightStorage';
@@ -148,9 +148,9 @@ const NavigationBarDesktop = () => {
 							className={ToggleNavBarClass}
 							onClick={HandleNavBarToggle}>
 							{closeNav ? (
-								<RxHamburgerMenu className="text-[27px] text-slate-800 dark:text-dark_text mr-[2px]"/>
+								<RxHamburgerMenu className="text-[27px] text-slate-800 dark:text-dark_text mr-[2px]" />
 							) : (
-								<IoIosArrowBack className="text-[35px] text-slate-800 dark:text-dark_text mt-[5px]"/>
+								<IoIosArrowBack className="text-[35px] text-slate-800 dark:text-dark_text mt-[5px]" />
 							)}
 						</button>
 					</div>
@@ -166,12 +166,13 @@ const NavigationBarDesktop = () => {
 							{/* Use legacy behaviour to allow to wrap <a> tag inside <Link> tag, */}
 							<Link href={nav.link} legacyBehavior={true}>
 								<a className="flex py-[14px] px-2 items-center w-full h-full text-sm text-slate-800">
-								<Icon className={`text-[${nav.id === 3 ? '27' : '26'}px] ${[4, 5].includes(nav.id) ? 'mt-[1px]' : ''} ${nav.id === 3 ? '-ml-[0.5px]' : ''} text-slate-800 dark:text-dark_text`} />
+									<Icon className={`text-[${nav.id === 3 ? '27' : '26'}px] ${nav.id === 4 ? 'mt-[2px]' : ''} ${nav.id === 3 ? '-ml-[0.5px]' : ''} text-slate-800 dark:text-dark_text`} />
+
 									{/* If the navigation bar is not closed OR it is hovered, display the items, */}
 									{(!closeNav || isHovered) && (
 										<span
 											className={classNames(
-												"pl-5 text-md font-medium text-text-light dark:text-dark_text",
+												"pl-5 text-[15px] font-medium text-text-light dark:text-dark_text",
 												{
 													"text-slate-800": true
 												}
