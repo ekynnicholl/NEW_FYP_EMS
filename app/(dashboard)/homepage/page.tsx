@@ -1539,40 +1539,40 @@ export default function Homepage() {
 					</div>
 
 					{/* Mobile View */}
-					<div className="bg-white border border-slate-200 rounded p-2 gap-2 w-full md:hidden dark:bg-dark_mode_card dark:border-[#27374C]">
+					<div className="bg-white border border-slate-200 rounded px-2 pt-2 pb-3 gap-2 w-full md:hidden dark:bg-dark_mode_card dark:border-[#27374C]">
 						<div className="grid grid-cols-2 gap-2 h-[49px]">
-							<div className="text-left transition transform hover:scale-105 h-[48px]">
+							<div className="text-left transition transform hover:scale-105 h-[53px]">
 								<a
 									href="/upcomingEvents"
 									className="bg-[#FFEDE5] h-full p-3 text-slate-700 rounded flex hover:bg-[#ffdcce] dark:bg-[#431400] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faUsers}
-											className="w-[19px] -mt-[4px] text-slate-700 dark:text-slate-300"
+											className="w-[19px] -mt-[3px] text-slate-700 dark:text-slate-300"
 											size="2x"
 										/>
 									</div>
 									<div className="ml-[2px] -mt-1">
-										<p className="text-[11px]">Upcoming Events</p>
-										<p className="font-medium text-[11px]">{upcomingEventCounts}</p>
+										<p className="text-[12px]">Upcoming Events</p>
+										<p className="font-medium text-[12px]">{upcomingEventCounts}</p>
 									</div>
 								</a>
 							</div>
 
-							<div className="text-left transition transform hover:scale-105 h-[48px]">
+							<div className="text-left transition transform hover:scale-105 h-[53px]">
 								<a
 									href="/pastEvents"
 									className="bg-[#EAE5FF] p-3 h-full text-slate-700 rounded flex hover:bg-[#e0d8ff] dark:bg-[#1F2223] dark:text-slate-300 dark:border dark:border-[#363B3D]">
 									<div className="mr-2">
 										<FontAwesomeIcon
 											icon={faCheckCircle}
-											className="w-[19px] -mt-[4px] text-slate-700 dark:text-slate-300"
+											className="w-[19px] -mt-[3px] text-slate-700 dark:text-slate-300"
 											size="2x"
 										/>
 									</div>
 									<div className="ml-[2px] -mt-1">
-										<p className="text-[11px]">Past Events</p>
-										<p className="font-medium text-[11px]">{pastEventCounts}</p>
+										<p className="text-[12px]">Past Events</p>
+										<p className="font-medium text-[12px]">{pastEventCounts}</p>
 									</div>
 								</a>
 							</div>
@@ -1582,7 +1582,7 @@ export default function Homepage() {
 					{/* PC View */}
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden md:inline">
 						<button
-							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800 dark:focus:shadow-outline-dark"
+							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800"
 							onClick={() => setShowModalCreateEvent(true)}>
 							<IoIosAddCircleOutline className="text-[31px] text-slate-100 -ml-1 mr-1" />
 							<span className="text-[18px] text-slate-100 ml-[2px] -mt-[2.5px]">Add Events</span>
@@ -2005,13 +2005,13 @@ export default function Homepage() {
 								<h3 className="text-[15px] lg:text-[20px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px] dark:text-dark_text">
 									About This Event
 								</h3>
-								<p className="text-[12px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
+								<p className="text-[11px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
 									{selectedEvent.intFEventDescription} ({selectedEvent.intFDurationCourse} days)
 								</p>
 
-								<div className="flex ml-[1px]">
-									<FaChalkboardTeacher className="text-[21px] text-slate-800 dark:text-[#7B756B]" />
-									<p className="text-[12px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 ml-2 -mt-[1px] text-slate-800 dark:text-[#7B756B]">
+								<div className="flex ml-[1px] mt-2 lg:mt-0">
+									<FaChalkboardTeacher className="text-[19px] lg:text-[21px] text-slate-800 dark:text-[#7B756B]" />
+									<p className="text-[11px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 ml-2 mt-[0px] lg:-mt-[1px] text-slate-800 dark:text-[#7B756B]">
 										{selectedEvent.intFTrainerName} ({selectedEvent.intFTrainingProvider})
 									</p>
 								</div>
@@ -2063,7 +2063,7 @@ export default function Homepage() {
 												<div className="-mt-4"></div>
 											)}
 
-											<div className="flex items-center gap-[0px] lg:gap-[6px]">
+											<div className="flex items-center gap-[0px] lg:gap-[6px] mt-1 lg:mt-0">
 												<p className="text-[13px] lg:text-[18px] font-semibold text-slate-700 lg:mb-2 mt-[22px] dark:text-dark_text2">‣ Session {index + 1}</p>
 
 												<button
@@ -2088,6 +2088,7 @@ export default function Homepage() {
 													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
 												</button>
 											</div>
+
 											<div className="flex -mt-[6px] lg:-mt-3 mb-2 lg:mb-4">
 												<button
 													type="button"
@@ -2097,9 +2098,9 @@ export default function Homepage() {
 														setShowQRCodesAttendance(true);
 													}}
 												>
-													<span className="ml-2 mt-[1px] text-slate-800 flex items-center mr-2">
-														<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]"/>
-														<span className="ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+													<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+														<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+														<span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
 															Attendance
 														</span>
 													</span>
@@ -2114,14 +2115,14 @@ export default function Homepage() {
 												>
 													<span className="ml-2 text-slate-800 flex items-center mr-2">
 														<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-														<span className="ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+														<span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
 															Feedback
 														</span>
 													</span>
 												</button>
 											</div>
 
-											<div className="hidden lg:flex items-center mt-1 ">
+											<div className="hidden lg:flex items-center mt-1">
 												<HiMiniCalendarDays className="text-[32px] lg:text-[25px] mr-2 text-slate-800 -mt-[2px] dark:text-dark_text" />
 												<p className="text-slate-600 text-[13px] lg:text-[14px] ml-[1px] mt-[1px] lg:-mt-[1px] dark:text-dark_text">
 													{formatDate(subEvent.sub_eventsStartDate)}
@@ -2141,13 +2142,13 @@ export default function Homepage() {
 
 											<div className="inline lg:hidden mt-1">
 												<div className="flex items-center mt-[11px] lg:mt-[14px]">
-													<HiMiniCalendarDays className="text-[20px] lg:text-2xl mr-2 text-slate-800 -mt-[2px]" />
+													<HiMiniCalendarDays className="text-[20px] lg:text-2xl mr-[6px] text-slate-800 -mt-[2px]" />
 													<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px] mt-[0.5px] lg:mt-[0.5px]">
 														{formatDate(subEvent.sub_eventsStartDate)}
 													</p>
 												</div>
 												<div className="flex items-center mt-[10px] lg:mt-[14px]">
-													<FiClock className="text-[20px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px]" />
+													<FiClock className="text-[20px] lg:text-[21px] mr-[6px] text-slate-800 -mt-[1px]" />
 													<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[0.5px]">
 														{formatTime(subEvent.sub_eventsStartTime)}
 													</p>
@@ -2160,19 +2161,19 @@ export default function Homepage() {
 											</div>
 
 											<div className="flex items-center mt-[10px] lg:mt-[14px]">
-												<FaLocationDot className="text-xl lg:text-[25px] -ml-[0.5px] lg:ml-0 mr-2 text-slate-800 dark:text-dark_text" />
+												<FaLocationDot className="text-xl lg:text-[25px] -ml-[0.5px] lg:ml-0 mr-[6px] text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-[11px] lg:text-[14px] ml-[1px] -mt-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsVenue}
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
-												<MdAirlineSeatReclineNormal className="text-2xl lg:text-[25px] mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
+												<MdAirlineSeatReclineNormal className="text-2xl lg:text-[25px] mr-[6px] text-slate-800 lg:ml-[2px] dark:text-dark_text" />
 												<p className="text-slate-600 text-[11px] lg:text-[14px] mt-[1px] lg:mt-[0px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsMaxSeats} Maximum Seats
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[14px]">
-												<MdPeople className="text-2xl lg:text-[25px] mr-2 text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
+												<MdPeople className="text-2xl lg:text-[25px] mr-[6px] text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
 												<p className="text-slate-600 text-[11px] lg:text-[14px] mt-[1px] -ml-[2px] lg:ml-0 dark:text-dark_text">
 													{subEvent.sub_eventsCurrentAttendees} Attendees
 												</p>
@@ -3073,11 +3074,11 @@ export default function Homepage() {
 				{/* Mobile View */}
 				<div className="md:hidden mt-2">
 					<button
-						className="bg-slate-800 rounded h-[35px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1 dark:hover:bg-slate-800"
+						className="bg-slate-800 rounded h-[40px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1 dark:hover:bg-slate-800"
 						onClick={() => setShowModalCreateEvent(true)}
 					>
-						<IoIosAddCircleOutline className="text-[18px] text-slate-100" />
-						<span className="text-slate-100 ml-1 text-[12px] mt-[0.5pxs] lg:mt-0px">Add Events</span>
+						<IoIosAddCircleOutline className="text-[23px] text-slate-100" />
+						<span className="text-slate-100 ml-1 text-[13px] -mt-[1.5px]">Add Events</span>
 					</button>
 				</div>
 
@@ -3365,14 +3366,1389 @@ export default function Homepage() {
 								</div>
 							)}
 
-						</div>
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
-						{/* Mobile View */}
-						<div className="grid md:hidden grid-cols-2 gap-[6px] ml-1 -mr-[4.5px] -mt-2">
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+									{latestEvent[0] && (
+										<div className="mt-6">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<FiClock className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[15px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<FaLocationDot className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[13px] text-gray-600 mt-2 flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="mr-[2px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+
+											<div className="flex justify-between items-end mt-5">
+												{eventsWithDaysLeft.map((event, index) => (
+													<div key={index}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
+															<FiClock className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+														</span>
+													</div>
+												))}
+
+												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-[13px] flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+														<span className="relative mt-[0px] leading-3 tracking-wider">
+															Today
+														</span>
+													</span>
+												) : (
+													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Tomorrow
+															</span>
+														</span>
+													) : (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Upcoming
+															</span>
+														</span>
+													)
+												)}
+											</div>
+										</div>
+									)}
+								</div>
+							)}
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded overflow-hidden p-[10px] h-[260px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+									{latestEvent[0] && (
+										<div className="mt-6">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<FiClock className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[15px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<FaLocationDot className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[13px] text-gray-600 mt-2 flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="mr-[2px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+
+											<div className="flex justify-between items-end mt-5">
+												{eventsWithDaysLeft.map((event, index) => (
+													<div key={index}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
+															<FiClock className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+														</span>
+													</div>
+												))}
+
+												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-[13px] flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+														<span className="relative mt-[0px] leading-3 tracking-wider">
+															Today
+														</span>
+													</span>
+												) : (
+													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Tomorrow
+															</span>
+														</span>
+													) : (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Upcoming
+															</span>
+														</span>
+													)
+												)}
+											</div>
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+									{latestEvent[0] && (
+										<div className="mt-6">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<FiClock className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[15px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<FaLocationDot className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[13px] text-gray-600 mt-2 flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="mr-[2px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+
+											<div className="flex justify-between items-end mt-5">
+												{eventsWithDaysLeft.map((event, index) => (
+													<div key={index}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
+															<FiClock className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+														</span>
+													</div>
+												))}
+
+												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-[13px] flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+														<span className="relative mt-[0px] leading-3 tracking-wider">
+															Today
+														</span>
+													</span>
+												) : (
+													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Tomorrow
+															</span>
+														</span>
+													) : (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Upcoming
+															</span>
+														</span>
+													)
+												)}
+											</div>
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+									{latestEvent[0] && (
+										<div className="mt-6">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<FiClock className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[15px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<FaLocationDot className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[13px] text-gray-600 mt-2 flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="mr-[2px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+
+											<div className="flex justify-between items-end mt-5">
+												{eventsWithDaysLeft.map((event, index) => (
+													<div key={index}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
+															<FiClock className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+														</span>
+													</div>
+												))}
+
+												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-[13px] flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+														<span className="relative mt-[0px] leading-3 tracking-wider">
+															Today
+														</span>
+													</span>
+												) : (
+													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Tomorrow
+															</span>
+														</span>
+													) : (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Upcoming
+															</span>
+														</span>
+													)
+												)}
+											</div>
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+									{latestEvent[0] && (
+										<div className="mt-6">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 -mt-[3px] -mr-[10px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[25px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<FiClock className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[15px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-3">
+																<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-3">
+															<FaLocationDot className="text-[28px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[15px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[13px] text-gray-600 mt-2 flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="mr-[2px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+
+											<div className="flex justify-between items-end mt-5">
+												{eventsWithDaysLeft.map((event, index) => (
+													<div key={index}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
+															<FiClock className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[0px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+														</span>
+													</div>
+												))}
+
+												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-[13px] flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
+														<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+														<span className="relative mt-[0px] leading-3 tracking-wider">
+															Today
+														</span>
+													</span>
+												) : (
+													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Tomorrow
+															</span>
+														</span>
+													) : (
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-[13px] flex items-center">
+															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
+															<AiOutlineFieldTime className="mr-1 text-[28px] font-bold relative" />
+															<span className="relative mt-[0px] leading-3 tracking-wider">
+																Upcoming
+															</span>
+														</span>
+													)
+												)}
+											</div>
+										</div>
+									)}
+								</div>
+							)}
+
+						</div>
+
+						{/* Mobile View */}
+						<div className="grid md:hidden grid-cols-1 gap-[6px] ml-1 -mr-[4.5px] -mt-2">
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -3425,7 +4801,7 @@ export default function Homepage() {
 										}
 									}}>
 
-									<div className="w-full h-[300px] mb-[12px] relative">
+									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
 												src="https://source.unsplash.com/600x300?social"
@@ -3436,17 +4812,17 @@ export default function Homepage() {
 									</div>
 
 									{latestEvent[0] && (
-										<div className="mt-5">
+										<div className="mt-4 -ml-2">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-[13px] font-semibold mb-[8px] text-slate-800 dark:text-dark_text leading-4">
+												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
 													{latestEvent[0].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-[4px] opacity-80 hover:opacity-90 -mt-[10px] -mr-[6px] cursor-pointer dark:bg-[#1C1E1E]">
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 mt-[0px] -mr-[14px] cursor-pointer dark:bg-[#1C1E1E]">
 															{/* <ThreeDotIcon /> */}
-															<BiDotsVerticalRounded className="text-[13px] text-slate-800 dark:text-dark_text" />
+															<BiDotsVerticalRounded className="text-[18px] text-slate-800 dark:text-dark_text" />
 														</div>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent>
@@ -3468,26 +4844,32 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-
-											<p className="text-gray-500 mb-2 text-[8px] -mt-[3px] dark:text-dark_text">
+											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
 												{latestEvent[0].intFEventDescription}
 											</p>
-
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
 
 											{subEvents.length > 0 && (
 												subEvents
 													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															// new Date(subEvent.sub_eventsStartDate) > new Date()
-															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
 														);
 													})
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-[6px]">
-															<HiMiniCalendarDays className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
+															<HiMiniCalendarDays className="text-[25px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] dark:text-dark_text mt-[1px]">
 																{formatDate(subEvent.sub_eventsStartDate)}
 															</p>
 														</div>
@@ -3495,73 +4877,76 @@ export default function Homepage() {
 											)}
 
 											<div className="flex">
-												{subEvents.length > 0 && (
+												{subEvents.length > 0 &&
 													subEvents
 														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
 															return (
 																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-																// new Date(subEvent.sub_eventsStartDate) > new Date()
-																new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
 															);
 														})
-														.slice(0, 1) // Take only the first sub event
+														.slice(0, 1)
 														.map((subEvent, index) => (
-															<div key={index} className="flex items-center mt-[6px]">
-																<FiClock className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
-																<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
+															<div key={index} className="flex items-center mt-[10px]">
+																<FiClock className="text-[24px] mr-[6px] -mt-[1px] text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
 																	{formatTime(subEvent.sub_eventsStartTime)}
 																</p>
 															</div>
-														))
-												)}
-												{subEvents.length > 0 && (
+														))}
+												{subEvents.length > 0 &&
 													subEvents
 														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
 															return (
 																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-																// new Date(subEvent.sub_eventsStartDate) > new Date()
-																new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
 															);
 														})
-														.slice(0, 1) // Take only the first sub event
+														.slice(0, 1)
 														.map((subEvent, index) => (
-															<div key={index} className="flex items-center mt-[6px]">
-																<p className="text-slate-600 text-[8px] ml-[3px] dark:text-dark_text">
+															<div key={index} className="flex items-center mt-[10px]">
+																<p className="text-slate-600 text-[12px] -mt-[2px] dark:text-dark_text ml-1">
 																	- {formatTime(subEvent.sub_eventsEndTime)}
 																</p>
 															</div>
-														))
-												)}
+														))}
 											</div>
 
-											{subEvents.length > 0 && (
+											{subEvents.length > 0 &&
 												subEvents
 													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															// new Date(subEvent.sub_eventsEndDate) > new Date()
-															new Date(subEvent.sub_eventsStartDate).toDateString() === new Date().toDateString()
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
 														);
 													})
-													.slice(0, 1) // Take only the first sub event
+													.slice(0, 1)
 													.map((subEvent, index) => (
-														<div key={index} className="flex items-center mt-[6px]">
-															<FaLocationDot className="text-[15px] mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-[8px] -ml-1 dark:text-dark_text">
+														<div key={index} className="flex items-center mt-[10px]">
+															<FaLocationDot className="text-[24px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
-													))
-											)}
+													))}
 
-											{subEvents.length > 0 && (
+											{subEvents.length > 0 &&
 												subEvents
 													.filter(subEvent => {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
 															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
-															startDate.toDateString() === currentDate.toDateString()
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
 													.slice(0, 1)
@@ -3573,29 +4958,1218 @@ export default function Homepage() {
 
 														return (
 															<div key={index}>
-																<div className="mt-2 w-full h-[5px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																	<div
-																		className={`h-full rounded ${isOverCapacity ? "bg-red-500 dark:bg-red-600" : "bg-orange-300 dark:bg-[#864502]"
-																			}`}
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
 																		style={{
 																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																		}}
 																	></div>
 																</div>
-																<div className="text-[7px] text-gray-600 mt-1 flex justify-between">
-																	<span className="ml-[2px] dark:text-dark_text">Current Attendees: {currentAttendees}/{maxAttendees}</span>
+																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="-mr-[6px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
 																</div>
 															</div>
 														);
+													})}
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{latestEvent[0] && (
+										<div className="mt-4 -ml-2">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 mt-[0px] -mr-[14px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[18px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
 													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[6px]">
+															<HiMiniCalendarDays className="text-[25px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
 											)}
 
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<FiClock className="text-[24px] mr-[6px] -mt-[1px] text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<p className="text-slate-600 text-[12px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[10px]">
+															<FaLocationDot className="text-[24px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="-mr-[6px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{latestEvent[0] && (
+										<div className="mt-4 -ml-2">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 mt-[0px] -mr-[14px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[18px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[6px]">
+															<HiMiniCalendarDays className="text-[25px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<FiClock className="text-[24px] mr-[6px] -mt-[1px] text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<p className="text-slate-600 text-[12px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[10px]">
+															<FaLocationDot className="text-[24px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="-mr-[6px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{latestEvent[0] && (
+										<div className="mt-4 -ml-2">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 mt-[0px] -mr-[14px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[18px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[6px]">
+															<HiMiniCalendarDays className="text-[25px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<FiClock className="text-[24px] mr-[6px] -mt-[1px] text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<p className="text-slate-600 text-[12px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[10px]">
+															<FaLocationDot className="text-[24px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="-mr-[6px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{latestEvent[0] && (
+										<div className="mt-4 -ml-2">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 mt-[0px] -mr-[14px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[18px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[6px]">
+															<HiMiniCalendarDays className="text-[25px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<FiClock className="text-[24px] mr-[6px] -mt-[1px] text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<p className="text-slate-600 text-[12px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[10px]">
+															<FaLocationDot className="text-[24px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="-mr-[6px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
+										</div>
+									)}
+								</div>
+							)}
+
+							{latestEvent[0] && (
+								<div
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									onClick={() => {
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+
+										console.log(filteredSubEvent);
+
+										if (filteredSubEvent) {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												filteredSubEvent.sub_eventsID,
+												filteredSubEvent.sub_eventsMainID,
+												filteredSubEvent.sub_eventsName,
+												filteredSubEvent.sub_eventsVenue,
+												filteredSubEvent.sub_eventsStartDate,
+												filteredSubEvent.sub_eventsEndDate,
+												filteredSubEvent.sub_eventsStartTime,
+												filteredSubEvent.sub_eventsEndTime,
+												filteredSubEvent.sub_eventsMaxSeats,
+												filteredSubEvent.sub_eventsOrganizer
+											);
+										} else {
+											openModal(
+												"https://source.unsplash.com/600x300?social",
+												latestEvent[0]?.intFID,
+												latestEvent[0]?.intFEventName,
+												latestEvent[0]?.intFEventDescription,
+												latestEvent[0]?.intFEventStartDate,
+												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
+												"default_sub_eventsID",
+												"default_sub_eventsMainID",
+												"default_sub_eventsName",
+												"default_sub_eventsVenue",
+												"default_sub_eventsStartDate",
+												"default_sub_eventsEndDate",
+												"default_sub_eventsStartTime",
+												"default_sub_eventsEndTime",
+												"default_sub_eventsMaxSeats",
+												"default_sub_eventsOrganizer"
+											);
+										}
+									}}>
+
+									<div className="w-full h-[300px] mb-4 relative">
+										<div className="absolute -inset-6">
+											<img
+												src="https://source.unsplash.com/600x300?social"
+												alt="Random"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{latestEvent[0] && (
+										<div className="mt-4 -ml-2">
+											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
+											<div className="flex justify-between items-center">
+												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
+													{latestEvent[0].intFEventName}
+												</h2>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<div className="rounded-full bg-slate-100 p-[6px] opacity-80 hover:opacity-90 mt-[0px] -mr-[14px] cursor-pointer dark:bg-[#1C1E1E]">
+															{/* <ThreeDotIcon /> */}
+															<BiDotsVerticalRounded className="text-[18px] text-slate-800 dark:text-dark_text" />
+														</div>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent>
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation();
+															openAttendanceModal(
+																latestEvent[0].intFID,
+															);
+															fetchAttendanceList(latestEvent[0].intFID);
+														}}>Attendance List</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={e => {
+															e.stopPropagation(); // 
+															openFeedbackModal(
+																latestEvent[0].intFID,
+															);
+															fetchFeedbackList(latestEvent[0].intFID);
+														}}>Feedback Forms</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
+												{latestEvent[0].intFEventDescription}
+											</p>
+											{/* <div className="flex items-center mt-4">
+												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-sm dark:text-dark_text">
+													{formatDate(latestEvent[0].intFEventStartDate)}
+												</p>
+											</div> */}
+
+											{subEvents.length > 0 && (
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1) // Take only the first sub event
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[6px]">
+															<HiMiniCalendarDays className="text-[25px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] dark:text-dark_text mt-[1px]">
+																{formatDate(subEvent.sub_eventsStartDate)}
+															</p>
+														</div>
+													))
+											)}
+
+											<div className="flex">
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<FiClock className="text-[24px] mr-[6px] -mt-[1px] text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																	{formatTime(subEvent.sub_eventsStartTime)}
+																</p>
+															</div>
+														))}
+												{subEvents.length > 0 &&
+													subEvents
+														.filter(subEvent => {
+															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+															const currentDate = new Date();
+															return (
+																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																	subEventStartDate > currentDate)
+															);
+														})
+														.slice(0, 1)
+														.map((subEvent, index) => (
+															<div key={index} className="flex items-center mt-[10px]">
+																<p className="text-slate-600 text-[12px] -mt-[2px] dark:text-dark_text ml-1">
+																	- {formatTime(subEvent.sub_eventsEndTime)}
+																</p>
+															</div>
+														))}
+											</div>
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(subEventStartDate.toDateString() === currentDate.toDateString() ||
+																subEventStartDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => (
+														<div key={index} className="flex items-center mt-[10px]">
+															<FaLocationDot className="text-[24px] mr-[6px] text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[12px] ml-[1px] -mt-[2px] dark:text-dark_text">
+																{subEvent.sub_eventsVenue}
+															</p>
+														</div>
+													))}
+
+											{subEvents.length > 0 &&
+												subEvents
+													.filter(subEvent => {
+														const startDate = new Date(subEvent.sub_eventsStartDate);
+														const currentDate = new Date();
+														return (
+															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
+														);
+													})
+													.slice(0, 1)
+													.map((subEvent, index) => {
+														const currentAttendees = Number(subEvent.sub_eventsCurrentAttendees) || 0;
+														const maxAttendees = Number(subEvent.sub_eventsMaxSeats) || 0;
+
+														const isOverCapacity = currentAttendees > maxAttendees;
+
+														return (
+															<div key={index}>
+																<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
+																	<div
+																		className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																			} animate-blink `}
+																		style={{
+																			width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
+																		}}
+																	></div>
+																</div>
+																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																	<span className="ml-[2px] dark:text-dark_text">
+																		Current Attendees: {currentAttendees}
+																	</span>
+																	<span className="-mr-[6px] dark:text-dark_text">
+																		Max Attendees: {maxAttendees}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
 										</div>
 									)}
 								</div>
 							)}
 
 						</div>
+						
 						<Calendar onDateChange={handleDateChange} />
 
 					</div>
