@@ -3097,7 +3097,7 @@ export default function Homepage() {
 						onClick={() => setShowModalCreateEvent(true)}
 					>
 						<IoIosAddCircleOutline className="text-[23px] text-slate-100" />
-						<span className="text-slate-100 ml-1 text-[13px] -mt-[1.5px]">Add Events</span>
+						<span className="text-slate-100 ml-1 text-[13px] -mt-[0px]">Add Events</span>
 					</button>
 				</div>
 
@@ -4763,7 +4763,7 @@ export default function Homepage() {
 						</div>
 
 						{/* Mobile View */}
-						<div className="grid md:hidden grid-cols-1 gap-[6px] ml-1 -mr-[4.5px] -mt-2">
+						<div className="grid md:hidden grid-cols-1 gap-[10px] ml-1 -mr-[4.5px] -mt-2">
 
 							{latestEvent[0] && (
 								<div
