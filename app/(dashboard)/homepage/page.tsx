@@ -225,6 +225,9 @@ export default function Homepage() {
 		intFEventDescription: "",
 		intFEventStartDate: "",
 		intFEventEndDate: "",
+		intFDurationCourse: "",
+		intFTrainerName: "",
+		intFTrainingProvider: ""
 	});
 
 	const [editSubEventInfo, setEditSubEventInfo] = useState({
@@ -272,7 +275,7 @@ export default function Homepage() {
 	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const viewMode = useViewModeStore((state) => state.viewMode);
-	const isDarkMode = darkLightStorage((state) => state.isDarkMode);
+	// const isDarkMode = darkLightStorage((state) => state.isDarkMode);
 
 	// This is for checking login and redirecting with router,
 	const router = useRouter();
@@ -1109,6 +1112,9 @@ export default function Homepage() {
 				intFEventDescription: selectedEvent.intFEventDescription,
 				intFEventStartDate: selectedEvent.intFEventStartDate,
 				intFEventEndDate: selectedEvent.intFEventEndDate,
+				intFDurationCourse: selectedEvent.intFDurationCourse,
+				intFTrainerName: selectedEvent.intFTrainerName,
+				intFTrainingProvider: selectedEvent.intFTrainingProvider,
 			});
 		}
 	};
@@ -1123,6 +1129,9 @@ export default function Homepage() {
 				intFEventDescription: editEventInfo.intFEventDescription,
 				intFEventStartDate: editEventInfo.intFEventStartDate,
 				intFEventEndDate: editEventInfo.intFEventEndDate,
+				intFDurationCourse: editEventInfo.intFDurationCourse,
+				intFTrainerName: editEventInfo.intFTrainerName,
+				intFTrainingProvider: editEventInfo.intFTrainingProvider
 			})
 			.eq("intFID", editEventInfo.intFID);
 
@@ -1805,13 +1814,13 @@ export default function Homepage() {
 
 										<div className="flex flex-col mt-[10px]">
 											<div className="flex">
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[82px] lg:mr-[94px] ml-[1.5px] lg:ml-[2px] mb-[2px] dark:text-dark_textbox_title">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[82px] lg:mr-[95px] ml-[1.5px] lg:ml-[2px] mb-[2px] dark:text-dark_textbox_title">
 													Start Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
 														*
 													</span>
 												</p>
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] lg:mr-[92px] mb-[2px] -ml-[4px] lg:ml-[1px] dark:text-dark_textbox_title">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mb-[2px] -ml-[4px] lg:ml-[1px] dark:text-dark_textbox_title">
 													End Date
 													<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
 														*
@@ -1855,7 +1864,7 @@ export default function Homepage() {
 														*
 													</span>
 												</p>
-												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[77px] lg:ml-[62.5px] mb-[2px] dark:text-dark_textbox_title">
+												<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 ml-[77px] lg:ml-[40px] mb-[2px] dark:text-dark_textbox_title">
 													End Time
 													<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
 														*
@@ -2578,20 +2587,23 @@ export default function Homepage() {
 
 									<div className="flex flex-col mt-[2px]">
 										<div className="flex">
-											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] ml-[2px] mb-[2px] dark:text-dark_textbox_title">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[84px] ml-[2px] mb-[2px] dark:text-dark_textbox_title">
 												Start Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] dark:text-red-600">
 													*
 												</span>
 											</p>
-											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[85px] -ml-[4px] lg:ml-[10px] mb-[2px] dark:text-dark_textbox_title">
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 mr-[89px] -ml-[4px] lg:ml-[10px] mb-[2px] dark:text-dark_textbox_title">
 												End Date
 												<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] dark:text-red-600">
 													*
 												</span>
 											</p>
+											<p className="text-[11px] lg:text-[14px] text-mb-7 font-normal text-slate-500 -ml-[4px] lg:ml-[10px] mb-[2px] dark:text-dark_textbox_title">
+												Total days:
+											</p>
 										</div>
-										<div className="flex mb-0 lg:-mb-[18px]">
+										<div className="flex">
 											<input
 												className="pr-2 lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 												type="date"
@@ -2620,9 +2632,64 @@ export default function Homepage() {
 												}
 											/>
 
+											<input
+												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-2 lg:pl-3 py-[5px] w-[80px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300 ml-[19px]"
+												type="number"
+												value={editEventInfo.intFDurationCourse}
+												onChange={e =>
+													setEditEventInfo({
+														...editEventInfo,
+														intFDurationCourse: e.target.value,
+													})
+												}
+											/>
+
 										</div>
 									</div>
 
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Trainer&apos;s Name
+										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
+											*
+										</span>
+									</p>
+									<input
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+										type="text"
+										placeholder="What is your trainer's name?"
+										id="trainer_name"
+										name="trainer_name"
+										value={editEventInfo.intFTrainerName}
+										required
+										onChange={e =>
+											setEditEventInfo({
+												...editEventInfo,
+												intFTrainerName: e.target.value,
+											})
+										}
+									/>
+
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Training Provider
+										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
+											*
+										</span>
+									</p>
+									<input
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300 mb-0 lg:-mb-[18px]"
+										type="text"
+										placeholder="Whos is your training provider?"
+										id="training_provider"
+										name="training_provider"
+										value={editEventInfo.intFTrainingProvider}
+										required
+										onChange={e =>
+											setEditEventInfo({
+												...editEventInfo,
+												intFTrainingProvider: e.target.value,
+											})
+										}
+									/>
 								</div>
 
 								<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mb-[80px] lg:mb-0 dark:bg-dark_mode_card">
@@ -3021,7 +3088,7 @@ export default function Homepage() {
 
 							{latestEvent[0] && (
 								<div
-									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[495px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
+									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[525px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
 										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
 
@@ -3086,7 +3153,7 @@ export default function Homepage() {
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
-												<h2 className="text-2xl font-semibold mb-2 text-slate-800 dark:text-dark_text">
+												<h2 className="text-[28px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
 													{latestEvent[0].intFEventName}
 												</h2>
 												<DropdownMenu>
@@ -3115,7 +3182,7 @@ export default function Homepage() {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
-											<p className="text-gray-500 mb-4 dark:text-[#7B756B]">
+											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[20px]">
 												{latestEvent[0].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
@@ -3139,8 +3206,8 @@ export default function Homepage() {
 													.slice(0, 1) // Take only the first sub event
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
-															<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-sm dark:text-dark_text">
+															<HiMiniCalendarDays className="text-[30px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[16px] dark:text-dark_text mt-[1px]">
 																{formatDate(subEvent.sub_eventsStartDate)}
 															</p>
 														</div>
@@ -3162,8 +3229,8 @@ export default function Homepage() {
 														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
-																<FiClock className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-																<p className="text-slate-600 text-sm dark:text-dark_text">
+																<FiClock className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+																<p className="text-slate-600 text-[16px] ml-[1px] -mt-[1px] dark:text-dark_text">
 																	{formatTime(subEvent.sub_eventsStartTime)}
 																</p>
 															</div>
@@ -3182,7 +3249,7 @@ export default function Homepage() {
 														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
-																<p className="text-slate-600 text-sm dark:text-dark_text ml-1">
+																<p className="text-slate-600 text-[16px] dark:text-dark_text ml-1">
 																	- {formatTime(subEvent.sub_eventsEndTime)}
 																</p>
 															</div>
@@ -3203,8 +3270,8 @@ export default function Homepage() {
 													.slice(0, 1)
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
-															<FaLocationDot className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-sm dark:text-dark_text">
+															<FaLocationDot className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+															<p className="text-slate-600 text-[16px] dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
@@ -3238,7 +3305,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-xs text-gray-600 mt-2 flex justify-between">
+																<div className="text-sm text-gray-600 mt-2 flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
@@ -3250,39 +3317,39 @@ export default function Homepage() {
 														);
 													})}
 
-											<div className="flex justify-between items-end mt-5">
+											<div className="flex justify-between items-end mt-6">
 												{eventsWithDaysLeft.map((event, index) => (
 													<div key={index}>
-														<span className={`relative -mt-[32px] px-[10px] py-[5px] font-semibold text-red-900 text-xs flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
+														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-sm flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
-															<FiClock className="mr-1 text-xl font-bold relative" />
-															<span className="relative -mt-[1px] leading-3 ml-1">{event.daysLeft} Days Left</span>
+															<FiClock className="mr-1 text-2xl font-bold relative" />
+															<span className="relative -mt-[3px] leading-3 ml-1">{event.daysLeft} Days Left</span>
 														</span>
 													</div>
 												))}
 
 												{eventsWithDaysLeft.every(event => event.daysLeft === 0) ? (
-													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-xs flex items-center">
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-sm flex items-center">
 														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
-														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-														<span className="relative -mt-[1px] leading-3 tracking-wider">
+														<AiOutlineFieldTime className="mr-1 text-3xl font-bold relative" />
+														<span className="relative -mt-[2px] leading-3 tracking-wider">
 															Today
 														</span>
 													</span>
 												) : (
 													eventsWithDaysLeft.some(event => event.daysLeft === 1) ? (
-														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-sm flex items-center">
 															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
-															<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-															<span className="relative mt-[0px] leading-3 tracking-wider">
+															<AiOutlineFieldTime className="mr-1 text-3xl font-bold relative" />
+															<span className="relative -mt-[2px] leading-3 tracking-wider">
 																Tomorrow
 															</span>
 														</span>
 													) : (
-														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-xs flex items-center">
+														<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-[#BF7B5F] text-sm flex items-center">
 															<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-[#3F290E] opacity-50 rounded-full"></span>
-															<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-															<span className="relative mt-[0px] leading-3 tracking-wider">
+															<AiOutlineFieldTime className="mr-1 text-3xl font-bold relative" />
+															<span className="relative -mt-[2px] leading-3 tracking-wider">
 																Upcoming
 															</span>
 														</span>
