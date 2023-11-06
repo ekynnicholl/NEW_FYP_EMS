@@ -3077,8 +3077,8 @@ export default function Homepage() {
 						className="bg-slate-800 rounded h-[40px] w-full font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center justify-center ml-1 dark:hover:bg-slate-800"
 						onClick={() => setShowModalCreateEvent(true)}
 					>
-						<IoIosAddCircleOutline className="text-[22px] text-slate-100" />
-						<span className="text-slate-100 ml-1 text-[13px] -mt-[1px]">Add Events</span>
+						<IoIosAddCircleOutline className="text-[23px] text-slate-100" />
+						<span className="text-slate-100 ml-1 text-[13px] -mt-[1.5px]">Add Events</span>
 					</button>
 				</div>
 
