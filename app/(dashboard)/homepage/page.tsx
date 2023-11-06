@@ -4763,7 +4763,7 @@ export default function Homepage() {
 						</div>
 
 						{/* Mobile View */}
-						<div className="grid md:hidden grid-cols-1 gap-[10px] ml-1 -mr-[4.5px] -mt-2">
+						<div className="grid md:hidden grid-cols-1 gap-[8px] ml-1 -mr-[4.5px] -mt-2">
 
 							{latestEvent[0] && (
 								<div
