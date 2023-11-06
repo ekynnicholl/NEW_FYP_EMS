@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
       onClick={handleClose}>
       <div className="w-[300px] sm:w-[400px] md:w-[400px] lg:w-[500px] flex flex-col relative">
         <button
-          className="text-slate-500 text-md md:text-lg lg:text-xl absolute top-1 right-3 hover:font-medium"
+          className="text-slate-500 text-md md:text-lg lg:text-2xl absolute top-1 right-3 hover:font-medium"
           onClick={() => onClose()}>
           x
         </button>
