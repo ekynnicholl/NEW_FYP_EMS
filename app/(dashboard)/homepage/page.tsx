@@ -1660,7 +1660,7 @@ export default function Homepage() {
 
 										<div className="flex">
 											<input
-												className="pr-2 lg:pr-[8px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:text-slate-300"
+												className="pr-2 lg:pr-[8px] lg:py-2 pl-2 lg:pl-[10px] rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mr-[90.5px] mb-[3px] py-[5px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:text-slate-300"
 												type="date"
 												name="event_start_date"
 												required
@@ -1672,9 +1672,10 @@ export default function Homepage() {
 												}
 											/>
 											<input
-												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-2 lg:pl-3 -ml-[71.5px] pr-2 py-[5px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-2 lg:pl-[10px] -ml-[71.5px] pr-2 py-[5px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 												type="date"
 												name="event_end_date"
+												min={mainEvent.intFEventStartDate} // Set the minimum date to the main event start date
 												required
 												onChange={e =>
 													setMainEvent({
