@@ -1504,7 +1504,7 @@ export default function Homepage() {
 							<a
 								href="/upcomingEvents"
 								className="bg-[#FFEDE5] h-full p-5 text-slate-700 rounded-lg flex hover:bg-[#ffdcce] dark:bg-[#431400] dark:text-slate-300 dark:border dark:border-[#363B3D]">
-								<div className="mr-4">
+								<div className="mr-[14px]">
 									<FontAwesomeIcon
 										icon={faUsers}
 										className="w-8 mt-[9px] text-slate-700 dark:text-slate-300"
@@ -1522,7 +1522,7 @@ export default function Homepage() {
 							<a
 								href="/pastEvents"
 								className="bg-[#EAE5FF] p-5 h-full text-slate-700 rounded-lg flex hover:bg-[#e0d8ff] dark:bg-[#1F2223] dark:text-slate-300 dark:border dark:border-[#363B3D]">
-								<div className="mr-4">
+								<div className="mr-[14px]">
 									<FontAwesomeIcon
 										icon={faCheckCircle}
 										className="w-[34px] mt-[10px] text-slate-700 dark:text-slate-300"
