@@ -2268,7 +2268,7 @@ export default function Homepage() {
 								{/* This is to loop through the attendance data. */}
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
-										<div className={`lg:h-[550px] h-[400px]  overflow-y-auto dark:bg-[#242729] dark:text-dark_text`}>
+										<div className={`lg:h-[675px] h-[400px] overflow-y-auto dark:bg-[#242729] dark:text-dark_text`}>
 											<FeedbackList feedbackData={feedbackData} />
 										</div>
 									</div>
