@@ -124,7 +124,7 @@ const externalFormSchema = z
 
 		// Section 5
 		supporting_documents: z
-			.instanceof(FileList)
+			.any()
 			.optional()
 			.nullable()
 			.refine(
