@@ -38,6 +38,7 @@ import { BsBoxArrowUpRight, BsFillTrash3Fill } from "react-icons/bs"
 import { HiPencilAlt } from "react-icons/hi"
 import { IoMdAddCircleOutline } from "react-icons/io"
 import { FaChalkboardTeacher } from "react-icons/fa"
+import { LiaQrcodeSolid } from "react-icons/lia"
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
@@ -1592,7 +1593,7 @@ export default function Homepage() {
 						onClose={() => setShowModalCreateEvent(false)}>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px] dark:bg-dark_mode_card">
-								<h3 className="text-[14px] lg:text-[16px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
+								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
 									Create Event
 								</h3>
 
@@ -2001,16 +2002,16 @@ export default function Homepage() {
 							/>
 
 							<div className="ml-[6px] lg:ml-[9px]">
-								<h3 className="text-[15px] lg:text-[19px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px] dark:text-dark_text">
+								<h3 className="text-[15px] lg:text-[20px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px] dark:text-dark_text">
 									About This Event
 								</h3>
-								<p className="text-[12px] lg:text-[14px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
+								<p className="text-[12px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
 									{selectedEvent.intFEventDescription} ({selectedEvent.intFDurationCourse} days)
 								</p>
 
 								<div className="flex ml-[1px]">
-									<FaChalkboardTeacher className="text-[22px] text-slate-800 dark:text-[#7B756B]" />
-									<p className="text-[12px] lg:text-[16px] text-mb-7 mb-1 lg:mb-5 font-medium ml-2 -mt-[1px] text-slate-800 dark:text-[#7B756B]">
+									<FaChalkboardTeacher className="text-[21px] text-slate-800 dark:text-[#7B756B]" />
+									<p className="text-[12px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 ml-2 -mt-[1px] text-slate-800 dark:text-[#7B756B]">
 										{selectedEvent.intFTrainerName} ({selectedEvent.intFTrainingProvider})
 									</p>
 								</div>
@@ -2063,26 +2064,26 @@ export default function Homepage() {
 											)}
 
 											<div className="flex items-center gap-[0px] lg:gap-[6px]">
-												<p className="text-[13px] lg:text-[17px] font-semibold text-slate-700 lg:mb-2 mt-[22px] dark:text-dark_text2">‣ Session {index + 1}</p>
+												<p className="text-[13px] lg:text-[18px] font-semibold text-slate-700 lg:mb-2 mt-[22px] dark:text-dark_text2">‣ Session {index + 1}</p>
 
 												<button
 													type="button"
 													onClick={(e) => openAddSubEventModal(e, selectedEvent.intFID)}
-													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[14.2px]"
+													className="text-base lg:text-[21px] ml-[10px] mt-[20px] lg:ml-[12px] lg:mt-[15.2px]"
 												>
 													<IoMdAddCircleOutline className="text-slate-700 hover:scale-105 mt-[2.5px] lg:mt-[0.5px] text-[15px] lg:text-[18px] dark:text-dark_text2" />
 												</button>
 												<button
 													type="button"
 													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
-													className="text-sm lg:text-base ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[12.5px]"
+													className="text-sm lg:text-base ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[13.5px]"
 												>
 													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px] text-[13px] lg:text-base dark:text-dark_text2" />
 												</button>
 												<button
 													type="button"
 													onClick={(e) => handleEditSubEventButton(e, subEvent.sub_eventsID)}
-													className="text-base lg:text-lg ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[12.6px]"
+													className="text-base lg:text-lg ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[13.6px]"
 												>
 													<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
 												</button>
@@ -2097,8 +2098,8 @@ export default function Homepage() {
 													}}
 												>
 													<span className="ml-2 mt-[1px] text-slate-800 flex items-center mr-2">
-														<QRCodeIcon />
-														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1]">
+														<LiaQrcodeSolid className="text-[23px]"/>
+														<span className="ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
 															Attendance
 														</span>
 													</span>
@@ -2112,8 +2113,8 @@ export default function Homepage() {
 													}}
 												>
 													<span className="ml-2 text-slate-800 flex items-center mr-2">
-														<QRCodeIcon />
-														<span className="ml-1 text-[11px] lg:text-[13px] dark:text-[#C1C7C1]">
+														<LiaQrcodeSolid className="text-[23px]" />
+														<span className="ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
 															Feedback
 														</span>
 													</span>
@@ -2121,19 +2122,19 @@ export default function Homepage() {
 											</div>
 
 											<div className="hidden lg:flex items-center mt-1 ">
-												<HiMiniCalendarDays className="text-[32px] lg:text-2xl mr-2 text-slate-800 -mt-[2px] dark:text-dark_text" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] ml-[1px] mt-[1px] lg:mt-[0.5px] dark:text-dark_text">
+												<HiMiniCalendarDays className="text-[32px] lg:text-[25px] mr-2 text-slate-800 -mt-[2px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[13px] lg:text-[14px] ml-[1px] mt-[1px] lg:-mt-[1px] dark:text-dark_text">
 													{formatDate(subEvent.sub_eventsStartDate)}
 												</p>
 												<span className="mx-2 text-slate-800 ml-[15px] lg:ml-[57px] mr-6 dark:text-dark_text">
 													|
 												</span>
-												<FiClock className="text-[30px] lg:text-[21px] mr-2 text-slate-800 -mt-[1px] dark:text-dark_text" />
-												<p className="text-slate-600 text-[12px] lg:text-[13px] dark:text-dark_text">
+												<FiClock className="text-[30px] lg:text-[22px] mr-2 text-slate-800 mt-[0px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[12px] lg:text-[14px] lg:-mt-[1px] dark:text-dark_text">
 													{formatTime(subEvent.sub_eventsStartTime)}
 												</p>
 												<span className="mx-2 text-slate-800 -mt-[2px] dark:text-dark_text">-</span>
-												<p className="text-slate-600 text-[12px] lg:text-[13px] dark:text-dark_text">
+												<p className="text-slate-600 text-[12px] lg:text-[14px] lg:-mt-[1px] dark:text-dark_text">
 													{formatTime(subEvent.sub_eventsEndTime)}
 												</p>
 											</div>
@@ -2159,20 +2160,20 @@ export default function Homepage() {
 											</div>
 
 											<div className="flex items-center mt-[10px] lg:mt-[14px]">
-												<FaLocationDot className="text-xl lg:text-2xl -ml-[0.5px] lg:ml-0 mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] ml-[1px] dark:text-dark_text">
+												<FaLocationDot className="text-xl lg:text-[25px] -ml-[0.5px] lg:ml-0 mr-2 text-slate-800 dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[14px] ml-[1px] -mt-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsVenue}
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[15px] lg:mb-0 mb-[3px]">
-												<MdAirlineSeatReclineNormal className="text-2xl mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
+												<MdAirlineSeatReclineNormal className="text-2xl lg:text-[25px] mr-2 text-slate-800 lg:ml-[2px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[14px] mt-[1px] lg:mt-[0px] -ml-[3.5px] lg:-ml-[1px] dark:text-dark_text">
 													{subEvent.sub_eventsMaxSeats} Maximum Seats
 												</p>
 											</div>
 											<div className="flex items-center mt-[8px] lg:mt-[14px]">
-												<MdPeople className="text-2xl mr-2 text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
-												<p className="text-slate-600 text-[11px] lg:text-[13px] mt-[1px] -ml-[2px] lg:ml-0 dark:text-dark_text">
+												<MdPeople className="text-2xl lg:text-[25px] mr-2 text-slate-800 -ml-[1px] lg:ml-[1px] dark:text-dark_text" />
+												<p className="text-slate-600 text-[11px] lg:text-[14px] mt-[1px] -ml-[2px] lg:ml-0 dark:text-dark_text">
 													{subEvent.sub_eventsCurrentAttendees} Attendees
 												</p>
 											</div>
@@ -2357,7 +2358,7 @@ export default function Homepage() {
 
 						<form>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[14px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px] dark:text-dark_text2">
+								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 mb-[6px] lg:mb-2 mt-[9px] ml-[2px] dark:text-dark_text2">
 									Add New Sub-event
 								</h3>
 
@@ -2539,7 +2540,7 @@ export default function Homepage() {
 						onClose={() => setShowModalEditEvent(false)}>
 						<form onSubmit={handleEditEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[14px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
+								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
 									Edit Event
 								</h3>
 
@@ -2713,7 +2714,7 @@ export default function Homepage() {
 
 						<form onSubmit={handleEditSubEventSubmit}>
 							<div className="ml-[7px] lg:ml-4 mb-[70px]">
-								<h3 className="text-[14px] lg:text-[16px] lg:text-lg font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
+								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
 									Edit Sub-event
 								</h3>
 
