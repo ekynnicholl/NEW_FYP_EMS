@@ -1406,12 +1406,12 @@ export default function ExternalForm() {
 																Please sign below
 															</DialogDescription>
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-																<SignaturePad
+																{/* <SignaturePad
 																	ref={sigCanvas}
 																	canvasProps={{
 																		className: "w-full h-full",
 																	}}
-																/>
+																/> */}
 															</div>
 															<DialogFooter>
 																<Button
@@ -1420,7 +1420,7 @@ export default function ExternalForm() {
 																	Clear
 																</Button>
 																<DialogClose asChild>
-																	<Button
+																	{/* <Button
 																		onClick={() => {
 																			save();
 																			field.onChange(
@@ -1442,7 +1442,7 @@ export default function ExternalForm() {
 																			);
 																		}}>
 																		Save
-																	</Button>
+																	</Button> */}
 																</DialogClose>
 															</DialogFooter>
 														</DialogContent>
