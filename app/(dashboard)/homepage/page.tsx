@@ -1686,7 +1686,7 @@ export default function Homepage() {
 											/>
 											<div>
 												{mainEvent.intFEventStartDate && mainEvent.intFEventEndDate &&
-													<div className="font-medium text-slate-800 text-[20px] dark:text-slate-300 ml-[21px] mt-[2px]">
+													<div className="font-medium text-slate-800 text-[20px] dark:text-slate-300 ml-[24px] mt-[2px]">
 														{calculateDays()} days
 													</div>
 												}
