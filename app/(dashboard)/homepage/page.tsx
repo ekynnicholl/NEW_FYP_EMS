@@ -18,7 +18,7 @@ import Success_EditEventModal from "@/components/Modal";
 import Success_EditSubEventModal from "@/components/Modal";
 import Success_DeleteSubEventModal from "@/components/Modal";
 import Delete_Event_Confirmation_Modal from "@/components/Modal";
-import { Chart } from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js/auto';
 
 import Image from "next/image";
 import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent } from "react";
@@ -273,7 +273,7 @@ export default function Homepage() {
 	// This is for the pie chart,
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
 	const chartContainer = useRef<HTMLCanvasElement | null>(null);
-	const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
+	const chartInstanceRef = useRef<Chart<"bar", number[], string> | null>(null);
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const viewMode = useViewModeStore((state) => state.viewMode);
 	// const isDarkMode = darkLightStorage((state) => state.isDarkMode);
@@ -617,7 +617,7 @@ export default function Homepage() {
 					chartInstanceRef.current.destroy();
 				}
 
-				createPieChart(canvas, facultyLabels, facultyData);
+				createHorizontalBarChart(canvas, facultyLabels, facultyData);
 			}
 		}
 	}, [attendanceData]);
@@ -721,7 +721,7 @@ export default function Homepage() {
 			const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
 			const canvas = chartContainer.current;
-			createPieChart(canvas, facultyLabels, facultyData);
+			createHorizontalBarChart(canvas, facultyLabels, facultyData);
 		}
 	}
 
@@ -741,11 +741,11 @@ export default function Homepage() {
 	// 	};
 	// }, []);
 
-	// Pie chart,
-	const createPieChart = (
+	const createHorizontalBarChart = (
 		chartContainer: HTMLCanvasElement | null,
 		labels: string[],
-		data: number[]) => {
+		data: number[]
+	) => {
 		if (chartContainer) {
 			const ctx = chartContainer.getContext('2d');
 
@@ -754,7 +754,7 @@ export default function Homepage() {
 					chartInstanceRef.current.destroy();
 				}
 
-				Chart.register(ChartDataLabels);
+				Chart.register(...registerables);
 
 				const getRandomColor = () => {
 					const letters = '0123456789ABCDEF';
@@ -766,44 +766,63 @@ export default function Homepage() {
 				};
 
 				const backgroundColor = [];
+				const borderColor = [];
 				const colorSet = new Set();
 
 				while (backgroundColor.length < 21) {
 					const color = getRandomColor();
 					if (!colorSet.has(color)) {
 						backgroundColor.push(color);
+						borderColor.push(color);
 						colorSet.add(color);
 					}
 				}
 
 				chartInstanceRef.current = new Chart(ctx, {
-					type: 'pie',
+					type: 'bar',
 					data: {
 						labels: labels,
 						datasets: [
 							{
 								data: data,
 								backgroundColor: backgroundColor,
+								borderColor: borderColor,
+								borderWidth: 1,
 							},
 						],
 					},
 					options: {
+						indexAxis: 'y',
 						responsive: true,
 						maintainAspectRatio: false,
 						plugins: {
 							legend: {
-								position: 'bottom',
+								display: false,
 							},
 							datalabels: {
 								color: '#000000',
 								font: {
-									weight: 'bold'
+									weight: 'bold',
 								},
-								formatter: (value: number, context: any) => {
-									const total = context.dataset.data.reduce((acc: number, current: number) => acc + current, 0);
-									const percentage = ((value / total) * 100).toFixed(2);
-
-									return `${percentage}%\n(${value}/${total})`;
+								align: 'end',
+								formatter: (value: number) => {
+									return value.toString();
+								},
+							},
+						},
+						scales: {
+							x: {
+								beginAtZero: true,
+								grid: {
+									display: false,
+								},
+								ticks: {
+									stepSize: 1,
+								},
+							},
+							y: {
+								grid: {
+									display: false,
 								},
 							},
 						},
@@ -2266,7 +2285,7 @@ export default function Homepage() {
 					<ViewAttendance_Modal
 						isVisible={showAttendanceModal}
 						onClose={() => setShowAttendanceModal(false)}>
-						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[700px] overflow-y-auto dark:bg-dark_mode_card">
+						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[825px] overflow-y-auto dark:bg-dark_mode_card">
 							<div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
 								<div className="flex items-start justify-start text-text text-[20px] text-center">
 									<PencilNoteIcon />
@@ -2343,9 +2362,9 @@ export default function Homepage() {
 								)}
 							</div>
 							{attendanceData && attendanceData.length > 0 ? (
-								<div className="w-full lg:flex flex-col items-center justify-center">
-									<div className="text-center font-bold lg:text-[16px] text-[14px] dark:bg-[#242729] dark:text-dark_text">Number of Attendees Each Faculty/ Unit</div>
-									<div className="w-[300px] h-[300px] lg:w-[500px] lg:h-[450px] flex items-center justify-center mt-5">
+								<div className="w-full lg:flex flex-col items-center justify-center mt-24">
+									<div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
+									<div className="w-[400px] h-[400px] lg:w-[650px] lg:h-[750px] flex items-center justify-center mt-5">
 										<canvas id="attendanceFacultyPieChart" ref={chartContainer} />
 									</div>
 								</div>
@@ -6169,7 +6188,7 @@ export default function Homepage() {
 							)}
 
 						</div>
-						
+
 						<Calendar onDateChange={handleDateChange} />
 
 					</div>
@@ -6201,6 +6220,9 @@ export default function Homepage() {
 														event.intFEventDescription,
 														event.intFEventStartDate,
 														event.intFEventEndDate,
+														event.intFDurationCourse,
+														event.intFTrainerName,
+														event.intFTrainingProvider,
 														filteredSubEvent.sub_eventsID,
 														filteredSubEvent.sub_eventsMainID,
 														filteredSubEvent.sub_eventsName,
@@ -6293,6 +6315,9 @@ export default function Homepage() {
 														event.intFEventDescription,
 														event.intFEventStartDate,
 														event.intFEventEndDate,
+														event.intFDurationCourse,
+														event.intFTrainerName,
+														event.intFTrainingProvider,
 														filteredSubEvent.sub_eventsID,
 														filteredSubEvent.sub_eventsMainID,
 														filteredSubEvent.sub_eventsName,
@@ -6384,6 +6409,9 @@ export default function Homepage() {
 														event.intFEventDescription,
 														event.intFEventStartDate,
 														event.intFEventEndDate,
+														event.intFDurationCourse,
+														event.intFTrainerName,
+														event.intFTrainingProvider,
 														filteredSubEvent.sub_eventsID,
 														filteredSubEvent.sub_eventsMainID,
 														filteredSubEvent.sub_eventsName,
