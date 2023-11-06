@@ -2,9 +2,14 @@ import ExternalTable from "@/components/tables/externalTable";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
 export default async function ExternalPage() {
-	const supabase = createServerComponentClient<Database>({ cookies });
+	const supabase = createClient(
+		process.env.NEXT_PUBLIC_SUPABASE_URL!,
+		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+	);
+	// const supabase = createServerComponentClient<Database>({ cookies });
 
 	const { data, error } = await supabase.from("external_forms").select("*");
 

@@ -1257,7 +1257,7 @@ export default function ExternalForm() {
 													{form.getValues("supporting_documents") &&
 														Array.from(
 															form.getValues("supporting_documents")!,
-														).map((file: File) => (
+														).map((file: any) => (
 															<div key={file.name}>
 																{
 																	// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
