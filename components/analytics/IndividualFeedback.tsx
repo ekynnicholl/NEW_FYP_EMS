@@ -28,12 +28,19 @@ type FeedbackDataType = {
     fbEmailAddress: string;
 }
 
-// const sectionNamesMap: Record<keyof FeedbackDataType, string> = {
-//     fbSectionA1: 'Section A1 Name',
-//     fbSectionA2: 'Section A2 Name',
-//     fbSectionA3: 'Section A3 Name',
-//     // Add more sections as needed
-// };
+const sectionNamesMap: { [key: string]: string } = {
+    fbSectionA1: 'The contents were clear and easy to understand.',
+    fbSectionA2: 'The course objectives were successfully achieved.',
+    fbSectionA3: 'The course materials were enough and helpful.',
+    fbSectionA4: 'The class environment enabled me to learn.',
+    fbSectionA5: 'The program was well coordinated (e.g. registration, pre-program information, etc.)',
+    fbSectionB1: 'My learning was enhanced by the knowledge and experience shared by the trainer.',
+    fbSectionB2: 'I was well engaged during the session by the trainer.',
+    fbSectionB3: 'The course exposed me to new knowledge and practices.',
+    fbSectionB4: 'I understand how to apply what I learned.',
+    fbSectionC1: 'The duration of the course was just right.',
+    fbSectionD1: 'I would recommend this course to my colleagues.'
+};
 
 interface IndividualFeedbackProps {
     sectionName: string;
@@ -99,7 +106,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
                         labels: chartData.labels,
                         datasets: [
                             {
-                                label: `Ratings for Section ${sectionName}`,
+                                label: ``,
                                 data: chartData.data,
                                 backgroundColor: barColors,
                             },
@@ -120,6 +127,11 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
                                 },
                             },
                         },
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        },
                     },
                 });
 
@@ -137,9 +149,14 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center">
-            <h2>Section {sectionName}</h2>
-            <canvas width={200} height={200} ref={chartRef} />
+        <div className="w-full">
+            <h2 className="text-left font-bold text-[24px]">{sectionNamesMap[sectionName]}</h2>
+            <div className="border-t border-gray-400 my-2 mr-10"></div>
+            <div className="flex items-center justify-center mt-10">
+                <div className="w-[500px] h-[500px]">
+                    <canvas width={200} height={200} ref={chartRef} />
+                </div>
+            </div>
         </div>
     );
 };

@@ -435,7 +435,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
             )}
 
             {activeTab === 'graph' && (
-                <div className="w-[500px] h-[500px]">
+                <div className="w-full mb-5">
                     {sectionsToDisplay.map((sectionName) => (
                         <IndividualFeedback
                             key={sectionName}

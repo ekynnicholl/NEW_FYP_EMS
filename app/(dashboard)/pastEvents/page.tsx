@@ -743,19 +743,19 @@ export default function Home() {
     };
 
     // For QR codes,
-	const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
-	const [selectedSubEventID, setSelectedSubEventID] = useState<string>("");
+    const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
+    const [selectedSubEventID, setSelectedSubEventID] = useState<string>("");
 
-	const copyToClipboard = (text: string) => {
-		navigator.clipboard
-			.writeText(text)
-			.then(() => {
-				alert("Link copied to clipboard!");
-			})
-			.catch(error => {
-				console.error("Copy failed:", error);
-			});
-	};
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                alert("Link copied to clipboard!");
+            })
+            .catch(error => {
+                console.error("Copy failed:", error);
+            });
+    };
 
     return (
         <div className="h-screen flex flex-row justify-start">
@@ -1418,7 +1418,7 @@ export default function Home() {
                                 {/* This is to loop through the attendance data. */}
                                 {feedbackData && feedbackData.length > 0 ? (
                                     <div className="ml-9">
-                                        <div className={`lg:h-[675px] h-[400px]  overflow-y-auto`}>
+                                        <div className={`lg:h-[675px] h-[400px] overflow-y-auto`}>
                                             <FeedbackList feedbackData={feedbackData} />
                                         </div>
                                     </div>
@@ -1541,25 +1541,25 @@ export default function Home() {
                     </ViewAttendance_Modal>
 
                     <Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
-						<div className="ml-2 p-5 z-[999]">
-							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
-								Feedback
-							</h3>
-							<QRCodeSVG
-								value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
-							/>
-							<button
-								onClick={() =>
-									copyToClipboard(
-										`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
-									)
-								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
-							>
-								Copy Link
-							</button>
-						</div>
-					</Modal>
+                        <div className="ml-2 p-5 z-[999]">
+                            <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
+                                Feedback
+                            </h3>
+                            <QRCodeSVG
+                                value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
+                            />
+                            <button
+                                onClick={() =>
+                                    copyToClipboard(
+                                        `https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
+                                    )
+                                }
+                                className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
+                            >
+                                Copy Link
+                            </button>
+                        </div>
+                    </Modal>
 
                     {/* mobile view table*/}
                     <div className="grid grid-cols-1 gap-4 lg:hidden">

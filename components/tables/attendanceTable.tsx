@@ -96,8 +96,25 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     // Calculate the start and end indices for the current page
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
 
-    const currentData = attendanceData.slice(startIndex, endIndex);
+    const toggleTab = (tab: 'all' | 'staff' | 'student') => {
+        setActiveTab(tab);
+        setCurrentPage(1);
+    };
+
+    const filteredData = attendanceData.filter((attendanceItem) => {
+        if (activeTab === 'staff') {
+            return attendanceItem.attFormsStaffID.startsWith('SS');
+        } else if (activeTab === 'student') {
+            return !attendanceItem.attFormsStaffID.startsWith('SS');
+        } else {
+            // Display All data
+            return true;
+        }
+    });
+
+    const currentData = filteredData.slice(startIndex, endIndex);
 
     // Handle page change
     const handlePageChange = (page: number) => {
@@ -124,23 +141,46 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     return (
         <div>
             <div className="">
-                <button
-                    type="button"
-                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729] mb-5"
-                    onClick={() => downloadCSV(attendanceData)}>
-                    <img
-                        src={exportCSV.src}
-                        alt=""
-                        width={20}
-                        className="text-slate-800"
-                    />
-                    <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
-                </button>
+                <div className="mb-5">
+                    <button
+                        className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
+                            }`}
+                        onClick={() => toggleTab('all')}
+                    >
+                        All
+                    </button>
+                    <button
+                        className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
+                            }`}
+                        onClick={() => toggleTab('staff')}
+                    >
+                        Staff
+                    </button>
+                    <button
+                        className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
+                            }`}
+                        onClick={() => toggleTab('student')}
+                    >
+                        Student
+                    </button>
+                    <button
+                        type="button"
+                        className="flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
+                        onClick={() => downloadCSV(attendanceData)}>
+                        <img
+                            src={exportCSV.src}
+                            alt=""
+                            width={14}
+                            className="text-slate-800"
+                        />
+                        <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                    </button>
+                </div>
                 <table className="lg:w-full w-auto">
                     <thead>
                         <tr>
                             <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
-                                Staff ID
+                                Staff/ Student ID
                             </th>
                             <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                 Staff Name
