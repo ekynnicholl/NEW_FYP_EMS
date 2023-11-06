@@ -3,6 +3,7 @@ import DoubleRightArrow from '@/components/icons/DoubleRightArrow';
 import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
+import exportCSV from "@/public/images/export_csv.png";
 
 type AttendanceDataType = {
     attFormsID: string;
@@ -19,6 +20,75 @@ interface Props {
     itemsPerPage: number;
     isAllTabActive: boolean;
 }
+
+const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
+    const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
+    const body = data.map((row) => {
+        const newRow = { ...row };
+
+        Object.keys(columnMapping).forEach((key) => {
+            if (key === 'attDateSubmitted') {
+                const formattedDate = convertDateToLocale(newRow[key as keyof AttendanceDataType]);
+                newRow[key as keyof AttendanceDataType] = formattedDate.includes(',')
+                    ? `"${formattedDate}"`
+                    : formattedDate;
+            } else if (typeof newRow[key as keyof AttendanceDataType] === 'string' && newRow[key as keyof AttendanceDataType].includes(',')) {
+                newRow[key as keyof AttendanceDataType] = `"${newRow[key as keyof AttendanceDataType]}"`;
+            }
+        });
+
+        return Object.keys(columnMapping).map((key) => newRow[key as keyof AttendanceDataType]).join(',');
+    }).join('\n');
+    return `${header}\n${body}`;
+};
+
+type ColumnMapping = {
+    [key: string]: string;
+};
+
+const convertDateToLocale = (utcDate: string) => {
+    const utcDateTime = new Date(utcDate);
+    const localDateTime = utcDateTime.toLocaleString(undefined, {
+        timeZone: 'Asia/Kuala_Lumpur',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
+    return localDateTime;
+};
+
+const columnMapping: ColumnMapping = {
+    attFormsStaffID: 'Staff/ Student ID',
+    attFormsStaffName: 'Staff Name',
+    attFormsFacultyUnit: 'Faculty/Unit',
+    sub_eventName: 'Session',
+    attDateSubmitted: 'Date Submitted',
+};
+
+const downloadCSV = (data: AttendanceDataType[]) => {
+    const firstRow = data[0];
+    const subEventName = firstRow ? firstRow.sub_eventName : '';
+
+    const csv = convertToCSV(data, columnMapping);
+
+    // Create a data URI for the CSV content
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // a.download = `attendance_data_${subEventName}.csv`;
+    a.download = `attendance_data.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(url);
+};
 
 const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -54,6 +124,18 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     return (
         <div>
             <div className="">
+                <button
+                    type="button"
+                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729] mb-5"
+                    onClick={() => downloadCSV(attendanceData)}>
+                    <img
+                        src={exportCSV.src}
+                        alt=""
+                        width={20}
+                        className="text-slate-800"
+                    />
+                    <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                </button>
                 <table className="lg:w-full w-auto">
                     <thead>
                         <tr>
