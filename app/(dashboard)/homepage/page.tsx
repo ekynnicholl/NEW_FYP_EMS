@@ -1725,7 +1725,7 @@ export default function Homepage() {
 									<input
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="text"
-										placeholder="Whos is your training provider?"
+										placeholder="Who's is your training provider?"
 										id="training_provider"
 										name="training_provider"
 										required
