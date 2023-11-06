@@ -1489,13 +1489,13 @@ export default function Homepage() {
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faCalendar}
-										className="w-8 mt-[6.5px] text-slate-700 dark:text-slate-300"
+										className="w-8 mt-[9px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
 								<div className="ml-1">
-									<p className="text-[15px]">Today&apos;s Date</p>
-									<p className="font-medium">{formattedDate}</p>
+									<p className="text-[17px]">Today&apos;s Date</p>
+									<p className="text-[17px] font-medium">{formattedDate}</p>
 								</div>
 							</div>
 						</div>
@@ -1507,13 +1507,13 @@ export default function Homepage() {
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faUsers}
-										className="w-8 mt-[6px] text-slate-700 dark:text-slate-300"
+										className="w-8 mt-[9px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
 								<div className="ml-1">
-									<p className="text-[15px]">Upcoming Events</p>
-									<p className="font-medium">{upcomingEventCounts}</p>
+									<p className="text-[17px]">Upcoming Events</p>
+									<p className="text-[17px] font-medium">{upcomingEventCounts}</p>
 								</div>
 							</a>
 						</div>
@@ -1525,13 +1525,13 @@ export default function Homepage() {
 								<div className="mr-4">
 									<FontAwesomeIcon
 										icon={faCheckCircle}
-										className="w-[34px] mt-[6px] text-slate-700 dark:text-slate-300"
+										className="w-[34px] mt-[10px] text-slate-700 dark:text-slate-300"
 										size="2x"
 									/>
 								</div>
 								<div className="ml-1">
-									<p className="text-[15px]">Past Events</p>
-									<p className="font-medium">{pastEventCounts}</p>
+									<p className="text-[17px]">Past Events</p>
+									<p className="text-[17px] font-medium">{pastEventCounts}</p>
 								</div>
 							</a>
 						</div>
@@ -1583,8 +1583,8 @@ export default function Homepage() {
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800 dark:focus:shadow-outline-dark"
 							onClick={() => setShowModalCreateEvent(true)}>
-							<IoIosAddCircleOutline className="text-3xl text-slate-100 -ml-1 mr-1" />
-							<span className="text-slate-100 ml-[2px]">Add Events</span>
+							<IoIosAddCircleOutline className="text-[31px] text-slate-100 -ml-1 mr-1" />
+							<span className="text-[18px] text-slate-100 ml-[2px] -mt-[2.5px]">Add Events</span>
 						</button>
 					</div>
 
@@ -3230,7 +3230,7 @@ export default function Homepage() {
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
 																<FiClock className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
-																<p className="text-slate-600 text-[16px] ml-[1px] -mt-[1px] dark:text-dark_text">
+																<p className="text-slate-600 text-[16px] ml-[1px] -mt-[2px] dark:text-dark_text">
 																	{formatTime(subEvent.sub_eventsStartTime)}
 																</p>
 															</div>
@@ -3249,7 +3249,7 @@ export default function Homepage() {
 														.slice(0, 1)
 														.map((subEvent, index) => (
 															<div key={index} className="flex items-center mt-3">
-																<p className="text-slate-600 text-[16px] dark:text-dark_text ml-1">
+																<p className="text-slate-600 text-[16px] -mt-[2px] dark:text-dark_text ml-1">
 																	- {formatTime(subEvent.sub_eventsEndTime)}
 																</p>
 															</div>
@@ -3271,7 +3271,7 @@ export default function Homepage() {
 													.map((subEvent, index) => (
 														<div key={index} className="flex items-center mt-3">
 															<FaLocationDot className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
-															<p className="text-slate-600 text-[16px] dark:text-dark_text">
+															<p className="text-slate-600 text-[16px] -mt-[2px] dark:text-dark_text">
 																{subEvent.sub_eventsVenue}
 															</p>
 														</div>
