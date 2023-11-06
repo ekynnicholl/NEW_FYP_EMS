@@ -15,7 +15,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { Chart } from 'chart.js/auto';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
+import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
@@ -30,6 +30,7 @@ import LeftArrow from "@/components/icons/LeftArrow";
 import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 import FeedbackList from "@/components/tables/feedbackTable";
 import ViewEventFeedback from "@/components/ViewEventFeedback";
+import Modal from "@/components/QR_Codes_Modal";
 
 type mainEvent = {
     intFID: string;
@@ -693,6 +694,21 @@ export default function Home() {
         }
     };
 
+    // For QR codes,
+	const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
+	const [selectedSubEventID, setSelectedSubEventID] = useState<string>("");
+
+	const copyToClipboard = (text: string) => {
+		navigator.clipboard
+			.writeText(text)
+			.then(() => {
+				alert("Link copied to clipboard!");
+			})
+			.catch(error => {
+				console.error("Copy failed:", error);
+			});
+	};
+
     return (
         <div className="h-screen flex flex-row justify-start">
             <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
@@ -940,7 +956,14 @@ export default function Home() {
                                                                     event.intFID,
                                                                 );
                                                                 fetchFeedbackList(event.intFID);
-                                                            }}>Feedback Forms</DropdownMenuItem>
+                                                            }}>Event Feedback
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={() => {
+                                                                setSelectedSubEventID(event.intFID);
+                                                                setShowQRCodesFeedback(true);
+                                                            }}>Feedback Forms
+                                                            </DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </td>
@@ -1427,6 +1450,24 @@ export default function Home() {
                                             <option value="10">10</option>
                                             <option value="20">20</option>
                                         </select>
+
+                                        {/* Search Input */}
+                                        <div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
+                                            <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2 ">
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    className="h-4 w-4 fill-current text-gray-500">
+                                                    <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                                                </svg>
+                                            </span>
+                                            <input
+                                                placeholder="Search here..."
+                                                className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
+                                                value={searchAttendanceQuery}
+                                                onChange={e => handleAttendanceSearch(e.target.value)}
+                                            />
+                                        </div>
+
                                         <div className="h-[450px]">
                                             {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
                                                 <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
@@ -1452,6 +1493,27 @@ export default function Home() {
                             ) : null}
                         </div>
                     </ViewAttendance_Modal>
+
+                    <Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
+						<div className="ml-2 p-5 z-[999]">
+							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
+								Feedback
+							</h3>
+							<QRCodeSVG
+								value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
+							/>
+							<button
+								onClick={() =>
+									copyToClipboard(
+										`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
+									)
+								}
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
+							>
+								Copy Link
+							</button>
+						</div>
+					</Modal>
 
                     {/* mobile view table*/}
                     <div className="grid grid-cols-1 gap-4 lg:hidden">
@@ -1560,6 +1622,20 @@ export default function Home() {
                                                             }}
                                                         >Attendance List
                                                         </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={e => {
+                                                                e.stopPropagation(); // 
+                                                                openFeedbackModal(
+                                                                    event.intFID,
+                                                                );
+                                                                fetchFeedbackList(event.intFID);
+                                                            }}>Feedback Forms
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={() => {
+                                                                setSelectedSubEventID(event.intFID);
+                                                                setShowQRCodesFeedback(true);
+                                                            }}>Event Feedback
+                                                            </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </td>
