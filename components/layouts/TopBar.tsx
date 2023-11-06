@@ -424,6 +424,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			</AddAdmin_Modal >
 
 			<BreadCrumb />
+			
 			<div className="flex space-x-6 pr-2 pl-12">
 				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
 					{!isDarkMode ? (
