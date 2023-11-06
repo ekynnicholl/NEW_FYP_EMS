@@ -62,21 +62,21 @@ export default function Home() {
 	};
 
 	return (
-		<div className="h-screen flex flex-row justify-start bg-slate-100">
+		<div className="h-screen flex flex-row justify-start bg-slate-100 dark:bg-dark_mode_bg">
 			<div className="flex-1">
-				<div className="flex-1 mx-auto px-5 py-5 bg-slate-100">
+				<div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
 					{/* <div className="p-4 mb-4 bg-white rounded-lg shadow-lg">
 						<div className="text-center font-bold p-5">
 							<h1>Budget Expediture/ Year</h1>
 						</div>
 						<LineGraphExpenditure1 />
 					</div> */}
-					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg">
-						<div className="text-center font-bold p-5">
+					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+						<div className="text-center font-bold p-5 text-slate-800 dark:text-dark_text">
 							<h1>Number of Attendees each Faculty/ Unit by Date</h1>
 
 						</div>
-						<div className="justify-center items-center flex">
+						<div className="justify-center items-center flex text-slate-800 dark:text-dark_text">
 							<div className="">
 								<label htmlFor="startDate" className="mr-2">
 									Start Date:
@@ -87,7 +87,7 @@ export default function Home() {
 									name="startDate"
 									value={startDate}
 									onChange={handleDateChange}
-									className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+									className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 								/>
 							</div>
 							<div className="ml-4">
@@ -100,7 +100,7 @@ export default function Home() {
 									name="endDate"
 									value={endDate}
 									onChange={handleDateChange}
-									className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+									className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 								/>
 							</div>
 						</div>

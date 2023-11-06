@@ -2098,7 +2098,7 @@ export default function Homepage() {
 													}}
 												>
 													<span className="ml-2 mt-[1px] text-slate-800 flex items-center mr-2">
-														<LiaQrcodeSolid className="text-[23px]"/>
+														<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]"/>
 														<span className="ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
 															Attendance
 														</span>
@@ -2113,7 +2113,7 @@ export default function Homepage() {
 													}}
 												>
 													<span className="ml-2 text-slate-800 flex items-center mr-2">
-														<LiaQrcodeSolid className="text-[23px]" />
+														<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
 														<span className="ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
 															Feedback
 														</span>
