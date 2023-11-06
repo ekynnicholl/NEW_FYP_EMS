@@ -29,7 +29,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange }) =
 
 
   return (
-    <div className="w-full h-full bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
+    <div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
       <h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
       <div className="shadow p-4">
         <Calendar
