@@ -4986,7 +4986,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																<div className="text-[11px] text-gray-600 mt-[5px] flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
