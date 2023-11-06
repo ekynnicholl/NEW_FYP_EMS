@@ -943,6 +943,9 @@ export default function Homepage() {
 				intFEventDescription: mainEvent.intFEventDescription,
 				intFEventStartDate: mainEvent.intFEventStartDate,
 				intFEventEndDate: mainEvent.intFEventEndDate,
+				intFDurationCourse: calculateDays(),
+				intFTrainerName: mainEvent.intFTrainerName,
+				intFTrainingProvider: mainEvent.intFTrainingProvider
 			})
 			.select();
 
@@ -1075,33 +1078,19 @@ export default function Homepage() {
 
 	};
 
-
-	const handleStartDateChange = (e) => {
-		setMainEvent({
-			...mainEvent,
-			intFEventStartDate: e.target.value,
-		});
-	}
-
-	const handleEndDateChange = (e) => {
-		setMainEvent({
-			...mainEvent,
-			intFEventEndDate: e.target.value,
-		});
-	}
-
+	// Calculate how many days for main event
 	const calculateDays = () => {
-		const startDate = new Date(mainEvent.intFEventStartDate);
-		const endDate = new Date(mainEvent.intFEventEndDate);
+		const startDate = new Date(mainEvent.intFEventStartDate).getTime();
+		const endDate = new Date(mainEvent.intFEventEndDate).getTime();
 
 		if (!isNaN(startDate) && !isNaN(endDate)) {
-			const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
-			const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+			const timeDiff = Math.abs(endDate - startDate);
+			const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 			return diffDays;
 		}
 
 		return null; // Return null if either date is invalid
-	}
+	};
 
 
 	const handleEditEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -1687,7 +1676,7 @@ export default function Homepage() {
 											/>
 											<div>
 												{mainEvent.intFEventStartDate && mainEvent.intFEventEndDate &&
-													<div className="font-medium text-slate-800 text-[20px] dark:text-slate-300 ml-[20px]">
+													<div className="font-medium text-slate-800 text-[20px] dark:text-slate-300 ml-[21px] mt-[2px]">
 														{calculateDays()} days
 													</div>
 												}
@@ -2008,7 +1997,7 @@ export default function Homepage() {
 								</p>
 
 								<div className="flex ml-[1px]">
-									<FaChalkboardTeacher className="text-[22px] text-slate-800 dark:text-[#7B756B]"/>
+									<FaChalkboardTeacher className="text-[22px] text-slate-800 dark:text-[#7B756B]" />
 									<p className="text-[12px] lg:text-[16px] text-mb-7 mb-1 lg:mb-5 font-medium ml-2 -mt-[1px] text-slate-800 dark:text-[#7B756B]">
 										{selectedEvent.intFTrainerName} ({selectedEvent.intFTrainingProvider})
 									</p>
@@ -3068,6 +3057,9 @@ export default function Homepage() {
 												latestEvent[0]?.intFEventDescription,
 												latestEvent[0]?.intFEventStartDate,
 												latestEvent[0]?.intFEventEndDate,
+												latestEvent[0]?.intFDurationCourse,
+												latestEvent[0]?.intFTrainerName,
+												latestEvent[0]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
