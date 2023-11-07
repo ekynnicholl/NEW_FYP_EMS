@@ -96,25 +96,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     // Calculate the start and end indices for the current page
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
 
-    const toggleTab = (tab: 'all' | 'staff' | 'student') => {
-        setActiveTab(tab);
-        setCurrentPage(1);
-    };
-
-    const filteredData = attendanceData.filter((attendanceItem) => {
-        if (activeTab === 'staff') {
-            return attendanceItem.attFormsStaffID.startsWith('SS');
-        } else if (activeTab === 'student') {
-            return !attendanceItem.attFormsStaffID.startsWith('SS');
-        } else {
-            // Display All data
-            return true;
-        }
-    });
-
-    const currentData = filteredData.slice(startIndex, endIndex);
+    const currentData = attendanceData.slice(startIndex, endIndex);
 
     // Handle page change
     const handlePageChange = (page: number) => {
@@ -140,135 +123,122 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
 
     return (
         <div>
-            <div className="">
-                <div className="mb-5">
-                    <button
-                        className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
-                            }`}
-                        onClick={() => toggleTab('all')}
-                    >
-                        All
-                    </button>
-                    <button
-                        className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
-                            }`}
-                        onClick={() => toggleTab('staff')}
-                    >
-                        Staff
-                    </button>
-                    <button
-                        className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
-                            }`}
-                        onClick={() => toggleTab('student')}
-                    >
-                        Student
-                    </button>
-                    <button
-                        type="button"
-                        className="flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
-                        onClick={() => downloadCSV(attendanceData)}>
-                        <img
-                            src={exportCSV.src}
-                            alt=""
-                            width={14}
-                            className="text-slate-800"
-                        />
-                        <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
-                    </button>
-                </div>
-                <table className="lg:w-full w-auto">
-                    <thead>
-                        <tr>
-                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
-                                Staff/ Student ID
-                            </th>
-                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                Staff Name
-                            </th>
-                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                Faculty/ Unit
-                            </th>
-                            {isAllTabActive && (
-                                <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
-                                    Sub-Event
-                                </th>
-                            )}
-                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                Date Submitted
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentData.map((attendanceItem) => (
-                            <tr key={attendanceItem.attFormsID}>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    {attendanceItem.attFormsStaffID}
-                                </td>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    {attendanceItem.attFormsStaffName}
-                                </td>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    {attendanceItem.attFormsFacultyUnit}
-                                </td>
-                                {isAllTabActive && (
-                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                        {attendanceItem.sub_eventName}
-                                    </td>
-                                )}
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    {formatDate(attendanceItem.attDateSubmitted).date}
-                                    <br />
-                                    {formatDate(attendanceItem.attDateSubmitted).time}
-                                </td>
-                            </tr>
+            {attendanceData.length > 0 ? (
+                <div>
+                    <div className="">
+                        <div className="mb-5">
+                            <button
+                                type="button"
+                                className="flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
+                                onClick={() => downloadCSV(attendanceData)}>
+                                <img
+                                    src={exportCSV.src}
+                                    alt=""
+                                    width={14}
+                                    className="text-slate-800"
+                                />
+                                <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                            </button>
+                        </div>
+                        <table className="lg:w-full w-auto">
+                            <thead>
+                                <tr>
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                        Staff/ Student ID
+                                    </th>
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                        Staff Name
+                                    </th>
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                        Faculty/ Unit
+                                    </th>
+                                    {isAllTabActive && (
+                                        <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
+                                            Sub-Event
+                                        </th>
+                                    )}
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                        Date Submitted
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentData.map((attendanceItem) => (
+                                    <tr key={attendanceItem.attFormsID}>
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            {attendanceItem.attFormsStaffID}
+                                        </td>
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            {attendanceItem.attFormsStaffName}
+                                        </td>
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            {attendanceItem.attFormsFacultyUnit}
+                                        </td>
+                                        {isAllTabActive && (
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                {attendanceItem.sub_eventName}
+                                            </td>
+                                        )}
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            {formatDate(attendanceItem.attDateSubmitted).date}
+                                            <br />
+                                            {formatDate(attendanceItem.attDateSubmitted).time}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="pagination flex justify-end items-end mt-5 pb-5">
+                        <button
+                            className="opacity-70 ml-2"
+                            onClick={() => handlePageChange(1)}
+                            disabled={currentPage === 1}
+                        >
+                            <DoubleLeftArrow />
+                        </button>
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="opacity-70 ml-2 mr-2"
+                        >
+                            <LeftArrow />
+                        </button>
+
+                        {pageNumbers.map((pageNumber) => (
+                            <button
+                                key={pageNumber}
+                                className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-800 bg-slate-200 ${currentPage === pageNumber ? 'currentPage' : 'page-item'
+                                    }`}
+                                onClick={() => handlePageChange(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
                         ))}
-                    </tbody>
-                </table>
-            </div>
 
-            {/* Pagination */}
-            <div className="pagination flex justify-end items-end mt-5 pb-5">
-                <button
-                    className="opacity-70 ml-2"
-                    onClick={() => handlePageChange(1)}
-                    disabled={currentPage === 1}
-                >
-                    <DoubleLeftArrow />
-                </button>
-                <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="opacity-70 ml-2 mr-2"
-                >
-                    <LeftArrow />
-                </button>
-
-                {pageNumbers.map((pageNumber) => (
-                    <button
-                        key={pageNumber}
-                        className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-800 bg-slate-200 ${currentPage === pageNumber ? 'currentPage' : 'page-item'
-                            }`}
-                        onClick={() => handlePageChange(pageNumber)}
-                    >
-                        {pageNumber}
-                    </button>
-                ))}
-
-                <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === pageCount}
-                    className="opacity-70 ml-2 mr-2"
-                >
-                    <RightArrow />
-                </button>
-                <button
-                    className="opacity-70 mr-2"
-                    onClick={() => handlePageChange(pageCount)}
-                    disabled={currentPage === pageCount}
-                >
-                    <DoubleRightArrow />
-                </button>
-            </div>
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === pageCount}
+                            className="opacity-70 ml-2 mr-2"
+                        >
+                            <RightArrow />
+                        </button>
+                        <button
+                            className="opacity-70 mr-2"
+                            onClick={() => handlePageChange(pageCount)}
+                            disabled={currentPage === pageCount}
+                        >
+                            <DoubleRightArrow />
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    <p>No data available.</p>
+                </div>
+            )}
         </div>
     );
 };
