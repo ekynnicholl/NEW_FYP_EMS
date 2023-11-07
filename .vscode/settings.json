@@ -32,5 +32,9 @@
 		"components.json",
 		"google_config.js",
 		"next.config.js"
+	],
+	"cSpell.words": [
+		"hrdf",
+		"Travelling"
 	]
 }

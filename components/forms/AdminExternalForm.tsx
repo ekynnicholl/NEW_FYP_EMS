@@ -57,29 +57,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [approvalImageURL, setApprovalImageURL] = useState(data.approval_signature);
 
 	// Keep track of the revert comment,
-	// const [showCommentInput, setShowCommentInput] = useState(false);
+	const [showCommentInput, setShowCommentInput] = useState(false);
 
 	// Check whether the user is logged in,
-	// const authToken = cookie.get("authToken");
+	const authToken = cookie.get("authToken");
 
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
 
 	// Real-time security key validation,
-	const [securityKeyInput, setSecurityKeyInput] = useState(secKey ?? "");
 	const [securityKeyError, setSecurityKeyError] = useState(false);
-
-	const handleChange = (e: { target: { value: any } }) => {
-		const inputValue = e.target.value;
-		setSecurityKeyInput(inputValue);
-
-		if (inputValue === data.securityKey) {
-			setSecurityKeyError(false);
-			e;
-		} else {
-			setSecurityKeyError(true);
-		}
-	};
 
 	// // Fetch the current stage of the form to capture whether the stage has changed to submit email,
 	// const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
@@ -237,298 +224,294 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	}, [form.formState.errors]);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
+		// Generate the security key,
+		const securityKeyUID = uuidv4();
 
-	}
+		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
+		if (externalForm.formStage === 2) {
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						expenditure_cap: externalForm.expenditure_cap,
+						expenditure_cap_amount: externalForm.expenditure_cap_amount,
+						revertComment: "None",
+						securityKey: securityKeyUID,
+						formStage: 3,
+						verification_email: values.verification_email,
+						approval_email: values.approval_email,
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
-	// 	// Generate the security key,
-	// 	const securityKeyUID = uuidv4();
+			if (error) {
+				toast.error("Error submitting form");
+				console.error("Error updating data:", error);
+			} else {
+				toast.success("Form submitted successfully");
+				console.log("Data updated successfully:", data);
 
-	// 	// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
-	// 	if (externalForm.formStage === 2) {
-	// 		const { data, error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					expenditure_cap: externalForm.expenditure_cap,
-	// 					expenditure_cap_amount: externalForm.expenditure_cap_amount,
-	// 					revertComment: "None",
-	// 					securityKey: securityKeyUID,
-	// 					formStage: 3,
-	// 					verification_email: values.verification_email,
-	// 					approval_email: values.approval_email,
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+				setExternalForm({
+					...externalForm,
+					revertComment: "",
+					expenditure_cap: externalForm.expenditure_cap,
+					expenditure_cap_amount: externalForm.expenditure_cap_amount,
+					securityKey: securityKeyUID,
+					formStage: 3,
+				});
 
-	// 		if (error) {
-	// 			toast.error("Error submitting form");
-	// 			console.error("Error updating data:", error);
-	// 		} else {
-	// 			toast.success("Form submitted successfully");
-	// 			console.log("Data updated successfully:", data);
+				router.push("/external_status");
+				// window.location.reload();
+			}
+		}
+		// This part is when the staff re-submits the form to the AAO after being reverted,
+		else if (externalForm.formStage === 1) {
+			console.log("Updating...");
+			console.log(values);
+			const { error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						...values,
+						formStage: 2,
+						securityKey: null,
+						// THIS IS WHAT YOU'RE SUPPOSE TO UPDATE,
+						// fundSourceName: formDetails.fundSourceName,
+						// fundAmount: formDetails.fundAmount,
+						// formStage: 2,
+						// securityKey: null,
+						// hosEmail: formDetails.hosEmail,
+						// deanEmail: formDetails.deanEmail
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				revertComment: "",
-	// 				expenditure_cap: externalForm.expenditure_cap,
-	// 				expenditure_cap_amount: externalForm.expenditure_cap_amount,
-	// 				securityKey: securityKeyUID,
-	// 				formStage: 3,
-	// 			});
+			if (error) {
+				console.log(error);
 
-	// 			router.push("/external_status");
-	// 			// window.location.reload();
-	// 		}
-	// 	}
-	// 	// This part is when the staff re-submits the form to the AAO after being reverted,
-	// 	else if (externalForm.formStage === 1) {
-	// 		console.log("Updating...");
-	// 		console.log(values);
-	// 		const { error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					...values,
-	// 					formStage: 2,
-	// 					securityKey: null,
-	// 					// THIS IS WHAT YOU'RE SUPPOSE TO UPDATE,
-	// 					// fundSourceName: formDetails.fundSourceName,
-	// 					// fundAmount: formDetails.fundAmount,
-	// 					// formStage: 2,
-	// 					// securityKey: null,
-	// 					// hosEmail: formDetails.hosEmail,
-	// 					// deanEmail: formDetails.deanEmail
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+				toast.error("Error submitting form");
+			} else {
+				toast.success("Form submitted successfully");
 
-	// 		if (error) {
-	// 			console.log(error);
+				setExternalForm({
+					...externalForm,
+					securityKey: null,
+					formStage: 2,
+				});
 
-	// 			toast.error("Error submitting form");
-	// 		} else {
-	// 			toast.success("Form submitted successfully");
+				router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
+				// window.location.reload();
+			}
+		}
 
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				securityKey: null,
-	// 				formStage: 2,
-	// 			});
+		// This is for submitting the forms for further review to HMU/ Dean BY HOS/ MGR/ ADCR, Stage 3 -> Stage 4,
+		else if (externalForm.formStage === 3) {
+			console.log(values.verification_signature);
 
-	// 			router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
-	// 			// window.location.reload();
-	// 		}
-	// 	}
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						formStage: 4,
+						securityKey: securityKeyUID,
+						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 
-	// 	// This is for submitting the forms for further review to HMU/ Dean BY HOS/ MGR/ ADCR, Stage 3 -> Stage 4,
-	// 	else if (externalForm.formStage === 3) {
-	// 		console.log(values.verification_signature);
+						verification_email: values.verification_email,
+						verification_name: values.verification_name,
+						verification_position_title: values.verification_position_title,
+						verification_date: values.verification_date,
+						verification_signature: values.verification_signature,
 
-	// 		const { data, error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					formStage: 4,
-	// 					securityKey: securityKeyUID,
-	// 					// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
+						approval_email: values.approval_email,
+						approval_name: values.approval_name,
+						approval_position_title: values.approval_position_title,
+						approval_date: values.approval_date,
+						approval_signature: values.approval_signature,
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// 					verification_email: values.verification_email,
-	// 					verification_name: values.verification_name,
-	// 					verification_position_title: values.verification_position_title,
-	// 					verification_date: values.verification_date,
-	// 					verification_signature: values.verification_signature,
+			if (error) {
+				console.error("Error inserting data:", error);
+			} else {
+				console.log("Data inserted successfully:", values);
 
-	// 					approval_email: values.approval_email,
-	// 					approval_name: values.approval_name,
-	// 					approval_position_title: values.approval_position_title,
-	// 					approval_date: values.approval_date,
-	// 					approval_signature: values.approval_signature,
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+				setExternalForm({
+					...externalForm,
+					securityKey: securityKeyUID,
+					formStage: 4,
+				});
 
-	// 		if (error) {
-	// 			console.error("Error inserting data:", error);
-	// 		} else {
-	// 			console.log("Data inserted successfully:", values);
-
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				securityKey: securityKeyUID,
-	// 				formStage: 4,
-	// 			});
-
-	// 			router.push("/external_status");
-	// 			// window.location.reload();
-	// 		}
-	// 	}
+				router.push("/external_status");
+				// window.location.reload();
+			}
+		}
 
 	// 	// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
-	// 	else if (externalForm.formStage === 4) {
-	// 		const { data, error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					formStage: 5,
-	// 					securityKey: securityKeyUID,
-	// 					// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
-	// 					verification_email: values.verification_email,
-	// 					verification_name: values.verification_name,
-	// 					verification_position_title: values.verification_position_title,
-	// 					verification_date: values.verification_date,
-	// 					verification_signature: values.verification_signature,
+		else if (externalForm.formStage === 4) {
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						formStage: 5,
+						securityKey: securityKeyUID,
+						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
+						verification_email: values.verification_email,
+						verification_name: values.verification_name,
+						verification_position_title: values.verification_position_title,
+						verification_date: values.verification_date,
+						verification_signature: values.verification_signature,
 
-	// 					approval_email: values.approval_email,
-	// 					approval_name: values.approval_name,
-	// 					approval_position_title: values.approval_position_title,
-	// 					approval_date: values.approval_date,
-	// 					approval_signature: values.approval_signature,
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+						approval_email: values.approval_email,
+						approval_name: values.approval_name,
+						approval_position_title: values.approval_position_title,
+						approval_date: values.approval_date,
+						approval_signature: values.approval_signature,
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// 		if (error) {
-	// 			console.error("Error inserting data:", error);
-	// 		} else {
-	// 			console.log("Data inserted successfully:", data);
+			if (error) {
+				console.error("Error inserting data:", error);
+			} else {
+				console.log("Data inserted successfully:", data);
 
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				formStage: 5,
-	// 			});
+				setExternalForm({
+					...externalForm,
+					formStage: 5,
+				});
 
-	// 			router.push("/external_status");
-	// 			// window.location.reload();
-	// 		}
-	// 	}
-	// }
+				router.push("/external_status");
+				// window.location.reload();
+			}
+		}
+	}
 
-	// const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
-	// 	const securityKeyUID = uuidv4();
+	const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
+		const securityKeyUID = uuidv4();
 
-	// 	// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
-	// 	if (externalForm.formStage === 3) {
-	// 		const { data, error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					formStage: 6,
-	// 					securityKey: securityKeyUID,
-	// 					// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
-	// 					revertComment: values.revertComment,
-	// 					verification_email: values.verification_email,
-	// 					verification_name: values.verification_name,
-	// 					verification_position_title: values.verification_position_title,
-	// 					verification_date: values.verification_date,
-	// 					verification_signature: values.verification_signature,
+		// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
+		if (externalForm.formStage === 3) {
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						formStage: 6,
+						securityKey: securityKeyUID,
+						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
+						revertComment: values.revertComment,
+						verification_email: values.verification_email,
+						verification_name: values.verification_name,
+						verification_position_title: values.verification_position_title,
+						verification_date: values.verification_date,
+						verification_signature: values.verification_signature,
 
-	// 					approval_email: values.approval_email,
-	// 					approval_name: values.approval_name,
-	// 					approval_position_title: values.approval_position_title,
-	// 					approval_date: values.approval_date,
-	// 					approval_signature: values.approval_signature,
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+						approval_email: values.approval_email,
+						approval_name: values.approval_name,
+						approval_position_title: values.approval_position_title,
+						approval_date: values.approval_date,
+						approval_signature: values.approval_signature,
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// 		if (error) {
-	// 			console.error("Error updating data:", error);
-	// 		} else {
-	// 			console.log("Data updated successfully:", data);
+			if (error) {
+				console.error("Error updating data:", error);
+			} else {
+				console.log("Data updated successfully:", data);
 
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				formStage: 6,
-	// 			});
+				setExternalForm({
+					...externalForm,
+					formStage: 6,
+				});
 
-	// 			router.push("/external_status");
-	// 			// window.location.reload();
-	// 		}
-	// 	} else if (externalForm.formStage === 4) {
-	// 		const { data, error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					formStage: 6,
-	// 					securityKey: securityKeyUID,
-	// 					// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
-	// 					revertComment: values.revertComment,
-	// 					verification_email: values.verification_email,
-	// 					verification_name: values.verification_name,
-	// 					verification_position_title: values.verification_position_title,
-	// 					verification_date: values.verification_date,
-	// 					verification_signature: values.verification_signature,
+				router.push("/external_status");
+				// window.location.reload();
+			}
+		} else if (externalForm.formStage === 4) {
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						formStage: 6,
+						securityKey: securityKeyUID,
+						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
+						revertComment: values.revertComment,
+						verification_email: values.verification_email,
+						verification_name: values.verification_name,
+						verification_position_title: values.verification_position_title,
+						verification_date: values.verification_date,
+						verification_signature: values.verification_signature,
 
-	// 					approval_email: values.approval_email,
-	// 					approval_name: values.approval_name,
-	// 					approval_position_title: values.approval_position_title,
-	// 					approval_date: values.approval_date,
-	// 					approval_signature: values.approval_signature,
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+						approval_email: values.approval_email,
+						approval_name: values.approval_name,
+						approval_position_title: values.approval_position_title,
+						approval_date: values.approval_date,
+						approval_signature: values.approval_signature,
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// 		if (error) {
-	// 			console.log(error);
-	// 		} else {
-	// 			console.log("Data updated successfully:", data);
+			if (error) {
+				console.log(error);
+			} else {
+				console.log("Data updated successfully:", data);
 
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				formStage: 6,
-	// 			});
+				setExternalForm({
+					...externalForm,
+					formStage: 6,
+				});
 
-	// 			router.push("/external_status");
-	// 			// window.location.reload();
-	// 		}
-	// 	}
+				router.push("/external_status");
+				// window.location.reload();
+			}
+		}
 
-	// 	// This is for the AAO to revert to the staff with the comments, Stage 2 -> Stage 1,
-	// 	if (externalForm.formStage === 2 && (showCommentInput == true || externalForm.revertComment != "None")) {
-	// 		console.log("Reverting");
-	// 		const { data, error } = await supabase
-	// 			.from("external_forms")
-	// 			.update([
-	// 				{
-	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-	// 					expenditure_cap: values.expenditure_cap,
-	// 					expenditure_cap_amount: values.expenditure_cap_amount,
-	// 					revertComment: values.revertComment,
-	// 					securityKey: securityKeyUID,
-	// 					formStage: 1,
-	// 					verification_email: values.verification_email,
-	// 					approval_email: values.approval_email,
-	// 				},
-	// 			])
-	// 			.eq("id", externalForm.id);
+		// This is for the AAO to revert to the staff with the comments, Stage 2 -> Stage 1,
+		if (externalForm.formStage === 2 && (showCommentInput == true || externalForm.revertComment != "None")) {
+			console.log("Reverting");
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update([
+					{
+						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+						expenditure_cap: values.expenditure_cap,
+						expenditure_cap_amount: values.expenditure_cap_amount,
+						revertComment: values.revertComment,
+						securityKey: securityKeyUID,
+						formStage: 1,
+						verification_email: values.verification_email,
+						approval_email: values.approval_email,
+					},
+				])
+				.eq("id", externalForm.id);
 
-	// 		if (error) {
-	// 			console.error("Error updating data:", error);
-	// 		} else {
-	// 			console.log("Data updated successfully:", data);
+			if (error) {
+				console.error("Error updating data:", error);
+			} else {
+				console.log("Data updated successfully:", data);
 
-	// 			// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
+				// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
 
-	// 			setExternalForm({
-	// 				...externalForm,
-	// 				securityKey: securityKeyUID,
-	// 				formStage: 1,
-	// 			});
+				setExternalForm({
+					...externalForm,
+					securityKey: securityKeyUID,
+					formStage: 1,
+				});
 
-	// 			router.push("/external_status");
-	// 			// window.location.reload();
-	// 		}
-	// 	} else if (showCommentInput == false) {
-	// 		setShowCommentInput(true);
-	// 	}
-	// };
+				router.push("/external_status");
+				// window.location.reload();
+			}
+		} else if (showCommentInput == false) {
+			setShowCommentInput(true);
+		}
+	};
 
 	const [group, setGroup] = useState(true);
 
@@ -2082,7 +2065,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									</section>
 								) : null}
 
-								{/*
 								{externalForm.formStage === 1 ? (
 									<div>
 										<FormField
@@ -2107,7 +2089,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															autoComplete="off"
 															placeholder=""
 															{...field}
-															onChange={handleChange}
+															onChange={e => {
+																field.onChange(e.target.value);
+																if (e.target.value === secKey) {
+																	setSecurityKeyError(false);
+																} else {
+																	setSecurityKeyError(true);
+																}
+															}}
 														/>
 													</FormControl>
 													<FormMessage>
@@ -2304,9 +2293,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															}}
 														/>
 													</FormControl>
-													<FormMessage>
-														{securityKeyError && <span>The security key does not match.</span>}
-													</FormMessage>
+													<FormMessage>{securityKeyError && <span>The security key does not match.</span>}</FormMessage>
 												</FormItem>
 											)}
 										/>
@@ -2457,7 +2444,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										) : null}
 									</div>
 								) : null}
-											*/}
 							</form>
 						</Form>
 					</div>
@@ -2466,7 +2452,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				// DO NOT TOUCH THIS.
 				// This is the final stage of the form,
 				<div>
-					{/* <NTFPDF id={data.id} /> */}
+					<NTFPDF id={data.id} />
 				</div>
 			)}
 		</div>

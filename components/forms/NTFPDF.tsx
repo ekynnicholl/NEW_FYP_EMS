@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Fragment, useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { map } from "zod";
+import { Button } from "@/components/ui/button"
 
 type Form = {
     formID: string;
@@ -47,7 +48,7 @@ type Form = {
     expenditure_cap: string;
     expenditure_cap_amount: string;
     applicant_declaration_name: string;
-    applicant_declaration_posision_title: string;
+    applicant_declaration_position_title: string;
     applicant_declaration_date: string;
     applicant_declaration_signature: string;
     verification_name: string;
@@ -103,8 +104,8 @@ export default function Home({ id }: { id: string }) {
                     </div>
                 </div>
                 <div className="text-[10px] mt-1 leading-3">
-                    <p>&#8226;Before completing this form, please refer tot eh separate document on &quot;General Instructions for completing Nomination / Travelling Application Form&quot;, which is available on SharePoint.</p>
-                    <p>&#8226;All fields are amndatory to compplete as required for each applicable section.</p>
+                    <p>&#8226;Before completing this form, please refer to the separate document on &quot;General Instructions for completing Nomination / Travelling Application Form&quot;, which is available on SharePoint.</p>
+                    <p>&#8226;All fields are mandatory to complete as required for each applicable section.</p>
                     <p>&#8226;This form is also to be used for any contracted individual as consultant, and is to be completed where applicable.</p>
                 </div>
 
@@ -156,8 +157,8 @@ export default function Home({ id }: { id: string }) {
                                 </label>
                             </div>
 
-                            {/* Section 3: Logistic Arragement */}
-                            <fieldset className=" text-[12px] bg-slate-950 h-[155px]"><span className="text-slate-50 font-semibold uppercase ml-2">Section 3: Logistic Arragement<sup>2</sup></span>
+                            {/* Section 3: Logistic Arrangement */}
+                            <fieldset className=" text-[12px] bg-slate-950 h-[155px]"><span className="text-slate-50 font-semibold uppercase ml-2">Section 3: Logistic Arrangement<sup>2</sup></span>
                                 <div className="grid grid-cols-2 grid-rows-5 normal-case bg-gray-200 font-bold leading-3">
                                     <label className="col-start-1 col-span-1 row-span-1 p-1 flex items-center justify-center border border-slate-950 border-t-0">Tentative / Planned Flight Arrangement</label>
                                     <label className="col-span-1 p-1 row-span-1 text-center border-r border-b border-slate-950">Tentative / Planned Accommodation Arrangement <br /><span className="italic font-normal">&#40;with or without receipt&#41;</span></label>
@@ -291,7 +292,7 @@ export default function Home({ id }: { id: string }) {
                                         <label>Name<span className="ml-[48px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_name} /><br />
                                         <label>Position Title<span className="ml-[16px]">:</span></label>
-                                        <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_posision_title} /><br />
+                                        <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.applicant_declaration_position_title} /><br />
                                         <label>Date<span className="ml-[54px]">:</span></label>
                                         <input type="text" className="bg-gray-200 ml-2 w-60" value={details.applicant_declaration_date} /><br />
                                     </div>
@@ -336,18 +337,19 @@ export default function Home({ id }: { id: string }) {
                             <div className="mt-3 text-[10px]">
                                 <div className="border-b-[1.5px] border-slate-950 w-48"></div>
                                 <p className="mt-1"><sup>1,2,3,4</sup> Please attach additional information / page(s), where necessary.</p>
-                                <p><sup>5</sup> Verification done by Associate Dean, Research / School of Research Office, where relevant, for academic / reseach related trips.</p>
+                                <p><sup>5</sup> Verification done by Associate Dean, Research / School of Research Office, where relevant, for academic / research related trips.</p>
                                 <div className="border-b border-slate-950 w-44 mt-2"></div>
                                 <p className="ml-2">Human Resources - Nomination / Travelling Application Form</p>
                                 <p className="ml-2">Version 8.1: February 2020</p>
                                 <p className="float-right">Page <span className="font-bold">1</span> of <span className="font-bold">1</span></p>
                             </div>
 
-                            <button
+                            <Button
+                                variant="destructive"
                                 onClick={handlePrint}
-                                className="bg-red-500 hover:bg-blue-700 duration-300 text-white font-semibold py-2 px-4 text-sm mt-2 rounded print-button"
+                                className="hover:bg-blue-700 duration-300 text-white font-semibold py-2 px-4 text-sm mt-2 rounded print-button"
                             >Print
-                            </button>
+                            </Button>
                         </form>
                     )}
                 </div>
