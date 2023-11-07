@@ -10,7 +10,7 @@ import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import cookie from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import NTFPDF from "@/components/forms/NTFPDF";
 import TooltipIcon from "@/components/icons/TooltipIcon";
 
@@ -45,6 +45,7 @@ import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
 
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
+	console.log(data);
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
@@ -63,29 +64,39 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [approvalImageURL, setApprovalImageURL] = useState(data.approval_signature);
 
 	// Keep track of the revert comment,
-	const [showCommentInput, setShowCommentInput] = useState(false);
+	// const [showCommentInput, setShowCommentInput] = useState(false);
 
 	// Check whether the user is logged in,
-	const authToken = cookie.get("authToken");
+	// const authToken = cookie.get("authToken");
 
-	// Real-time security key validation,
-	const [securityKeyInput, setSecurityKeyInput] = useState("");
-	const [securityKeyError, setSecurityKeyError] = useState(true);
+	// const searchParams = useSearchParams()
+	// const secKey = searchParams.get('secKey')
 
-	const handleChange = (e: { target: { value: any } }) => {
-		const inputValue = e.target.value;
-		setSecurityKeyInput(inputValue);
+	// // Real-time security key validation,
+	// const [securityKeyInput, setSecurityKeyInput] = useState('');
+	// const [securityKeyError, setSecurityKeyError] = useState(false);
 
-		if (inputValue === data.securityKey) {
-			setSecurityKeyError(false);
-			e;
-		} else {
-			setSecurityKeyError(true);
-		}
-	};
+	// const handleChange = (e: { target: { value: any } }) => {
+	// 	const inputValue = e.target.value;
+	// 	setSecurityKeyInput(inputValue);
 
-	// Fetch the current stage of the form to capture whether the stage has changed to submit email,
-	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
+	// 	if (inputValue === data.securityKey) {
+	// 		setSecurityKeyError(false);
+	// 		e;
+	// 	} else {
+	// 		setSecurityKeyError(true);
+	// 	}
+	// };
+
+	// // Fetch the current stage of the form to capture whether the stage has changed to submit email,
+	// const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
+
+	// useEffect(() => {
+	// 	if (externalForm.formStage != fetchedFormStage) {
+	// 		console.log(externalForm);
+	// 		sendContactForm(externalForm);
+	// 	}
+	// }, [externalForm.formStage]);
 
 	const applicantSigCanvas = useRef({});
 	const applicantSigClear = (field: FieldValues) => {
@@ -114,20 +125,19 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		field.value = "";
 	};
 
-	// TO-DO: UNCOMMENT THIS TO ENABLE THE EMAIL SENDING FEATURE. YOU DON'T NEED TO UPDATE ANYTHING IN THE API, JUST ENSURE THE FORM CAN BE PASSED INTO IT,
-	// I'M USING USEEFFECT TO CHECK WHETHER THE EXTERNALFORM IS UPDATED THROUGH SETEXTERNALFORM IN THE onSubmit or onRevert, IF ANY CHANGES,
-	// PASS INTO THE API AND SEND THE EMAIL.
-	// useEffect(() => {
-	// 	if (externalForm.formStage != fetchedFormStage) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.formStage]);
+	const [verificationDate, setVerificationDate] = useState<Date | null>(null);
+	if (externalForm.verification_date) {
+		setVerificationDate(new Date(externalForm.verification_date));
+	}
+
+	const [approvalDate, setApprovalDate] = useState<Date | null>(null);
+	if (externalForm.approval_date) {
+		setApprovalDate(new Date(externalForm.approval_date));
+	}
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
 		defaultValues: {
-			// TO-DO: PLEASE FIX ALL THE ERRORS HERE, TQ.
 			revertComment: externalForm.revertComment ?? "",
 			formStage: externalForm.formStage!,
 			securityKey: "",
@@ -187,12 +197,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			verification_signature: externalForm.verification_signature ?? "",
 			verification_name: externalForm.verification_name ?? "",
 			verification_position_title: externalForm.program_title ?? "",
-			verification_date: new Date(externalForm.verification_date ?? ""),
+			verification_date: verificationDate,
 
 			approval_signature: externalForm.approval_signature ?? "",
 			approval_name: externalForm.approval_name ?? "",
 			approval_position_title: externalForm.approval_position_title ?? "",
-			approval_date: new Date(externalForm.approval_date ?? ""),
+			approval_date: approvalDate,
 		},
 	});
 
@@ -233,294 +243,298 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	}, [form.formState.errors]);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
-		// Generate the security key,
-		const securityKeyUID = uuidv4();
 
-		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
-		if (externalForm.formStage === 2) {
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						expenditure_cap: externalForm.expenditure_cap,
-						expenditure_cap_amount: externalForm.expenditure_cap_amount,
-						revertComment: "None",
-						securityKey: securityKeyUID,
-						formStage: 3,
-						verification_email: values.verification_email,
-						approval_email: values.approval_email,
-					},
-				])
-				.eq("id", externalForm.id);
-
-			if (error) {
-				toast.error("Error submitting form");
-				console.error("Error updating data:", error);
-			} else {
-				toast.success("Form submitted successfully");
-				console.log("Data updated successfully:", data);
-
-				setExternalForm({
-					...externalForm,
-					revertComment: "",
-					expenditure_cap: externalForm.expenditure_cap,
-					expenditure_cap_amount: externalForm.expenditure_cap_amount,
-					securityKey: securityKeyUID,
-					formStage: 3,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		}
-		// This part is when the staff re-submits the form to the AAO after being reverted,
-		else if (externalForm.formStage === 1) {
-			console.log("Updating...");
-			console.log(values);
-			const { error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						...values,
-						formStage: 2,
-						securityKey: null,
-						// THIS IS WHAT YOU'RE SUPPOSE TO UPDATE,
-						// fundSourceName: formDetails.fundSourceName,
-						// fundAmount: formDetails.fundAmount,
-						// formStage: 2,
-						// securityKey: null,
-						// hosEmail: formDetails.hosEmail,
-						// deanEmail: formDetails.deanEmail
-					},
-				])
-				.eq("id", externalForm.id);
-
-			if (error) {
-				console.log(error);
-
-				toast.error("Error submitting form");
-			} else {
-				toast.success("Form submitted successfully");
-
-				setExternalForm({
-					...externalForm,
-					securityKey: null,
-					formStage: 2,
-				});
-
-				router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
-				// window.location.reload();
-			}
-		}
-
-		// This is for submitting the forms for further review to HMU/ Dean BY HOS/ MGR/ ADCR, Stage 3 -> Stage 4,
-		else if (externalForm.formStage === 3) {
-			console.log(values.verification_signature);
-
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						formStage: 4,
-						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
-
-						verification_email: values.verification_email,
-						verification_name: values.verification_name,
-						verification_position_title: values.verification_position_title,
-						verification_date: values.verification_date,
-						verification_signature: values.verification_signature,
-
-						approval_email: values.approval_email,
-						approval_name: values.approval_name,
-						approval_position_title: values.approval_position_title,
-						approval_date: values.approval_date,
-						approval_signature: values.approval_signature,
-					},
-				])
-				.eq("id", externalForm.id);
-
-			if (error) {
-				console.error("Error inserting data:", error);
-			} else {
-				console.log("Data inserted successfully:", values);
-
-				setExternalForm({
-					...externalForm,
-					securityKey: securityKeyUID,
-					formStage: 4,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		}
-
-		// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
-		else if (externalForm.formStage === 4) {
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						formStage: 5,
-						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
-						verification_email: values.verification_email,
-						verification_name: values.verification_name,
-						verification_position_title: values.verification_position_title,
-						verification_date: values.verification_date,
-						verification_signature: values.verification_signature,
-
-						approval_email: values.approval_email,
-						approval_name: values.approval_name,
-						approval_position_title: values.approval_position_title,
-						approval_date: values.approval_date,
-						approval_signature: values.approval_signature,
-					},
-				])
-				.eq("id", externalForm.id);
-
-			if (error) {
-				console.error("Error inserting data:", error);
-			} else {
-				console.log("Data inserted successfully:", data);
-
-				setExternalForm({
-					...externalForm,
-					formStage: 5,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		}
 	}
 
-	const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
-		const securityKeyUID = uuidv4();
+	// async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
+	// 	// Generate the security key,
+	// 	const securityKeyUID = uuidv4();
 
-		// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
-		if (externalForm.formStage === 3) {
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						formStage: 6,
-						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
-						revertComment: values.revertComment,
-						verification_email: values.verification_email,
-						verification_name: values.verification_name,
-						verification_position_title: values.verification_position_title,
-						verification_date: values.verification_date,
-						verification_signature: values.verification_signature,
+	// 	// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
+	// 	if (externalForm.formStage === 2) {
+	// 		const { data, error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					expenditure_cap: externalForm.expenditure_cap,
+	// 					expenditure_cap_amount: externalForm.expenditure_cap_amount,
+	// 					revertComment: "None",
+	// 					securityKey: securityKeyUID,
+	// 					formStage: 3,
+	// 					verification_email: values.verification_email,
+	// 					approval_email: values.approval_email,
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
 
-						approval_email: values.approval_email,
-						approval_name: values.approval_name,
-						approval_position_title: values.approval_position_title,
-						approval_date: values.approval_date,
-						approval_signature: values.approval_signature,
-					},
-				])
-				.eq("id", externalForm.id);
+	// 		if (error) {
+	// 			toast.error("Error submitting form");
+	// 			console.error("Error updating data:", error);
+	// 		} else {
+	// 			toast.success("Form submitted successfully");
+	// 			console.log("Data updated successfully:", data);
 
-			if (error) {
-				console.error("Error updating data:", error);
-			} else {
-				console.log("Data updated successfully:", data);
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				revertComment: "",
+	// 				expenditure_cap: externalForm.expenditure_cap,
+	// 				expenditure_cap_amount: externalForm.expenditure_cap_amount,
+	// 				securityKey: securityKeyUID,
+	// 				formStage: 3,
+	// 			});
 
-				setExternalForm({
-					...externalForm,
-					formStage: 6,
-				});
+	// 			router.push("/external_status");
+	// 			// window.location.reload();
+	// 		}
+	// 	}
+	// 	// This part is when the staff re-submits the form to the AAO after being reverted,
+	// 	else if (externalForm.formStage === 1) {
+	// 		console.log("Updating...");
+	// 		console.log(values);
+	// 		const { error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					...values,
+	// 					formStage: 2,
+	// 					securityKey: null,
+	// 					// THIS IS WHAT YOU'RE SUPPOSE TO UPDATE,
+	// 					// fundSourceName: formDetails.fundSourceName,
+	// 					// fundAmount: formDetails.fundAmount,
+	// 					// formStage: 2,
+	// 					// securityKey: null,
+	// 					// hosEmail: formDetails.hosEmail,
+	// 					// deanEmail: formDetails.deanEmail
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
 
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		} else if (externalForm.formStage === 4) {
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						formStage: 6,
-						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
-						revertComment: values.revertComment,
-						verification_email: values.verification_email,
-						verification_name: values.verification_name,
-						verification_position_title: values.verification_position_title,
-						verification_date: values.verification_date,
-						verification_signature: values.verification_signature,
+	// 		if (error) {
+	// 			console.log(error);
 
-						approval_email: values.approval_email,
-						approval_name: values.approval_name,
-						approval_position_title: values.approval_position_title,
-						approval_date: values.approval_date,
-						approval_signature: values.approval_signature,
-					},
-				])
-				.eq("id", externalForm.id);
+	// 			toast.error("Error submitting form");
+	// 		} else {
+	// 			toast.success("Form submitted successfully");
 
-			if (error) {
-				console.log(error);
-			} else {
-				console.log("Data updated successfully:", data);
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				securityKey: null,
+	// 				formStage: 2,
+	// 			});
 
-				setExternalForm({
-					...externalForm,
-					formStage: 6,
-				});
+	// 			router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
+	// 			// window.location.reload();
+	// 		}
+	// 	}
 
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		}
+	// 	// This is for submitting the forms for further review to HMU/ Dean BY HOS/ MGR/ ADCR, Stage 3 -> Stage 4,
+	// 	else if (externalForm.formStage === 3) {
+	// 		console.log(values.verification_signature);
 
-		// This is for the AAO to revert to the staff with the comments, Stage 2 -> Stage 1,
-		if (externalForm.formStage === 2 && (showCommentInput == true || externalForm.revertComment != "None")) {
-			console.log("Reverting");
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						expenditure_cap: values.expenditure_cap,
-						expenditure_cap_amount: values.expenditure_cap_amount,
-						revertComment: values.revertComment,
-						securityKey: securityKeyUID,
-						formStage: 1,
-						verification_email: values.verification_email,
-						approval_email: values.approval_email,
-					},
-				])
-				.eq("id", externalForm.id);
+	// 		const { data, error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					formStage: 4,
+	// 					securityKey: securityKeyUID,
+	// 					// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 
-			if (error) {
-				console.error("Error updating data:", error);
-			} else {
-				console.log("Data updated successfully:", data);
+	// 					verification_email: values.verification_email,
+	// 					verification_name: values.verification_name,
+	// 					verification_position_title: values.verification_position_title,
+	// 					verification_date: values.verification_date,
+	// 					verification_signature: values.verification_signature,
 
-				// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
+	// 					approval_email: values.approval_email,
+	// 					approval_name: values.approval_name,
+	// 					approval_position_title: values.approval_position_title,
+	// 					approval_date: values.approval_date,
+	// 					approval_signature: values.approval_signature,
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
 
-				setExternalForm({
-					...externalForm,
-					securityKey: securityKeyUID,
-					formStage: 1,
-				});
+	// 		if (error) {
+	// 			console.error("Error inserting data:", error);
+	// 		} else {
+	// 			console.log("Data inserted successfully:", values);
 
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		} else if (showCommentInput == false) {
-			setShowCommentInput(true);
-		}
-	};
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				securityKey: securityKeyUID,
+	// 				formStage: 4,
+	// 			});
+
+	// 			router.push("/external_status");
+	// 			// window.location.reload();
+	// 		}
+	// 	}
+
+	// 	// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
+	// 	else if (externalForm.formStage === 4) {
+	// 		const { data, error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					formStage: 5,
+	// 					securityKey: securityKeyUID,
+	// 					// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
+	// 					verification_email: values.verification_email,
+	// 					verification_name: values.verification_name,
+	// 					verification_position_title: values.verification_position_title,
+	// 					verification_date: values.verification_date,
+	// 					verification_signature: values.verification_signature,
+
+	// 					approval_email: values.approval_email,
+	// 					approval_name: values.approval_name,
+	// 					approval_position_title: values.approval_position_title,
+	// 					approval_date: values.approval_date,
+	// 					approval_signature: values.approval_signature,
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
+
+	// 		if (error) {
+	// 			console.error("Error inserting data:", error);
+	// 		} else {
+	// 			console.log("Data inserted successfully:", data);
+
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				formStage: 5,
+	// 			});
+
+	// 			router.push("/external_status");
+	// 			// window.location.reload();
+	// 		}
+	// 	}
+	// }
+
+	// const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
+	// 	const securityKeyUID = uuidv4();
+
+	// 	// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
+	// 	if (externalForm.formStage === 3) {
+	// 		const { data, error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					formStage: 6,
+	// 					securityKey: securityKeyUID,
+	// 					// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
+	// 					revertComment: values.revertComment,
+	// 					verification_email: values.verification_email,
+	// 					verification_name: values.verification_name,
+	// 					verification_position_title: values.verification_position_title,
+	// 					verification_date: values.verification_date,
+	// 					verification_signature: values.verification_signature,
+
+	// 					approval_email: values.approval_email,
+	// 					approval_name: values.approval_name,
+	// 					approval_position_title: values.approval_position_title,
+	// 					approval_date: values.approval_date,
+	// 					approval_signature: values.approval_signature,
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
+
+	// 		if (error) {
+	// 			console.error("Error updating data:", error);
+	// 		} else {
+	// 			console.log("Data updated successfully:", data);
+
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				formStage: 6,
+	// 			});
+
+	// 			router.push("/external_status");
+	// 			// window.location.reload();
+	// 		}
+	// 	} else if (externalForm.formStage === 4) {
+	// 		const { data, error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					formStage: 6,
+	// 					securityKey: securityKeyUID,
+	// 					// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
+	// 					revertComment: values.revertComment,
+	// 					verification_email: values.verification_email,
+	// 					verification_name: values.verification_name,
+	// 					verification_position_title: values.verification_position_title,
+	// 					verification_date: values.verification_date,
+	// 					verification_signature: values.verification_signature,
+
+	// 					approval_email: values.approval_email,
+	// 					approval_name: values.approval_name,
+	// 					approval_position_title: values.approval_position_title,
+	// 					approval_date: values.approval_date,
+	// 					approval_signature: values.approval_signature,
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
+
+	// 		if (error) {
+	// 			console.log(error);
+	// 		} else {
+	// 			console.log("Data updated successfully:", data);
+
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				formStage: 6,
+	// 			});
+
+	// 			router.push("/external_status");
+	// 			// window.location.reload();
+	// 		}
+	// 	}
+
+	// 	// This is for the AAO to revert to the staff with the comments, Stage 2 -> Stage 1,
+	// 	if (externalForm.formStage === 2 && (showCommentInput == true || externalForm.revertComment != "None")) {
+	// 		console.log("Reverting");
+	// 		const { data, error } = await supabase
+	// 			.from("external_forms")
+	// 			.update([
+	// 				{
+	// 					// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+	// 					expenditure_cap: values.expenditure_cap,
+	// 					expenditure_cap_amount: values.expenditure_cap_amount,
+	// 					revertComment: values.revertComment,
+	// 					securityKey: securityKeyUID,
+	// 					formStage: 1,
+	// 					verification_email: values.verification_email,
+	// 					approval_email: values.approval_email,
+	// 				},
+	// 			])
+	// 			.eq("id", externalForm.id);
+
+	// 		if (error) {
+	// 			console.error("Error updating data:", error);
+	// 		} else {
+	// 			console.log("Data updated successfully:", data);
+
+	// 			// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
+
+	// 			setExternalForm({
+	// 				...externalForm,
+	// 				securityKey: securityKeyUID,
+	// 				formStage: 1,
+	// 			});
+
+	// 			router.push("/external_status");
+	// 			// window.location.reload();
+	// 		}
+	// 	} else if (showCommentInput == false) {
+	// 		setShowCommentInput(true);
+	// 	}
+	// };
 
 	const [group, setGroup] = useState(true);
 
@@ -822,10 +836,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																selected={field.value}
 																onSelect={date => {
 																	console.log("Date: " + date);
-																	field.onChange(date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
-																		field.value = new Date(date);
+																		field.onChange(date);
+																		field.value = date;
 																	}
 																	console.log(field.value);
 																}}
@@ -1539,7 +1553,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormMessage />
 												<div className="flex flex-col gap-2 mt-2 items-start">
 													{form.getValues("supporting_documents") &&
-														Array.from(form.getValues("supporting_documents")!).map((file: File) => (
+														Array.from(form.getValues("supporting_documents")!).map((file: any) => (
 															<div key={file.name}>
 																{
 																	// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
@@ -1660,7 +1674,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormItem>
 													<FormLabel>Signature</FormLabel>
 													<Dialog>
-														{externalForm.formStage != 1 ? (
+														{externalForm.formStage !== 1 ? (
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
 																{applicantImageURL && (
 																	<Image src={applicantImageURL} width={300} height={200} alt="Signature" />
@@ -1804,7 +1818,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
-																	selected={field.value}
+																	selected={field.value!}
 																	onSelect={date => {
 																		console.log("Date: " + date);
 																		field.onChange(date);
@@ -2066,7 +2080,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									</section>
 								) : null}
 
-								{externalForm.formStage == 1 ? (
+								{/*
+								{externalForm.formStage === 1 ? (
 									<div>
 										<FormField
 											control={form.control}
@@ -2101,7 +2116,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											)}
 										/>
 										<Dialog open={applicantOpen} onOpenChange={setApplicantOpen}>
-											<DialogTrigger>
+											<DialogTrigger asChild>
 												<Button className="mt-5" type="button">
 													Submit for Review
 												</Button>
@@ -2116,7 +2131,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</DialogDescription>
 												</DialogHeader>
 												<DialogFooter>
-													<DialogClose>
+													<DialogClose asChild>
 														<Button variant="outline">Cancel</Button>
 													</DialogClose>
 													<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
@@ -2128,36 +2143,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									</div>
 								) : null}
 
-								{/* TO-DO: THIS INPUT WILL ONLY BE SHOWN IF THEY CLICK ON THE REVERT BUTTON IN STAGE 2. */}
-								{/* THEY NEED TO CLICK ON REVERT AGAIN TO REVERT IT. THIS CHECK ALREADY EXISTS IN onRevert. */}
-								{/* THE FIRST REVERT CLICK WILL ONLY DISPLAY THE COMMENT INPUT AND HIDE (OR DISABLE IDK?) THE SUBMIT BUTTON. */}
-								{/* {(showCommentInput ||
-									(externalForm.revertComment != "None" &&
-										externalForm.formStage == 2)) && (
-										<FormField
-											control={form.control}
-											name="revertComment"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Comments</FormLabel>
-													<FormControl>
-														<Input
-															disabled={
-																externalForm.formStage == 1
-															}
-															className="disabled:text-black-500 disabled:opacity-100"
-															{...field}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									)} */}
-
-								{/* Show the buttons according to the current form stage, */}
-								{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
-								{externalForm.formStage == 2 ? (
+								{externalForm.formStage === 2 ? (
 									<div>
 										<section className="submission-details mb-5">
 											<h1 className="text-2xl font-bold mb-4">Submission Details</h1>
@@ -2214,7 +2200,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</section>
 
 										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
-											<DialogTrigger>
+											<DialogTrigger asChild>
 												<Button
 													type="button"
 													className="mr-5"
@@ -2260,7 +2246,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</Dialog>
 
 										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
-											<DialogTrigger>
+											<DialogTrigger asChild>
 												<Button type="button">Submit for Review</Button>
 											</DialogTrigger>
 											<DialogContent>
@@ -2285,23 +2271,21 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											</DialogContent>
 										</Dialog>
 									</div>
-								) : externalForm.formStage == 3 || externalForm.formStage == 4 ? (
+								) : externalForm.formStage === 3 || externalForm.formStage === 4 ? (
 									<div>
 										<FormField
 											control={form.control}
 											name="securityKey"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>
-														<div className="group relative w-max cursor-pointer">
-															<span className="flex items-center">
-																<span className="mr-2">Security Key</span>
-																<TooltipIcon />
-															</span>
-															<span className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
-																This is to ensure that you are the appropriate individual for the authorization or
-																rejection of this form. It can be found in your email.
-															</span>
+													<FormLabel className="group relative w-max cursor-pointer">
+														<div className="flex items-center">
+															<span className="mr-2">Security Key</span>
+															<TooltipIcon />
+														</div>
+														<div className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
+															This is to ensure that you are the appropriate individual for the authorization or
+															rejection of this form. It can be found in your email.
 														</div>
 													</FormLabel>
 													<FormControl>
@@ -2314,15 +2298,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														/>
 													</FormControl>
 													<FormMessage>
-														{securityKeyError && <div className="error-message">The security key does not match.</div>}
+														{securityKeyError && <span>The security key does not match.</span>}
 													</FormMessage>
 												</FormItem>
 											)}
 										/>
-										{externalForm.formStage == 3 ? (
+										{externalForm.formStage === 3 ? (
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" className="mr-5" disabled={securityKeyError}>
 															Reject
 														</Button>
@@ -2363,7 +2347,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</Dialog>
 
 												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" disabled={securityKeyError}>
 															Submit for Review
 														</Button>
@@ -2392,10 +2376,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</DialogContent>
 												</Dialog>
 											</div>
-										) : externalForm.formStage == 4 ? (
+										) : externalForm.formStage === 4 ? (
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" className="mr-5" disabled={securityKeyError}>
 															Reject
 														</Button>
@@ -2436,7 +2420,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</Dialog>
 
 												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" disabled={securityKeyError}>
 															Approve
 														</Button>
@@ -2482,9 +2466,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											)}>
 											Submit for Review
 										</Button>
-									</div> */}
+									</div> 
 									</div>
 								) : null}
+											*/}
 							</form>
 						</Form>
 					</div>
@@ -2493,7 +2478,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				// DO NOT TOUCH THIS.
 				// This is the final stage of the form,
 				<div>
-					<NTFPDF id={data.id} />
+					{/* <NTFPDF id={data.id} /> */}
 				</div>
 			)}
 		</div>

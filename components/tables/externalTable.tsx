@@ -118,6 +118,7 @@ export const columns: ColumnDef<ExternalForm>[] = [
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuItem>Edit</DropdownMenuItem>
+						<DropdownMenuItem>Undo</DropdownMenuItem>
 						<DropdownMenuItem>Revert</DropdownMenuItem>
 						<DropdownMenuSub>
 							<DropdownMenuSubTrigger>
@@ -147,6 +148,7 @@ export const columns: ColumnDef<ExternalForm>[] = [
 ];
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
+	console.log(data);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
