@@ -13,11 +13,15 @@ import { FaSortAlphaUp, FaCalendarAlt } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
+import { MdOutlineEventNote } from "react-icons/md";
+import { IoPeopleSharp } from "react-icons/io5";
 import { Chart } from 'chart.js/auto';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { LiaQrcodeSolid } from "react-icons/lia";
+import { VscFeedback } from "react-icons/vsc";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
@@ -31,6 +35,7 @@ import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 import FeedbackList from "@/components/tables/feedbackTable";
 import ViewEventFeedback from "@/components/ViewEventFeedback";
 import Modal from "@/components/QR_Codes_Modal";
+import QRCodeModal from "@/components/QR_Codes_Modal";
 
 type mainEvent = {
     intFID: string;
@@ -709,6 +714,13 @@ export default function Home() {
 			});
 	};
 
+     //show qr codes for each session
+     const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+
+     const openQRCodeModal = async() => {                
+         setShowQRCodeModal(true);
+     }
+
     return (
         <div className="h-screen flex flex-row justify-start">
             <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
@@ -939,8 +951,11 @@ export default function Home() {
                                                                     }
 
                                                                 }}
-                                                            >Sub-Events Details</DropdownMenuItem>
+                                                            >Sub-Events Details
+                                                            </DropdownMenuItem>
+
                                                             <DropdownMenuSeparator />
+
                                                             <DropdownMenuItem
                                                                 className="cursor-pointer"
                                                                 onClick={e => {
@@ -949,20 +964,25 @@ export default function Home() {
                                                                 }}
                                                             >Attendance List
                                                             </DropdownMenuItem>
+
                                                             <DropdownMenuSeparator />
+
                                                             <DropdownMenuItem onClick={e => {
                                                                 e.stopPropagation(); // 
-                                                                openFeedbackModal(
-                                                                    event.intFID,
-                                                                );
+                                                                openFeedbackModal(event.intFID);
                                                                 fetchFeedbackList(event.intFID);
                                                             }}>Event Feedback
                                                             </DropdownMenuItem>
+
                                                             <DropdownMenuSeparator />
+
                                                             <DropdownMenuItem onClick={() => {
-                                                                setSelectedSubEventID(event.intFID);
-                                                                setShowQRCodesFeedback(true);
-                                                            }}>Feedback Forms
+                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                                if (filteredSubEvent) {
+                                                                    openQRCodeModal();
+                                                                }
+                                                            }}>Feedback Form
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
@@ -1494,26 +1514,55 @@ export default function Home() {
                         </div>
                     </ViewAttendance_Modal>
 
-                    <Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
-						<div className="ml-2 p-5 z-[999]">
-							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
-								Feedback
-							</h3>
-							<QRCodeSVG
-								value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
-							/>
-							<button
-								onClick={() =>
-									copyToClipboard(
-										`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
-									)
-								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
-							>
-								Copy Link
-							</button>
-						</div>
-					</Modal>
+                    <Modal isVisible={showQRCodesFeedback} onClose={() => {setShowQRCodesFeedback(false); setShowQRCodeModal(true);}}>                    
+                        <div className="ml-2 p-5 z-[999]">                            
+                            <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
+                                Feedback
+                            </h3>
+                            <QRCodeSVG
+                                value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
+                            />
+                            <button
+                                onClick={() =>
+                                    copyToClipboard(
+                                        `https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
+                                    )
+                                }
+                                className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
+                            >
+                                Copy Link
+                            </button>
+                        </div>
+                    </Modal>
+
+                    <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
+                            <div className="p-6">
+                                <p className="font-semibold text-center">Feedback Form</p>
+                                {subEvents
+								.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+								.map((subEvent, index) => (
+									<div key={index} className="mt-2">
+                                        
+                                        <button
+											type="button"
+											className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
+											onClick={() => {
+											    setSelectedSubEventID(subEvent.sub_eventsID);
+											    setShowQRCodesFeedback(true);
+                                                setShowQRCodeModal(false);
+										}}>
+											<span className="ml-2 text-slate-800 flex items-center mr-2">
+												<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+												<span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                    Session {index+1}
+												</span>
+											</span>
+										</button>
+                                    </div>
+                                ))}                                
+                            </div>
+                    </QRCodeModal>
+
 
                     {/* mobile view table*/}
                     <div className="grid grid-cols-1 gap-4 lg:hidden">
@@ -1612,29 +1661,32 @@ export default function Home() {
                                                                 }
 
                                                             }}
-                                                        >Sub-Events Details</DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem
-                                                            className="cursor-pointer"
-                                                            onClick={e => {
-                                                                e.stopPropagation()
-                                                                openAttendanceModal(event.intFID);
-                                                            }}
-                                                        >Attendance List
+                                                        >Sub-Events Details
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={e => {
+                                                        <DropdownMenuSeparator />
+                                                            <DropdownMenuItem
+                                                                className="cursor-pointer"
+                                                                onClick={e => {
+                                                                    e.stopPropagation()
+                                                                    openAttendanceModal(event.intFID);
+                                                                }}
+                                                            >Attendance List
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={e => {
                                                                 e.stopPropagation(); // 
-                                                                openFeedbackModal(
-                                                                    event.intFID,
-                                                                );
+                                                                openFeedbackModal(event.intFID);
                                                                 fetchFeedbackList(event.intFID);
-                                                            }}>Feedback Forms
+                                                            }}>Event Feedback
                                                             </DropdownMenuItem>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem onClick={() => {
-                                                                setSelectedSubEventID(event.intFID);
-                                                                setShowQRCodesFeedback(true);
-                                                            }}>Event Feedback
+                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                                if (filteredSubEvent) {
+                                                                    openQRCodeModal();
+                                                                }
+                                                            }}>Feedback Form
                                                             </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
