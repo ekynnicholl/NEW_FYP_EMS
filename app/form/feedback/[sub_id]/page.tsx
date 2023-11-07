@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Fragment, useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Modal from "@/components/Modal";
-import { LikertScaleCard } from "@/components/ui/likert";
 import { useParams, useRouter } from "next/navigation";
 
 //Define the structure of Feedback Form Data
@@ -97,7 +96,7 @@ export default function FeedbackForm() {
 				// Fetch the event details based on the event_id,
 				const { data: eventDetails, error: eventError } = await supabase
 					.from('internal_events')
-					.select('intFEventName')
+					.select('intFEventName,intFTrainerName,intFTrainingProvider,intFDurationCourse')
 					.eq('intFID', event_id);
 
 				if (eventError) {
@@ -105,7 +104,10 @@ export default function FeedbackForm() {
 				} else {
 					const combinedData = {
 						...attendanceListData[0],
-						intFEventName: eventDetails[0]?.intFEventName
+						intFEventName: eventDetails[0]?.intFEventName,
+						intFTrainerName: eventDetails[0]?.intFTrainerName,
+						intFTrainingProvider: eventDetails[0]?.intFTrainingProvider,
+						intFDurationCourse: eventDetails[0]?.intFDurationCourse
 					};
 
 					setEventData(combinedData);
@@ -213,12 +215,17 @@ export default function FeedbackForm() {
 						<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
 							{eventData && (
 								<div>
-									<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
-									<p>Date: <span className="font-bold">{eventData.sub_eventsStartDate} - {eventData.sub_eventsEndDate}</span></p>
-									<p>Time: <span className="font-bold">{eventData.sub_eventsStartTime} - {eventData.sub_eventsEndTime}</span></p>
+									<p>Course Name: <span className="font-bold">{eventData.intFEventName}</span></p>
+									<p>Commencement Date: <span className="font-bold">{eventData.sub_eventsStartDate}</span></p>
+									<p>Completed Date: <span className="font-bold">{eventData.sub_eventsEndDate}</span></p>
+									<p>Course Duration (No. of Days): <span className="font-bold">{eventData.intFDurationCourse}</span></p>
+									<p>Trainer's Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
+									<p>Training Provider: <span className="font-bold">{eventData.intFTrainingProvider}</span></p>
 									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
 								</div>
+								
 							)}
+							
 							<p>Contact us at <span className="font-bold">(123) 456-7890</span> or <span className="font-bold">no_reply@example.com</span></p>
 							<p className="mt-3">
 								Help us improve!<br /><br />
