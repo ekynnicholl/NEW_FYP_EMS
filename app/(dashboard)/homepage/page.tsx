@@ -621,7 +621,7 @@ export default function Homepage() {
 				createHorizontalBarChart(canvas, facultyLabels, facultyData);
 			}
 		}
-	}, [attendanceData]);
+	}, [filteredAttendanceData]);
 
 	// 1 is for attendance forms, 2 is for feedback forms,
 	const handleSubEventClick = async (subEvent: subEvents, type: number) => {
@@ -1520,6 +1520,9 @@ export default function Homepage() {
 		}
 	}
 
+	useEffect(() => {
+		setActiveTab('all');
+	}, [selectedSubEvent, isAllButtonActive])
 
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>

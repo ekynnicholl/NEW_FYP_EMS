@@ -293,13 +293,12 @@ export default function Home() {
         setItemsPerPage(Number(e.target.value));
     };
 
-
     useEffect(() => {
-        if (attendanceData && attendanceData.length > 0) {
+        if (filteredAttendanceData && filteredAttendanceData.length > 0) {
             // Calculate labels (faculty/unit) and label data (counts)
             const facultyCounts: { [key: string]: number } = {};
 
-            attendanceData.forEach(attendanceItem => {
+            filteredAttendanceData.forEach(attendanceItem => {
                 const faculty = attendanceItem.attFormsFacultyUnit;
                 if (facultyCounts[faculty]) {
                     facultyCounts[faculty]++;
@@ -321,7 +320,7 @@ export default function Home() {
                 createHorizontalBarChart(canvas, facultyLabels, facultyData);
             }
         }
-    }, [attendanceData]);
+    }, [filteredAttendanceData]);
 
     const handleSubEventClick = async (subEvent: subEvents, type: number) => {
         if (type == 1) {
@@ -781,6 +780,10 @@ export default function Home() {
     useEffect(() => {
         filterAttendanceData(activeTab, searchAttendanceQuery);
     }, [activeTab, searchAttendanceQuery, attendanceData]);
+
+    useEffect(() => {
+        setActiveTab('all');
+    }, [selectedSubEvent, isAllButtonActive])
 
     return (
         <div className="h-screen flex flex-row justify-start">
