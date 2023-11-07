@@ -378,7 +378,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 							<div className="relative">
 								<input
 									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-									type={showPassword ? 'password' : 'text'} placeholder="Password" id="password" name="password" required onChange={handlePasswordChange} />
+									type={showPassword ? 'password' : 'text'} placeholder="Password" id="password" name="password" autoComplete="off" required onChange={handlePasswordChange} />
 								<button className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4" type="button"
 									id="password-toggle" onClick={togglePasswordVisibility}>
 									{showPassword ?
@@ -395,6 +395,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 									type={showConfirmPassword ? 'password' : 'text'}
 									placeholder="Confirm password"
 									id="confirmPassword"
+									autoComplete="off"
 									onChange={handleConfirmPasswordChange}
 									required
 								/>
