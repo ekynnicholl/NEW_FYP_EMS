@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import Modal from "@/components/Modal";
@@ -32,6 +32,12 @@ export default function AttendanceForm() {
 	// Get the Event ID from the link,
 	const { sub_id } = useParams();
 	const router = useRouter();
+
+	const [userType, setUserType] = useState('');
+
+	const handleUserTypeChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+		setUserType(event.target.value);
+	};
 
 	useEffect(() => {
 		setAuthToken(cookie.get('authToken'))
@@ -66,15 +72,11 @@ export default function AttendanceForm() {
 			eventStartTime.setMinutes(Number(minutesStart));
 			eventStartTime.setSeconds(Number(secondsStart));
 
-			console.log("event start time: " + eventStartTime);
-
 			// Set the end time,
 			const eventEndTime = new Date(currentDate);
 			eventEndTime.setHours(Number(hoursEnd));
 			eventEndTime.setMinutes(Number(minutesEnd));
 			eventEndTime.setSeconds(Number(secondsEnd));
-
-			console.log("event end time: " + eventEndTime);
 
 			const currentTime = new Date();
 
@@ -92,7 +94,7 @@ export default function AttendanceForm() {
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < startTimeWindow) {
 				const eventStartTimeString = startTimeWindow.toISOString();
-				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
+				// router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
 				// router.push('/notFound?from=start_att');
 				return;
 			}
@@ -133,10 +135,13 @@ export default function AttendanceForm() {
 		}
 
 		let attFormsStaffID = info.attFormsStaffID.trim().toUpperCase();
-		attFormsStaffID = attFormsStaffID.replace(/\s/g, '');
 
-		if (!attFormsStaffID.startsWith("SS")) {
-			attFormsStaffID = "SS" + attFormsStaffID;
+		if (userType == 'staff') {
+			attFormsStaffID = attFormsStaffID.replace(/\s/g, '');
+
+			if (!attFormsStaffID.startsWith("SS")) {
+				attFormsStaffID = "SS" + attFormsStaffID;
+			}
 		}
 
 		const { data: existingForms, error: existingFormsError } = await supabase
@@ -243,7 +248,7 @@ export default function AttendanceForm() {
 						<label
 							htmlFor="name"
 							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Staff ID
+							Staff/ Student ID
 							<span className="text-red-500"> *</span>
 						</label>
 						<input
@@ -261,48 +266,113 @@ export default function AttendanceForm() {
 					</div>
 				</div>
 
-				<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 					<div className="ml-1">
 						<label
-							htmlFor="facultyUnit"
+							htmlFor="name"
 							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Faculty/Unit
+							Are you a student or a staff? (Please select correctly)
 							<span className="text-red-500"> *</span>
 						</label>
-						<select
-							name="facultyUnit"
-							id="facultyUnit"
-							defaultValue=""
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-							required
-							onChange={event =>
-								setInfo({ ...info, attFormsFacultyUnit: event.target.value })
-							}
-						>
-							<option value="" disabled>Select Faculty/Unit</option>
-							<option value="Academic Office">Academic Office</option>
-							<option value="Audit and Risk">Audit and Risk</option>
-							<option value="Building Facilities">Building Facilities</option>
-							<option value="Business Development and Liaison">Business Development and Liaison</option>
-							<option value="Campus Services">Campus Services</option>
-							<option value="Director Administration Office">Director Administration Office</option>
-							<option value="Finance and Business Analysis">Finance and Business Analysis</option>
-							<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
-							<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
-							<option value="Human Resources">Human Resources</option>
-							<option value="Information Resources">Information Resources</option>
-							<option value="Information Technology">Information Technology</option>
-							<option value="Learning and Teaching Unit">Learning and Teaching Unit</option>
-							<option value="Market and Student Recruitment">Market and Student Recruitment</option>
-							<option value="PVC & CEO Office">PVC & CEO Office</option>
-							<option value="Policy, Planning and Quality">Policy, Planning and Quality</option>
-							<option value="School of Foundation Studies">School of Foundation Studies</option>
-							<option value="School of Research">School of Research</option>
-							<option value="Swinburne Innovation Malaysia Sdn Bhd">Swinburne Innovation Malaysia Sdn Bhd</option>
-							<option value="Student Engagement">Student Engagement</option>
-						</select>
+						<div>
+							<label className="ml-1">
+								<input
+									type="radio"
+									name="userType"
+									value="staff"
+									checked={userType === 'staff'}
+									onChange={handleUserTypeChange}
+								/>
+								<span className="ml-2 font-medium text-sm lg:text-base">Staff</span>
+							</label>
+						</div>
+						<div className="mt-2">
+							<label className="ml-1">
+								<input
+									type="radio"
+									name="userType"
+									value="student"
+									checked={userType === 'student'}
+									onChange={handleUserTypeChange}
+								/>
+								<span className="ml-2 font-medium text-sm lg:text-base">Student</span>
+							</label>
+						</div>
 					</div>
 				</div>
+
+				{userType === 'staff' && (
+					<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+						<div className="ml-1">
+							<label
+								htmlFor="facultyUnit"
+								className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+								Faculty/ Unit (STAFF)
+								<span className="text-red-500"> *</span>
+							</label>
+							<select
+								name="facultyUnit"
+								id="facultyUnit"
+								defaultValue=""
+								className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+								required
+								onChange={event =>
+									setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+								}
+							>
+								<option value="" disabled>Select Faculty/ Unit</option>
+								<option value="Academic Office">Academic Office</option>
+								<option value="Audit and Risk">Audit and Risk</option>
+								<option value="Building Facilities">Building Facilities</option>
+								<option value="Business Development and Liaison">Business Development and Liaison</option>
+								<option value="Campus Services">Campus Services</option>
+								<option value="Director Administration Office">Director Administration Office</option>
+								<option value="Finance and Business Analysis">Finance and Business Analysis</option>
+								<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
+								<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
+								<option value="Human Resources">Human Resources</option>
+								<option value="Information Resources">Information Resources</option>
+								<option value="Information Technology">Information Technology</option>
+								<option value="Learning and Teaching Unit">Learning and Teaching Unit</option>
+								<option value="Market and Student Recruitment">Market and Student Recruitment</option>
+								<option value="PVC & CEO Office">PVC & CEO Office</option>
+								<option value="Policy, Planning and Quality">Policy, Planning and Quality</option>
+								<option value="School of Foundation Studies">School of Foundation Studies</option>
+								<option value="School of Research">School of Research</option>
+								<option value="Swinburne Innovation Malaysia Sdn Bhd">Swinburne Innovation Malaysia Sdn Bhd</option>
+								<option value="Student Engagement">Student Engagement</option>
+							</select>
+						</div>
+					</div>
+				)}
+
+				{userType === 'student' && (
+					<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+						<div className="ml-1">
+							<label
+								htmlFor="studentFacultyUnit"
+								className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+							>
+								Faculty/ Unit (STUDENT)
+								<span className="text-red-500"> *</span>
+							</label>
+							<select
+								name="studentFacultyUnit"
+								id="studentFacultyUnit"
+								defaultValue=""
+								className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+								required
+								onChange={event =>
+									setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+								}
+							>
+								<option value="" disabled>Select Faculty/ Unit</option>
+								<option value="Academic Office">Faculty of Business, Design and Arts</option>
+								<option value="Audit and Risk">Faculty of Engineering, Computing and Science</option>
+							</select>
+						</div>
+					</div>
+				)}
 
 				<Fragment>
 					<div>
@@ -373,7 +443,7 @@ export default function AttendanceForm() {
 							Failed.
 						</h3>
 						<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-							An attendance form already exists associated with your staff ID. Please contact the organizer if you think this was a mistake.
+							An attendance form already exists associated with your staff/ student ID. Please contact the organizer if you think this was a mistake.
 						</p>
 						<div className="text-center ml-4">
 							<button

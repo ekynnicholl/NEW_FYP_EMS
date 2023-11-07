@@ -35,13 +35,17 @@ const PageNotFound = () => {
                             If you mistakenly did your action, please contact/ email us at: <br /> <span className="font-bold">827-823</span> OR <span className="font-bold">emat@gmail.com</span> <br /><br /> Thank you for choosing to use our system! <br /> - EMAT Developer Team
                         </div>
                         {authToken && (
-                            <Link href={`/form/external`}>
-                                <div className="w-1/6 items-center flex justify-center mx-auto mt-5">
-                                    <div className="rounded-lg px-[16px] py-[10px] lg:px-[18px] lg:py-[11px] bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900">
-                                        Return
-                                    </div>
-                                </div>
-                            </Link>
+                            <div>
+                                <Link href="/form/external" legacyBehavior={true}>
+                                    <a>
+                                        <div className="w-1/6 items-center flex justify-center mx-auto mt-5">
+                                            <div className="rounded-lg px-[16px] py-[10px] lg:px-[18px] lg:py-[11px] bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover-bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900">
+                                                Return
+                                            </div>
+                                        </div>
+                                    </a>
+                                </Link>
+                            </div>
                         )}
                     </div>
                 )}
