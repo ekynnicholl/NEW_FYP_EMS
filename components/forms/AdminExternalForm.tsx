@@ -45,6 +45,7 @@ import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
 
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
+	console.log(data);
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
@@ -124,6 +125,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// 	}
 	// }, [externalForm.formStage]);
 
+	const [verificationDate, setVerificationDate] = useState<Date | null>(null);
+	if (externalForm.verification_date) {
+		setVerificationDate(new Date(externalForm.verification_date));
+	}
+
+	const [approvalDate, setApprovalDate] = useState<Date | null>(null);
+	if (externalForm.approval_date) {
+		setApprovalDate(new Date(externalForm.approval_date));
+	}
+
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
 		defaultValues: {
@@ -187,12 +198,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			verification_signature: externalForm.verification_signature ?? "",
 			verification_name: externalForm.verification_name ?? "",
 			verification_position_title: externalForm.program_title ?? "",
-			verification_date: new Date(externalForm.verification_date ?? ""),
+			verification_date: verificationDate,
 
 			approval_signature: externalForm.approval_signature ?? "",
 			approval_name: externalForm.approval_name ?? "",
 			approval_position_title: externalForm.approval_position_title ?? "",
-			approval_date: new Date(externalForm.approval_date ?? ""),
+			approval_date: approvalDate,
 		},
 	});
 
@@ -822,10 +833,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																selected={field.value}
 																onSelect={date => {
 																	console.log("Date: " + date);
-																	field.onChange(date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
-																		field.value = new Date(date);
+																		field.onChange(date);
+																		field.value = date;
 																	}
 																	console.log(field.value);
 																}}
@@ -1539,7 +1550,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormMessage />
 												<div className="flex flex-col gap-2 mt-2 items-start">
 													{form.getValues("supporting_documents") &&
-														Array.from(form.getValues("supporting_documents")!).map((file: File) => (
+														Array.from(form.getValues("supporting_documents")!).map((file: any) => (
 															<div key={file.name}>
 																{
 																	// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
@@ -1660,7 +1671,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormItem>
 													<FormLabel>Signature</FormLabel>
 													<Dialog>
-														{externalForm.formStage != 1 ? (
+														{externalForm.formStage !== 1 ? (
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
 																{applicantImageURL && (
 																	<Image src={applicantImageURL} width={300} height={200} alt="Signature" />
@@ -1804,7 +1815,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
-																	selected={field.value}
+																	selected={field.value!}
 																	onSelect={date => {
 																		console.log("Date: " + date);
 																		field.onChange(date);
@@ -2066,7 +2077,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									</section>
 								) : null}
 
-								{externalForm.formStage == 1 ? (
+								{externalForm.formStage === 1 ? (
 									<div>
 										<FormField
 											control={form.control}
@@ -2101,7 +2112,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											)}
 										/>
 										<Dialog open={applicantOpen} onOpenChange={setApplicantOpen}>
-											<DialogTrigger>
+											<DialogTrigger asChild>
 												<Button className="mt-5" type="button">
 													Submit for Review
 												</Button>
@@ -2116,7 +2127,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</DialogDescription>
 												</DialogHeader>
 												<DialogFooter>
-													<DialogClose>
+													<DialogClose asChild>
 														<Button variant="outline">Cancel</Button>
 													</DialogClose>
 													<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
@@ -2157,7 +2168,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 								{/* Show the buttons according to the current form stage, */}
 								{/* TO-DO: IMPLEMENT THE onRevert and onSubmit functionality to the buttons. */}
-								{externalForm.formStage == 2 ? (
+								{externalForm.formStage === 2 ? (
 									<div>
 										<section className="submission-details mb-5">
 											<h1 className="text-2xl font-bold mb-4">Submission Details</h1>
@@ -2214,7 +2225,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</section>
 
 										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
-											<DialogTrigger>
+											<DialogTrigger asChild>
 												<Button
 													type="button"
 													className="mr-5"
@@ -2260,7 +2271,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</Dialog>
 
 										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
-											<DialogTrigger>
+											<DialogTrigger asChild>
 												<Button type="button">Submit for Review</Button>
 											</DialogTrigger>
 											<DialogContent>
@@ -2285,23 +2296,21 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											</DialogContent>
 										</Dialog>
 									</div>
-								) : externalForm.formStage == 3 || externalForm.formStage == 4 ? (
+								) : externalForm.formStage === 3 || externalForm.formStage === 4 ? (
 									<div>
 										<FormField
 											control={form.control}
 											name="securityKey"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>
-														<div className="group relative w-max cursor-pointer">
-															<span className="flex items-center">
-																<span className="mr-2">Security Key</span>
-																<TooltipIcon />
-															</span>
-															<span className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
-																This is to ensure that you are the appropriate individual for the authorization or
-																rejection of this form. It can be found in your email.
-															</span>
+													<FormLabel className="group relative w-max cursor-pointer">
+														<div className="flex items-center">
+															<span className="mr-2">Security Key</span>
+															<TooltipIcon />
+														</div>
+														<div className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
+															This is to ensure that you are the appropriate individual for the authorization or
+															rejection of this form. It can be found in your email.
 														</div>
 													</FormLabel>
 													<FormControl>
@@ -2314,15 +2323,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														/>
 													</FormControl>
 													<FormMessage>
-														{securityKeyError && <div className="error-message">The security key does not match.</div>}
+														{securityKeyError && <span>The security key does not match.</span>}
 													</FormMessage>
 												</FormItem>
 											)}
 										/>
-										{externalForm.formStage == 3 ? (
+										{externalForm.formStage === 3 ? (
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" className="mr-5" disabled={securityKeyError}>
 															Reject
 														</Button>
@@ -2363,7 +2372,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</Dialog>
 
 												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" disabled={securityKeyError}>
 															Submit for Review
 														</Button>
@@ -2392,10 +2401,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</DialogContent>
 												</Dialog>
 											</div>
-										) : externalForm.formStage == 4 ? (
+										) : externalForm.formStage === 4 ? (
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" className="mr-5" disabled={securityKeyError}>
 															Reject
 														</Button>
@@ -2436,7 +2445,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</Dialog>
 
 												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
-													<DialogTrigger>
+													<DialogTrigger asChild>
 														<Button type="button" disabled={securityKeyError}>
 															Approve
 														</Button>

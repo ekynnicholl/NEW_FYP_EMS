@@ -5,10 +5,8 @@ import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 
 export default async function ExternalFormPage({ params }: { params: { ext_id: string } }) {
-	const supabase = createClient(
-		process.env.NEXT_PUBLIC_SUPABASE_URL!,
-		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-	);
+    const cookieStore = cookies()
+    const supabase = createServerComponentClient({ cookies: () => cookieStore })
 
     const id = params.ext_id;
     // const supabase = createServerComponentClient({ cookies });
@@ -18,64 +16,9 @@ export default async function ExternalFormPage({ params }: { params: { ext_id: s
         .eq("id", id);
 
     console.log(data?.[0]);
+    console.log(data?.[0].formStage);
 
     return (
-        // <div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
-        // <div className="ml-10">
-        //     <div className="flex ml-[13px]">
-        //         <div>
-        //             <Image
-        //                 src="/swinburne_logo.png"
-        //                 alt=""
-        //                 width={200}
-        //                 height={300}
-        //             />
-        //         </div>
-        //         <div className="ml-8 mt-2">
-        //             <p className="font-medium">Human Resources</p>
-        //             <h1 className="text-3xl font-bold text-slate-800 mb-4 mt-4 -ml-[1px]">
-        //                 Nomination / Travelling Application Form
-        //             </h1>
-        //         </div>
-        //     </div>
-
-        //     <div className="mb-4 text-slate-800 mt-2">
-        //         <p className="mb-2">
-        //             <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
-        //                 *
-        //             </span>
-        //             <span>
-        //                 Before completing this form, please refer to the separate
-        //                 document on “General Instructions for completing Nomination /
-        //                 Travelling Application Form”, which is available on
-        //                 SharePoint.
-        //             </span>
-        //         </p>
-        //         <p className="mb-2">
-        //             <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
-        //                 *
-        //             </span>
-        //             <span>
-        //                 All fields are mandatory to complete as required for each
-        //                 applicable section.
-        //             </span>
-        //         </p>
-        //         <p>
-        //             <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
-        //                 *
-        //             </span>
-        //             <span>
-        //                 This form is also to be used for any contracted individual as
-        //                 consultant, and is to be completed where applicable.
-        //             </span>
-        //         </p>
-        //     </div>
-        // </div>
-
-        // <hr className="mt-8" />
-
-        //     <AdminExternalForm data={data?.[0]} />
-        // </div>
         <div>
             <AdminExternalForm data={data?.[0]} />
         </div>

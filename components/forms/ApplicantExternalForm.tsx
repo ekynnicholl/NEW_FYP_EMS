@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import SuccessIMG from "@/public/images/success_image.jpg";
@@ -17,26 +17,12 @@ import { BsFiletypePdf } from "react-icons/bs";
 import { toast } from "react-hot-toast";
 import externalFormSchema from "@/schema/externalFormSchema";
 import { Input } from "@/components/ui/input";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
 	Dialog,
@@ -117,7 +103,7 @@ export default function ExternalForm() {
 			student_council_fund: "",
 			other_funds: "",
 			expenditure_cap: "No",
-			expenditure_cap_amount: undefined,
+			expenditure_cap_amount: 0,
 
 			supporting_documents: null,
 
@@ -146,10 +132,20 @@ export default function ExternalForm() {
 		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
 			toast.error("Please enter the name of other members traveling together");
 		}
-	}
+	};
 
+	const [commencementDate, setCommencementDate] = useState<Date>();
+	const [checkInDate, setCheckInDate] = useState<Date>();
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
+		console.log(values);
+
+		if (values.commencement_date.getHours() < 8) {
+			setCommencementDate(new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8)));
+		}
+		if (values.check_in_date.getHours() < 8) {
+			setCheckInDate(new Date(values.check_in_date.setHours(values.check_in_date.getHours() + 8)));
+		}
 
 		const { data, error } = await supabase
 			.from("external_forms")
@@ -165,6 +161,7 @@ export default function ExternalForm() {
 			console.log(error);
 			toast.error("Error submitting form");
 		} else {
+			console.log(data);
 			setExternalForm({ ...values, id: data[0].id });
 			toast.success("Form submitted successfully");
 			setFormIsSuccess(true);
@@ -172,7 +169,6 @@ export default function ExternalForm() {
 			router.refresh();
 			// window.location.reload();
 		}
-		console.log(values);
 	}
 
 	const [group, setGroup] = useState(true);
@@ -184,49 +180,30 @@ export default function ExternalForm() {
 					<div className="ml-10">
 						<div className="flex ml-[13px]">
 							<div>
-								<Image
-									src="/swinburne_logo.png"
-									alt=""
-									width={200}
-									height={300}
-								/>
+								<Image src="/swinburne_logo.png" alt="" width={200} height={300} />
 							</div>
 							<div className="ml-8 mt-2">
 								<p className="font-medium">Human Resources</p>
-								<h1 className="text-3xl font-bold text-slate-800 mb-4 mt-4 -ml-[1px]">
-									Nomination / Travelling Application Form
-								</h1>
+								<h1 className="text-3xl font-bold text-slate-800 mb-4 mt-4 -ml-[1px]">Nomination / Travelling Application Form</h1>
 							</div>
 						</div>
 
 						<div className="mb-4 text-slate-800 mt-2">
 							<p className="mb-2">
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
-									*
-								</span>
+								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">*</span>
 								<span>
-									Before completing this form, please refer to the separate
-									document on “General Instructions for completing Nomination /
-									Travelling Application Form”, which is available on
-									SharePoint.
+									Before completing this form, please refer to the separate document on “General Instructions for completing
+									Nomination / Travelling Application Form”, which is available on SharePoint.
 								</span>
 							</p>
 							<p className="mb-2">
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
-									*
-								</span>
-								<span>
-									All fields are mandatory to complete as required for each
-									applicable section.
-								</span>
+								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">*</span>
+								<span>All fields are mandatory to complete as required for each applicable section.</span>
 							</p>
 							<p>
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
-									*
-								</span>
+								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">*</span>
 								<span>
-									This form is also to be used for any contracted individual as
-									consultant, and is to be completed where applicable.
+									This form is also to be used for any contracted individual as consultant, and is to be completed where applicable.
 								</span>
 							</p>
 						</div>
@@ -255,9 +232,7 @@ export default function ExternalForm() {
 							</a>
 						</div>
 						<Form {...form}>
-							<form
-								onSubmit={form.handleSubmit(onSubmit)}
-								className="mt-8 space-y-8 w-full">
+							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 w-full">
 								<section className="section-1" id="Personal Details">
 									<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 									<div className="grid gap-8">
@@ -268,11 +243,7 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Email</FormLabel>
 													<FormControl>
-														<Input
-															type="email"
-															placeholder="Email"
-															{...field}
-														/>
+														<Input type="email" placeholder="Email" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -284,9 +255,7 @@ export default function ExternalForm() {
 												name="full_name"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>
-															Full Name (Same as I.C / Passport)
-														</FormLabel>
+														<FormLabel>Full Name (Same as I.C / Passport)</FormLabel>
 														<FormControl>
 															<Input placeholder="Name" {...field} />
 														</FormControl>
@@ -339,24 +308,16 @@ export default function ExternalForm() {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Type of Transportation</FormLabel>
-														<Select
-															onValueChange={field.onChange}
-															defaultValue={field.value}>
+														<Select onValueChange={field.onChange} defaultValue={field.value}>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Please select an option" />
 																</SelectTrigger>
 															</FormControl>
 															<SelectContent>
-																<SelectItem value="aeroplane">
-																	Aeroplane
-																</SelectItem>
-																<SelectItem value="company vehicle">
-																	Company vehicle
-																</SelectItem>
-																<SelectItem value="own transport">
-																	Own transport
-																</SelectItem>
+																<SelectItem value="aeroplane">Aeroplane</SelectItem>
+																<SelectItem value="company vehicle">Company vehicle</SelectItem>
+																<SelectItem value="own transport">Own transport</SelectItem>
 															</SelectContent>
 														</Select>
 														<FormMessage />
@@ -385,12 +346,8 @@ export default function ExternalForm() {
 																</SelectTrigger>
 															</FormControl>
 															<SelectContent>
-																<SelectItem value="alone">
-																	Alone
-																</SelectItem>
-																<SelectItem value="group">
-																	Group
-																</SelectItem>
+																<SelectItem value="alone">Alone</SelectItem>
+																<SelectItem value="group">Group</SelectItem>
 															</SelectContent>
 														</Select>
 														<FormMessage />
@@ -403,16 +360,9 @@ export default function ExternalForm() {
 											name="other_members"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>
-														Name of other staff / student traveling
-														together in group
-													</FormLabel>
+													<FormLabel>Name of other staff / student traveling together in group</FormLabel>
 													<FormControl>
-														<Input
-															disabled={group}
-															placeholder=""
-															{...field}
-														/>
+														<Input disabled={group} placeholder="" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -465,33 +415,27 @@ export default function ExternalForm() {
 																	variant={"outline"}
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
-																		!field.value &&
-																		"text-muted-foreground",
+																		!field.value && "text-muted-foreground",
 																	)}>
-																	{field.value ? (
-																		format(field.value, "PPP")
-																	) : (
-																		<span>Pick a date</span>
-																	)}
+																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
 														</PopoverTrigger>
-														<PopoverContent
-															className="w-auto p-0"
-															align="start">
+														<PopoverContent className="w-auto p-0" align="start">
 															<Calendar
 																mode="single"
 																selected={field.value}
 																onSelect={date => {
-																	console.log("Date: " + date)
-																	field.onChange(date);
 																	if (date !== undefined) {
-																		date.setHours(date.getHours() + 8);
+																		date.setHours(8, 0, 0, 0);
+																		field.onChange(date);
 																		field.value = new Date(date);
+																		console.log("Commencement date: " + form.getValues("commencement_date"));
 																	}
 																}}
 																disabled={date => {
 																	const today = new Date();
+																	today.setHours(0, 0, 0, 0);
 																	return date < today;
 																}}
 																initialFocus
@@ -515,39 +459,33 @@ export default function ExternalForm() {
 																	variant={"outline"}
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
-																		!field.value &&
-																		"text-muted-foreground",
+																		!field.value && "text-muted-foreground",
 																	)}>
-																	{field.value ? (
-																		format(field.value, "PPP")
-																	) : (
-																		<span>Pick a date</span>
-																	)}
+																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
 														</PopoverTrigger>
-														<PopoverContent
-															className="w-auto p-0"
-															align="start">
+														<PopoverContent className="w-auto p-0" align="start">
 															<Calendar
 																mode="single"
 																selected={field.value}
 																onSelect={date => {
-																	console.log("Date: " + date)
-																	field.onChange(date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
+																		field.onChange(date);
 																		field.value = new Date(date);
+																		console.log("Completion date: " + field.value);
 																	}
 																}}
 																disabled={date => {
-																	const today =
-																		form.getValues(
-																			"commencement_date"
-																		);
-																	return (
-																		date < today
-																	);
+																	let today = form.getValues("commencement_date");
+																	if (today === undefined) {
+																		today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																	} else {
+																		today.setHours(0, 0, 0, 0);
+																	}
+																	return date < today;
 																}}
 																initialFocus
 															/>
@@ -589,9 +527,7 @@ export default function ExternalForm() {
 											render={({ field }) => (
 												<FormItem>
 													<FormLabel>HDRF Claimable</FormLabel>
-													<Select
-														onValueChange={field.onChange}
-														defaultValue={field.value}>
+													<Select onValueChange={field.onChange} defaultValue={field.value}>
 														<FormControl>
 															<SelectTrigger>
 																<SelectValue placeholder="Please select an option" />
@@ -601,8 +537,7 @@ export default function ExternalForm() {
 															<SelectItem value="yes">Yes</SelectItem>
 															<SelectItem value="no">No</SelectItem>
 															<SelectItem value="not indicated in event brochure / registration form">
-																Not indicated in event brochure /
-																registration form
+																Not indicated in event brochure / registration form
 															</SelectItem>
 														</SelectContent>
 													</Select>
@@ -616,9 +551,7 @@ export default function ExternalForm() {
 								<Separator className="my-8" />
 
 								<section className="section-3" id="Logistic Arrangement">
-									<h2 className="text-2xl font-bold mb-4">
-										3. Logistic Arrangement
-									</h2>
+									<h2 className="text-2xl font-bold mb-4">3. Logistic Arrangement</h2>
 									<div className="grid gap-8">
 										<div className="grid grid-auto-fit-lg gap-8">
 											<FormField
@@ -634,30 +567,23 @@ export default function ExternalForm() {
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
-																			!field.value &&
-																			"text-muted-foreground",
+																			!field.value && "text-muted-foreground",
 																		)}>
-																		{field.value ? (
-																			format(field.value, "PPP")
-																		) : (
-																			<span>Pick a date</span>
-																		)}
+																		{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																	</Button>
 																</FormControl>
 															</PopoverTrigger>
-															<PopoverContent
-																className="w-auto p-0"
-																align="start">
+															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
 																	selected={field.value}
 																	onSelect={date => {
-																		console.log("Date: " + date)
-																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
+																			field.onChange(date);
 																			field.value = new Date(date);
 																		}
+																		console.log("Flight date: " + field.value);
 																	}}
 																	disabled={date => {
 																		const today = new Date();
@@ -711,10 +637,7 @@ export default function ExternalForm() {
 														<FormItem>
 															<FormLabel>From</FormLabel>
 															<FormControl>
-																<Input
-																	placeholder="Sarawak"
-																	{...field}
-																/>
+																<Input placeholder="Sarawak" {...field} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -727,10 +650,7 @@ export default function ExternalForm() {
 														<FormItem>
 															<FormLabel>To</FormLabel>
 															<FormControl>
-																<Input
-																	placeholder="Singapore"
-																	{...field}
-																/>
+																<Input placeholder="Singapore" {...field} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -753,30 +673,23 @@ export default function ExternalForm() {
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
-																			!field.value &&
-																			"text-muted-foreground",
+																			!field.value && "text-muted-foreground",
 																		)}>
-																		{field.value ? (
-																			format(field.value, "PPP")
-																		) : (
-																			<span>Pick a date</span>
-																		)}
+																		{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																	</Button>
 																</FormControl>
 															</PopoverTrigger>
-															<PopoverContent
-																className="w-auto p-0"
-																align="start">
+															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
 																	selected={field.value}
 																	onSelect={date => {
-																		console.log("Date: " + date)
-																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
+																			field.onChange(date);
 																			field.value = new Date(date);
 																		}
+																		console.log("Check in: " + field.value);
 																	}}
 																	disabled={date => {
 																		const today = new Date();
@@ -804,39 +717,33 @@ export default function ExternalForm() {
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
-																			!field.value &&
-																			"text-muted-foreground",
+																			!field.value && "text-muted-foreground",
 																		)}>
-																		{field.value ? (
-																			format(field.value, "PPP")
-																		) : (
-																			<span>Pick a date</span>
-																		)}
+																		{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																	</Button>
 																</FormControl>
 															</PopoverTrigger>
-															<PopoverContent
-																className="w-auto p-0"
-																align="start">
+															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
 																	selected={field.value}
 																	onSelect={date => {
-																		console.log("Date: " + date)
-																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
+																			field.onChange(date);
 																			field.value = new Date(date);
 																		}
+																		console.log("Check out: " + field.value);
 																	}}
 																	disabled={date => {
-																		const today =
-																			form.getValues(
-																				"check_in_date",
-																			);
-																		return (
-																			date < today
-																		);
+																		let today = form.getValues("check_in_date");
+																		if (today === undefined) {
+																			today = new Date();
+																			today.setHours(0, 0, 0, 0);
+																		} else {
+																			today.setHours(0, 0, 0, 0);
+																		}
+																		return date < today;
 																	}}
 																	initialFocus
 																/>
@@ -880,9 +787,7 @@ export default function ExternalForm() {
 															type="number"
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -901,9 +806,7 @@ export default function ExternalForm() {
 															type="number"
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -922,9 +825,7 @@ export default function ExternalForm() {
 															type="number"
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -943,9 +844,7 @@ export default function ExternalForm() {
 															type="number"
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -964,9 +863,7 @@ export default function ExternalForm() {
 															type="number"
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -985,9 +882,7 @@ export default function ExternalForm() {
 															type="number"
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -1005,9 +900,7 @@ export default function ExternalForm() {
 														<Input
 															{...field}
 															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
+																field.onChange(Number(e.target.value));
 															}}
 														/>
 													</FormControl>
@@ -1030,9 +923,7 @@ export default function ExternalForm() {
 																form.getValues("accommodation_fee") +
 																form.getValues("per_diem_fee") +
 																form.getValues("transportation_fee") +
-																form.getValues(
-																	"travel_insurance_fee",
-																) +
+																form.getValues("travel_insurance_fee") +
 																form.getValues("other_fees")
 															}
 														/>
@@ -1047,8 +938,7 @@ export default function ExternalForm() {
 										<h2 className="font-medium mb-3">
 											Source of Fund -
 											<span className="text-gray-500 text-sm">
-												Details of account(s) to be debited. (It is encouraged
-												to have a single source of funding)
+												Details of account(s) to be debited. (It is encouraged to have a single source of funding)
 											</span>
 										</h2>
 										<div className="grid grid-auto-fit-lg gap-8">
@@ -1133,7 +1023,7 @@ export default function ExternalForm() {
 										</div>
 									</div>
 
-									<div className="mt-8 space-y-4">
+									{/* <div className="mt-8 space-y-4">
 										<FormField
 											control={form.control}
 											name="expenditure_cap"
@@ -1195,15 +1085,13 @@ export default function ExternalForm() {
 												</FormItem>
 											)}
 										/>
-									</div>
+									</div> */}
 								</section>
 
 								<Separator className="my-8" />
 
 								<section className="section-5" id="Supporting Documents">
-									<h1 className="text-2xl font-bold mb-4">
-										5. Supporting Documents
-									</h1>
+									<h1 className="text-2xl font-bold mb-4">5. Supporting Documents</h1>
 									<FormField
 										control={form.control}
 										name="supporting_documents"
@@ -1226,18 +1114,11 @@ export default function ExternalForm() {
 															/>
 														</svg>
 														<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
-															<span className="font-semibold">
-																Click to upload
-															</span>{" "}
-															or drag and drop
+															<span className="font-semibold">Click to upload</span> or drag and drop
 														</p>
-														<p className="text-sm text-gray-500 dark:text-gray-400">
-															PDF or Word (maximum 5MB)
-														</p>
+														<p className="text-sm text-gray-500 dark:text-gray-400">PDF or Word (maximum 5MB)</p>
 														{field?.value?.length! > 0 && (
-															<p className="mt-2 text-xl text-slate-700">
-																{field.value?.length} Files Uploaded
-															</p>
+															<p className="mt-2 text-xl text-slate-700">{field.value?.length} Files Uploaded</p>
 														)}
 													</div>
 												</FormLabel>
@@ -1255,16 +1136,11 @@ export default function ExternalForm() {
 												<FormMessage />
 												<div className="flex flex-col gap-2 mt-2 items-start">
 													{form.getValues("supporting_documents") &&
-														Array.from(
-															form.getValues("supporting_documents")!,
-														).map((file: any) => (
+														Array.from(form.getValues("supporting_documents")!).map((file: any) => (
 															<div key={file.name}>
 																{
 																	// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
-																	file.name.slice(
-																		file.name.lastIndexOf(".") +
-																		1,
-																	) === "pdf" ? (
+																	file.name.slice(file.name.lastIndexOf(".") + 1) === "pdf" ? (
 																		<div className="flex gap-2 p-2 items-start">
 																			<BsFiletypePdf className="w-6 h-6 text-red-500" />
 																			{file.name}
@@ -1287,13 +1163,10 @@ export default function ExternalForm() {
 								<Separator className="my-8" />
 
 								<section className="section-6" id="Applicant Declaration">
-									<h1 className="text-2xl font-bold mb-4">
-										6. Applicant Declaration
-									</h1>
+									<h1 className="text-2xl font-bold mb-4">6. Applicant Declaration</h1>
 									<p className="text-gray-500 dark:text-gray-400 mb-8">
-										I (or acting as representative of group travelling) hereby
-										confirm the accuracy of the information (including any
-										attachments) provided for this application.
+										I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including
+										any attachments) provided for this application.
 									</p>
 									<div className="grid gap-8">
 										<div className="grid grid-auto-fit-lg gap-8">
@@ -1338,30 +1211,23 @@ export default function ExternalForm() {
 																	variant={"outline"}
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
-																		!field.value &&
-																		"text-muted-foreground",
+																		!field.value && "text-muted-foreground",
 																	)}>
-																	{field.value ? (
-																		format(field.value, "PPP")
-																	) : (
-																		<span>Pick a date</span>
-																	)}
+																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
 														</PopoverTrigger>
-														<PopoverContent
-															className="w-auto p-0"
-															align="start">
+														<PopoverContent className="w-auto p-0" align="start">
 															<Calendar
 																mode="single"
 																selected={field.value}
 																onSelect={date => {
-																	console.log("Date: " + date)
-																	field.onChange(date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
-																		field.value = new Date(date);
+																		field.onChange(date);
+																		field.value = date;
 																	}
+																	console.log("Declaration date: " + field.value);
 																}}
 																disabled={date => {
 																	const today = new Date();
@@ -1386,14 +1252,7 @@ export default function ExternalForm() {
 														<FormControl>
 															<DialogTrigger asChild>
 																<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-																	{imageURL && (
-																		<Image
-																			src={imageURL}
-																			width={300}
-																			height={200}
-																			alt="Signature"
-																		/>
-																	)}
+																	{imageURL && <Image src={imageURL} width={300} height={200} alt="Signature" />}
 																</div>
 															</DialogTrigger>
 														</FormControl>
@@ -1402,25 +1261,21 @@ export default function ExternalForm() {
 																<DialogTitle>Signature</DialogTitle>
 																<DialogClose />
 															</DialogHeader>
-															<DialogDescription>
-																Please sign below
-															</DialogDescription>
+															<DialogDescription>Please sign below</DialogDescription>
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-																{/* <SignaturePad
+																<SignaturePad
 																	ref={sigCanvas}
 																	canvasProps={{
 																		className: "w-full h-full",
 																	}}
-																/> */}
+																/>
 															</div>
 															<DialogFooter>
-																<Button
-																	variant="outline"
-																	onClick={clear}>
+																<Button variant="outline" onClick={clear}>
 																	Clear
 																</Button>
 																<DialogClose asChild>
-																	{/* <Button
+																	<Button
 																		onClick={() => {
 																			save();
 																			field.onChange(
@@ -1442,7 +1297,7 @@ export default function ExternalForm() {
 																			);
 																		}}>
 																		Save
-																	</Button> */}
+																	</Button>
 																</DialogClose>
 															</DialogFooter>
 														</DialogContent>
@@ -1455,26 +1310,22 @@ export default function ExternalForm() {
 								</section>
 
 								<Dialog open={open} onOpenChange={setOpen}>
-									<DialogTrigger>
+									<DialogTrigger asChild>
 										<Button type="button">Submit for Review</Button>
 									</DialogTrigger>
 									<DialogContent>
 										<DialogHeader>
 											<DialogTitle>Please re-confirm your details!</DialogTitle>
 											<DialogDescription>
-												Please confirm your email is correct:{" "}
-												{form.getValues("email")}. <br />
-												Wrong email will result in you not receiving any
-												updates of your form status.
+												Please confirm your email is correct: {form.getValues("email")}. <br />
+												Wrong email will result in you not receiving any updates of your form status.
 											</DialogDescription>
 										</DialogHeader>
 										<DialogFooter>
-											<DialogClose>
+											<DialogClose asChild>
 												<Button variant="outline">Cancel</Button>
 											</DialogClose>
-											<Button
-												onMouseUp={checkFormStatus}
-												onClick={form.handleSubmit(onSubmit)}>
+											<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
 												{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
 												Submit
 											</Button>
@@ -1489,11 +1340,18 @@ export default function ExternalForm() {
 				<div className="min-h-screen flex flex-col justify-center items-center -mt-12 lg:-mt-5 py-20">
 					<img src={SuccessIMG.src} alt="" className="w-[300px] lg:w-[500px] mt-10" />
 					<p className="text-center mt-5">
-						<span className="font-bold text-[20px]">We have received your form successfully!</span> <br /><br /> You should receive an email with a confirmation at <span className="font-bold">{form.getValues("email")}</span>.
-						<br />Please ensure to check your spam/ junk folder as well.
-						<br /><br />Contact/ email us at <span className="font-bold">827-823</span> OR <span className="font-bold">emat@gmail.com</span> if you have not received anything within the next hour.
+						<span className="font-bold text-[20px]">We have received your form successfully!</span> <br />
+						<br /> You should receive an email with a confirmation at <span className="font-bold">{form.getValues("email")}</span>.
+						<br />
+						Please ensure to check your spam/ junk folder as well.
+						<br />
+						<br />
+						Contact/ email us at <span className="font-bold">827-823</span> OR <span className="font-bold">emat@gmail.com</span> if you
+						have not received anything within the next hour.
 					</p>
-					<Button className="mt-5" onClick={(() => window.location.reload())}>Return</Button>
+					<Button className="mt-5" onClick={() => window.location.reload()}>
+						Return
+					</Button>
 				</div>
 			) : null}
 		</div>

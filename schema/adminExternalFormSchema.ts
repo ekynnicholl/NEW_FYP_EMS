@@ -126,7 +126,7 @@ const adminExternalFormSchema = z
 
 		// Section 5
 		supporting_documents: z
-			.instanceof(FileList)
+			.any()
 			.optional()
 			.nullable()
 			.refine(
@@ -165,8 +165,8 @@ const adminExternalFormSchema = z
 		verification_date: z
 			.date({
 				required_error: "Date is required.",
-				invalid_type_error: "Oops that's not a date!",
 			})
+			.nullable()
 			.optional(),
 
 		// Section 8
@@ -176,8 +176,8 @@ const adminExternalFormSchema = z
 		approval_date: z
 			.date({
 				required_error: "Date is required.",
-				invalid_type_error: "Oops that's not a date!",
 			})
+			.nullable()
 			.optional(),
 
 		// Section 9
