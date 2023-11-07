@@ -171,7 +171,7 @@ export default function Homepage() {
 		const checkIsUserLoggedIn = () => {
 			const authToken = cookie.get('authToken');
 			if (!authToken) {
-				// router.push("/unauthorizedAccess");
+				router.push("/unauthorizedAccess");
 			}
 		};
 
