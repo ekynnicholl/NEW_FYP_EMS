@@ -14,10 +14,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             securityKeySentence = `
-                <br/>
-                <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to approve/ reject: <br/><span style="font-weight: bold;">${optionalFields}</span></p>
-                <br/>
-                <p class="no-p-m">Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
+                <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
         }
 
@@ -48,9 +46,9 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
                     <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
-                    <p class="no-p-m">${link}</p>
-                    ${securityKeySentence}
-                    <br/>
+                    <p class="no-p-m">
+                        ${securityKeySentence.trim() === "" ? link : securityKeySentence}
+                    </p>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -170,7 +168,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields2 && optionalFields2.trim() !== '') {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This is the security key you MUST input into the form for you to re-submit your form: <br/><span style="font-weight: bold;">${optionalFields2}</span></p>
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></p>
                 <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
         }
@@ -195,12 +193,11 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <p class="no-p-m">Your form has been reverted for further changes. Please refer to the link below to make changes: </p>
-                    <p class="no-p-m">${link}</p>
+                    ${securityKeySentence}
                     <br/>
                     <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
                     <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                     <br/>
-                    ${securityKeySentence}
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -240,6 +237,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <br/>
                     <p class="no-p-m" style="text-align: justify;">This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
                     approved or rejected. If you have any questions, please do not hesitate to contact us at ...@...</p>
                     <br/>

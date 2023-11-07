@@ -10,7 +10,7 @@ import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import cookie from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import NTFPDF from "@/components/forms/NTFPDF";
 import TooltipIcon from "@/components/icons/TooltipIcon";
 
@@ -69,24 +69,34 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// Check whether the user is logged in,
 	const authToken = cookie.get("authToken");
 
+	const searchParams = useSearchParams()
+	const secKey = searchParams.get('secKey')
+
 	// Real-time security key validation,
-	const [securityKeyInput, setSecurityKeyInput] = useState("");
-	const [securityKeyError, setSecurityKeyError] = useState(true);
+	const [securityKeyInput, setSecurityKeyInput] = useState(secKey ?? '');
+	const [securityKeyError, setSecurityKeyError] = useState(false);
 
-	const handleChange = (e: { target: { value: any } }) => {
-		const inputValue = e.target.value;
-		setSecurityKeyInput(inputValue);
+	// const handleChange = (e: { target: { value: any } }) => {
+	// 	const inputValue = e.target.value;
+	// 	setSecurityKeyInput(inputValue);
 
-		if (inputValue === data.securityKey) {
-			setSecurityKeyError(false);
-			e;
-		} else {
-			setSecurityKeyError(true);
-		}
-	};
+	// 	if (inputValue === data.securityKey) {
+	// 		setSecurityKeyError(false);
+	// 		e;
+	// 	} else {
+	// 		setSecurityKeyError(true);
+	// 	}
+	// };
 
 	// Fetch the current stage of the form to capture whether the stage has changed to submit email,
 	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
+
+	useEffect(() => {
+		if (externalForm.formStage != fetchedFormStage) {
+			console.log(externalForm);
+			sendContactForm(externalForm);
+		}
+	}, [externalForm.formStage]);
 
 	const applicantSigCanvas = useRef({});
 	const applicantSigClear = (field: FieldValues) => {
@@ -114,16 +124,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		field.onChange("");
 		field.value = "";
 	};
-
-	// TO-DO: UNCOMMENT THIS TO ENABLE THE EMAIL SENDING FEATURE. YOU DON'T NEED TO UPDATE ANYTHING IN THE API, JUST ENSURE THE FORM CAN BE PASSED INTO IT,
-	// I'M USING USEEFFECT TO CHECK WHETHER THE EXTERNALFORM IS UPDATED THROUGH SETEXTERNALFORM IN THE onSubmit or onRevert, IF ANY CHANGES,
-	// PASS INTO THE API AND SEND THE EMAIL.
-	// useEffect(() => {
-	// 	if (externalForm.formStage != fetchedFormStage) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.formStage]);
 
 	const [verificationDate, setVerificationDate] = useState<Date | null>(null);
 	if (externalForm.verification_date) {
