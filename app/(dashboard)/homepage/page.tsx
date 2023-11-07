@@ -4210,25 +4210,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[4] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?balloon",
+												latestEvent[4]?.intFID,
+												latestEvent[4]?.intFEventName,
+												latestEvent[4]?.intFEventDescription,
+												latestEvent[4]?.intFEventStartDate,
+												latestEvent[4]?.intFEventEndDate,
+												latestEvent[4]?.intFDurationCourse,
+												latestEvent[4]?.intFTrainerName,
+												latestEvent[4]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -4242,15 +4242,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?balloon",
+												latestEvent[4]?.intFID,
+												latestEvent[4]?.intFEventName,
+												latestEvent[4]?.intFEventDescription,
+												latestEvent[4]?.intFEventStartDate,
+												latestEvent[4]?.intFEventEndDate,
+												latestEvent[4]?.intFDurationCourse,
+												latestEvent[4]?.intFTrainerName,
+												latestEvent[4]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -4267,18 +4267,18 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?balloon"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
-									{latestEvent[0] && (
+									{latestEvent[4] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[4].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -4291,28 +4291,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[4].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[4].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[4].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[4].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[4].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[4].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -4322,7 +4322,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -4345,7 +4345,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -4365,7 +4365,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -4386,7 +4386,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -4407,7 +4407,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -4485,25 +4485,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[5] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[535px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?beers",
+												latestEvent[5]?.intFID,
+												latestEvent[5]?.intFEventName,
+												latestEvent[5]?.intFEventDescription,
+												latestEvent[5]?.intFEventStartDate,
+												latestEvent[5]?.intFEventEndDate,
+												latestEvent[5]?.intFDurationCourse,
+												latestEvent[5]?.intFTrainerName,
+												latestEvent[5]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -4517,15 +4517,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?beers",
+												latestEvent[5]?.intFID,
+												latestEvent[5]?.intFEventName,
+												latestEvent[5]?.intFEventDescription,
+												latestEvent[5]?.intFEventStartDate,
+												latestEvent[5]?.intFEventEndDate,
+												latestEvent[5]?.intFDurationCourse,
+												latestEvent[5]?.intFTrainerName,
+												latestEvent[5]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -4542,18 +4542,18 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?beers"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
-									{latestEvent[0] && (
+									{latestEvent[5] && (
 										<div className="mt-6">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[5].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -4566,28 +4566,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[5].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[5].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[5].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[5].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[5].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[5].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -4597,7 +4597,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -4620,7 +4620,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -4640,7 +4640,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -4661,7 +4661,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -4682,7 +4682,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -5002,25 +5002,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[1] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[1].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?birthday",
+												latestEvent[1]?.intFID,
+												latestEvent[1]?.intFEventName,
+												latestEvent[1]?.intFEventDescription,
+												latestEvent[1]?.intFEventStartDate,
+												latestEvent[1]?.intFEventEndDate,
+												latestEvent[1]?.intFDurationCourse,
+												latestEvent[1]?.intFTrainerName,
+												latestEvent[1]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -5034,15 +5034,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?birthday",
+												latestEvent[1]?.intFID,
+												latestEvent[1]?.intFEventName,
+												latestEvent[1]?.intFEventDescription,
+												latestEvent[1]?.intFEventStartDate,
+												latestEvent[1]?.intFEventEndDate,
+												latestEvent[1]?.intFDurationCourse,
+												latestEvent[1]?.intFTrainerName,
+												latestEvent[1]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -5060,19 +5060,19 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?birthday"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
 
-									{latestEvent[0] && (
+									{latestEvent[1] && (
 										<div className="mt-4 -ml-2">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[1].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -5085,28 +5085,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[1].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[1].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[1].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[1].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[1].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[1].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -5116,7 +5116,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[1].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5139,7 +5139,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[1].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5159,7 +5159,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[1].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5180,7 +5180,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[1].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5201,7 +5201,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[1].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -5223,7 +5223,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																<div className="text-[11px] text-gray-600 mt-[5px] flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
@@ -5239,25 +5239,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[2] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[2].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?new+year",
+												latestEvent[2]?.intFID,
+												latestEvent[2]?.intFEventName,
+												latestEvent[2]?.intFEventDescription,
+												latestEvent[2]?.intFEventStartDate,
+												latestEvent[2]?.intFEventEndDate,
+												latestEvent[2]?.intFDurationCourse,
+												latestEvent[2]?.intFTrainerName,
+												latestEvent[2]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -5271,15 +5271,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?new+year",
+												latestEvent[2]?.intFID,
+												latestEvent[2]?.intFEventName,
+												latestEvent[2]?.intFEventDescription,
+												latestEvent[2]?.intFEventStartDate,
+												latestEvent[2]?.intFEventEndDate,
+												latestEvent[2]?.intFDurationCourse,
+												latestEvent[2]?.intFTrainerName,
+												latestEvent[2]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -5297,19 +5297,19 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?new+year"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
 
-									{latestEvent[0] && (
+									{latestEvent[2] && (
 										<div className="mt-4 -ml-2">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[2].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -5322,28 +5322,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[2].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[2].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[2].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[2].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[2].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[2].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -5353,7 +5353,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[2].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5376,7 +5376,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[2].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5396,7 +5396,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[2].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5417,7 +5417,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[2].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5438,7 +5438,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[2].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -5460,7 +5460,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																<div className="text-[11px] text-gray-600 mt-[5px] flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
@@ -5476,25 +5476,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[3] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[3].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?events",
+												latestEvent[3]?.intFID,
+												latestEvent[3]?.intFEventName,
+												latestEvent[3]?.intFEventDescription,
+												latestEvent[3]?.intFEventStartDate,
+												latestEvent[3]?.intFEventEndDate,
+												latestEvent[3]?.intFDurationCourse,
+												latestEvent[3]?.intFTrainerName,
+												latestEvent[3]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -5508,15 +5508,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?events",
+												latestEvent[3]?.intFID,
+												latestEvent[3]?.intFEventName,
+												latestEvent[3]?.intFEventDescription,
+												latestEvent[3]?.intFEventStartDate,
+												latestEvent[3]?.intFEventEndDate,
+												latestEvent[3]?.intFDurationCourse,
+												latestEvent[3]?.intFTrainerName,
+												latestEvent[3]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -5534,19 +5534,19 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?events"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
 
-									{latestEvent[0] && (
+									{latestEvent[3] && (
 										<div className="mt-4 -ml-2">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[3].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -5559,28 +5559,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[3].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[3].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[3].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[3].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[3].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[3].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -5590,7 +5590,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[3].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5613,7 +5613,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[3].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5633,7 +5633,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[3].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5654,7 +5654,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[3].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5675,7 +5675,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[3].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -5697,7 +5697,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																<div className="text-[11px] text-gray-600 mt-[5px] flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
@@ -5713,25 +5713,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[4] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[4].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?balloon",
+												latestEvent[4]?.intFID,
+												latestEvent[4]?.intFEventName,
+												latestEvent[4]?.intFEventDescription,
+												latestEvent[4]?.intFEventStartDate,
+												latestEvent[4]?.intFEventEndDate,
+												latestEvent[4]?.intFDurationCourse,
+												latestEvent[4]?.intFTrainerName,
+												latestEvent[4]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -5745,15 +5745,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?balloon",
+												latestEvent[4]?.intFID,
+												latestEvent[4]?.intFEventName,
+												latestEvent[4]?.intFEventDescription,
+												latestEvent[4]?.intFEventStartDate,
+												latestEvent[4]?.intFEventEndDate,
+												latestEvent[4]?.intFDurationCourse,
+												latestEvent[4]?.intFTrainerName,
+												latestEvent[4]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -5771,19 +5771,19 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?balloon"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
 
-									{latestEvent[0] && (
+									{latestEvent[4] && (
 										<div className="mt-4 -ml-2">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[4].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -5796,28 +5796,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[4].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[4].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[4].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[4].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[4].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[4].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -5827,7 +5827,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5850,7 +5850,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5870,7 +5870,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -5891,7 +5891,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -5912,7 +5912,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[4].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -5934,7 +5934,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																<div className="text-[11px] text-gray-600 mt-[5px] flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
@@ -5950,25 +5950,25 @@ export default function Homepage() {
 								</div>
 							)}
 
-							{latestEvent[0] && (
+							{latestEvent[5] && (
 								<div
 									className="bg-white border border-slate-200 rounded-lg overflow-hidden p-6 h-[340px] w-full relative flex flex-col transition transform hover:scale-105 dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]"
 									onClick={() => {
-										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[0].intFID);
+										const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === latestEvent[5].intFID);
 
 										console.log(filteredSubEvent);
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?beers",
+												latestEvent[5]?.intFID,
+												latestEvent[5]?.intFEventName,
+												latestEvent[5]?.intFEventDescription,
+												latestEvent[5]?.intFEventStartDate,
+												latestEvent[5]?.intFEventEndDate,
+												latestEvent[5]?.intFDurationCourse,
+												latestEvent[5]?.intFTrainerName,
+												latestEvent[5]?.intFTrainingProvider,
 												filteredSubEvent.sub_eventsID,
 												filteredSubEvent.sub_eventsMainID,
 												filteredSubEvent.sub_eventsName,
@@ -5982,15 +5982,15 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
-												latestEvent[0]?.intFID,
-												latestEvent[0]?.intFEventName,
-												latestEvent[0]?.intFEventDescription,
-												latestEvent[0]?.intFEventStartDate,
-												latestEvent[0]?.intFEventEndDate,
-												latestEvent[0]?.intFDurationCourse,
-												latestEvent[0]?.intFTrainerName,
-												latestEvent[0]?.intFTrainingProvider,
+												"https://source.unsplash.com/600x300?beers",
+												latestEvent[5]?.intFID,
+												latestEvent[5]?.intFEventName,
+												latestEvent[5]?.intFEventDescription,
+												latestEvent[5]?.intFEventStartDate,
+												latestEvent[5]?.intFEventEndDate,
+												latestEvent[5]?.intFDurationCourse,
+												latestEvent[5]?.intFTrainerName,
+												latestEvent[5]?.intFTrainingProvider,
 												"default_sub_eventsID",
 												"default_sub_eventsMainID",
 												"default_sub_eventsName",
@@ -6008,19 +6008,19 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="https://source.unsplash.com/600x300?beers"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
 										</div>
 									</div>
 
-									{latestEvent[0] && (
+									{latestEvent[5] && (
 										<div className="mt-4 -ml-2">
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[18px] font-semibold mb-1 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[5].intFEventName}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -6033,28 +6033,28 @@ export default function Homepage() {
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation();
 															openAttendanceModal(
-																latestEvent[0].intFID,
+																latestEvent[5].intFID,
 															);
-															fetchAttendanceList(latestEvent[0].intFID);
+															fetchAttendanceList(latestEvent[5].intFID);
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
 															openFeedbackModal(
-																latestEvent[0].intFID,
+																latestEvent[5].intFID,
 															);
-															fetchFeedbackList(latestEvent[0].intFID);
+															fetchFeedbackList(latestEvent[5].intFID);
 														}}>Feedback Forms</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[5].intFEventDescription}
 											</p>
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
+													{formatDate(latestEvent[5].intFEventStartDate)}
 												</p>
 											</div> */}
 
@@ -6064,7 +6064,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -6087,7 +6087,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -6107,7 +6107,7 @@ export default function Homepage() {
 															const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 															const currentDate = new Date();
 															return (
-																subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+																subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 																(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																	subEventStartDate > currentDate)
 															);
@@ -6128,7 +6128,7 @@ export default function Homepage() {
 														const subEventStartDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 															(subEventStartDate.toDateString() === currentDate.toDateString() ||
 																subEventStartDate > currentDate)
 														);
@@ -6149,7 +6149,7 @@ export default function Homepage() {
 														const startDate = new Date(subEvent.sub_eventsStartDate);
 														const currentDate = new Date();
 														return (
-															subEvent.sub_eventsMainID === latestEvent[0].intFID &&
+															subEvent.sub_eventsMainID === latestEvent[5].intFID &&
 															(startDate.toDateString() === currentDate.toDateString() || startDate > currentDate)
 														);
 													})
@@ -6171,7 +6171,7 @@ export default function Homepage() {
 																		}}
 																	></div>
 																</div>
-																<div className="text-[11px] text-gray-600 mt-[6px] flex justify-between">
+																<div className="text-[11px] text-gray-600 mt-[5px] flex justify-between">
 																	<span className="ml-[2px] dark:text-dark_text">
 																		Current Attendees: {currentAttendees}
 																	</span>
