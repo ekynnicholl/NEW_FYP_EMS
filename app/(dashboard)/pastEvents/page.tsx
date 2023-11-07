@@ -135,6 +135,7 @@ export default function Home() {
     const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
     const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
     const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
+    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
 
     // This is for the pie chart,
     const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -555,13 +556,14 @@ export default function Home() {
 
     const handleAttendanceSearch = (query: string) => {
         setSearchAttendanceQuery(query);
-        const filteredStaffData = attendanceData.filter(
-            staff =>
-                staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
-                staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
-        );
-        setFilteredAttendanceData(filteredStaffData);
-        console.log("filter data: ", filteredAttendanceData);
+        // const filteredStaffData = attendanceData.filter(
+        //     staff =>
+        //         staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
+        //         staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
+        // );
+        // setFilteredAttendanceData(filteredStaffData);
+        filterAttendanceData(activeTab, query);
+        // console.log("filter data: ", filteredAttendanceData);
     }
 
     const handleArrowLeftClick = () => {
@@ -756,6 +758,29 @@ export default function Home() {
                 console.error("Copy failed:", error);
             });
     };
+
+    const filterAttendanceData = (tab: 'all' | 'staff' | 'student', query: string) => {
+        let filteredData = attendanceData;
+        if (tab === 'staff') {
+            filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
+        } else if (tab === 'student') {
+            filteredData = attendanceData.filter((item) => !item.attFormsStaffID.startsWith('SS'));
+        }
+
+        // Apply search filter
+        if (query) {
+            filteredData = filteredData.filter((item) => {
+                // Replace the conditions with your specific search criteria
+                return item.attFormsStaffName.toLowerCase().includes(query.toLowerCase());
+            });
+        }
+
+        setFilteredAttendanceData(filteredData);
+    };
+
+    useEffect(() => {
+        filterAttendanceData(activeTab, searchAttendanceQuery);
+    }, [activeTab, searchAttendanceQuery, attendanceData]);
 
     return (
         <div className="h-screen flex flex-row justify-start">
@@ -1485,6 +1510,27 @@ export default function Home() {
                                 {/* This is to loop through the attendance data. */}
                                 {attendanceData && attendanceData.length > 0 ? (
                                     <div className="lg:text-[16px] text-[12px]">
+                                        <button
+                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
+                                                }`}
+                                            onClick={() => setActiveTab('all')}
+                                        >
+                                            All
+                                        </button>
+                                        <button
+                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
+                                                }`}
+                                            onClick={() => setActiveTab('staff')}
+                                        >
+                                            Staff
+                                        </button>
+                                        <button
+                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
+                                                }`}
+                                            onClick={() => setActiveTab('student')}
+                                        >
+                                            Student
+                                        </button>
                                         <label htmlFor="itemsPerPageSelect">Show entries:</label>
                                         <select
                                             id="itemsPerPageSelect"
@@ -1518,7 +1564,7 @@ export default function Home() {
                                             {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
                                                 <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                             ) : (
-                                                <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
+                                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                             )
                                             }
                                         </div>

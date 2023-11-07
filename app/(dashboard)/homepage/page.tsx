@@ -269,6 +269,7 @@ export default function Homepage() {
 	const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
 	const [searchAttendanceQuery, setSearchAttendanceQuery] = useState("");
 	const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
+	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
 
 	// This is for the pie chart,
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -1456,14 +1457,38 @@ export default function Homepage() {
 	//Handle search input
 	const handleAttendanceSearch = (query: string) => {
 		setSearchAttendanceQuery(query);
-		const filteredStaffData = attendanceData.filter(
-			staff =>
-				staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
-				staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
-		);
-		setFilteredAttendanceData(filteredStaffData);
-		console.log("filter data: ", filteredAttendanceData);
+		// const filteredStaffData = attendanceData.filter(
+		//     staff =>
+		//         staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
+		//         staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
+		// );
+		// setFilteredAttendanceData(filteredStaffData);
+		filterAttendanceData(activeTab, query);
+		// console.log("filter data: ", filteredAttendanceData);
 	}
+
+	const filterAttendanceData = (tab: 'all' | 'staff' | 'student', query: string) => {
+		let filteredData = attendanceData;
+		if (tab === 'staff') {
+			filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
+		} else if (tab === 'student') {
+			filteredData = attendanceData.filter((item) => !item.attFormsStaffID.startsWith('SS'));
+		}
+
+		// Apply search filter
+		if (query) {
+			filteredData = filteredData.filter((item) => {
+				// Replace the conditions with your specific search criteria
+				return item.attFormsStaffName.toLowerCase().includes(query.toLowerCase());
+			});
+		}
+
+		setFilteredAttendanceData(filteredData);
+	};
+
+	useEffect(() => {
+		filterAttendanceData(activeTab, searchAttendanceQuery);
+	}, [activeTab, searchAttendanceQuery, attendanceData]);
 
 	// This function fetches feedback lists for particular sub-events,
 	const fetchFeedbackList = async (event_id: string) => {
@@ -2298,18 +2323,18 @@ export default function Homepage() {
 					<ViewAttendance_Modal
 						isVisible={showAttendanceModal}
 						onClose={() => setShowAttendanceModal(false)}>
-						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[825px] overflow-y-auto dark:bg-dark_mode_card">
+						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[825px] overflow-y-auto">
 							<div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
 								<div className="flex items-start justify-start text-text text-[20px] text-center">
-									<PencilNoteIcon />
-									<span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px] text-slate-800 dark:text-dark_text">Attendance List</span>
+									<PencilNoteIcon />{" "}
+									<span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px]">Attendance List</span>
 								</div>
-								<div className="text-left text-black lg:text-[13px] text-[12px] pb-5 ml-11 text-slate-800 dark:text-dark_text">
+								<div className="text-left text-black lg:text-[13px] text-[12px] pb-5 ml-11">
 									Total Attendees: {attendanceData.length}
 								</div>
 								<div className="flex flex-wrap">
 									<button
-										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 dark:bg-[#242729] dark:text-dark_text ${isAllButtonActive ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800 '
+										className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 											}`}
 										onClick={() => {
 											setIsAllButtonActive(true);
@@ -2321,7 +2346,7 @@ export default function Homepage() {
 									{subEventsForAttendance.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 dark:bg-[#242729] dark:text-dark_text ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800'
+											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
@@ -2341,35 +2366,74 @@ export default function Homepage() {
 										fetchAttendanceList(attendanceMainEventID);
 										setIsAllButtonActive(true);
 									}}
-									className="font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-dark_text"
+									className="font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
 								>
 									Refresh
 								</button>
 								{/* This is to loop through the attendance data. */}
 								{attendanceData && attendanceData.length > 0 ? (
-									<div className="lg:text-[16px] text-[12px] text-slate-800 dark:bg-[#242729] dark:text-dark_text">
+									<div className="lg:text-[16px] text-[12px]">
+										<button
+											className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
+												}`}
+											onClick={() => setActiveTab('all')}
+										>
+											All
+										</button>
+										<button
+											className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
+												}`}
+											onClick={() => setActiveTab('staff')}
+										>
+											Staff
+										</button>
+										<button
+											className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
+												}`}
+											onClick={() => setActiveTab('student')}
+										>
+											Student
+										</button>
 										<label htmlFor="itemsPerPageSelect">Show entries:</label>
 										<select
 											id="itemsPerPageSelect"
 											name="itemsPerPage"
 											value={itemsPerPage}
 											onChange={handleItemsPerPageChange}
-											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-[#242729] dark:text-dark_text"
+											className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
 										>
 											<option value="5">5</option>
 											<option value="10">10</option>
 											<option value="20">20</option>
 										</select>
+
+										{/* Search Input */}
+										<div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
+											<span className="h-full absolute inset-y-0 left-0 flex items-center pl-2 ">
+												<svg
+													viewBox="0 0 24 24"
+													className="h-4 w-4 fill-current text-gray-500">
+													<path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+												</svg>
+											</span>
+											<input
+												placeholder="Search here..."
+												className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
+												value={searchAttendanceQuery}
+												onChange={e => handleAttendanceSearch(e.target.value)}
+											/>
+										</div>
 										<div className="h-[450px]">
 											{filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
 												<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
 											) : (
-												<AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
-											)}
+												<AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
+											)
+											}
 										</div>
 									</div>
 								) : (
-									<div className="text-center text-slate-800 mt-4 dark:text-dark_text">
+									<div className="text-center text-gray-600 mt-4">
 										No attendance data available.
 									</div>
 								)}

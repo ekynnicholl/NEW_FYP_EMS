@@ -43,7 +43,7 @@ export default function AttendanceForm() {
 				.select('sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime')
 				.eq('sub_eventsID', sub_id);
 
-			if (attendanceListError) {
+			if (attendanceListError || attendanceListData.length == 0) {
 				console.error('Error fetching attendance list data:', attendanceListError);
 				router.push('/notFound');
 				return;
