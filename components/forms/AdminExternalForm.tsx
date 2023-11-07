@@ -45,15 +45,8 @@ import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
 
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
-	console.log(data);
 	const supabase = createClientComponentClient();
 	const router = useRouter();
-
-	// useEffect(() => {
-	// 	if(data.formStage == 2 && !authToken){
-
-	// 	}
-	// })
 
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [submitOpen, setSubmitOpen] = useState(false);
@@ -69,24 +62,24 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// Check whether the user is logged in,
 	const authToken = cookie.get("authToken");
 
-	const searchParams = useSearchParams()
-	const secKey = searchParams.get('secKey')
+	const searchParams = useSearchParams();
+	const secKey = searchParams.get("secKey");
 
 	// Real-time security key validation,
-	const [securityKeyInput, setSecurityKeyInput] = useState(secKey ?? '');
+	const [securityKeyInput, setSecurityKeyInput] = useState(secKey ?? "");
 	const [securityKeyError, setSecurityKeyError] = useState(false);
 
-	// const handleChange = (e: { target: { value: any } }) => {
-	// 	const inputValue = e.target.value;
-	// 	setSecurityKeyInput(inputValue);
+	const handleChange = (e: { target: { value: any } }) => {
+		const inputValue = e.target.value;
+		setSecurityKeyInput(inputValue);
 
-	// 	if (inputValue === data.securityKey) {
-	// 		setSecurityKeyError(false);
-	// 		e;
-	// 	} else {
-	// 		setSecurityKeyError(true);
-	// 	}
-	// };
+		if (inputValue === data.securityKey) {
+			setSecurityKeyError(false);
+			e;
+		} else {
+			setSecurityKeyError(true);
+		}
+	};
 
 	// Fetch the current stage of the form to capture whether the stage has changed to submit email,
 	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
@@ -126,14 +119,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const [verificationDate, setVerificationDate] = useState<Date | null>(null);
-	if (externalForm.verification_date) {
-		setVerificationDate(new Date(externalForm.verification_date));
-	}
-
 	const [approvalDate, setApprovalDate] = useState<Date | null>(null);
-	if (externalForm.approval_date) {
-		setApprovalDate(new Date(externalForm.approval_date));
-	}
+	useEffect(() => {
+		if (externalForm.verification_date) {
+			setVerificationDate(new Date(externalForm.verification_date));
+		}
+		if (externalForm.approval_date) {
+			setApprovalDate(new Date(externalForm.approval_date));
+		}
+	}, [externalForm.verification_date, externalForm.approval_date]);
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
@@ -141,7 +135,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			// TO-DO: PLEASE FIX ALL THE ERRORS HERE, TQ.
 			revertComment: externalForm.revertComment ?? "",
 			formStage: externalForm.formStage!,
-			securityKey: "",
+			securityKey: secKey ?? "",
 			verification_email: externalForm.verification_email!,
 			approval_email: externalForm.approval_email!,
 
@@ -1824,7 +1818,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			field.value = new Date(date);
 																		}
 																	}}
-																	disabled={date => date < new Date()}
+																	disabled={date => {
+																		const today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																		return date < today;
+																	}}
 																	initialFocus
 																/>
 															</PopoverContent>
@@ -1982,7 +1980,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
-																	selected={field.value}
+																	selected={field.value!}
 																	onSelect={date => {
 																		console.log("Date: " + date);
 																		field.onChange(date);
@@ -1991,7 +1989,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			field.value = new Date(date);
 																		}
 																	}}
-																	disabled={date => date < new Date()}
+																	disabled={date => {
+																		const today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																		return date < today;
+																	}}
 																	initialFocus
 																/>
 															</PopoverContent>
@@ -2101,7 +2103,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															autoComplete="off"
 															placeholder=""
 															{...field}
-															value={securityKeyInput}
 															onChange={handleChange}
 														/>
 													</FormControl>
@@ -2318,8 +2319,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															autoComplete="off"
 															placeholder=""
 															{...field}
-															value={securityKeyInput}
-															onChange={handleChange}
+															onChange={e => {
+																field.onChange(e.target.value);
+																if (e.target.value === secKey) {
+																	setSecurityKeyError(false);
+																} else {
+																	setSecurityKeyError(true);
+																}
+															}}
 														/>
 													</FormControl>
 													<FormMessage>
@@ -2405,7 +2412,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 													<DialogTrigger asChild>
-														<Button type="button" className="mr-5" disabled={securityKeyError}>
+														<Button variant="destructive" type="button" className="mr-5" disabled={securityKeyError}>
 															Reject
 														</Button>
 													</DialogTrigger>
@@ -2473,25 +2480,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</Dialog>
 											</div>
 										) : null}
-										{/* <div className="mt-3">
-										<Button
-											className="mr-3 mt-3"
-											type="submit"
-											disabled={securityKeyError}
-											onClick={form.handleSubmit(
-												handleRevert
-											)}>
-											Reject
-										</Button>
-										<Button
-											type="button"
-											disabled={securityKeyError}
-											onClick={form.handleSubmit(
-												onSubmit
-											)}>
-											Submit for Review
-										</Button>
-									</div> */}
 									</div>
 								) : null}
 							</form>
