@@ -123,12 +123,6 @@ export default function FeedbackForm() {
 		e.preventDefault();
 
 		const {
-			fbCourseName,
-			fbCommencementDate,
-			fbCompletionDate,
-			fbDuration,
-			fbTrainersName,
-			fbTrainingProvider,
 			fbSectionA1,
 			fbSectionA2,
 			fbSectionA3,
@@ -149,7 +143,7 @@ export default function FeedbackForm() {
 		} = formData;
 
 		// Validate form fields
-		if (!fbCourseName || !fbCommencementDate || !fbCompletionDate || !fbDuration || !fbTrainersName || !fbTrainingProvider || !fbSectionA1 || !fbSectionA2 || !fbSectionA3 || !fbSectionA4 || !fbSectionA5 || !fbSectionB1 || !fbSectionB2 || !fbSectionB3 || !fbSectionB4 || !fbSectionC1 || !fbSectionD1 || !fbSectionESuggestions || !fbSectionEChanges || !fbSectionEAdditional || !fbFullName || !fbEmailAddress) {
+		if (!fbSectionA1 || !fbSectionA2 || !fbSectionA3 || !fbSectionA4 || !fbSectionA5 || !fbSectionB1 || !fbSectionB2 || !fbSectionB3 || !fbSectionB4 || !fbSectionC1 || !fbSectionD1 || !fbSectionESuggestions || !fbSectionEChanges || !fbSectionEAdditional || !fbFullName || !fbEmailAddress) {
 			return;
 		}
 
@@ -157,12 +151,12 @@ export default function FeedbackForm() {
 		const { data, error } = await supabase.from("feedback_forms").upsert([
 			{
 				fbSubEventID: sub_id,
-				fbCourseName,
-				fbCommencementDate,
-				fbCompletionDate,
-				fbDuration,
-				fbTrainersName,
-				fbTrainingProvider,
+				fbCourseName:eventData.intFEventName,
+				fbCommencementDate:eventData.sub_eventsStartDate,
+				fbCompletionDate:eventData.sub_eventsEndDate,
+				fbDuration:eventData.intFDurationCourse,
+				fbTrainersName:eventData.intFTrainerName,
+				fbTrainingProvider:eventData.intFTrainingProvider,
 				fbSectionA1,
 				fbSectionA2,
 				fbSectionA3,
@@ -219,7 +213,7 @@ export default function FeedbackForm() {
 									<p>Commencement Date: <span className="font-bold">{eventData.sub_eventsStartDate}</span></p>
 									<p>Completed Date: <span className="font-bold">{eventData.sub_eventsEndDate}</span></p>
 									<p>Course Duration (No. of Days): <span className="font-bold">{eventData.intFDurationCourse}</span></p>
-									<p>Trainer&apos;s Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
+									<p>Trainer's Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
 									<p>Training Provider: <span className="font-bold">{eventData.intFTrainingProvider}</span></p>
 									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
 								</div>
@@ -237,147 +231,7 @@ export default function FeedbackForm() {
 						</div>
 					</div>
 				</div>
-
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="courseName"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Course Name
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="text"
-							name="courseName"
-							id="courseName"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbCourseName}
-							onChange={(event) =>
-								setFormData({ ...formData, fbCourseName: event.target.value })
-							}
-						/>
-					</div>
-				</div>
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="commencementDate"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Commencement Date
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="date"
-							name="commencementDate"
-							id="commencementDate"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbCommencementDate.toISOString().split('T')[0]} // Format date as YYYY-MM-DD
-							onChange={(event) =>
-								setFormData({ ...formData, fbCommencementDate: new Date(event.target.value) })
-							}
-						/>
-					</div>
-				</div>
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="completionDate"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Completion Date
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="date"
-							name="completionDate"
-							id="completionDate"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbCompletionDate.toISOString().split('T')[0]} // Format date as YYYY-MM-DD
-							onChange={(event) =>
-								setFormData({ ...formData, fbCompletionDate: new Date(event.target.value) })
-							}
-						/>
-					</div>
-				</div>
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="duration"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Duration of Course (No. of Days)
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="text"
-							name="duration"
-							id="duration"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbDuration}
-							onChange={(event) =>
-								setFormData({ ...formData, fbDuration: event.target.value })
-							}
-						/>
-					</div>
-				</div>
-
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="trainerName"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Trainer&apos;s Name
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="text"
-							name="trainerName"
-							id="trainerName"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbTrainersName}
-							onChange={(event) =>
-								setFormData({ ...formData, fbTrainersName: event.target.value })
-							}
-						/>
-					</div>
-				</div>
-
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="trainingProvider"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Training Provider
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="text"
-							name="trainingProvider"
-							id="trainingProvider"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbTrainingProvider}
-							onChange={(event) =>
-								setFormData({ ...formData, fbTrainingProvider: event.target.value })
-							}
-						/>
-					</div>
-				</div>
+				
 				<div className="mb-4 p-2 pr-2 py-8 pl-2 lg:pl-5 bg-white rounded-lg overflow-x-auto">
 					<p className="block text-black font-medium text-[18px] lg:text-2xl ml-3 -mt-3">Assessment Criteria <span className="text-red-500"> *</span></p>
 					<div className="ml-1">
@@ -732,12 +586,6 @@ export default function FeedbackForm() {
 						className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
 						onClick={() => {
 							if (
-								formData.fbCourseName &&
-								formData.fbCommencementDate &&
-								formData.fbCompletionDate &&
-								formData.fbDuration &&
-								formData.fbTrainersName &&
-								formData.fbTrainingProvider &&
 								formData.fbSectionA1 &&
 								formData.fbSectionA2 &&
 								formData.fbSectionA3 &&
@@ -761,12 +609,6 @@ export default function FeedbackForm() {
 							}
 						}}
 						disabled={
-							!formData.fbCourseName ||
-							!formData.fbCommencementDate ||
-							!formData.fbCompletionDate ||
-							!formData.fbDuration ||
-							!formData.fbTrainersName ||
-							!formData.fbTrainingProvider ||
 							!formData.fbSectionA1 ||
 							!formData.fbSectionA2 ||
 							!formData.fbSectionA3 ||
