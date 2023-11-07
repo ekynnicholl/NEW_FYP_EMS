@@ -1711,6 +1711,19 @@ export default function Homepage() {
 													</div>
 												}
 											</div>
+
+											{/* <input
+												className="rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-[12px] lg:text-sm text-slate-500 focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] pl-2 lg:pl-3 py-[5px] w-[80px] dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300 ml-[19px]"
+												type="number"
+												value={calculateDays() || ''}
+												required
+												onChange={e =>
+													setMainEvent({
+														...mainEvent,
+														intFDurationCourse: e.target.value,
+													})
+												}
+											/> */}
 										</div>
 									</div>
 
