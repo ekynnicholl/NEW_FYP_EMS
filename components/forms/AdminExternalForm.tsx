@@ -1496,21 +1496,21 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Any expenditure cap? If yes, please specify below, </FormLabel>
 													<FormControl>
 														<RadioGroup
-															disabled={(externalForm.formStage !== 2 && true)}
+															disabled={externalForm.formStage !== 2 && !authToken}
 															onValueChange={field.onChange}
 															defaultValue={field.value}
-															className="flex space-x-1">
+															className="flex space-x-1 disabled:text-gray-500">
 															<FormItem className="flex items-center space-x-3 space-y-0">
 																<FormControl>
 																	<RadioGroupItem value="Yes" />
 																</FormControl>
-																<FormLabel className="font-normal">Yes</FormLabel>
+																<FormLabel className={"font-normal " + (externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")}>Yes</FormLabel>
 															</FormItem>
 															<FormItem className="flex items-center space-x-3 space-y-0">
 																<FormControl>
 																	<RadioGroupItem value="No" />
 																</FormControl>
-																<FormLabel className="font-normal">No</FormLabel>
+																<FormLabel className={"font-normal " + (externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")}>No</FormLabel>
 															</FormItem>
 														</RadioGroup>
 													</FormControl>
@@ -2114,7 +2114,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															{...field}
 															onChange={e => {
 																field.onChange(e.target.value);
-																if (e.target.value === secKey) {
+																if (e.target.value === externalForm.securityKey) {
 																	setSecurityKeyError(false);
 																} else {
 																	setSecurityKeyError(true);
@@ -2123,7 +2123,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														/>
 													</FormControl>
 													<FormMessage>
-														{securityKeyError && <div className="error-message">The security key does not match.</div>}
+														{securityKeyError && <span>The security key does not match.</span>}
 													</FormMessage>
 												</FormItem>
 											)}
@@ -2309,7 +2309,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															{...field}
 															onChange={e => {
 																field.onChange(e.target.value);
-																if (e.target.value === secKey) {
+																if (e.target.value === externalForm.securityKey) {
 																	setSecurityKeyError(false);
 																} else {
 																	setSecurityKeyError(true);
@@ -2325,7 +2325,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 													<DialogTrigger asChild>
-														<Button type="button" className="mr-5" disabled={securityKeyError}>
+														<Button type="button" className="mr-5" disabled={form.getValues("securityKey") !== externalForm.securityKey}>
 															Reject
 														</Button>
 													</DialogTrigger>
@@ -2366,7 +2366,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
 													<DialogTrigger asChild>
-														<Button type="button" disabled={securityKeyError}>
+														<Button type="button" disabled={form.getValues("securityKey") !== externalForm.securityKey}>
 															Submit for Review
 														</Button>
 													</DialogTrigger>
@@ -2398,7 +2398,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 													<DialogTrigger asChild>
-														<Button variant="destructive" type="button" className="mr-5" disabled={securityKeyError}>
+														<Button variant="destructive" type="button" className="mr-5" disabled={form.getValues("securityKey") !== externalForm.securityKey}>
 															Reject
 														</Button>
 													</DialogTrigger>
@@ -2439,7 +2439,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 												<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
 													<DialogTrigger asChild>
-														<Button type="button" disabled={securityKeyError}>
+														<Button type="button" disabled={form.getValues("securityKey") !== externalForm.securityKey}>
 															Approve
 														</Button>
 													</DialogTrigger>
