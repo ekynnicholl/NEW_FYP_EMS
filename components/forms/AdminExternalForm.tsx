@@ -61,6 +61,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	// Check whether the user is logged in,
 	const authToken = cookie.get("authToken");
+	console.log("Logged auth token: " + authToken);
 
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
@@ -1492,10 +1493,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="expenditure_cap"
 											render={({ field }) => (
 												<FormItem className="space-y-3">
-													<FormLabel>Any expenditure cap? If yes, please specify below</FormLabel>
+													<FormLabel>Any expenditure cap? If yes, please specify below, </FormLabel>
 													<FormControl>
 														<RadioGroup
-															disabled={externalForm.formStage !== 2}
+															disabled={(externalForm.formStage !== 2 && true)}
 															onValueChange={field.onChange}
 															defaultValue={field.value}
 															className="flex space-x-1">
@@ -1525,7 +1526,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Expenditure Cap Amount</FormLabel>
 													<FormControl>
 														<Input
-															disabled={form.getValues("expenditure_cap") !== "Yes" || externalForm.formStage !== 2}
+															disabled={form.getValues("expenditure_cap") !== "Yes" || (externalForm.formStage !== 2 && !authToken)}
 															type="number"
 															{...field}
 															onChange={e => {
@@ -1956,7 +1957,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													name="approval_position_title"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Position title</FormLabel>
+															<FormLabel>Position Title</FormLabel>
 															<FormControl>
 																<Input placeholder="" {...field} />
 															</FormControl>
@@ -2166,7 +2167,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Verification Email</FormLabel>
-															<Select onValueChange={field.onChange} defaultValue={field.value}>
+															<Select disabled={!authToken} onValueChange={field.onChange} defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2190,7 +2191,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Approval Email</FormLabel>
-															<Select onValueChange={field.onChange} defaultValue={field.value}>
+															<Select disabled={!authToken} onValueChange={field.onChange} defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2214,6 +2215,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 											<DialogTrigger asChild>
 												<Button
+													disabled={!authToken}
 													type="button"
 													className="mr-5"
 													onClick={() => {
@@ -2259,7 +2261,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
 											<DialogTrigger asChild>
-												<Button type="button">Submit for Review</Button>
+												<Button disabled={!authToken} type="button">Submit for Review</Button>
 											</DialogTrigger>
 											<DialogContent>
 												<DialogHeader>
