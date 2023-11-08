@@ -41,6 +41,14 @@
   color: black !important;
 }
 
+.react-calendar__navigation__arrow:hover{
+  color: black !important;
+}
+
+.react-calendar__tile:hover{
+  color: black !important;
+}
+
 /* hover state for weekend date, color stays red*/
 .react-calendar__month-view__days__day--weekend:hover {
   color:red;
