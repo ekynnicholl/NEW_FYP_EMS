@@ -14,8 +14,10 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
-                <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+                <br/>   
+                <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
+                <br/>
+                <p class="no-p-m">Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
         }
 
@@ -72,7 +74,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             rejectMessage = `
-                <br/>
                 <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
                 <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                 <br/>

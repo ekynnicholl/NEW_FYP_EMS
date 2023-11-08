@@ -69,14 +69,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [securityKeyError, setSecurityKeyError] = useState(false);
 
 	// // Fetch the current stage of the form to capture whether the stage has changed to submit email,
-	// const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
+	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
 
-	// useEffect(() => {
-	// 	if (externalForm.formStage != fetchedFormStage) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.formStage]);
+	useEffect(() => {
+		if (externalForm.formStage != fetchedFormStage) {
+			console.log(externalForm);
+			sendContactForm(externalForm);
+		}
+	}, [externalForm.formStage]);
 
 	const applicantSigCanvas = useRef({});
 	const applicantSigClear = (field: FieldValues) => {
@@ -103,6 +103,22 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		setApprovalImageURL(null);
 		field.onChange("");
 		field.value = "";
+	};
+
+	const showSuccessToast = (message: string) => {
+		toast.success(message, {
+			duration: 3500,
+			style: {
+				border: '1px solid #86DC3D',
+				padding: '16px',
+				color: '#000000',
+				textAlign: 'justify',
+			},
+			iconTheme: {
+				primary: '#86DC3D',
+				secondary: '#FFFAEE',
+			},
+		});
 	};
 
 	const [verificationDate, setVerificationDate] = useState<Date | null>(null);
@@ -249,7 +265,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				toast.error("Error submitting form");
 				console.error("Error updating data:", error);
 			} else {
-				toast.success("Form submitted successfully");
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 				console.log("Data updated successfully:", data);
 
 				setExternalForm({
@@ -257,6 +273,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					revertComment: "",
 					expenditure_cap: externalForm.expenditure_cap,
 					expenditure_cap_amount: externalForm.expenditure_cap_amount,
+					verification_email: values.verification_email!,
+					approval_email: values.approval_email!,
 					securityKey: securityKeyUID,
 					formStage: 3,
 				});
@@ -293,7 +311,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				toast.error("Error submitting form");
 			} else {
-				toast.success("Form submitted successfully");
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				setExternalForm({
 					...externalForm,
@@ -338,6 +356,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				console.error("Error inserting data:", error);
 			} else {
 				console.log("Data inserted successfully:", values);
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				setExternalForm({
 					...externalForm,
@@ -350,7 +369,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			}
 		}
 
-	// 	// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
+		// 	// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
 		else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
 				.from("external_forms")
@@ -379,6 +398,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				console.error("Error inserting data:", error);
 			} else {
 				console.log("Data inserted successfully:", data);
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				setExternalForm({
 					...externalForm,
@@ -424,9 +444,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				console.error("Error updating data:", error);
 			} else {
 				console.log("Data updated successfully:", data);
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				setExternalForm({
 					...externalForm,
+					revertComment: values.revertComment!,
 					formStage: 6,
 				});
 
@@ -462,9 +484,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				console.log(error);
 			} else {
 				console.log("Data updated successfully:", data);
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				setExternalForm({
 					...externalForm,
+					revertComment: values.revertComment!,
 					formStage: 6,
 				});
 
@@ -496,12 +520,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				console.error("Error updating data:", error);
 			} else {
 				console.log("Data updated successfully:", data);
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
 
 				setExternalForm({
 					...externalForm,
 					securityKey: securityKeyUID,
+					revertComment: values.revertComment!,
 					formStage: 1,
 				});
 
@@ -1586,7 +1612,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="applicant_declaration_position_title"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Position title</FormLabel>
+														<FormLabel>Position Title</FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -1762,7 +1788,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													name="verification_position_title"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Position title</FormLabel>
+															<FormLabel>Position Title</FormLabel>
 															<FormControl>
 																<Input disabled={externalForm.formStage != 3} placeholder="" {...field} />
 															</FormControl>

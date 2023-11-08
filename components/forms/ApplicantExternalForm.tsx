@@ -58,6 +58,22 @@ export default function ExternalForm() {
 		setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
 	};
 
+	const showSuccessToast = (message: string) => {
+		toast.success(message, {
+			duration: 3500,
+			style: {
+				border: '1px solid #86DC3D',
+				padding: '16px',
+				color: '#000000',
+				textAlign: 'justify',
+			},
+			iconTheme: {
+				primary: '#86DC3D',
+				secondary: '#FFFAEE',
+			},
+		});
+	};
+
 	const form = useForm<z.infer<typeof externalFormSchema>>({
 		resolver: zodResolver(externalFormSchema),
 		defaultValues: {
@@ -163,7 +179,7 @@ export default function ExternalForm() {
 		} else {
 			console.log(data);
 			setExternalForm({ ...values, id: data[0].id });
-			toast.success("Form submitted successfully");
+			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 			setFormIsSuccess(true);
 
 			router.refresh();
