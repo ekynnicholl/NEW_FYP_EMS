@@ -193,7 +193,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 			verification_signature: externalForm.verification_signature ?? "",
 			verification_name: externalForm.verification_name ?? "",
-			verification_position_title: externalForm.program_title ?? "",
+			verification_position_title: externalForm.verification_position_title ?? "",
 			verification_date: verificationDate,
 
 			approval_signature: externalForm.approval_signature ?? "",
@@ -214,24 +214,20 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
 			toast.error("Please enter the name of other members traveling together");
 		}
-		if (
-			(externalForm.formStage === 3 && form.getValues("verification_name") === "") ||
+		if (externalForm.formStage === 3) {
+			if (form.getValues("verification_name") === "" ||
 			form.getValues("verification_position_title") === "" ||
 			form.getValues("verification_signature") === "" ||
 			form.getValues("verification_signature") === null ||
-			form.getValues("verification_date") === undefined
-		) {
-			console.log(form.getValues("verification_signature"));
-			toast.error("Please fill in all the required verification fields");
+			form.getValues("verification_date") === undefined) {
+				toast.error("Please fill in all the required verification fields");
+			}
 		}
-		if (
-			(externalForm.formStage === 4 && form.getValues("approval_name") === "") ||
-			form.getValues("approval_position_title") === "" ||
-			form.getValues("approval_signature") === "" ||
-			form.getValues("approval_signature") === null ||
-			form.getValues("approval_date") === undefined
-		) {
-			toast.error("Please fill in all the required approval fields");
+		
+		if (externalForm.formStage === 4) {
+			if (form.getValues("approval_name") === "" || form.getValues("approval_position_title") === "" || form.getValues("approval_signature") === "" || form.getValues("approval_signature") === null || form.getValues("approval_date") === undefined) {
+				toast.error("Please fill in all the required approval fields");
+			}
 		}
 	};
 
