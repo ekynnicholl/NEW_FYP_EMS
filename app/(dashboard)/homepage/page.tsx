@@ -3422,7 +3422,7 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												{eventsWithDaysLeft.map((event, index) => (
+												{eventsWithDaysLeft.slice(0, 1).map((event, index) => (
 													<div key={index}>
 														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
@@ -3697,7 +3697,7 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												{eventsWithDaysLeft.map((event, index) => (
+												{eventsWithDaysLeft.slice(1, 2).map((event, index) => (
 													<div key={index}>
 														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
@@ -3972,7 +3972,7 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												{eventsWithDaysLeft.map((event, index) => (
+												{eventsWithDaysLeft.slice(2, 3).map((event, index) => (
 													<div key={index}>
 														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
@@ -4247,7 +4247,7 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												{eventsWithDaysLeft.map((event, index) => (
+												{eventsWithDaysLeft.slice(3, 4).map((event, index) => (
 													<div key={index}>
 														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
@@ -4522,7 +4522,7 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												{eventsWithDaysLeft.map((event, index) => (
+												{eventsWithDaysLeft.slice(4, 5).map((event, index) => (
 													<div key={index}>
 														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
@@ -4797,7 +4797,7 @@ export default function Homepage() {
 													})}
 
 											<div className="flex justify-between items-end mt-5">
-												{eventsWithDaysLeft.map((event, index) => (
+												{eventsWithDaysLeft.slice(5, 6).map((event, index) => (
 													<div key={index}>
 														<span className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? 'shake' : ''}`}>
 															<span aria-hidden className="absolute inset-0 bg-red-200 opacity-50 rounded-full dark:bg-red-900"></span>
