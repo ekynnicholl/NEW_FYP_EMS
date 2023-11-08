@@ -242,6 +242,10 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m" style="text-align: justify;">This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
                     approved or rejected. If you have any questions, please do not hesitate to contact us at ...@...</p>
                     <br/>
+                    <p class="no-p-m">You may review your submitted form here:</p>
+                    ${link}
+                    <br/>
+                    <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>

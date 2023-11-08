@@ -94,7 +94,7 @@ export default function AttendanceForm() {
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < startTimeWindow) {
 				const eventStartTimeString = startTimeWindow.toISOString();
-				// router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
+				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
 				// router.push('/notFound?from=start_att');
 				return;
 			}
