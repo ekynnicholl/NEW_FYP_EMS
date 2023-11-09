@@ -639,9 +639,28 @@ export default function Homepage() {
 					return;
 				}
 
-				// Set the attendance data for the selected sub-event
-				setAttendanceData(attendanceForms);
+				// Fetch the sub-event name,
+				const { data: subEvents, error: subEventsError } = await supabase
+					.from("sub_events")
+					.select()
+					.eq("sub_eventsID", subEvent.sub_eventsID);
 
+				if (subEventsError) {
+					console.error("Error fetching sub_events:", subEventsError);
+					return;
+				} else {
+					const subEventNameMap: { [key: string]: string } = {};
+					subEvents.forEach(subEvent => {
+						subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+					});
+
+					const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+						...attendanceItem,
+						sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+					}));
+
+					setAttendanceData(attendanceDataWithSubEventNames);
+				}
 			} catch (error) {
 				const typedError = error as Error;
 				console.error("Error:", typedError.message);

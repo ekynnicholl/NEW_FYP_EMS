@@ -341,8 +341,31 @@ export default function Home() {
                     return;
                 }
 
+                // Fetch the sub-event name,
+                const { data: subEvents, error: subEventsError } = await supabase
+                    .from("sub_events")
+                    .select()
+                    .eq("sub_eventsID", subEvent.sub_eventsID);
+
+                if (subEventsError) {
+                    console.error("Error fetching sub_events:", subEventsError);
+                    return;
+                } else {
+                    const subEventNameMap: { [key: string]: string } = {};
+                    subEvents.forEach(subEvent => {
+                        subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+                    });
+
+                    const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+                        ...attendanceItem,
+                        sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+                    }));
+
+                    setAttendanceData(attendanceDataWithSubEventNames);
+                }
+
                 // Set the attendance data for the selected sub-event
-                setAttendanceData(attendanceForms);
+                // setAttendanceData(attendanceForms);
 
             } catch (error) {
                 const typedError = error as Error;
@@ -663,7 +686,7 @@ export default function Home() {
             return 0;
         }
     });
-   
+
     // This is for feedback modal,
     const [feedbackData, setFeedbackData] = useState<FeedbackDataType[]>([]);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -787,7 +810,7 @@ export default function Home() {
     //show qr codes for each session
     const [showQRCodeModal, setShowQRCodeModal] = useState(false);
 
-    const openQRCodeModal = async() => {                
+    const openQRCodeModal = async () => {
         setShowQRCodeModal(true);
     }
 
@@ -1598,8 +1621,8 @@ export default function Home() {
                         </div>
                     </ViewAttendance_Modal>
 
-                    <Modal isVisible={showQRCodesFeedback} onClose={() => {setShowQRCodesFeedback(false); setShowQRCodeModal(true);}}>                    
-                        <div className="ml-2 p-5 z-[999]">                            
+                    <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodesFeedback(false); setShowQRCodeModal(true); }}>
+                        <div className="ml-2 p-5 z-[999]">
                             <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
                                 Feedback
                             </h3>
@@ -1620,31 +1643,31 @@ export default function Home() {
                     </Modal>
 
                     <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
-                            <div className="p-6">
-                                <p className="font-semibold text-center">Feedback Form</p>
-                                {subEvents
-								.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
-								.map((subEvent, index) => (
-									<div key={index} className="mt-2">
-                                        
+                        <div className="p-6">
+                            <p className="font-semibold text-center">Feedback Form</p>
+                            {subEvents
+                                .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+                                .map((subEvent, index) => (
+                                    <div key={index} className="mt-2">
+
                                         <button
-											type="button"
-											className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
-											onClick={() => {
-											    setSelectedSubEventID(subEvent.sub_eventsID);
-											    setShowQRCodesFeedback(true);
+                                            type="button"
+                                            className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
+                                            onClick={() => {
+                                                setSelectedSubEventID(subEvent.sub_eventsID);
+                                                setShowQRCodesFeedback(true);
                                                 setShowQRCodeModal(false);
-										}}>
-											<span className="ml-2 text-slate-800 flex items-center mr-2">
-												<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-												<span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
-                                                Session {index+1}
-												</span>
-											</span>
-										</button>
+                                            }}>
+                                            <span className="ml-2 text-slate-800 flex items-center mr-2">
+                                                <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+                                                <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                    Session {index + 1}
+                                                </span>
+                                            </span>
+                                        </button>
                                     </div>
-                                ))}                                
-                            </div>
+                                ))}
+                        </div>
                     </QRCodeModal>
 
                     {/* mobile view table*/}
@@ -1756,12 +1779,12 @@ export default function Home() {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation(); // 
-                                                                openFeedbackModal(
-                                                                    event.intFID,
-                                                                );
-                                                                fetchFeedbackList(event.intFID);
-                                                            }}>Event Feedback
+                                                            e.stopPropagation(); // 
+                                                            openFeedbackModal(
+                                                                event.intFID,
+                                                            );
+                                                            fetchFeedbackList(event.intFID);
+                                                        }}>Event Feedback
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem onClick={() => {
