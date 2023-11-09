@@ -217,14 +217,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		}
 		if (externalForm.formStage === 3) {
 			if (form.getValues("verification_name") === "" ||
-			form.getValues("verification_position_title") === "" ||
-			form.getValues("verification_signature") === "" ||
-			form.getValues("verification_signature") === null ||
-			form.getValues("verification_date") === undefined) {
+				form.getValues("verification_position_title") === "" ||
+				form.getValues("verification_signature") === "" ||
+				form.getValues("verification_signature") === null ||
+				form.getValues("verification_date") === undefined) {
 				toast.error("Please fill in all the required verification fields");
 			}
 		}
-		
+
 		if (externalForm.formStage === 4) {
 			if (form.getValues("approval_name") === "" || form.getValues("approval_position_title") === "" || form.getValues("approval_signature") === "" || form.getValues("approval_signature") === null || form.getValues("approval_date") === undefined) {
 				toast.error("Please fill in all the required approval fields");
@@ -276,6 +276,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 3,
 				});
 
+				window.location.reload();
 				router.push("/external_status");
 				// window.location.reload();
 			}
@@ -361,6 +362,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 4,
 				});
 
+				window.location.reload();
 				router.push("/external_status");
 				// window.location.reload();
 			}
@@ -2167,7 +2169,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Verification Email</FormLabel>
-															<Select disabled={!authToken} onValueChange={field.onChange} defaultValue={field.value}>
+															<Select
+																// disabled={!authToken}
+																onValueChange={field.onChange} defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2191,7 +2195,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Approval Email</FormLabel>
-															<Select disabled={!authToken} onValueChange={field.onChange} defaultValue={field.value}>
+															<Select
+																// disabled={!authToken} 
+																onValueChange={field.onChange} defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2215,7 +2221,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 											<DialogTrigger asChild>
 												<Button
-													disabled={!authToken}
+													// disabled={!authToken}
 													type="button"
 													className="mr-5"
 													onClick={() => {
@@ -2261,7 +2267,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
 											<DialogTrigger asChild>
-												<Button disabled={!authToken} type="button">Submit for Review</Button>
+												<Button
+													// disabled={!authToken} 
+													type="button">Submit for Review</Button>
 											</DialogTrigger>
 											<DialogContent>
 												<DialogHeader>

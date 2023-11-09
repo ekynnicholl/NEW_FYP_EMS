@@ -363,10 +363,6 @@ export default function Home() {
 
                     setAttendanceData(attendanceDataWithSubEventNames);
                 }
-
-                // Set the attendance data for the selected sub-event
-                // setAttendanceData(attendanceForms);
-
             } catch (error) {
                 const typedError = error as Error;
                 console.error("Error:", typedError.message);
