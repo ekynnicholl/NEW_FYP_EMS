@@ -213,7 +213,7 @@ export default function FeedbackForm() {
 									<p>Commencement Date: <span className="font-bold">{eventData.sub_eventsStartDate}</span></p>
 									<p>Completed Date: <span className="font-bold">{eventData.sub_eventsEndDate}</span></p>
 									<p>Course Duration (No. of Days): <span className="font-bold">{eventData.intFDurationCourse}</span></p>
-									<p>Trainer's Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
+									<p>Trainer&apos;s Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
 									<p>Training Provider: <span className="font-bold">{eventData.intFTrainingProvider}</span></p>
 									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
 								</div>
