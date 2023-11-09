@@ -126,14 +126,31 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		});
 	};
 
-	const [verificationDate, setVerificationDate] = useState<Date | null>(null);
-	const [approvalDate, setApprovalDate] = useState<Date | null>(null);
+	const [verificationDate, setVerificationDate] = useState<Date | null>(externalForm.verification_date ? new Date(externalForm.verification_date) : new Date());
+	const [approvalDate, setApprovalDate] = useState<Date | null>(externalForm.approval_date ? new Date(externalForm.approval_date) : new Date());
+	console.log(externalForm.verification_date)
+	console.log(verificationDate)
+	
 	useEffect(() => {
-		if (externalForm.verification_date) {
-			setVerificationDate(new Date(externalForm.verification_date));
+		console.log(form.getValues("verification_date"))
+		console.log(form.getValues("approval_date"))
+
+		if (externalForm.formStage === 3) {
+			if (externalForm.verification_date === null || externalForm.verification_date === undefined) {
+				form.setValue("verification_date", new Date());
+				console.log(verificationDate)
+				console.log(externalForm.verification_date);
+				// setVerificationDate(new Date(externalForm.verification_date));
+			}
 		}
-		if (externalForm.approval_date) {
-			setApprovalDate(new Date(externalForm.approval_date));
+
+		if (externalForm.formStage === 4) {
+			if (externalForm.approval_date === null || externalForm.approval_date === undefined) {
+				form.setValue("approval_date", new Date());
+				console.log(approvalDate)
+				console.log(externalForm.approval_date);
+				// setApprovalDate(new Date(externalForm.approval_date));
+			}
 		}
 	}, [externalForm.verification_date, externalForm.approval_date]);
 
@@ -549,7 +566,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const [group, setGroup] = useState(true);
-	console.log(authToken);
+	// console.log(authToken);
 
 	return (
 		<div>

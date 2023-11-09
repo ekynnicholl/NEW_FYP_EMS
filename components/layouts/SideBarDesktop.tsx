@@ -111,7 +111,7 @@ const NavigationBarDesktop = () => {
 
 	return (
 		<div
-			className={wrapper}
+			className={wrapper + " md:block sm:hidden"}
 			onMouseEnter={handleHoverEnter}
 			onMouseLeave={handleHoverLeave}
 			style={{ transition: "width 300ms cubic-bezier(0.2, 0, 0, 1)" }}
