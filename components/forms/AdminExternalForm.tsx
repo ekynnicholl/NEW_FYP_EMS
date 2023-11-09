@@ -2194,7 +2194,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormItem>
 															<FormLabel>Verification Email</FormLabel>
 															<Select
-																// disabled={!authToken}
+																disabled={!authToken}
 																onValueChange={field.onChange}
 																defaultValue={field.value}>
 																<FormControl>
@@ -2221,7 +2221,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormItem>
 															<FormLabel>Approval Email</FormLabel>
 															<Select
-																// disabled={!authToken}
+																disabled={!authToken}
 																onValueChange={field.onChange}
 																defaultValue={field.value}>
 																<FormControl>
