@@ -126,8 +126,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		});
 	};
 
-	const [verificationDate, setVerificationDate] = useState<Date | null>(externalForm.verification_date ? new Date(externalForm.verification_date) : new Date());
-	const [approvalDate, setApprovalDate] = useState<Date | null>(externalForm.approval_date ? new Date(externalForm.approval_date) : new Date());
+	const [verificationDate, setVerificationDate] = useState<Date | null>(externalForm.verification_date ? new Date(externalForm.verification_date) : null);
+	const [approvalDate, setApprovalDate] = useState<Date | null>(externalForm.approval_date ? new Date(externalForm.approval_date) : null);
 	console.log(externalForm.verification_date)
 	console.log(verificationDate)
 	
@@ -140,7 +140,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				form.setValue("verification_date", new Date());
 				console.log(verificationDate)
 				console.log(externalForm.verification_date);
-				// setVerificationDate(new Date(externalForm.verification_date));
+				setVerificationDate(new Date());
 			}
 		}
 
@@ -149,7 +149,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				form.setValue("approval_date", new Date());
 				console.log(approvalDate)
 				console.log(externalForm.approval_date);
-				// setApprovalDate(new Date(externalForm.approval_date));
+				setApprovalDate(new Date());
 			}
 		}
 	}, [externalForm.verification_date, externalForm.approval_date]);
