@@ -150,6 +150,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 	const [userId, setUserId] = useState<string | null>(null);
 	const [homepageView, setHomepageView] = useState(1);
 	const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+	const authToken = cookie.get('authToken');
 
 	useEffect(() => {
 		const storedUserId = localStorage.getItem("concatenatedID");
@@ -165,9 +166,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	const fetchHomepageView = async () => {
 		const { data, error } = await supabase
-			.from("accounts")
+			.from("login")
 			.select("accHomeView")
-			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58"); // Use the appropriate accID
+			.eq("firebase_uid", authToken); // Use the appropriate accID
 
 		if (error) {
 			console.error("Error fetching homepageView:", error);
@@ -181,9 +182,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	const fetchIsDarkMode = async () => {
 		const { data, error } = await supabase
-			.from("accounts")
+			.from("login")
 			.select("accIsDarkMode")
-			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58"); // Use the appropriate accID
+			.eq("firebase_uid", authToken); // Use the appropriate accID
 
 		if (error) {
 			console.error("Error fetching IsDarkMode:", error);
@@ -205,9 +206,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 	// 0 is vanilla, 1 is dark mode.
 	const updateIsDarkMode = async (status: boolean) => {
 		const { data, error } = await supabase
-			.from("accounts")
+			.from("login")
 			.update({ accIsDarkMode: status })
-			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58")
+			.eq("firebase_uid", authToken)
 			.select();
 
 		if (error) {
@@ -225,7 +226,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 		// Remove the cookies,
 		cookie.remove("authToken");
-		cookie.remove("accountRank");
 
 		// Redirect to the login page after logout
 		window.location.href = "/login"; // You can replace with the actual login page URL
@@ -233,9 +233,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	const updateHomepageView = async (id: number) => {
 		const { data, error } = await supabase
-			.from("accounts")
+			.from("login")
 			.update({ accHomeView: id })
-			.eq("accID", "8f505ae4-8a5e-465b-bf32-3f7843554e58");
+			.eq("firebase_uid", authToken);
 
 		if (error) {
 			console.error("Update failed:", error);
@@ -359,7 +359,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
-	
+
 
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
@@ -426,7 +426,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			</AddAdmin_Modal >
 
 			<BreadCrumb />
-			
+
 			<div className="flex space-x-6 pr-2 pl-12">
 				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
 					{!isDarkMode ? (

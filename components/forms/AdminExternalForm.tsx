@@ -276,7 +276,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 3,
 				});
 
-				window.location.reload();
 				router.push("/external_status");
 				// window.location.reload();
 			}
@@ -362,7 +361,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					formStage: 4,
 				});
 
-				window.location.reload();
 				router.push("/external_status");
 				// window.location.reload();
 			}
