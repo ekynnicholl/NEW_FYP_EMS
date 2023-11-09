@@ -143,7 +143,7 @@ export default function Home({ id }: { id: string }) {
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Completion date of event</label>
                                 <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={details.completion_date} />
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Organiser</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details && details.organiser.length > 0 ? details.organiser : "-" } />
+                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details && details.organiser.length > 0 ? details.organiser : "-"} />
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0">Venue</label>
                                 <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={details.venue} />
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border-l border-r border-slate-950">HRDF Claimable</label>
@@ -226,10 +226,10 @@ export default function Home({ id }: { id: string }) {
                                         <span className="ml-2">Staff Development Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.staff_development_fund > "0" ?  details.staff_development_fund : 0 } />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.staff_development_fund > "0" ? details.staff_development_fund : 0} />
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false}/></span>
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Consolidated Pool Fund</span>
                                     </label>
 
@@ -240,7 +240,7 @@ export default function Home({ id }: { id: string }) {
                                         <span className="ml-2">Research Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.research_fund === "0" ? details.research_fund : 0}/>
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.research_fund === "0" ? details.research_fund : 0} />
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.research_fund > "0" ? true : false} /></span>
@@ -254,7 +254,7 @@ export default function Home({ id }: { id: string }) {
                                         <span className="ml-2">Student Council / Student Welfare Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.student_council_fund === "0" ? details.student_council_fund : 0 } />
+                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.student_council_fund === "0" ? details.student_council_fund : 0} />
 
                                     <label className="col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.student_council_fund > "0" ? true : false} /></span>
@@ -286,7 +286,7 @@ export default function Home({ id }: { id: string }) {
                                     <div className="ml-6 mt-1">
                                         <label>Signature<span className="ml-8">:</span></label>
                                         {details && details.applicant_declaration_signature === null ?
-                                            <></> : <img src={details.applicant_declaration_signature} className="absolute w-4 h-4 ml-40 -mt-6"/> }
+                                            <></> : <img src={details.applicant_declaration_signature} className="absolute w-4 h-4 ml-40 -mt-6" />}
 
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
@@ -303,7 +303,7 @@ export default function Home({ id }: { id: string }) {
                                     <div className="mx-4 mt-4">
                                         <label>Signature<span className="ml-8">:</span></label>
                                         {details && details.verification_signature === null ?
-                                            <></> : <img src={details.verification_signature} className="absolute w-4 h-4 ml-40 -mt-6"/>}
+                                            <></> : <img src={details.verification_signature} className="absolute w-4 h-4 ml-40 -mt-6" />}
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[48px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.verification_name} /><br />
@@ -324,12 +324,12 @@ export default function Home({ id }: { id: string }) {
                                     <label>Position Title<span className="ml-[16px]">:</span></label>
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_position_title} />
                                     {details && details.approval_signature === null ?
-                                        <></> : <img src={details.approval_signature} className="absolute w-8 h-8 ml-[90vh] -mt-8"/>}
+                                        <></> : <img src={details.approval_signature} className="absolute w-8 h-8 ml-[50vh] -mt-8" />}
 
                                     <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
                                     <br />
                                     <label>Date<span className="ml-[54px]">:</span></label>
-                                    <input type="text" className="bg-gray-200 ml-2 w-60" value={details.approval_date}/>
+                                    <input type="text" className="bg-gray-200 ml-2 w-60" value={details.approval_date} />
                                     <label className="float-right mr-[135px]">Signature</label>
                                 </div>
                             </div>
