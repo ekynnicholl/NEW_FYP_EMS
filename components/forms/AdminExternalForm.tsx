@@ -60,8 +60,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [showCommentInput, setShowCommentInput] = useState(false);
 
 	// Check whether the user is logged in,
-	const authToken = cookie.get("authToken");
-	console.log("Logged auth token: " + authToken);
+	const [authToken, setAuthToken] = useState<string | undefined>("");
+	useEffect(() => {
+		setAuthToken(cookie.get("authToken"));
+		console.log(!authToken);
+		console.log("Logged auth token: " + authToken);
+	}, [authToken]);
 
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
@@ -110,14 +114,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		toast.success(message, {
 			duration: 3500,
 			style: {
-				border: '1px solid #86DC3D',
-				padding: '16px',
-				color: '#000000',
-				textAlign: 'justify',
+				border: "1px solid #86DC3D",
+				padding: "16px",
+				color: "#000000",
+				textAlign: "justify",
 			},
 			iconTheme: {
-				primary: '#86DC3D',
-				secondary: '#FFFAEE',
+				primary: "#86DC3D",
+				secondary: "#FFFAEE",
 			},
 		});
 	};
@@ -216,17 +220,25 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			toast.error("Please enter the name of other members traveling together");
 		}
 		if (externalForm.formStage === 3) {
-			if (form.getValues("verification_name") === "" ||
+			if (
+				form.getValues("verification_name") === "" ||
 				form.getValues("verification_position_title") === "" ||
 				form.getValues("verification_signature") === "" ||
 				form.getValues("verification_signature") === null ||
-				form.getValues("verification_date") === undefined) {
+				form.getValues("verification_date") === undefined
+			) {
 				toast.error("Please fill in all the required verification fields");
 			}
 		}
 
 		if (externalForm.formStage === 4) {
-			if (form.getValues("approval_name") === "" || form.getValues("approval_position_title") === "" || form.getValues("approval_signature") === "" || form.getValues("approval_signature") === null || form.getValues("approval_date") === undefined) {
+			if (
+				form.getValues("approval_name") === "" ||
+				form.getValues("approval_position_title") === "" ||
+				form.getValues("approval_signature") === "" ||
+				form.getValues("approval_signature") === null ||
+				form.getValues("approval_date") === undefined
+			) {
 				toast.error("Please fill in all the required approval fields");
 			}
 		}
@@ -537,6 +549,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const [group, setGroup] = useState(true);
+	console.log(authToken);
 
 	return (
 		<div>
@@ -1504,13 +1517,25 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<RadioGroupItem value="Yes" />
 																</FormControl>
-																<FormLabel className={"font-normal " + (externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")}>Yes</FormLabel>
+																<FormLabel
+																	className={
+																		"font-normal " +
+																		(externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")
+																	}>
+																	Yes
+																</FormLabel>
 															</FormItem>
 															<FormItem className="flex items-center space-x-3 space-y-0">
 																<FormControl>
 																	<RadioGroupItem value="No" />
 																</FormControl>
-																<FormLabel className={"font-normal " + (externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")}>No</FormLabel>
+																<FormLabel
+																	className={
+																		"font-normal " +
+																		(externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")
+																	}>
+																	No
+																</FormLabel>
 															</FormItem>
 														</RadioGroup>
 													</FormControl>
@@ -1526,7 +1551,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Expenditure Cap Amount</FormLabel>
 													<FormControl>
 														<Input
-															disabled={form.getValues("expenditure_cap") !== "Yes" || (externalForm.formStage !== 2 && !authToken)}
+															disabled={
+																form.getValues("expenditure_cap") !== "Yes" ||
+																(externalForm.formStage !== 2 && !authToken)
+															}
 															type="number"
 															{...field}
 															onChange={e => {
@@ -2122,9 +2150,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															}}
 														/>
 													</FormControl>
-													<FormMessage>
-														{securityKeyError && <span>The security key does not match.</span>}
-													</FormMessage>
+													<FormMessage>{securityKeyError && <span>The security key does not match.</span>}</FormMessage>
 												</FormItem>
 											)}
 										/>
@@ -2169,7 +2195,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormLabel>Verification Email</FormLabel>
 															<Select
 																// disabled={!authToken}
-																onValueChange={field.onChange} defaultValue={field.value}>
+																onValueChange={field.onChange}
+																defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2194,8 +2221,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormItem>
 															<FormLabel>Approval Email</FormLabel>
 															<Select
-																// disabled={!authToken} 
-																onValueChange={field.onChange} defaultValue={field.value}>
+																// disabled={!authToken}
+																onValueChange={field.onChange}
+																defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2219,7 +2247,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 											<DialogTrigger asChild>
 												<Button
-													// disabled={!authToken}
+													disabled={!authToken}
 													type="button"
 													className="mr-5"
 													onClick={() => {
@@ -2265,9 +2293,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
 											<DialogTrigger asChild>
-												<Button
-													// disabled={!authToken} 
-													type="button">Submit for Review</Button>
+												<Button disabled={!authToken} type="button">
+													Submit for Review
+												</Button>
 											</DialogTrigger>
 											<DialogContent>
 												<DialogHeader>
@@ -2331,7 +2359,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 													<DialogTrigger asChild>
-														<Button type="button" className="mr-5" disabled={form.getValues("securityKey") !== externalForm.securityKey}>
+														<Button
+															type="button"
+															className="mr-5"
+															disabled={form.getValues("securityKey") !== externalForm.securityKey}>
 															Reject
 														</Button>
 													</DialogTrigger>
@@ -2404,7 +2435,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<div className="mt-5">
 												<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 													<DialogTrigger asChild>
-														<Button variant="destructive" type="button" className="mr-5" disabled={form.getValues("securityKey") !== externalForm.securityKey}>
+														<Button
+															variant="destructive"
+															type="button"
+															className="mr-5"
+															disabled={form.getValues("securityKey") !== externalForm.securityKey}>
 															Reject
 														</Button>
 													</DialogTrigger>
