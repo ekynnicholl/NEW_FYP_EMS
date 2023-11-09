@@ -48,9 +48,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
                     <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
-                    <p class="no-p-m">
-                        ${securityKeySentence.trim() === "" ? link : securityKeySentence}
-                    </p>
+                    <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -74,7 +72,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             rejectMessage = `
-                <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
+                <br/>
+                <p class="no-p-m" style="font-weight:bold;"> Reason(s) of rejection: </p>
                 <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                 <br/>
             `;
@@ -142,7 +141,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
-                    <h4 class="no-p-m">Congratulations! </h4>
+                    <h3 class="no-p-m">Congratulations! </h3>
+                    <br/>
                     <p class="no-p-m">Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here: </p>
                     <p class="no-p-m">${link}</p>
                     <br/>
