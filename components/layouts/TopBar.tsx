@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import MobileTopBar from "./MobileTopBar";
 import AddAdmin_Modal from "@/components/AddAdmin_Modal";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { auth, provider } from "../../google_config";
@@ -42,7 +43,6 @@ import {
 import { usePathname } from "next/navigation";
 
 const Notification = () => {
-
 	return (
 		<div className="cursor-pointer">
 			<DropdownMenu>
@@ -427,7 +427,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 			<BreadCrumb />
 
-			<div className="flex space-x-6 pr-2 pl-12">
+			<div className="flex space-x-6 pr-2 pl-12 md:block sm:hidden">
 				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
 					{!isDarkMode ? (
 						<BiSun className="text-[27px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />
@@ -483,6 +483,8 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					</DropdownMenu>
 				</div>
 			</div>
+			
+			<MobileTopBar />
 		</div>
 	);
 };

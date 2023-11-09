@@ -1509,7 +1509,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Any expenditure cap? If yes, please specify below, </FormLabel>
 													<FormControl>
 														<RadioGroup
-															disabled={externalForm.formStage !== 2 && !authToken}
+															disabled={externalForm.formStage !== 2 || !authToken}
 															onValueChange={field.onChange}
 															defaultValue={field.value}
 															className="flex space-x-1 disabled:text-gray-500">
@@ -1520,7 +1520,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormLabel
 																	className={
 																		"font-normal " +
-																		(externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")
+																		(externalForm.formStage !== 2 || !authToken ? "text-gray-500" : "")
 																	}>
 																	Yes
 																</FormLabel>
@@ -1532,7 +1532,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormLabel
 																	className={
 																		"font-normal " +
-																		(externalForm.formStage !== 2 && !authToken ? "text-gray-500" : "")
+																		(externalForm.formStage !== 2 || !authToken ? "text-gray-500" : "")
 																	}>
 																	No
 																</FormLabel>
