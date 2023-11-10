@@ -176,8 +176,8 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 
 		// Set the homepageView based on the fetched value
-		setHomepageView(data[0].accHomeView);
-		useViewModeStore.setState({ viewMode: data[0].accHomeView });
+		setHomepageView(data[0]?.accHomeView ?? '1');
+		useViewModeStore.setState({ viewMode: data[0]?.accHomeView ?? '1' });
 	};
 
 	const fetchIsDarkMode = async () => {
@@ -483,7 +483,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					</DropdownMenu>
 				</div>
 			</div>
-			
+
 			<MobileTopBar />
 		</div>
 	);
