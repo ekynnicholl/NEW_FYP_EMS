@@ -452,6 +452,7 @@ export default function Homepage() {
 	const [todayEvents, setTodayEvents] = useState<any[]>([]);
 	const [tomorrowEvents, setTomorrowEvents] = useState<any[]>([]);
 	const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+	const [displayedEvents, setDisplayedEvents] = useState<any[]>([]);
 
 	// Function to compare dates (ignores time)
 	function isSameDate(date1: string, date2: string) {
@@ -522,11 +523,12 @@ export default function Homepage() {
 					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime() &&
 					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
 			);
-
+			const displayedEvents = upcomingEvents.slice(0, 3);
 			// Set the categorized events
 			setTodayEvents(todayEvents);
 			setTomorrowEvents(tomorrowEvents);
 			setUpcomingEvents(upcomingEvents);
+			setDisplayedEvents(displayedEvents);
 		};
 		fetchGridView();
 	}, []);
@@ -6315,11 +6317,11 @@ export default function Homepage() {
 						<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
       					<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>							
 						<Calendar onDateChange={handleDateChange} />
-						{upcomingEvents.length > 0 && (
+						{displayedEvents.length > 0 && (
 					<div className="mt-4">
 					<h3 className="text-xl font-semibold my-5 ml-6">Upcoming Events:</h3>
 					<ul className="space-y-2">
-					{upcomingEvents.map((event) => {
+					{displayedEvents.map((event) => {
       const eventDate = new Date(event.intFEventStartDate);
       const formattedDate = `${eventDate.getDate()} ${eventDate.toLocaleString('en-US', { month: 'long' })} ${eventDate.getFullYear()}`;
 
