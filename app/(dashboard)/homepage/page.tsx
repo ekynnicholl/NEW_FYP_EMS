@@ -1566,7 +1566,6 @@ export default function Homepage() {
 		setActiveTab('all');
 	}, [selectedSubEvent, isAllButtonActive])
 
-// Empty dependency array ensures the effect runs once after initial render
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
