@@ -17,7 +17,7 @@ const NavLinks = [
     { id: 2, name: "Notifications", icon: NotifIconMobile, link: "/" },
     { id: 3, name: "Add Events", icon: AddIcon, link: "/test1" },
     { id: 4, name: "Reports", icon: ReportIcon, link: "/analytics" },
-    { id: 5, name: "NT Forms", icon: FormsIcon, link: "/report" },
+    { id: 5, name: "NT Forms", icon: FormsIcon, link: "/staffReport" },
 ];
 
 const NavigationBarMobile = () => {

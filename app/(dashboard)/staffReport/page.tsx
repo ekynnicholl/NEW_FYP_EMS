@@ -841,19 +841,19 @@ export default function Home() {
 										</div>
 									</td>
 									<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-										<p className="text-gray-900 whitespace-nowrap ml-4">
+										<p className="text-gray-900 whitespace-nowrap ml-7">
 											{mainEventAttended[index]?.intFEventName || "N/A"}
 										</p>
 									</td>
 
 									<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-										<p className="text-gray-900 whitespace-nowrap ml-4">
+										<p className="text-gray-900 whitespace-nowrap ml-1">
 											{subEvent.sub_eventsName}
 										</p>
 									</td>
 
 									<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-										<p className="text-gray-900 whitespace-nowrap ml-2">
+										<p className="text-gray-900 whitespace-nowrap -ml-2">
 											{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
 										</p>
 									</td>
