@@ -1566,6 +1566,27 @@ export default function Homepage() {
 		setActiveTab('all');
 	}, [selectedSubEvent, isAllButtonActive])
 
+	//for calendar
+	useEffect(() => {
+		async function fetchUpcomingEvents() {
+			const { data, error } = await supabase
+			.from('internal_events')
+			.select('intFEventName, intFEventStartDate')
+			.gte('intFEventStartDate', new Date()) // Fetch events starting from today or future dates
+			.order('intFEventStartDate')
+			.limit(3); // Limit the number of upcoming events to 3
+	
+			if (error) {
+			console.error('Error fetching upcoming events:', error);
+			} else {
+			setUpcomingEvents(data || []);
+			}
+		}
+	
+		fetchUpcomingEvents();
+		}, []); // Empty dependency array ensures the effect runs once after initial render
+	
+
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
@@ -6311,9 +6332,34 @@ export default function Homepage() {
 
 						</div>
 
+						
+						<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
+      					<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>							
 						<Calendar onDateChange={handleDateChange} />
+						{upcomingEvents.length > 0 && (
+					<div className="mt-4">
+					<h3 className="text-xl font-semibold my-5 ml-6">Upcoming Events:</h3>
+					<ul className="space-y-2">
+					{upcomingEvents.map((event) => {
+      const eventDate = new Date(event.intFEventStartDate);
+      const formattedDate = `${eventDate.getDate()} ${eventDate.toLocaleString('en-US', { month: 'long' })} ${eventDate.getFullYear()}`;
+
+
+						return (
+							<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+							<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
+							<span className="text-m mr-6">{formattedDate}</span>
+							</li>
+						);
+						})}
+					</ul>
+					</div>
+
+						)}					
+    					</div>
 
 					</div>
+					
 
 
 				) : (
@@ -6328,8 +6374,7 @@ export default function Homepage() {
 									<p className="font-bold ml-5 mb-5">No events today...</p>
 								) : (
 									todayEvents.map((event) => (
-										<div
-											key={event.intFID}
+										<div key={event.intFID}
 											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
