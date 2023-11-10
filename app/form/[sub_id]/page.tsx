@@ -367,8 +367,8 @@ export default function AttendanceForm() {
 								}
 							>
 								<option value="" disabled>Select Faculty/ Unit</option>
-								<option value="Academic Office">Faculty of Business, Design and Arts</option>
-								<option value="Audit and Risk">Faculty of Engineering, Computing and Science</option>
+								<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
+								<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
 							</select>
 						</div>
 					</div>

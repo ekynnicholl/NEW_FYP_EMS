@@ -595,11 +595,11 @@ export default function Homepage() {
 	};
 
 	useEffect(() => {
-		if (attendanceData && attendanceData.length > 0) {
+		if (filteredAttendanceData && filteredAttendanceData.length > 0) {
 			// Calculate labels (faculty/unit) and label data (counts)
 			const facultyCounts: { [key: string]: number } = {};
 
-			attendanceData.forEach(attendanceItem => {
+			filteredAttendanceData.forEach(attendanceItem => {
 				const faculty = attendanceItem.attFormsFacultyUnit;
 				if (facultyCounts[faculty]) {
 					facultyCounts[faculty]++;
@@ -728,7 +728,7 @@ export default function Homepage() {
 
 			const facultyCounts: { [key: string]: number } = {};
 
-			attendanceForms.forEach(attendanceItem => {
+			filteredAttendanceData.forEach(attendanceItem => {
 				const faculty = attendanceItem.attFormsFacultyUnit;
 				if (facultyCounts[faculty]) {
 					facultyCounts[faculty]++;
@@ -1501,6 +1501,29 @@ export default function Homepage() {
 				return item.attFormsStaffName.toLowerCase().includes(query.toLowerCase());
 			});
 		}
+
+		// const facultyCounts: { [key: string]: number } = {};
+
+		// filteredData.forEach(attendanceItem => {
+		// 	const faculty = attendanceItem.attFormsFacultyUnit;
+		// 	if (facultyCounts[faculty]) {
+		// 		facultyCounts[faculty]++;
+		// 	} else {
+		// 		facultyCounts[faculty] = 1;
+		// 	}
+		// });
+
+		// const facultyLabels = Object.keys(facultyCounts);
+		// const facultyData = facultyLabels.map(label => facultyCounts[label]);
+
+		// const canvas = chartContainer.current;
+
+		// if (canvas) {
+		// 	if (chartInstanceRef.current) {
+		// 		chartInstanceRef.current.destroy();
+		// 	}
+		// 	createHorizontalBarChart(canvas, facultyLabels, facultyData);
+		// }
 
 		setFilteredAttendanceData(filteredData);
 	};
