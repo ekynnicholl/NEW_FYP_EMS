@@ -1566,27 +1566,7 @@ export default function Homepage() {
 		setActiveTab('all');
 	}, [selectedSubEvent, isAllButtonActive])
 
-	//for calendar
-	useEffect(() => {
-		async function fetchUpcomingEvents() {
-			const { data, error } = await supabase
-			.from('internal_events')
-			.select('intFEventName, intFEventStartDate')
-			.gte('intFEventStartDate', new Date()) // Fetch events starting from today or future dates
-			.order('intFEventStartDate')
-			.limit(3); // Limit the number of upcoming events to 3
-	
-			if (error) {
-			console.error('Error fetching upcoming events:', error);
-			} else {
-			setUpcomingEvents(data || []);
-			}
-		}
-	
-		fetchUpcomingEvents();
-		}, []); // Empty dependency array ensures the effect runs once after initial render
-	
-
+// Empty dependency array ensures the effect runs once after initial render
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
