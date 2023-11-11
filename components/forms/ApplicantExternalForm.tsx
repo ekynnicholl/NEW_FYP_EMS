@@ -1280,6 +1280,7 @@ export default function ExternalForm() {
 															<DialogDescription>Please sign below</DialogDescription>
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
 																<SignaturePad
+																	// @ts-ignore
 																	ref={sigCanvas}
 																	canvasProps={{
 																		className: "w-full h-full",
@@ -1296,6 +1297,7 @@ export default function ExternalForm() {
 																			save();
 																			field.onChange(
 																				sigCanvas.current
+																					// @ts-ignore
 																					.getTrimmedCanvas()
 																					.toDataURL(
 																						"image/png",
@@ -1303,6 +1305,7 @@ export default function ExternalForm() {
 																			);
 																			field.value =
 																				sigCanvas.current
+																					// @ts-ignore
 																					.getTrimmedCanvas()
 																					.toDataURL(
 																						"image/png",
