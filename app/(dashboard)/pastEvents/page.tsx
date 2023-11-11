@@ -965,7 +965,7 @@ export default function Home() {
                                                 <td className="flex-1 py-5 mt-1">
                                                     <div className="flex items-center">
                                                         <div className="ml-4">
-                                                            <p className="text-gray-900">
+                                                            <p className="text-gray-900 dark:text-dark_text">
                                                                 {(currentPage - 1) *
                                                                     entriesToShow +
                                                                     index +
@@ -975,19 +975,19 @@ export default function Home() {
                                                     </div>
                                                 </td>
                                                 <td className="flex-1 py-5">
-                                                    <p className="text-gray-900 -ml-10">
+                                                    <p className="text-gray-900 -ml-10 dark:text-dark_text">
                                                         {event.intFEventName}
                                                     </p>
                                                 </td>
 
                                                 <td className="flex-1 py-5 -ml-3">
-                                                    <p className="text-gray-900 -ml-1">
+                                                    <p className="text-gray-900 -ml-1 dark:text-dark_text">
                                                         {event.intFEventDescription}
                                                     </p>
                                                 </td>
 
                                                 <td className="flex-1 py-5 ml-12">
-                                                    <p className="text-gray-900 whitespace-nowrap ml-[94px]">
+                                                    <p className="text-gray-900 whitespace-nowrap ml-[94px] dark:text-dark_text">
                                                         {event.intFEventStartDate}
                                                     </p>
                                                 </td>
@@ -1002,7 +1002,7 @@ export default function Home() {
                                                     </div>
                                                 </td>
 
-                                                <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+                                                <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
                                                             <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
@@ -1112,7 +1112,7 @@ export default function Home() {
                             <div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
                                 <div className="flex items-center text-[14px] text-base">
                                     <div className="mr-2 ml-3">
-                                        <span className="text-sm lg:text-base dark:text-dark_text">Show</span>
+                                        <span className="text-sm lg:text-base text-slate-800 dark:text-dark_text">Show</span>
                                     </div>
 
                                     {/* Filter By How Many Entries */}

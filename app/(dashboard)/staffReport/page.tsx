@@ -292,11 +292,11 @@ export default function Home() {
 
 	return (
 		<div className="h-screen flex flex-row justify-start">
-			<div className="flex-1 container mx-auto px-4 sm:px-8 py-8 bg-slate-100">
-				<div className="bg-white rounded p-8">
+			<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
+				<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
 					<div className="inline-flex">
-						<span className="mt-[5px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1" /></a></span>
-						<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px]">Reports</span></h1>
+						<span className="mt-[7px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" /></a></span>
+						<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Reports</span></h1>
 					</div>
 					<Fragment>
 						<div className="flex-1 items-center justify-left mb-8">
@@ -308,17 +308,17 @@ export default function Home() {
 						{/* Refresh Button */}
 						<button
 							type="button"
-							className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden"
+							className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
 							onClick={refreshData}>
-							<IoMdRefresh className="text-xl text-slate-800" />
-							<span className="ml-2 -mt-[1.25px] text-slate-800">
+							<IoMdRefresh className="text-xl text-slate-800 dark:text-dark_text" />
+							<span className="ml-2 -mt-[1.25px] text-slate-800 dark:text-dark_text">
 								Refresh
 							</span>
 						</button>
 
 						<div className="flex items-center">
 							{/* Search Input */}
-							<div className="max-w-full relative shadow hover:shadow-sm border border-slate-300 rounded mr-3">
+							<div className="max-w-full relative shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
 								<span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
 									<svg
 										viewBox="0 0 24 24"
@@ -328,7 +328,7 @@ export default function Home() {
 								</span>
 								<input
 									placeholder="Search here..."
-									className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+									className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
 									value={searchQuery}
 									onChange={e => handleSearch(e.target.value)}
 								/>
@@ -346,7 +346,7 @@ export default function Home() {
 							 <div className="relative">
                                 <button
                                     type="button"
-                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105"
+                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
                                     onClick={handleSortButtonClick}>
                                     <Image
                                         src={filterBar.src}
@@ -355,7 +355,7 @@ export default function Home() {
                                         height={20}
                                         className="text-slate-800"
                                     />
-                                    <span className="ml-2 text-slate-800">Sort By</span>
+                                    <span className="ml-2 text-slate-800 dark:text-dark_text">Sort By</span>
                                 </button>
 
                                 {/* Dropdown Menu */}
@@ -402,7 +402,7 @@ export default function Home() {
 							{/* Export Button */}
 							<button
 								type="button"
-								className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden"
+								className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
 								onClick={exportToCSV}>
 								<img
 									src={exportCSV.src}
@@ -410,7 +410,7 @@ export default function Home() {
 									width={20}
 									className="text-slate-800"
 								/>
-								<span className="ml-2 text-slate-800">Export to CSV</span>
+								<span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
 							</button>
 						</div>
 					</div>
@@ -421,19 +421,19 @@ export default function Home() {
 								{/* Table Header */}
 								<thead>
 									<tr className="flex">
-										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
 											NO.
 										</th>
-										<th className="flex-1 px-[21px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+										<th className="flex-1 px-[21px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
 											<span className="ml-1">Staff Name</span>
 										</th>
-										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
 											<span className="-ml-[1px]">Staff ID</span>
 										</th>
-										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
 											<span className="-ml-[1px]">Faculty / Unit</span>
 										</th>
-										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+										<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
 											<span className="-ml-[3px]">Event Attended</span>
 										</th>	
 									</tr>
@@ -449,33 +449,33 @@ export default function Home() {
 										.map((info, index) => (
 											<tr className="flex" key={info.staffID} 
 												onClick={() => {openModal(info.eventsAttended);}}>
-												<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+												<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 													<div className="flex items-center">
 														<div className="ml-[14px]">
-															<p className="text-gray-900 whitespace-no-wrap">
+															<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text">
 																{(currentPage - 1) * entriesToShow + index + 1}
 															</p>
 														</div>
 													</div>
 												</td>
-												<td className="flex-1 -ml-16 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-no-wrap lg:ml-3">
+												<td className="flex-1 -ml-16 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+													<p className="text-gray-900 whitespace-no-wrap lg:ml-3 dark:text-dark_text">
 														{info.staffName}
 													</p>
 												</td>
-												<td className="flex-1 -ml-2 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-no-wrap">
+												<td className="flex-1 -ml-2 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+													<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text">
 														{info.staffID}
 													</p>
 												</td>
-												<td className="flex-1 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-no-wrap -ml-6 lg:ml-1">
+												<td className="flex-1 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+													<p className="text-gray-900 whitespace-no-wrap -ml-6 lg:ml-1 dark:text-dark_text">
 														{info.staffFaculty}
 													</p>
 												</td>
 
-												<td className="flex-1 lg:px-5 py-5 border-b border-gray-200 bg-white cursor-pointer hover:bg-slate-200 text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-no-wrap ml-1">
+												<td className="flex-1 lg:px-5 py-5 border-b border-gray-200 bg-white cursor-pointer hover:bg-slate-200 text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+													<p className="text-gray-900 whitespace-no-wrap ml-1 dark:text-dark_text">
 														{info.totalSubEvents}
 													</p>
 												</td>
@@ -520,10 +520,10 @@ export default function Home() {
 								</tbody>
 							</table>
 
-							<div className="px-5 py-5 bg-white border-t flex items-center justify-between">
+							<div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
                                     <div className=" items-center text-[14px] text-base hidden lg:flex">
                                         <div className="mr-2 ml-3">
-                                            <span className="text-sm lg:text-base">Show</span>
+                                            <span className="text-sm lg:text-base text-slate-800 dark:text-dark_text">Show</span>
                                         </div>
 
                                         {/* Filter By How Many Entries */}
@@ -533,24 +533,24 @@ export default function Home() {
                                                 onChange={e =>
                                                     setEntriesToShow(parseInt(e.target.value))
                                                 }
-                                                className="appearance-none h-full rounded-l border block bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base">
+                                                className="appearance-none h-full rounded-l border block bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-dark_mode_card dark:border-[#484E51] dark:text-dark_text">
                                                 <option
                                                     value={5}
-                                                    className="text-sm lg:text-base">
+                                                    className="text-sm lg:text-base dark:text-dark_text">
                                                     5
                                                 </option>
                                                 <option
                                                     value={10}
-                                                    className="text-sm lg:text-base">
+                                                    className="text-sm lg:text-base dark:text-dark_text">
                                                     10
                                                 </option>
                                                 <option
                                                     value={20}
-                                                    className="text-sm lg:text-base">
+                                                    className="text-sm lg:text-base dark:text-dark_text">
                                                     20
                                                 </option>
                                             </select>
-                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-dark_text">
                                                 <svg
                                                     className="fill-current h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -561,7 +561,7 @@ export default function Home() {
                                         </div>
 
                                         <div>
-                                            <span className="text-sm lg:text-base">
+                                            <span className="text-sm lg:text-base dark:text-dark_text">
                                                 entries
                                             </span>
                                         </div>
