@@ -518,7 +518,6 @@ export default function Homepage() {
 			// Filter upcoming events while excluding today's and past events
 			const upcomingEvents = mainEventData.filter(
 				(event) =>
-					!isSameDate(event.intFEventStartDate, tomorrow) &&
 					!isSameDate(event.intFEventStartDate, today) &&
 					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime() &&
 					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
