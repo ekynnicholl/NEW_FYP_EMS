@@ -130,7 +130,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [approvalDate, setApprovalDate] = useState<Date | null>(externalForm.approval_date ? new Date(externalForm.approval_date) : null);
 	console.log(externalForm.verification_date)
 	console.log(verificationDate)
-	
+
 	useEffect(() => {
 		console.log(form.getValues("verification_date"))
 		console.log(form.getValues("approval_date"))
@@ -266,6 +266,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	}, [form.formState.errors]);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
+
+		if (values.securityKey != externalForm.securityKey) {
+			toast.error("Invalid security key!");
+			return;
+		}
+
 		// Generate the security key,
 		const securityKeyUID = uuidv4();
 
@@ -2198,6 +2204,30 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										</Dialog>
 									</div>
 								) : null}
+
+								{(showCommentInput ||
+									(externalForm.revertComment != "None" &&
+										externalForm.formStage == 1)) && (
+										<FormField
+											control={form.control}
+											name="revertComment"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Comments</FormLabel>
+													<FormControl>
+														<Input
+															disabled={
+																externalForm.formStage == 1
+															}
+															className="disabled:text-black-500 disabled:opacity-100"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									)}
 
 								{externalForm.formStage === 2 ? (
 									<div>
