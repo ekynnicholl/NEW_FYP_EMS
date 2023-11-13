@@ -15,7 +15,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { MdOutlineEventNote } from "react-icons/md";
 import { IoPeopleSharp } from "react-icons/io5";
-import { Chart } from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js/auto';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
@@ -244,9 +244,8 @@ export default function Home() {
 
     // This is for attendance modal,
     const openAttendanceModal = async (event_id: string) => {
-        console.log("testing" + event_id);
         try {
-            // Fetch sub-events for the given event
+            // Fetch sub-events for the given event,
             const { data: subEvents, error: subEventsError } = await supabase
                 .from("sub_events")
                 .select()
@@ -256,9 +255,14 @@ export default function Home() {
                 console.error("Error fetching sub_events:", subEventsError);
                 return;
             }
-            // Set the main ID for the 
+
+            const subEventNameMap: { [key: string]: string } = {};
+            subEvents.forEach(subEvent => {
+                subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+            });
+
+            // Set the main ID for the, 
             setAttendanceMainEventID(event_id);
-            fetchAttendanceList(event_id)
             setSubEventsForAttendance(subEvents);
 
             // Extract the subEventID values from the fetched sub_events
@@ -275,18 +279,23 @@ export default function Home() {
                 return;
             }
 
-            // Set the attendance data for the main event
-            setAttendanceData(attendanceForms);
+            const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+                ...attendanceItem,
+                sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+            }));
 
+            // Set the attendance data for the main event,
+            setAttendanceData(attendanceDataWithSubEventNames);
+
+            // Fetch the attendance list for that event,
             fetchAttendanceList(event_id);
 
-            console.log("Attendance forms data:", attendanceForms);
+            console.log("Attendance forms data:", attendanceDataWithSubEventNames);
+            setShowAttendanceModal(true);
         } catch (error) {
             const typedError = error as Error;
             console.error("Error:", typedError.message);
         }
-
-        setShowAttendanceModal(true);
     };
 
     // This is for attendance table in homepage pagination,
@@ -297,11 +306,12 @@ export default function Home() {
     };
 
     useEffect(() => {
-        if (attendanceData && attendanceData.length > 0) {
+        console.log(filteredAttendanceData);
+        if (filteredAttendanceData && filteredAttendanceData.length > 0) {
             // Calculate labels (faculty/unit) and label data (counts)
             const facultyCounts: { [key: string]: number } = {};
 
-            attendanceData.forEach(attendanceItem => {
+            filteredAttendanceData.forEach(attendanceItem => {
                 const faculty = attendanceItem.attFormsFacultyUnit;
                 if (facultyCounts[faculty]) {
                     facultyCounts[faculty]++;
@@ -320,10 +330,10 @@ export default function Home() {
                     chartInstanceRef.current.destroy();
                 }
 
-                createPieChart(canvas, facultyLabels, facultyData);
+                createHorizontalBarChart(canvas, facultyLabels, facultyData);
             }
         }
-    }, [attendanceData]);
+    }, [filteredAttendanceData]);
 
     const handleSubEventClick = async (subEvent: subEvents, type: number) => {
         if (type == 1) {
@@ -371,7 +381,6 @@ export default function Home() {
         }
     };
 
-
     const fetchAttendanceList = async (event_id: string) => {
         const { data: subEvents, error: subEventsError } = await supabase
             .from("sub_events")
@@ -382,6 +391,11 @@ export default function Home() {
             console.error("Error fetching sub_events:", subEventsError);
             return;
         }
+
+        const subEventNameMap: { [key: string]: string } = {};
+        subEvents.forEach(subEvent => {
+            subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+        });
 
         // Extract the subEventID values from the fetched sub_events
         const subEventIDs = subEvents.map(subEvent => subEvent.sub_eventsID);
@@ -396,7 +410,12 @@ export default function Home() {
             console.error("Error fetching attendance forms:", formsError);
             return;
         } else {
-            setAttendanceData(attendanceForms);
+            const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+                ...attendanceItem,
+                sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+            }));
+
+            setAttendanceData(attendanceDataWithSubEventNames);
             setSelectedSubEvent("");
 
             const facultyCounts: { [key: string]: number } = {};
@@ -414,15 +433,16 @@ export default function Home() {
             const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
             const canvas = chartContainer.current;
-            createPieChart(canvas, facultyLabels, facultyData);
+            createHorizontalBarChart(canvas, facultyLabels, facultyData);
         }
-    }
+    };
 
     // Pie chart,
-    const createPieChart = (
+    const createHorizontalBarChart = (
         chartContainer: HTMLCanvasElement | null,
         labels: string[],
-        data: number[]) => {
+        data: number[]
+    ) => {
         if (chartContainer) {
             const ctx = chartContainer.getContext('2d');
 
@@ -431,56 +451,79 @@ export default function Home() {
                     chartInstanceRef.current.destroy();
                 }
 
-                Chart.register(ChartDataLabels);
+                Chart.register(...registerables);
 
+                const getRandomColor = () => {
+                    const letters = '0123456789ABCDEF';
+                    let color = '#';
+                    for (let i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                };
+
+                const backgroundColor = [];
+                const borderColor = [];
+                const colorSet = new Set();
+
+                while (backgroundColor.length < 21) {
+                    const color = getRandomColor();
+                    if (!colorSet.has(color)) {
+                        backgroundColor.push(color);
+                        borderColor.push(color);
+                        colorSet.add(color);
+                    }
+                }
+
+                const modifiedLabels = labels.map((label) => label.split(' - '));
+
+                //@ts-ignore
                 chartInstanceRef.current = new Chart(ctx, {
-                    type: 'pie',
+                    type: 'bar',
                     data: {
-                        labels: labels,
+                        labels: modifiedLabels,
                         datasets: [
                             {
                                 data: data,
-                                backgroundColor: [
-                                    'red',
-                                    'blue',
-                                    'green',
-                                    'orange',
-                                    'purple',
-                                    'pink',
-                                    'yellow',
-                                    'teal',
-                                    'brown',
-                                    'cyan',
-                                    'lime',
-                                    'indigo',
-                                    'violet',
-                                    'magenta',
-                                    'amber',
-                                    'lightblue',
-                                    'deeporange',
-                                    'lightgreen',
-                                    'bluegrey',
-                                ],
+                                backgroundColor: backgroundColor,
+                                borderColor: borderColor,
+                                borderWidth: 1,
                             },
                         ],
                     },
                     options: {
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                position: 'bottom',
+                                display: false,
                             },
                             datalabels: {
                                 color: '#000000',
                                 font: {
-                                    weight: 'bold'
+                                    weight: 'bold',
                                 },
-                                formatter: (value: number, context: any) => {
-                                    const total = context.dataset.data.reduce((acc: number, current: number) => acc + current, 0);
-                                    const percentage = ((value / total) * 100).toFixed(2);
-
-                                    return `${percentage}%\n(${value}/${total})`;
+                                align: 'end',
+                                formatter: (value: number) => {
+                                    return value.toString();
+                                },
+                                clamp: true,
+                            },
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    stepSize: 1,
+                                },
+                            },
+                            y: {
+                                grid: {
+                                    display: false,
                                 },
                             },
                         },
@@ -981,7 +1024,8 @@ export default function Home() {
                                                             <DropdownMenuSeparator />
 
                                                             <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation(); // 
+                                                                e.stopPropagation();
+                                                                setMainEventForFeedback(event);
                                                                 openFeedbackModal(event.intFID);
                                                                 fetchFeedbackList(event.intFID);
                                                             }}>Event Feedback
@@ -1707,7 +1751,8 @@ export default function Home() {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem onClick={e => {
-                                                            e.stopPropagation(); // 
+                                                            e.stopPropagation();
+                                                            setMainEventForFeedback(event);
                                                             openFeedbackModal(event.intFID);
                                                             fetchFeedbackList(event.intFID);
                                                         }}>Event Feedback
