@@ -914,7 +914,7 @@ export default function Home() {
                                                     </div>
                                                 </td>
 
-                                                <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
+                                                <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
                                                             <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
