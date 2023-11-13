@@ -267,10 +267,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
 
-		if (values.securityKey != externalForm.securityKey) {
-			toast.error("Invalid security key!");
-			return;
-		}
+		// if (values.securityKey != externalForm.securityKey) {
+		// 	toast.error("Invalid security key!");
+		// 	return;
+		// }
 
 		// Generate the security key,
 		const securityKeyUID = uuidv4();
