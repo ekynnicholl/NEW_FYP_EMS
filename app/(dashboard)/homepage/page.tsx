@@ -167,6 +167,8 @@ type FeedbackDataType = {
 }
 
 export default function Homepage() {
+	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
+
 	useEffect(() => {
 		const checkIsUserLoggedIn = () => {
 			const authToken = cookie.get('authToken');
@@ -2058,12 +2060,12 @@ export default function Homepage() {
 								Attendance
 							</h3>
 							<QRCodeSVG
-								value={`https://fyp-hosting.vercel.app/form/${selectedSubEventID}`}
+								value={`${url}/form/${selectedSubEventID}`}
 							/>
 							<button
 								onClick={() =>
 									copyToClipboard(
-										`https://fyp-hosting.vercel.app/form/${selectedSubEventID}`
+										`${url}/form/${selectedSubEventID}`
 									)
 								}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
@@ -2079,12 +2081,12 @@ export default function Homepage() {
 								Feedback
 							</h3>
 							<QRCodeSVG
-								value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
+								value={`${url}/form/feedback/${selectedSubEventID}`}
 							/>
 							<button
 								onClick={() =>
 									copyToClipboard(
-										`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
+										`${url}/form/feedback/${selectedSubEventID}`
 									)
 								}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
@@ -6312,34 +6314,34 @@ export default function Homepage() {
 
 						</div>
 
-						
+
 						<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
-      					<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>							
-						<Calendar onDateChange={handleDateChange} />
-						{displayedEvents.length > 0 && (
-					<div className="mt-4">
-					<h3 className="text-xl font-semibold my-5 ml-6">Upcoming Events:</h3>
-					<ul className="space-y-2">
-					{displayedEvents.map((event) => {
-      const eventDate = new Date(event.intFEventStartDate);
-      const formattedDate = `${eventDate.getDate()} ${eventDate.toLocaleString('en-US', { month: 'long' })} ${eventDate.getFullYear()}`;
+							<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
+							<Calendar onDateChange={handleDateChange} />
+							{displayedEvents.length > 0 && (
+								<div className="mt-4">
+									<h3 className="text-xl font-semibold my-5 ml-6">Upcoming Events:</h3>
+									<ul className="space-y-2">
+										{displayedEvents.map((event) => {
+											const eventDate = new Date(event.intFEventStartDate);
+											const formattedDate = `${eventDate.getDate()} ${eventDate.toLocaleString('en-US', { month: 'long' })} ${eventDate.getFullYear()}`;
 
 
-						return (
-							<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-							<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
-							<span className="text-m mr-6">{formattedDate}</span>
-							</li>
-						);
-						})}
-					</ul>
+											return (
+												<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+													<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
+													<span className="text-m mr-6">{formattedDate}</span>
+												</li>
+											);
+										})}
+									</ul>
+								</div>
+
+							)}
+						</div>
+
 					</div>
 
-						)}					
-    					</div>
-
-					</div>
-					
 
 
 				) : (

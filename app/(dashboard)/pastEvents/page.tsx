@@ -96,6 +96,7 @@ type FeedbackDataType = {
 }
 
 export default function Home() {
+    const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
     const supabase = createClientComponentClient();
 
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
@@ -1623,12 +1624,12 @@ export default function Home() {
                                 Feedback
                             </h3>
                             <QRCodeSVG
-                                value={`https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`}
+                                value={`${url}/form/feedback/${selectedSubEventID}`}
                             />
                             <button
                                 onClick={() =>
                                     copyToClipboard(
-                                        `https://fyp-hosting.vercel.app/form/feedback/${selectedSubEventID}`
+                                        `${url}/form/feedback/${selectedSubEventID}`
                                     )
                                 }
                                 className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
