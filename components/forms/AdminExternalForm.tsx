@@ -446,129 +446,139 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
 		const securityKeyUID = uuidv4();
 
-		// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
-		if (externalForm.formStage === 3) {
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+		const revertPromise = async () => {
+			// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
+			if (externalForm.formStage === 3) {
+				const { data, error } = await supabase
+					.from("external_forms")
+					.update([
+						{
+							// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+							formStage: 6,
+							securityKey: securityKeyUID,
+							// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
+							revertComment: values.revertComment,
+							verification_email: values.verification_email,
+							verification_name: values.verification_name,
+							verification_position_title: values.verification_position_title,
+							verification_date: values.verification_date,
+							verification_signature: values.verification_signature,
+
+							approval_email: values.approval_email,
+							approval_name: values.approval_name,
+							approval_position_title: values.approval_position_title,
+							approval_date: values.approval_date,
+							approval_signature: values.approval_signature,
+						},
+					])
+					.eq("id", externalForm.id);
+
+				if (error) {
+					console.error("Error updating data:", error);
+				} else {
+					console.log("Data updated successfully:", data);
+					showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+
+					setExternalForm({
+						...externalForm,
+						revertComment: values.revertComment!,
 						formStage: 6,
-						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
-						revertComment: values.revertComment,
-						verification_email: values.verification_email,
-						verification_name: values.verification_name,
-						verification_position_title: values.verification_position_title,
-						verification_date: values.verification_date,
-						verification_signature: values.verification_signature,
+					});
 
-						approval_email: values.approval_email,
-						approval_name: values.approval_name,
-						approval_position_title: values.approval_position_title,
-						approval_date: values.approval_date,
-						approval_signature: values.approval_signature,
-					},
-				])
-				.eq("id", externalForm.id);
+					router.push("/external_status");
+					// window.location.reload();
+				}
+			} else if (externalForm.formStage === 4) {
+				const { data, error } = await supabase
+					.from("external_forms")
+					.update([
+						{
+							// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+							formStage: 6,
+							securityKey: securityKeyUID,
+							// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
+							revertComment: values.revertComment,
+							verification_email: values.verification_email,
+							verification_name: values.verification_name,
+							verification_position_title: values.verification_position_title,
+							verification_date: values.verification_date,
+							verification_signature: values.verification_signature,
 
-			if (error) {
-				console.error("Error updating data:", error);
-			} else {
-				console.log("Data updated successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+							approval_email: values.approval_email,
+							approval_name: values.approval_name,
+							approval_position_title: values.approval_position_title,
+							approval_date: values.approval_date,
+							approval_signature: values.approval_signature,
+						},
+					])
+					.eq("id", externalForm.id);
 
-				setExternalForm({
-					...externalForm,
-					revertComment: values.revertComment!,
-					formStage: 6,
-				});
+				if (error) {
+					console.log(error);
+				} else {
+					console.log("Data updated successfully:", data);
+					showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
-				router.push("/external_status");
-				// window.location.reload();
-			}
-		} else if (externalForm.formStage === 4) {
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+					setExternalForm({
+						...externalForm,
+						revertComment: values.revertComment!,
 						formStage: 6,
-						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
-						revertComment: values.revertComment,
-						verification_email: values.verification_email,
-						verification_name: values.verification_name,
-						verification_position_title: values.verification_position_title,
-						verification_date: values.verification_date,
-						verification_signature: values.verification_signature,
+					});
 
-						approval_email: values.approval_email,
-						approval_name: values.approval_name,
-						approval_position_title: values.approval_position_title,
-						approval_date: values.approval_date,
-						approval_signature: values.approval_signature,
-					},
-				])
-				.eq("id", externalForm.id);
-
-			if (error) {
-				console.log(error);
-			} else {
-				console.log("Data updated successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				setExternalForm({
-					...externalForm,
-					revertComment: values.revertComment!,
-					formStage: 6,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+					router.push("/external_status");
+					// window.location.reload();
+				}
 			}
-		}
 
-		// This is for the AAO to revert to the staff with the comments, Stage 2 -> Stage 1,
-		if (externalForm.formStage === 2 && (showCommentInput == true || externalForm.revertComment != "None")) {
-			console.log("Reverting");
-			const { data, error } = await supabase
-				.from("external_forms")
-				.update([
-					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
-						expenditure_cap: values.expenditure_cap,
-						expenditure_cap_amount: values.expenditure_cap_amount,
-						revertComment: values.revertComment,
+			// This is for the AAO to revert to the staff with the comments, Stage 2 -> Stage 1,
+			if (externalForm.formStage === 2 && (showCommentInput == true || externalForm.revertComment != "None")) {
+				console.log("Reverting");
+				const { data, error } = await supabase
+					.from("external_forms")
+					.update([
+						{
+							// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
+							expenditure_cap: values.expenditure_cap,
+							expenditure_cap_amount: values.expenditure_cap_amount,
+							revertComment: values.revertComment,
+							securityKey: securityKeyUID,
+							formStage: 1,
+							verification_email: values.verification_email,
+							approval_email: values.approval_email,
+						},
+					])
+					.eq("id", externalForm.id);
+
+				if (error) {
+					console.error("Error updating data:", error);
+				} else {
+					console.log("Data updated successfully:", data);
+					showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+
+					// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
+
+					setExternalForm({
+						...externalForm,
 						securityKey: securityKeyUID,
+						revertComment: values.revertComment!,
 						formStage: 1,
-						verification_email: values.verification_email,
-						approval_email: values.approval_email,
-					},
-				])
-				.eq("id", externalForm.id);
+					});
 
-			if (error) {
-				console.error("Error updating data:", error);
-			} else {
-				console.log("Data updated successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
-
-				setExternalForm({
-					...externalForm,
-					securityKey: securityKeyUID,
-					revertComment: values.revertComment!,
-					formStage: 1,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+					router.push("/external_status");
+					// window.location.reload();
+				}
+			} else if (showCommentInput == false) {
+				setShowCommentInput(true);
 			}
-		} else if (showCommentInput == false) {
-			setShowCommentInput(true);
-		}
+		};
+
+		const promise = toast.promise(revertPromise(), {
+			loading: 'Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.',
+			success: 'Form submitted successfully!',
+			error: 'Failed to submit form.',
+		});
+
+		await promise;
 	};
 
 	const [group, setGroup] = useState(true);
