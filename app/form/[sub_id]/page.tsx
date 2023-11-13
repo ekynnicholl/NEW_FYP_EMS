@@ -37,6 +37,7 @@ export default function AttendanceForm() {
 
 	const handleUserTypeChange = (event: { target: { value: SetStateAction<string>; }; }) => {
 		setUserType(event.target.value);
+		setInfo({ ...info, attFormsFacultyUnit: "" });
 	};
 
 	useEffect(() => {
@@ -177,11 +178,133 @@ export default function AttendanceForm() {
 		setInfo({} as Info);
 	};
 
-
 	const handleOK = () => {
 		setShowModalSuccess(false);
 		setShowModalFailure(false);
 		window.location.reload();
+	};
+
+	const [selectedOption, setSelectedOption] = useState('');
+
+	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+		setSelectedOption(event.target.value);
+	};
+
+	const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
+		const selectedCourse = event.target.value;
+		// Concatenate the faculty/unit and the selected course
+		const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
+		setInfo({ ...info, attFormsFacultyUnit: updatedSelectedOption })
+	};
+
+	const getSecondSelectOptions = () => {
+		switch (selectedOption) {
+			case 'Faculty of Business, Design and Arts':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						<optgroup label="Foundation Study">
+							<option value="Swinburne Foundation Studies (Business)">Swinburne Foundation Studies (Business)</option>
+							<option value="Swinburne Foundation Studies (Design)">Swinburne Foundation Studies (Design)</option>
+						</optgroup>
+
+						<optgroup label="Bachelor Degrees">
+							<option value="Bachelor of Business">Bachelor of Business</option>
+							<option value="Bachelor of Business (Accounting)">Bachelor of Business (Accounting)</option>
+							<option value="Bachelor of Business (Accounting and Finance)">Bachelor of Business (Accounting and Finance)</option>
+							<option value="Bachelor of Business (Finance)">Bachelor of Business (Finance)</option>
+							<option value="Bachelor of Business (Human Resource Management)">Bachelor of Business (Human Resource Management)</option>
+							<option value="Bachelor of Business (International Business)">Bachelor of Business (International Business)</option>
+							<option value="Bachelor of Business (Management)">Bachelor of Business (Management)</option>
+							<option value="Bachelor of Business (Marketing)">Bachelor of Business (Marketing)</option>
+							<option value="Bachelor of Business (Management and Digital Media)">Bachelor of Business (Management and Digital Media)</option>
+							<option value="Bachelor of Design (Multimedia Design)">Bachelor of Design (Multimedia Design)</option>
+						</optgroup>
+
+						<optgroup label="Professional Short Courses">
+							<option value="Professional Short Courses">Professional Short Courses</option>
+						</optgroup>
+
+						<optgroup label="Master by Research">
+							<option value="Master of Business (Research)">Master of Business (Research)</option>
+						</optgroup>
+
+						<optgroup label="Master by Coursework">
+							<option value="Master of Arts (Teaching English to Speakers of Other Languages)">Master of Arts (Teaching English to Speakers of Other Languages)</option>
+							<option value="Master of Business Administration (International)">Master of Business Administration (International)</option>
+							<option value="Master of Human Resource Management">Master of Human Resource Management</option>
+						</optgroup>
+
+						<optgroup label="Doctor of Philosophy by Research">
+							<option value="Doctor of Philosophy">Doctor of Philosophy</option>
+						</optgroup>
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'Faculty of Engineering, Computing and Science':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						<optgroup label="Foundation Study">
+							<option value="Swinburne Foundation Studies (Engineering/Science)">Swinburne Foundation Studies (Engineering/Science)</option>
+							<option value="Swinburne Foundation Studies (Information Technology/Multimedia)">Swinburne Foundation Studies (Information Technology/Multimedia)</option>
+						</optgroup>
+
+						<optgroup label="Engineering Degrees and Double Degrees">
+							<option value="Bachelor of Engineering (Honours) (Civil)">Bachelor of Engineering (Honours) (Civil)</option>
+							<option value="Bachelor of Engineering (Honours) (Chemical)">Bachelor of Engineering (Honours) (Chemical)</option>
+							<option value="Bachelor of Engineering (Honours)(Electrical and Electronic)">Bachelor of Engineering (Honours)(Electrical and Electronic)</option>
+							<option value="Bachelor of Engineering (Honours) (Mechanical)">Bachelor of Engineering (Honours) (Mechanical)</option>
+							<option value="Bachelor of Quantity Surveying (Honours)">Bachelor of Quantity Surveying (Honours)</option>
+							<option value="Bachelor of Engineering (Honours) (Civil)/Bachelor of Business">Bachelor of Engineering (Honours) (Civil)/Bachelor of Business</option>
+							<option value="Bachelor of Engineering (Mechanical) (Honours)/Bachelor of Business">Bachelor of Engineering (Mechanical) (Honours)/Bachelor of Business</option>
+							<option value="Bachelor of Engineering (Honours) (Robotics and Mechatronics)/Bachelor of Computer Science">Bachelor of Engineering (Honours) (Robotics and Mechatronics)/Bachelor of Computer Science</option>
+						</optgroup>
+
+						<optgroup label="Bachelor Degrees">
+							<option value="Bachelor of Information and Communication Technology">Bachelor of Information and Communication Technology</option>
+							<option value="Bachelor of Computer Science">Bachelor of Computer Science</option>
+							<option value="Bachelor of Engineering (Honours) (Software)">Bachelor of Engineering (Honours) (Software)</option>
+						</optgroup>
+
+						<optgroup label="Science Degrees">
+							<option value="Bachelor of Science (Biotechnology)">Bachelor of Science (Biotechnology)</option>
+							<option value="Bachelor of Science (Environmental Science)">Bachelor of Science (Environmental Science)</option>
+						</optgroup>
+
+						<optgroup label="Built Environment">
+							<option value="Master of Construction Management">Master of Construction Management</option>
+							<option value="Graduate Certificate of Construction Management">Graduate Certificate of Construction Management</option>
+						</optgroup>
+
+						<optgroup label="Master by Coursework">
+							<option value="Master of Information Technology">Master of Information Technology</option>
+						</optgroup>
+
+						<optgroup label="Master by Research">
+							<option value="Master of Science (Research)">Master of Science (Research)</option>
+							<option value="Master of Engineering (Research)">Master of Engineering (Research)</option>
+						</optgroup>
+
+						<optgroup label="Doctor of Philosophy by Research">
+							<option value="Doctor of Philosophy">Doctor of Philosophy</option>
+						</optgroup>
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			default:
+				return (
+					<option value="" disabled>
+						Select Option
+					</option>
+				);
+		}
 	};
 
 	return (
@@ -347,30 +470,56 @@ export default function AttendanceForm() {
 				)}
 
 				{userType === 'student' && (
-					<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-						<div className="ml-1">
-							<label
-								htmlFor="studentFacultyUnit"
-								className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
-							>
-								Faculty/ Unit (STUDENT)
-								<span className="text-red-500"> *</span>
-							</label>
-							<select
-								name="studentFacultyUnit"
-								id="studentFacultyUnit"
-								defaultValue=""
-								className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-								required
-								onChange={event =>
-									setInfo({ ...info, attFormsFacultyUnit: event.target.value })
-								}
-							>
-								<option value="" disabled>Select Faculty/ Unit</option>
-								<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
-								<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
-							</select>
+					<div>
+						<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+							<div className="ml-1">
+								<label
+									htmlFor="studentFacultyUnit"
+									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+								>
+									Faculty/ Unit (STUDENT)
+									<span className="text-red-500"> *</span>
+								</label>
+								<select
+									name="studentFacultyUnit"
+									id="studentFacultyUnit"
+									defaultValue=""
+									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+									required
+									onChange={handleSelectChange}
+								// onChange={event =>
+								// 	setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+								// }
+								>
+									<option value="" disabled>Select Faculty/ Unit</option>
+									<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
+									<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
+								</select>
+							</div>
 						</div>
+						{selectedOption &&
+							<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+								<div className="ml-1">
+									<label
+										htmlFor="anotherSelect"
+										className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+									>
+										Course (STUDENT)
+										<span className="text-red-500"> *</span>
+									</label>
+									<select
+										name="anotherSelect"
+										id="anotherSelect"
+										defaultValue=""
+										className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+										required
+										onChange={handleAnotherSelectChange}
+									>
+										{getSecondSelectOptions()}
+									</select>
+								</div>
+							</div>
+						}
 					</div>
 				)}
 
@@ -389,7 +538,7 @@ export default function AttendanceForm() {
 						)}
 						<button
 							type="submit"
-							className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
+							className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 							onClick={() => {
 								if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
 									handleSubmit
