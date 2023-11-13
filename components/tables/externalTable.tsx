@@ -1,5 +1,6 @@
 "use client";
 
+import Modal from "@/components/QR_Codes_Modal";
 import * as React from "react";
 import {
 	ColumnDef,
@@ -39,48 +40,79 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { QRCodeSVG } from "qrcode.react";
+import { LiaQrcodeSolid } from "react-icons/lia";
 
 export const columns: ColumnDef<ExternalForm>[] = [
 	{
-		accessorKey: "name",
-		header: "Name",
-		cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-	},
-	{
-		accessorKey: "review_status",
-		header: "Review Status",
+		accessorKey: "full_name",
+		header: "Name (Staff ID)",
+		// cell: ({ row }) => <div className="capitalize">{row.getValue("full_name")}</div>,
 		cell: ({ row }) => {
-			let status = row.getValue("review_status");
+			const staffID = row.original.staff_id;
+			const fullName = row.original.full_name;
 
-			if (status) {
-				return <div className="capitalize">Reviewed</div>;
-			} else if (status === null) {
-				return <div className="capitalize">Pending</div>;
-			} else if (status === false) {
-				return <div className="capitalize">Reverted</div>;
-			} else {
-				return <div className="capitalize">Unknown</div>;
-			}
+			const displayText = staffID ? `${fullName} (${staffID})` : fullName;
+
+			return <div className="capitalize">{displayText}</div>;
 		},
 	},
 	{
-		accessorKey: "verification_status",
-		header: "Verification Status",
-		cell: ({ row }) => (
-			<div className="capitalize">
-				{row.getValue("verification_status") ? "" : "Pending"}
-			</div>
-		),
+		accessorKey: "program_title",
+		header: "Program Title",
+		cell: ({ row }) => <div className="capitalize">{row.getValue("program_title")}</div>
 	},
 	{
-		accessorKey: "approval_status",
-		header: "Approval Status",
-		cell: ({ row }) => (
-			<div className="capitalize">
-				{row.getValue("approval_status") ? "" : "Pending"}
-			</div>
-		),
+		accessorKey: "formStage",
+		header: "Form Status",
+		cell: ({ row }) => {
+			// let status = row.getValue("review_status");
+			const formStage = row.original.formStage;
+
+			// if (status) {
+			// 	return <div className="capitalize">Reviewed</div>;
+			// } else if (status === null) {
+			// 	return <div className="capitalize">Pending</div>;
+			// } else if (status === false) {
+			// 	return <div className="capitalize">Reverted</div>;
+			// } else {
+			// 	return <div className="capitalize">Unknown</div>;
+			// }
+			if (formStage === 1) {
+				return <div className="uppercase text-red-500 font-bold">Reverted to Staff</div>;
+			} else if (formStage === 2) {
+				return <div className="uppercase text-blue-500 font-bold">Reviewing by AAO</div>;
+			} else if (formStage === 3) {
+				return <div className="uppercase text-blue-500 font-bold">Reviewing by HOS/ ADCR/ MGR</div>;
+			} else if (formStage === 4) {
+				return <div className="uppercase text-blue-500 font-bold">Reviewing by HMU/ Dean</div>;
+			} else if (formStage === 5) {
+				return <div className="uppercase text-green-500 font-bold">Approved</div>;
+			} else if (formStage === 6) {
+				return <div className="uppercase text-red-500 font-bold">Rejected</div>;
+			} else {
+				return <div className="uppercase">Unknown</div>;
+			}
+		},
 	},
+	// {
+	// 	accessorKey: "verification_status",
+	// 	header: "Verification Status",
+	// 	cell: ({ row }) => (
+	// 		<div className="capitalize">
+	// 			{row.getValue("verification_status") ? "" : "Pending"}
+	// 		</div>
+	// 	),
+	// },
+	// {
+	// 	accessorKey: "approval_status",
+	// 	header: "Approval Status",
+	// 	cell: ({ row }) => (
+	// 		<div className="capitalize">
+	// 			{row.getValue("approval_status") ? "" : "Pending"}
+	// 		</div>
+	// 	),
+	// },
 	{
 		accessorKey: "created_at",
 		header: ({ column }) => {
@@ -149,10 +181,23 @@ export const columns: ColumnDef<ExternalForm>[] = [
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
 	console.log(data);
+	const [showQRCodesAttendance, setShowQRCodesAttendance] = React.useState(false);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
+	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
+
+	const copyToClipboard = (text: string) => {
+		navigator.clipboard
+			.writeText(text)
+			.then(() => {
+				alert("Link copied to clipboard!");
+			})
+			.catch(error => {
+				console.error("Copy failed:", error);
+			});
+	};
 
 	const table = useReactTable({
 		data,
@@ -178,12 +223,26 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			<div className="flex items-center py-4">
 				<Input
 					placeholder="Filter names..."
-					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+					value={(table.getColumn("full_name")?.getFilterValue() as string) ?? ""}
 					onChange={event =>
-						table.getColumn("name")?.setFilterValue(event.target.value)
+						table.getColumn("full_name")?.setFilterValue(event.target.value)
 					}
-					className="max-w-sm"
+					className="max-w-sm mr-5"
 				/>
+				<button
+					type="button"
+					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
+					onClick={() => {
+						setShowQRCodesAttendance(true);
+					}}
+				>
+					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+							Nominations/ Travelling Forms
+						</span>
+					</span>
+				</button>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="outline" className="ml-auto">
@@ -230,9 +289,9 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 											{header.isPlaceholder
 												? null
 												: flexRender(
-														header.column.columnDef.header,
-														header.getContext(),
-												  )}
+													header.column.columnDef.header,
+													header.getContext(),
+												)}
 										</TableHead>
 									);
 								})}
@@ -286,6 +345,26 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</Button>
 				</div>
 			</div>
+			<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
+				<div className="ml-2 p-5 z-[999]">
+					<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+						NTF
+					</h3>
+					<QRCodeSVG
+						value={`${url}/form/external`}
+					/>
+					<button
+						onClick={() =>
+							copyToClipboard(
+								`${url}/form/external`
+							)
+						}
+						className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
+					>
+						Copy Link
+					</button>
+				</div>
+			</Modal>
 		</div>
 	);
 }
