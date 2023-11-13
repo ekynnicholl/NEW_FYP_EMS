@@ -27,7 +27,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
 
     return (
-        <div className="h-screen max-w-full flex flex-row justify-start bg-slate-100">
+        <div className="flex justify-start bg-slate-100">
             <div className="sm:hidden">
                 <SideBarMobile />
             </div>
