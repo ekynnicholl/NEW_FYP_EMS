@@ -42,6 +42,9 @@ import {
 } from "@/components/ui/table";
 import { QRCodeSVG } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
+import { useRouter } from "next/navigation";
+
+const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 export const columns: ColumnDef<ExternalForm>[] = [
 	{
@@ -175,9 +178,14 @@ export const columns: ColumnDef<ExternalForm>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuItem>Edit</DropdownMenuItem>
-						<DropdownMenuItem>Undo</DropdownMenuItem>
-						<DropdownMenuItem>Revert</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => {
+								const formId = row.original.id;
+								const newTab = window.open(`${url}/form/external_review/${formId}`, '_blank');
+								newTab?.focus();
+							}}
+						>View</DropdownMenuItem>
+						<DropdownMenuItem>Undo Action</DropdownMenuItem>
 						<DropdownMenuSub>
 							<DropdownMenuSubTrigger>
 								<span>Forward To</span>
@@ -196,8 +204,6 @@ export const columns: ColumnDef<ExternalForm>[] = [
 								</DropdownMenuSubContent>
 							</DropdownMenuPortal>
 						</DropdownMenuSub>
-						<DropdownMenuItem>Preview</DropdownMenuItem>
-						<DropdownMenuItem>Download</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);
@@ -212,7 +218,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
-	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard
