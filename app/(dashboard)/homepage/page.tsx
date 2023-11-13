@@ -801,10 +801,13 @@ export default function Homepage() {
 					}
 				}
 
+				const modifiedLabels = labels.map((label) => label.split(' - '));
+
+				//@ts-ignore
 				chartInstanceRef.current = new Chart(ctx, {
 					type: 'bar',
 					data: {
-						labels: labels,
+						labels: modifiedLabels,
 						datasets: [
 							{
 								data: data,
@@ -831,6 +834,7 @@ export default function Homepage() {
 								formatter: (value: number) => {
 									return value.toString();
 								},
+								clamp: true,
 							},
 						},
 						scales: {
