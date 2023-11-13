@@ -132,37 +132,51 @@ export default function Home({ id }: { id: string }) {
                             <fieldset className="p-[0.5px] bg-slate-950 text-[13px]"><span className="text-slate-50 font-semibold uppercase ml-2">Section 1: Personal Details</span></fieldset>
                             <div className="grid grid-cols-8 text-[12px] font-semibold bg-gray-200 leading-3">
                                 <label className="col-start-1 col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Full Name in CAPITAL LETTERS &#40;as per I.C. / Passport&#41;</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details.full_name} />
+                                <p className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${details.full_name.length >= 26 ? "px-2 py-1":"p-2"}`}>{details.full_name}</p>
+                                
                                 <label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Staff ID / Student No.</label>
-                                <input typeof="text" className="col-span-2 border-r border-b border-slate-950 p-2" value={details.staff_id} />
+                                <p className="col-span-2 border-r border-b border-slate-950 bg-white p-2">{details.staff_id}</p>
+                                
                                 <label className="col-start-1 col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Designation / Course</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={capitalizeFirstLetter(details.course)} />
+                                <p className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${details.course.length >= 26 ? "px-2 py-1":"p-2"}`}>{details.course}</p>
+                                
                                 <label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Faculty / School / Unit</label>
-                                <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={capitalizeFirstLetter(details.faculty)} />
+                                <p className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.faculty.length >= 26 ? "px-2 py-1":"p-2"}`}>{details.faculty}</p>
+                                
                                 <label className="col-start-1 col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Type of Transportation</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details && details.transport === "None" ? "" : capitalizeFirstLetter(details.transport)} />
+                                <p className="col-span-2 border-b border-slate-950 bg-white p-2">{details && details.transport === "None" ? "" : capitalizeFirstLetter(details.transport)}</p>
+                                
                                 <label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Traveling in</label>
-                                <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={capitalizeFirstLetter(details.travelling)} />
+                                <p className="col-span-2 border-b border-r border-slate-950 bg-white p-2">{capitalizeFirstLetter(details.travelling)}</p>
+                                
                                 <label className="col-start-1 col-span-2 p-1 border-r border-l border-slate-950">Name of other staff / student travelling together in group<sup>1</sup></label>
-                                <input typeof="text" className="col-span-6 border-r border-slate-950 p-2" value={details && details.other_members.length > 0 ? details.other_members : ""} />
+                                <p className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${details.other_members.length >= 96 ? "px-2 py-1":"p-2"}`}>{details && details.other_members.length > 0 ? details.other_members : ""}</p>
                             </div>
 
                             {/* Section 2: Travel details */}
                             <fieldset className="p-[0.5px] text-[13px] bg-slate-950"><span className="text-slate-50 font-semibold uppercase ml-2">Section 2: Travel Details</span></fieldset>
                             <div className="grid grid-cols-8 normal-case text-[12px] font-semibold leading-3 bg-gray-200">
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Program title / Event</label>
-                                <input typeof="text" className="col-span-6 border-r border-b border-slate-950 p-2" value={details.program_title} />
+                                <p className="col-span-6 border-r border-b border-slate-950 bg-white p-2 flex items-center">{details.program_title}</p>
+                                
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Description</label>
                                 <input typeof="text" className="col-span-6 border-b border-r border-slate-950 p-2" value={details && details.program_description.length > 0 ? details.program_description : ""} />
+                                {/* <p className="col-span-6 border-b border-r border-slate-950 bg-white p-2 flex items-center">{details && details.program_description.length > 0 ? details.program_description : ""}</p> */}
+                                
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Commencement date of event</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={formatDate(details.commencement_date)} />
+                                <p className="col-span-2 border-b border-slate-950 bg-white p-2 flex items-center">{formatDate(details.commencement_date)}</p>
+                                
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Completion date of event</label>
-                                <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-2" value={formatDate(details.completion_date)} />
+                                <p className="col-span-2 border-b border-r border-slate-950 bg-white p-2 flex items-center">{formatDate(details.completion_date)}</p>
+                                
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Organiser</label>
-                                <input typeof="text" className="col-span-2 border-b border-slate-950 p-2" value={details && details.organiser.length > 0 ? details.organiser : ""} />
+                                <p className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${details.organiser.length >= 26 ? "px-2 py-1":"p-2"}`}>{details && details.organiser.length > 0 ? details.organiser : ""}</p>
+                                
                                 <label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Venue</label>
-                                <input typeof="text" className={`col-span-2 border-b border-r border-slate-950 p-2 ${details.venue.length >= 26 ? "break-words text-[10.5px]":""}`} value={capitalizeFirstLetter(details.venue)} />
+                                <p className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.venue.length >= 26 ? "px-2 py-1":"p-2"}`}>{details.venue}</p>
+                                
                                 <label className="col-start-1 col-span-2 p-1 bg-gray-200 border-l border-r border-slate-950 flex items-center">HRDF Claimable</label>
+
                                 <label className="flex col-span-6 items-center justify-center bg-slate-50 border-r border-slate-950">
                                     <input type="checkbox" className="-ml-28" checked={details.hrdf_claimable && details.hrdf_claimable === "yes" ? true : false} />
                                     <label className="px-2">Yes</label>
@@ -184,29 +198,29 @@ export default function Home({ id }: { id: string }) {
                                         <label className="col-span-1 row-span-2 flex justify-center items-center text-center border-b border-r border-slate-950">Flight <br />Number</label>
                                         <label className="col-span-2 row-span-1 flex items-center justify-center border-b border-r border-slate-950">Destination</label>
                                         <label className="col-span-1 row-span-1 flex items-center justify-center border-b border-r border-slate-950">From</label>
-                                        <label className="col-span-1 row-span-1 flex items-center justify-center border-b border-r border-slate-950">To</label>
-                                        <input typeof="text" className="col-span-1 border border-t-0 border-slate-950 p-1 text-center" value={details.flight_date} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.flight_time} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.flight_number.toUpperCase()} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={capitalizeFirstLetter(details.destination_from)} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={capitalizeFirstLetter(details.destination_to)} />
-                                        <input typeof="text" className="col-span-1 border border-t-0 border-slate-950 p-1 text-center" value={""} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={""} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={""} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={""} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={""} />
+                                        <label className="col-span-1 row-span-1 flex items-center justify-center border-b border-r border-slate-950">To</label>                            
+                                        <p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">{details.flight_date}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.flight_time}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.flight_number.toUpperCase()}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{capitalizeFirstLetter(details.destination_from)}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{capitalizeFirstLetter(details.destination_to)}</p>
+                                        <p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
                                     </div>
                                     <div className="col-span-1 row-span-4 grid grid-cols-4 grid-rows-5">
                                         <label className="col-span-2 row-span-1  flex items-center justify-center border-b border-r border-slate-950">Date</label>
                                         <label className="col-span-1 row-start-2 row-span-1  flex items-center justify-center border-b border-r border-slate-950">Check-in</label>
                                         <label className="col-span-1 row-start-2 row-span-1  flex items-center justify-center border-b border-r border-slate-950">Check-out</label>
                                         <label className="col-span-2 row-span-2  flex items-center justify-center border-b border-r border-slate-950">Hotel / Lodging Place</label>
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.check_in_date} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={details.check_out_date} />
-                                        <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-1 text-center" value={capitalizeFirstLetter(details.hotel_name)} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={""} />
-                                        <input typeof="text" className="col-span-1 border-b border-r border-slate-950 p-1 text-center" value={""} />
-                                        <input typeof="text" className="col-span-2 border-b border-r border-slate-950 p-1 text-center" value={""} />
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.check_in_date}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.check_in_date}</p>
+                                        <p className="col-span-2 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{details.hotel_name}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-2 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{""}</p>                                        
                                     </div>
                                 </div>
                             </fieldset>
@@ -219,65 +233,65 @@ export default function Home({ id }: { id: string }) {
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">Funding Particulars</label>
                                     <label className="col-span-1 row-span-1 p-1 text-center bg-gray-200 border-b border-r border-slate-950">Amount &#40;RM&#41;</label>
                                     <label className="col-start-1 col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">1&#41; Course Fees</label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.course_fee > "0" ? details.course_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.course_fee > "0" ? details.course_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">2&#41; Airfare</label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.airfare_fee > "0" ? details.airfare_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.airfare_fee > "0" ? details.airfare_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">3&#41; <span className="underline">Accommodation</span></label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.accommodation_fee > "0" ? details.accommodation_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.accommodation_fee > "0" ? details.accommodation_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">4&#41; <span className="underline">Per Diem</span></label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.per_diem_fee > "0" ? details.per_diem_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.per_diem_fee > "0" ? details.per_diem_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">5&#41; <span className="underline">Transportation</span></label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.transportation_fee > "0" ? details.transportation_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.transportation_fee > "0" ? details.transportation_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">6&#41; Travel Insurance</label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.travel_insurance_fee > "0" ? details.travel_insurance_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.travel_insurance_fee > "0" ? details.travel_insurance_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">7&#41; Others<sup>4</sup></label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.others_fee > "0" ? details.others_fee : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">{details && details.others_fee > "0" ? details.others_fee : ""}</p>
                                     <label className="col-span-1 row-span-1 p-1 bg-gray-200 uppercase border-r border-l border-slate-950">Grand Total</label>
-                                    <input typeof="text" className="col-span-1 row-span-1 p-1 border-r border-slate-950 text-center" value={details && details.grand_total_fees > "0" ? details.grand_total_fees : ""} />
+                                    <p className="col-span-1 row-span-1 p-1 border-r border-slate-950 flex items-center justify-center">{details && details.grand_total_fees > "0" ? details.grand_total_fees : ""}</p>
                                 </div>
                                 <div className="col-span-3 grid grid-cols-3 grid-rows-10 bg-slate-50">
-                                    <label className="col-span-3 row-start-1 row-span-2  p-[9.4px] bg-gray-200 border-r border-b border-slate-950">Source of Fund - <span className="font-normal">Details of account&#40;s&#41; to be debited. </span><span className="italic font-normal">&#40;It is encouraged to have a single source of funding&#41;</span></label>
-                                    <label className="col-span-2 border-b border-r border-slate-950">
+                                    <label className="col-span-3 row-start-1 row-span-2 p-3 bg-gray-200 border-r border-b border-slate-950">Source of Fund - <span className="font-normal">Details of account&#40;s&#41; to be debited. </span><span className="italic font-normal">&#40;It is encouraged to have a single source of funding&#41;</span></label>
+                                    <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] pt-[1px] px-1 text-xs"><input type="checkbox" checked={details && details.staff_development_fund > "0" ? true : false} /></span>
-                                        <span className="ml-2 ">Staff Development Fund</span>
+                                        <span className="ml-2 flex items-center">Staff Development Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.staff_development_fund > "0" ? details.staff_development_fund : ""} />
-
-                                    <label className="col-span-2 border-b border-r border-slate-950">
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.staff_development_fund > "0" ? details.staff_development_fund : ""}</p>
+                                    
+                                    <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false} /></span>
-                                        <span className="ml-2">Consolidated Pool Fund</span>
+                                        <span className="ml-2 flex items-center">Consolidated Pool Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.consolidated_pool_fund > "0" ? details.consolidated_pool_fund : ""} />
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.consolidated_pool_fund > "0" ? details.consolidated_pool_fund : ""}</p>
 
-                                    <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false} /></span>
-                                        <span className="ml-2">Research Fund</span>
-                                    </label>
-
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.research_fund === "0" ? details.research_fund : ""} />
-
-                                    <label className="col-span-2 border-b border-r border-slate-950">
+                                    <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.research_fund > "0" ? true : false} /></span>
+                                        <span className="ml-2 flex items-center">Research Fund</span>
+                                    </label>
+
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.research_fund === "0" ? details.research_fund : ""}</p>
+
+                                    <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
+                                        <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.travel_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Travel / Accommodation Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.travel_fund === "0" ? details.travel_fund : ""} />
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.travel_fund === "0" ? details.travel_fund : ""}</p>
 
-                                    <label className="col-span-2 whitespace-nowrap border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[4.5px] px-1 pt-1"><input type="checkbox" checked={details && details.travel_fund > "0" ? true : false} /></span>
-                                        <span className="ml-2">Student Council / Student Welfare Fund</span>
+                                    <label className="relative inline-flex col-span-2 whitespace-nowrap border-b border-r border-slate-950">
+                                        <span className="border-r border-slate-950 pb-[4.5px] px-1 pt-1"><input type="checkbox" checked={details && details.student_council_fund > "0" ? true : false} /></span>
+                                        <span className="ml-2 flex items-center">Student Council / Student Welfare Fund</span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.student_council_fund === "0" ? details.student_council_fund : ""} />
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.student_council_fund === "0" ? details.student_council_fund : ""}</p>
 
-                                    <label className="col-span-2 border-b border-r border-slate-950">
-                                        <span className="border-r border-slate-950 pb-[8.5px] pt-1 px-1"><input type="checkbox" checked={details && details.student_council_fund > "0" ? true : false} /></span>
-                                        <span className="ml-2">Others<sup>3</sup></span>
+                                    <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
+                                        <span className="border-r border-slate-950 pb-[8.5px] pt-1 px-1"><input type="checkbox" checked={details && details.other_funds > "0" ? true : false} /></span>
+                                        <span className="ml-2 flex items-center">Others<sup>3</sup></span>
                                     </label>
 
-                                    <input typeof="text" className="col-span-1 p-1 border-b border-r border-slate-950 text-center" value={details && details.other_funds === "0" ? details.other_funds : ""} />
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.other_funds === "0" ? details.other_funds : ""}</p>
 
                                     <label className="col-span-3 p-1 flex items-center border-b border-r border-slate-950 font-normal">
                                         Any expenditure cap?
@@ -288,20 +302,20 @@ export default function Home({ id }: { id: string }) {
                                         <p className="italic text-xs font-normal ml-20">if yes, please specify below</p>
                                     </label>
                                     <label className="col-span-1 row-span-1 p-1 border-r border-slate-950">Capped Amount &#40;RM&#41;</label>
-                                    <input typeof="text" className="col-span-2 row-span-1 p-1 border-r border-slate-950" value={details.expenditure_cap_amount} />
+                                    <p className="col-span-2 row-span-1 p-1 border-r border-slate-950">{details.expenditure_cap_amount}</p>
                                 </div>
                             </div>
 
                             {/* Section 5: Applicant Declaration */}
                             <div className="grid grid-cols-2">
                                 <fieldset className="p-[0.5px] border-r border-slate-50 text-[13px] bg-slate-950"><span className="text-slate-50 font-semibold uppercase ml-2">Section 5: Applicant Declaration</span></fieldset>
-                                <fieldset className="p-[0.5px]  text-[13px] bg-slate-950"><span className="text-slate-50 font-semibold uppercase ml-2">Section 6: Verification<sup>5</sup></span></fieldset>
+                                <fieldset className="p-[0.5px] text-[13px] bg-slate-950"><span className="text-slate-50 font-semibold uppercase ml-2">Section 6: Verification<sup>5</sup></span></fieldset>
                                 <div className="col-span-1 normal-case text-[11.5px] bg-gray-200 leading-3 border-r border-l border-slate-950">
                                     <p className="mx-2 p-1 text-justify">I &#40;or acting as representative of group travelling&#41; hereby confirm the accuracy of the information &#40;including any attachments&#41; provided for this application.</p>
                                     <div className="ml-6 mt-1">
                                         <label>Signature<span className="ml-8">:</span></label>
                                         {details && details.applicant_declaration_signature === null ?
-                                            <></> : <img src={details.applicant_declaration_signature} className="absolute w-4 h-4 ml-40 -mt-6" />}
+                                            <></> : <img src={details.applicant_declaration_signature} className="absolute w-6 h-6 ml-40 -mt-6" />}
 
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[50px]">:</span></label>
@@ -318,7 +332,7 @@ export default function Home({ id }: { id: string }) {
                                     <div className="mx-4 mt-6">
                                         <label>Signature<span className="ml-8">:</span></label>
                                         {details && details.verification_signature === null ?
-                                            <></> : <img src={details.verification_signature} className="absolute w-4 h-4 ml-40 -mt-6" />}
+                                            <></> : <img src={details.verification_signature} className="absolute w-6 h-6 ml-40 -mt-6" />}
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" /><br />
                                         <label>Name<span className="ml-[50px]">:</span></label>
                                         <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.verification_name} /><br />
@@ -339,7 +353,7 @@ export default function Home({ id }: { id: string }) {
                                     <label>Position Title<span className="ml-[14px]">:</span></label>
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_position_title} />
                                     {details && details.approval_signature === null ?
-                                        <></> : <img src={details.approval_signature} className="absolute w-8 h-8 ml-[50vh] -mt-8" />}
+                                        <></> : <img src={details.approval_signature} className="absolute w-9 h-9 ml-[47vh] -mt-8"/>}
 
                                     <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
                                     <br />
