@@ -63,7 +63,7 @@ export const columns: ColumnDef<ExternalForm>[] = [
 		cell: ({ row }) => <div className="capitalize">{row.getValue("program_title")}</div>
 	},
 	{
-		accessorKey: "formStage",
+		accessorKey: "form_status",
 		header: "Form Status",
 		cell: ({ row }) => {
 			// let status = row.getValue("review_status");
@@ -95,6 +95,32 @@ export const columns: ColumnDef<ExternalForm>[] = [
 			}
 		},
 	},
+	// {
+	// 	accessorKey: "program_duration",
+	// 	header: "Duration",
+	// 	cell: ({ row }) => {
+
+	// 		const startDate = new Date(row.getValue("commencement_date"));
+	// 		const startDay = startDate.getDate();
+	// 		const startMonth = startDate.getMonth() + 1;
+	// 		const startYear = startDate.getFullYear();
+	// 		const formattedStartDate = `${startDay}-${startMonth}-${startYear}`;
+
+	// 		const endDate = new Date(row.getValue("completion_date"));
+	// 		const endDay = endDate.getDate();
+	// 		const endMonth = endDate.getMonth() + 1;
+	// 		const endYear = endDate.getFullYear();
+	// 		const formattedEndDate = `${endDay}-${endMonth}-${endYear}`;
+
+	// 		const dateDetails = formattedStartDate && formattedEndDate ? `${formattedStartDate} - ${formattedEndDate}` : "No date details available";
+
+	// 		return (
+	// 			<div>
+	// 				<div>{dateDetails}</div>
+	// 			</div>
+	// 		);
+	// 	},
+	// },
 	// {
 	// 	accessorKey: "verification_status",
 	// 	header: "Verification Status",
