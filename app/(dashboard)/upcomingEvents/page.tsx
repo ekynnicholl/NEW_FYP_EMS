@@ -43,6 +43,9 @@ type mainEvent = {
     intFEventDescription: string;
     intFEventStartDate: string;
     intFEventEndDate: string;
+    intFDurationCourse: string;
+    intFTrainerName: string;
+    intFTrainingProvider: string;
 };
 
 type subEvents = {
@@ -111,7 +114,16 @@ export default function Home() {
 
     const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 
-    const [mainEvent, setMainEvent] = useState<mainEvent>({} as mainEvent);
+    const [mainEventForFeedback, setMainEventForFeedback] = useState<mainEvent>({
+        intFID: '',
+        intFEventName: '',
+        intFEventDescription: '',
+        intFEventStartDate: '',
+        intFEventEndDate: '',
+        intFDurationCourse: '',
+        intFTrainerName: '',
+        intFTrainingProvider: ''
+    });
     const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
 
     const [selectedEvent, setSelectedEvent] = useState({
@@ -139,6 +151,7 @@ export default function Home() {
     const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
     const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
     const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
+    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
 
     // This is for the pie chart,
     const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -158,12 +171,12 @@ export default function Home() {
             const { data: mainEventData, error: internalError } = await supabase
                 .from("internal_events")
                 .select("*")
-                .filter('intFEventEndDate', 'gte', currentDate)
+                .lt('intFEventEndDate', currentDate)
                 .order("intFEventStartDate", { ascending: true })
                 .select();
 
             if (internalError) {
-                console.error("Error fetching latest event:", internalError);
+                console.error("Error fetching past event:", internalError);
                 return;
             }
 
@@ -700,26 +713,26 @@ export default function Home() {
     };
 
     // For QR codes,
-	const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
-	const [selectedSubEventID, setSelectedSubEventID] = useState<string>("");
+    const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
+    const [selectedSubEventID, setSelectedSubEventID] = useState<string>("");
 
-	const copyToClipboard = (text: string) => {
-		navigator.clipboard
-			.writeText(text)
-			.then(() => {
-				alert("Link copied to clipboard!");
-			})
-			.catch(error => {
-				console.error("Copy failed:", error);
-			});
-	};
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                alert("Link copied to clipboard!");
+            })
+            .catch(error => {
+                console.error("Copy failed:", error);
+            });
+    };
 
-     //show qr codes for each session
-     const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+    //show qr codes for each session
+    const [showQRCodeModal, setShowQRCodeModal] = useState(false);
 
-     const openQRCodeModal = async() => {                
-         setShowQRCodeModal(true);
-     }
+    const openQRCodeModal = async () => {
+        setShowQRCodeModal(true);
+    }
 
     return (
         <div className="h-screen flex flex-row justify-start">
@@ -1350,7 +1363,7 @@ export default function Home() {
                         isVisible={showFeedbackModal}
                         onClose={() => setShowFeedbackModal(false)}>
                         <div className="flex">
-                            <div className="h-[600px] lg:h-[700px] w-full mr-3">
+                            <div className="h-[600px] lg:h-[825px] w-full mr-3">
                                 <div className="flex items-left justify-start">
                                     <div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center">
                                         <PencilNoteIcon />{" "}
@@ -1391,8 +1404,8 @@ export default function Home() {
                                 {/* This is to loop through the attendance data. */}
                                 {feedbackData && feedbackData.length > 0 ? (
                                     <div className="ml-9">
-                                        <div className={`lg:h-[550px] h-[400px]  overflow-y-auto`}>
-                                            <FeedbackList feedbackData={feedbackData} />
+                                        <div className={`lg:h-[675px] h-[400px] overflow-y-auto`}>
+                                            <FeedbackList feedbackData={feedbackData} mainEvent={mainEventForFeedback} />
                                         </div>
                                     </div>
                                 ) : (
@@ -1408,7 +1421,7 @@ export default function Home() {
                     <ViewAttendance_Modal
                         isVisible={showAttendanceModal}
                         onClose={() => setShowAttendanceModal(false)}>
-                        <div className="flex flex-col lg:flex-row h-[450px] lg:h-[700px] overflow-y-auto">
+                        <div className="flex flex-col lg:flex-row h-[450px] lg:h-[825px] overflow-y-auto">
                             <div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
                                 <div className="flex items-start justify-start text-text text-[20px] text-center">
                                     <PencilNoteIcon />{" "}
@@ -1437,7 +1450,7 @@ export default function Home() {
                                             <button
                                                 onClick={() => {
                                                     setIsAllButtonActive(false);
-                                                    handleSubEventClick(subEvent, 2);
+                                                    handleSubEventClick(subEvent, 1);
                                                 }}
                                             >
                                                 {subEvent.sub_eventsName}
@@ -1458,6 +1471,27 @@ export default function Home() {
                                 {/* This is to loop through the attendance data. */}
                                 {attendanceData && attendanceData.length > 0 ? (
                                     <div className="lg:text-[16px] text-[12px]">
+                                        <button
+                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
+                                                }`}
+                                            onClick={() => setActiveTab('all')}
+                                        >
+                                            All
+                                        </button>
+                                        <button
+                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
+                                                }`}
+                                            onClick={() => setActiveTab('staff')}
+                                        >
+                                            Staff
+                                        </button>
+                                        <button
+                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
+                                                }`}
+                                            onClick={() => setActiveTab('student')}
+                                        >
+                                            Student
+                                        </button>
                                         <label htmlFor="itemsPerPageSelect">Show entries:</label>
                                         <select
                                             id="itemsPerPageSelect"
@@ -1487,12 +1521,11 @@ export default function Home() {
                                                 onChange={e => handleAttendanceSearch(e.target.value)}
                                             />
                                         </div>
-
                                         <div className="h-[450px]">
                                             {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
                                                 <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                             ) : (
-                                                <AttendanceTable attendanceData={attendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
+                                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                             )
                                             }
                                         </div>
@@ -1503,10 +1536,10 @@ export default function Home() {
                                     </div>
                                 )}
                             </div>
-                            {attendanceData && attendanceData.length > 0 ? (
-                                <div className="w-full lg:flex flex-col items-center justify-center">
+                            {filteredAttendanceData && filteredAttendanceData.length > 0 ? (
+                                <div className="w-full lg:flex flex-col items-center justify-center mt-24">
                                     <div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
-                                    <div className="w-[300px] h-[300px] lg:w-[500px] lg:h-[450px] flex items-center justify-center mt-5">
+                                    <div className="w-[400px] h-[400px] lg:w-[650px] lg:h-[750px] flex items-center justify-center mt-5">
                                         <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
                                     </div>
                                 </div>
@@ -1514,8 +1547,8 @@ export default function Home() {
                         </div>
                     </ViewAttendance_Modal>
 
-                    <Modal isVisible={showQRCodesFeedback} onClose={() => {setShowQRCodesFeedback(false); setShowQRCodeModal(true);}}>                    
-                        <div className="ml-2 p-5 z-[999]">                            
+                    <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodesFeedback(false); setShowQRCodeModal(true); }}>
+                        <div className="ml-2 p-5 z-[999]">
                             <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
                                 Feedback
                             </h3>
@@ -1536,31 +1569,31 @@ export default function Home() {
                     </Modal>
 
                     <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
-                            <div className="p-6">
-                                <p className="font-semibold text-center">Feedback Form</p>
-                                {subEvents
-								.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
-								.map((subEvent, index) => (
-									<div key={index} className="mt-2">
-                                        
+                        <div className="p-6">
+                            <p className="font-semibold text-center">Feedback Form</p>
+                            {subEvents
+                                .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+                                .map((subEvent, index) => (
+                                    <div key={index} className="mt-2">
+
                                         <button
-											type="button"
-											className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
-											onClick={() => {
-											    setSelectedSubEventID(subEvent.sub_eventsID);
-											    setShowQRCodesFeedback(true);
+                                            type="button"
+                                            className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
+                                            onClick={() => {
+                                                setSelectedSubEventID(subEvent.sub_eventsID);
+                                                setShowQRCodesFeedback(true);
                                                 setShowQRCodeModal(false);
-										}}>
-											<span className="ml-2 text-slate-800 flex items-center mr-2">
-												<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-												<span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
-                                                    Session {index+1}
-												</span>
-											</span>
-										</button>
+                                            }}>
+                                            <span className="ml-2 text-slate-800 flex items-center mr-2">
+                                                <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+                                                <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                    Session {index + 1}
+                                                </span>
+                                            </span>
+                                        </button>
                                     </div>
-                                ))}                                
-                            </div>
+                                ))}
+                        </div>
                     </QRCodeModal>
 
 
@@ -1664,30 +1697,30 @@ export default function Home() {
                                                         >Sub-Events Details
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
-                                                            <DropdownMenuItem
-                                                                className="cursor-pointer"
-                                                                onClick={e => {
-                                                                    e.stopPropagation()
-                                                                    openAttendanceModal(event.intFID);
-                                                                }}
-                                                            >Attendance List
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation(); // 
-                                                                openFeedbackModal(event.intFID);
-                                                                fetchFeedbackList(event.intFID);
-                                                            }}>Event Feedback
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem onClick={() => {
-                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+                                                        <DropdownMenuItem
+                                                            className="cursor-pointer"
+                                                            onClick={e => {
+                                                                e.stopPropagation()
+                                                                openAttendanceModal(event.intFID);
+                                                            }}
+                                                        >Attendance List
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={e => {
+                                                            e.stopPropagation(); // 
+                                                            openFeedbackModal(event.intFID);
+                                                            fetchFeedbackList(event.intFID);
+                                                        }}>Event Feedback
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={() => {
+                                                            const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
-                                                                if (filteredSubEvent) {
-                                                                    openQRCodeModal();
-                                                                }
-                                                            }}>Feedback Form
-                                                            </DropdownMenuItem>
+                                                            if (filteredSubEvent) {
+                                                                openQRCodeModal();
+                                                            }
+                                                        }}>Feedback Form
+                                                        </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </td>

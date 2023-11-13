@@ -42,6 +42,9 @@ type mainEvent = {
     intFEventDescription: string;
     intFEventStartDate: string;
     intFEventEndDate: string;
+    intFDurationCourse: string;
+    intFTrainerName: string;
+    intFTrainingProvider: string;
 };
 
 type subEvents = {
@@ -110,7 +113,16 @@ export default function Home() {
 
     const [subEvents, setSubEvents] = useState<subEvents[]>([]);
 
-    const [mainEvent, setMainEvent] = useState<mainEvent>({} as mainEvent);
+    const [mainEventForFeedback, setMainEventForFeedback] = useState<mainEvent>({
+        intFID: '',
+        intFEventName: '',
+        intFEventDescription: '',
+        intFEventStartDate: '',
+        intFEventEndDate: '',
+        intFDurationCourse: '',
+        intFTrainerName: '',
+        intFTrainingProvider: ''
+    });
     const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
 
     const [selectedEvent, setSelectedEvent] = useState({
@@ -1056,22 +1068,23 @@ export default function Home() {
                                                             </DropdownMenuItem>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation(); // 
+                                                                e.stopPropagation();
+                                                                setMainEventForFeedback(event);
                                                                 openFeedbackModal(
                                                                     event.intFID,
                                                                 );
                                                                 fetchFeedbackList(event.intFID);
                                                             }}>Event Feedback
                                                             </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
+                                                            {/* <DropdownMenuSeparator />
                                                             <DropdownMenuItem onClick={() => {
                                                                 const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
                                                                 if (filteredSubEvent) {
                                                                     openQRCodeModal();
                                                                 }
-                                                            }}>Feedback Form
-                                                            </DropdownMenuItem>
+                                                            }}>Feedback Form (QR)
+                                                            </DropdownMenuItem> */}
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </td>
@@ -1480,7 +1493,7 @@ export default function Home() {
                                 {feedbackData && feedbackData.length > 0 ? (
                                     <div className="ml-9">
                                         <div className={`lg:h-[675px] h-[400px] overflow-y-auto`}>
-                                            <FeedbackList feedbackData={feedbackData} />
+                                            <FeedbackList feedbackData={feedbackData} mainEvent={mainEventForFeedback} />
                                         </div>
                                     </div>
                                 ) : (
@@ -1780,7 +1793,8 @@ export default function Home() {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem onClick={e => {
-                                                            e.stopPropagation(); // 
+                                                            e.stopPropagation();
+                                                            setMainEventForFeedback(event);
                                                             openFeedbackModal(
                                                                 event.intFID,
                                                             );

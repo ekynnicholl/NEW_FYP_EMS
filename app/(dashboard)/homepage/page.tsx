@@ -764,6 +764,17 @@ export default function Homepage() {
 	// 	};
 	// }, []);
 
+	const [mainEventForFeedback, setMainEventForFeedback] = useState<mainEvent>({
+		intFID: '',
+		intFEventName: '',
+		intFEventDescription: '',
+		intFEventStartDate: '',
+		intFEventEndDate: '',
+		intFDurationCourse: '',
+		intFTrainerName: '',
+		intFTrainingProvider: ''
+	});
+
 	const createHorizontalBarChart = (
 		chartContainer: HTMLCanvasElement | null,
 		labels: string[],
@@ -2359,7 +2370,7 @@ export default function Homepage() {
 								{feedbackData && feedbackData.length > 0 ? (
 									<div className="ml-9">
 										<div className={`lg:h-[675px] h-[400px] overflow-y-auto dark:bg-[#242729] dark:text-dark_text`}>
-											<FeedbackList feedbackData={feedbackData} />
+											<FeedbackList feedbackData={feedbackData} mainEvent={mainEventForFeedback} />
 										</div>
 									</div>
 								) : (
@@ -3326,7 +3337,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[0]);
 															openFeedbackModal(
 																latestEvent[0].intFID,
 															);
@@ -3601,7 +3613,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[1]);
 															openFeedbackModal(
 																latestEvent[1].intFID,
 															);
@@ -3876,7 +3889,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[2]);
 															openFeedbackModal(
 																latestEvent[2].intFID,
 															);
@@ -4151,7 +4165,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[3]);
 															openFeedbackModal(
 																latestEvent[3].intFID,
 															);
@@ -4426,7 +4441,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[4]);
 															openFeedbackModal(
 																latestEvent[4].intFID,
 															);
@@ -4701,7 +4717,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[5]);
 															openFeedbackModal(
 																latestEvent[5].intFID,
 															);
@@ -4983,7 +5000,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[0]);
 															openFeedbackModal(
 																latestEvent[0].intFID,
 															);
@@ -5220,7 +5238,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[1]);
 															openFeedbackModal(
 																latestEvent[1].intFID,
 															);
@@ -5457,7 +5476,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[2]);
 															openFeedbackModal(
 																latestEvent[2].intFID,
 															);
@@ -5694,7 +5714,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[3]);
 															openFeedbackModal(
 																latestEvent[3].intFID,
 															);
@@ -5931,7 +5952,8 @@ export default function Homepage() {
 														}}>Attendance List</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
-															e.stopPropagation(); // 
+															e.stopPropagation();
+															setMainEventForFeedback(latestEvent[4]);
 															openFeedbackModal(
 																latestEvent[4].intFID,
 															);
@@ -6169,6 +6191,7 @@ export default function Homepage() {
 														<DropdownMenuSeparator />
 														<DropdownMenuItem onClick={e => {
 															e.stopPropagation(); // 
+															setMainEventForFeedback(latestEvent[5]);
 															openFeedbackModal(
 																latestEvent[5].intFID,
 															);
@@ -6410,7 +6433,8 @@ export default function Homepage() {
 															}}>Attendance List</DropdownMenuItem>
 															<DropdownMenuSeparator />
 															<DropdownMenuItem onClick={e => {
-																e.stopPropagation(); // 
+																e.stopPropagation();
+																setMainEventForFeedback(event);
 																openFeedbackModal(
 																	event.intFID,
 																);
@@ -6505,7 +6529,8 @@ export default function Homepage() {
 															}}>Attendance List</DropdownMenuItem>
 															<DropdownMenuSeparator />
 															<DropdownMenuItem onClick={e => {
-																e.stopPropagation(); // 
+																e.stopPropagation();
+																setMainEventForFeedback(event);
 																openFeedbackModal(
 																	event.intFID,
 																);
@@ -6599,7 +6624,8 @@ export default function Homepage() {
 															}}>Attendance List</DropdownMenuItem>
 															<DropdownMenuSeparator />
 															<DropdownMenuItem onClick={e => {
-																e.stopPropagation(); // 
+																e.stopPropagation();
+																setMainEventForFeedback(event);
 																openFeedbackModal(
 																	event.intFID,
 																);

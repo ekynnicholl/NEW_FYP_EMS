@@ -32,8 +32,20 @@ type FeedbackDataType = {
     fbEmailAddress: string;
 }
 
+type mainEvent = {
+    intFID: string;
+    intFEventName: string;
+    intFEventDescription: string;
+    intFEventStartDate: string;
+    intFEventEndDate: string;
+    intFDurationCourse: string;
+    intFTrainerName: string;
+    intFTrainingProvider: string;
+};
+
 interface Props {
     feedbackData: FeedbackDataType[];
+    mainEvent: mainEvent;
 }
 
 const columnDisplayNames: { [key in keyof FeedbackDataType]: string } = {
@@ -160,7 +172,7 @@ const ratingDescriptions: { [key: string]: string } = {
 
 const sectionsToDisplay = ['fbSectionA1', 'fbSectionA2', 'fbSectionA3', 'fbSectionA4', 'fbSectionA5', 'fbSectionB1', 'fbSectionB2', 'fbSectionB3', 'fbSectionB4', 'fbSectionC1', 'fbSectionD1'];
 
-const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
+const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
     const [activeTab, setActiveTab] = useState<'summary' | 'individual' | 'graph'>('summary');
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -275,6 +287,8 @@ const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
         return ratingCounts;
     };
 
+    console.log(mainEvent);
+
     return (
         <div>
             <div className="mb-5">
@@ -317,58 +331,120 @@ const FeedbackList: React.FC<Props> = ({ feedbackData }) => {
 
             {activeTab === 'summary' && (
                 <div>
-                    {columns.map((column, columnIndex) => (
-                        <div key={columnIndex} className="mb-5">
-                            {column === 'fbSectionA1' ? (
-                                <div>
+                    {columns.map((column, columnIndex) => {
+                        // Keep track of which variable has already been displayed,
+                        let courseNameDisplayed = false;
+                        let courseDurationDisplay = false;
+                        let trainerNameDisplayed = false;
+                        let trainingProviderDisplayed = false;
+
+                        return (
+                            <div key={columnIndex} className="mb-5">
+                                {column === 'fbSectionA1' ? (
+                                    <div>
+                                        <p className="font-bold text-[18px]">
+                                            <span className="underline">A. Course Quality</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                        </p>
+                                    </div>
+                                ) : column === 'fbSectionB1' ? (
                                     <p className="font-bold text-[18px]">
-                                        <span className="underline">A. Course Quality</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                        <span className="underline">B. Training Experience</span> (Strongly Disagree 1 - 5 Strongly Agree)
                                     </p>
+                                ) : column === 'fbSectionC1' ? (
+                                    <p className="font-bold text-[18px]">
+                                        <span className="underline">C. Duration</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                    </p>
+                                ) : column === 'fbSectionD1' ? (
+                                    <p className="font-bold text-[18px]">
+                                        <span className="underline">D. Recommendation</span> (Strongly Disagree 1 - 5 Strongly Agree)
+                                    </p>
+                                ) : column === 'fbSectionESuggestions' ? (
+                                    <p className="font-bold text-[18px]">
+                                        <span className="underline">E. Suggestions/ Comments</span>
+                                    </p>
+                                ) : column === 'fbFullName' ? (
+                                    <p className="font-bold text-[18px]">
+                                        <span className="underline">Verification</span>
+                                    </p>
+                                ) : column === 'fbCourseName' ? (
+                                    <p className="font-bold text-[18px]">
+                                        <span className="underline">Staff Development Program Details</span>
+                                    </p>
+                                ) : null}
+                                <h2 className="">{columnDisplayNames[column]}</h2>
+                                <div className="border-t border-gray-300 my-2 mr-14"></div>
+                                <div className="max-h-[200px] overflow-y-auto mr-14">
+                                    <span className="">
+                                        {['fbCourseName'].includes(column) ? (
+                                            feedbackData.map((feedback, feedbackIndex) => {
+                                                if (!courseNameDisplayed) {
+                                                    courseNameDisplayed = true;
+                                                    return (
+                                                        <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                            {mainEvent.intFEventName}
+                                                        </p>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : ['fbDuration'].includes(column) ? (
+                                            feedbackData.map((feedback, feedbackIndex) => {
+                                                if (!courseDurationDisplay) {
+                                                    courseDurationDisplay = true;
+                                                    return (
+                                                        <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                            {mainEvent.intFDurationCourse}
+                                                        </p>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : ['fbTrainersName'].includes(column) ? (
+                                            feedbackData.map((feedback, feedbackIndex) => {
+                                                if (!trainerNameDisplayed) {
+                                                    trainerNameDisplayed = true;
+                                                    return (
+                                                        <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                            {mainEvent.intFTrainerName}
+                                                        </p>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : ['fbTrainingProvider'].includes(column) ? (
+                                            feedbackData.map((feedback, feedbackIndex) => {
+                                                if (!trainingProviderDisplayed) {
+                                                    trainingProviderDisplayed = true;
+                                                    return (
+                                                        <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                            {mainEvent.intFTrainingProvider}
+                                                        </p>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : /^fbSection[ABCD][1-5]$/.test(column) ? (
+                                            // Custom rendering for other columns matching the pattern
+                                            Object.keys(calculateRatingCounts(column)).map((rating, ratingIndex) => (
+                                                <div key={ratingIndex}>
+                                                    <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2">
+                                                        {`Rating ${rating} (${ratingDescriptions[rating]}) - Count: ${calculateRatingCounts(column)[rating]}`}
+                                                    </p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            // Default rendering for other columns
+                                            feedbackData.map((feedback, feedbackIndex) => (
+                                                <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                    {feedback[column]}
+                                                </p>
+                                            ))
+                                        )}
+                                    </span>
                                 </div>
-                            ) : column === 'fbSectionB1' ? (
-                                <p className="font-bold text-[18px]">
-                                    <span className="underline">B. Training Experience</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                                </p>
-                            ) : column === 'fbSectionC1' ? (
-                                <p className="font-bold text-[18px]">
-                                    <span className="underline">C. Duration</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                                </p>
-                            ) : column === 'fbSectionD1' ? (
-                                <p className="font-bold text-[18px]">
-                                    <span className="underline">D. Recommendation</span> (Strongly Disagree 1 - 5 Strongly Agree)
-                                </p>
-                            ) : column === 'fbSectionESuggestions' ? (
-                                <p className="font-bold text-[18px]">
-                                    <span className="underline">E. Suggestions/ Comments</span>
-                                </p>
-                            ) : column === 'fbFullName' ? (
-                                <p className="font-bold text-[18px]">
-                                    <span className="underline">Verification</span>
-                                </p>
-                            ) : column === 'fbCourseName' ? (
-                                <p className="font-bold text-[18px]">
-                                    <span className="underline">Staff Development Program Details</span>
-                                </p>
-                            ) : null}
-                            <h2 className="">{columnDisplayNames[column]}</h2>
-                            <div className="border-t border-gray-300 my-2 mr-14"></div>
-                            <div className="max-h-[200px] overflow-y-auto mr-14">
-                                <span className="">
-                                    {/^fbSection[ABCD][1-5]$/.test(column) ? (
-                                        Object.keys(calculateRatingCounts(column)).map((rating, ratingIndex) => (
-                                            <div key={ratingIndex}>
-                                                <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2">{`Rating ${rating} (${ratingDescriptions[rating]}) - Count: ${calculateRatingCounts(column)[rating]}`}</p>
-                                            </div>
-                                        ))
-                                    ) :
-                                        feedbackData.map((feedback, feedbackIndex) => (
-                                            <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>{feedback[column]}</p>
-                                        ))
-                                    }
-                                </span>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 
