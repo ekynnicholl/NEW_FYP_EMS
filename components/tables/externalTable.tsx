@@ -16,6 +16,16 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -169,43 +179,87 @@ export const columns: ColumnDef<ExternalForm>[] = [
 		id: "actions",
 		enableHiding: false,
 		cell: ({ row }) => {
+			const [openUndoDialog, setOpenUndoDialog] = React.useState(false);
+			const [selectedOption, setSelectedOption] = React.useState('');
+
+			const handleUndoAction = () => {
+				// Add logic for undo action here
+				// For example, dispatch an action to revert the changes
+
+				// Close the Undo Action dialog
+				setOpenUndoDialog(false);
+			};
 			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-8 w-8 p-0">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuItem
-							onClick={() => {
-								const formId = row.original.id;
-								const newTab = window.open(`${url}/form/external_review/${formId}`, '_blank');
-								newTab?.focus();
-							}}
-						>View</DropdownMenuItem>
-						<DropdownMenuItem>Undo Action</DropdownMenuItem>
-						<DropdownMenuSub>
-							<DropdownMenuSubTrigger>
-								<span>Forward To</span>
-							</DropdownMenuSubTrigger>
-							<DropdownMenuPortal>
-								<DropdownMenuSubContent>
-									<DropdownMenuItem>
-										example1@gmail.com
-									</DropdownMenuItem>
-									<DropdownMenuItem>
-										example1@gmail.com
-									</DropdownMenuItem>
-									<DropdownMenuItem>
-										example1@gmail.com
-									</DropdownMenuItem>
-								</DropdownMenuSubContent>
-							</DropdownMenuPortal>
-						</DropdownMenuSub>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<>
+					<>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="ghost" className="h-8 w-8 p-0">
+									<span className="sr-only">Open menu</span>
+									<MoreHorizontal className="h-4 w-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem
+									onClick={() => {
+										const formId = row.original.id;
+										const newTab = window.open(`${url}/form/external_review/${formId}`, '_blank');
+										newTab?.focus();
+									}}
+								>View</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => setOpenUndoDialog(true)}>
+									Undo Action
+								</DropdownMenuItem>
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>
+										<span>Forward To</span>
+									</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuItem>
+												example1@gmail.com
+											</DropdownMenuItem>
+											<DropdownMenuItem>
+												example1@gmail.com
+											</DropdownMenuItem>
+											<DropdownMenuItem>
+												example1@gmail.com
+											</DropdownMenuItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</>
+					<Dialog open={openUndoDialog} onOpenChange={setOpenUndoDialog}>
+						<DialogHeader>
+							<DialogTitle>Undo Action</DialogTitle>
+						</DialogHeader>
+						<DialogContent>
+							<DialogDescription>
+								Are you sure you want to undo the action? This cannot be undone.
+							</DialogDescription>
+							<select
+								value={selectedOption}
+								onChange={(e) => setSelectedOption(e.target.value)}
+							>
+								<option value="option1">Option 1</option>
+								<option value="option2">Option 2</option>
+								{/* Add more options as needed */}
+							</select>
+						</DialogContent>
+						<DialogFooter>
+							<DialogClose asChild>
+								<Button variant="outline" onClick={() => setOpenUndoDialog(false)}>
+									Cancel
+								</Button>
+							</DialogClose>
+							<Button onClick={handleUndoAction}>
+								Confirm Undo
+							</Button>
+						</DialogFooter>
+					</Dialog>
+				</>
 			);
 		},
 	},
