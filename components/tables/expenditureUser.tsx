@@ -40,18 +40,20 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
     };
 
     const groupedData: Record<string, ExpenditureDataType[]> = expenditureData.reduce(
-        (acc, currentItem) => {
-            const key = currentItem.staff_id;
-            if (!acc[key]) {
-                acc[key] = [];
+        (sid, currentItem) => {
+            // Map and reduce,
+            const key = currentItem.staff_id.trim();
+            if (!sid[key]) {
+                sid[key] = [];
             }
-            acc[key].push(currentItem);
-            return acc;
+            sid[key].push(currentItem);
+            return sid;
         },
         {} as Record<string, ExpenditureDataType[]>
     );
 
     const totalsData: ExpenditureDataType[] = Object.values(groupedData).map((group) => {
+        // Map and reduce,
         const grandTotalFees = group.reduce((total, currentItem) => total + parseFloat(currentItem.grand_total_fees), 0);
         return {
             ...group[0],
@@ -115,7 +117,7 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
                                         Grand Total (RM)
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                        Program Name(s)
+                                        Program Name(s) - Total (RM)
                                     </th>
                                 </tr>
                             </thead>
@@ -132,7 +134,11 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
                                             {expenditureItem.grand_total_fees}
                                         </td>
                                         <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            Placeholder
+                                            {groupedData[expenditureItem.staff_id]?.map((programItem) => (
+                                                <div key={programItem.id}>
+                                                    {programItem.program_title} - {programItem.grand_total_fees}
+                                                </div>
+                                            ))}
                                         </td>
                                     </tr>
                                 ))}

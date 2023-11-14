@@ -53,8 +53,28 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { sendContactForm } from "@/lib/api";
+import toast from "react-hot-toast";
 
 const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
+const supabase = createClientComponentClient();
+
+const showSuccessToast = (message: string) => {
+	toast.success(message, {
+		duration: 3500,
+		style: {
+			border: '1px solid #86DC3D',
+			padding: '16px',
+			color: '#000000',
+			textAlign: 'justify',
+		},
+		iconTheme: {
+			primary: '#86DC3D',
+			secondary: '#FFFAEE',
+		},
+	});
+};
 
 export const columns: ColumnDef<ExternalForm>[] = [
 	{
@@ -181,14 +201,76 @@ export const columns: ColumnDef<ExternalForm>[] = [
 		cell: ({ row }) => {
 			const [openUndoDialog, setOpenUndoDialog] = React.useState(false);
 			const [selectedOption, setSelectedOption] = React.useState('');
+			const [formData, setFormData] = React.useState<any>({
+				id: "",
+			});
 
-			const handleUndoAction = () => {
-				// Add logic for undo action here
-				// For example, dispatch an action to revert the changes
+			const fetchFormData = async () => {
+				try {
+					const formId = row.original.id;
+					const { data, error } = await supabase
+						.from('external_forms')
+						.select('*')
+						.eq('id', formId)
+						.single();
 
-				// Close the Undo Action dialog
-				setOpenUndoDialog(false);
+					if (error) {
+						throw error;
+					}
+
+					setFormData(data);
+				} catch (error) {
+					console.error('Error fetching form data:', error);
+				}
 			};
+
+			const handleUndoAction = async () => {
+				if (formData) {
+					const selectedStage = parseInt(selectedOption, 10);
+					const formID = row.original.id;
+
+					try {
+						const { data, error } = await supabase
+							.from('external_forms')
+							.update(
+								{
+									formStage: selectedStage
+								})
+							.eq('id', formID);
+
+						if (error) {
+							console.error('Error updating formStage:', error.message);
+						} else {
+							console.log('FormStage updated successfully:', data);
+						}
+					} catch (error) {
+						console.error('Error fetching form data:', error);
+					}
+
+					setFormData({
+						...formData,
+						formStage: selectedStage
+					})
+
+					showSuccessToast("Action has been submitted.")
+					window.location.reload();
+				}
+			};
+
+			React.useEffect(() => {
+				const oriFormStage = row.original.formStage;
+				if (formData!.formStage != oriFormStage) {
+					console.log("Email has been sent out!");
+					sendContactForm(formData);
+				}
+			}, [formData.formStage]);
+
+			React.useEffect(() => {
+				if (openUndoDialog) {
+					fetchFormData();
+				}
+			}, [openUndoDialog]);
+
 			return (
 				<>
 					<>
@@ -232,32 +314,38 @@ export const columns: ColumnDef<ExternalForm>[] = [
 						</DropdownMenu>
 					</>
 					<Dialog open={openUndoDialog} onOpenChange={setOpenUndoDialog}>
-						<DialogHeader>
-							<DialogTitle>Undo Action</DialogTitle>
-						</DialogHeader>
 						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Undo Action</DialogTitle>
+							</DialogHeader>
 							<DialogDescription>
-								Are you sure you want to undo the action? This cannot be undone.
+								Please CONFIRM your UNDO ACTION. After you click CONFIRM UNDO, it will automatically send the email(s) to the related parties.
 							</DialogDescription>
 							<select
+								className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
 								value={selectedOption}
 								onChange={(e) => setSelectedOption(e.target.value)}
+								required
 							>
-								<option value="option1">Option 1</option>
-								<option value="option2">Option 2</option>
-								{/* Add more options as needed */}
+								<option value="" selected disabled>Select</option>
+								<option value="1">Reverted to Staff</option>
+								<option value="2">Review by AAO</option>
+								<option value="3">Review by HOS/ ADCR/ MGR</option>
+								<option value="4">Review by HMU/ Dean</option>
+								<option value="5">Approved</option>
+								<option value="6">Rejected</option>
 							</select>
-						</DialogContent>
-						<DialogFooter>
-							<DialogClose asChild>
-								<Button variant="outline" onClick={() => setOpenUndoDialog(false)}>
-									Cancel
+							<DialogFooter>
+								<DialogClose asChild>
+									<Button variant="outline" onClick={() => setOpenUndoDialog(false)}>
+										Cancel
+									</Button>
+								</DialogClose>
+								<Button onClick={handleUndoAction} disabled={!selectedOption}>
+									Confirm Undo
 								</Button>
-							</DialogClose>
-							<Button onClick={handleUndoAction}>
-								Confirm Undo
-							</Button>
-						</DialogFooter>
+							</DialogFooter>
+						</DialogContent>
 					</Dialog>
 				</>
 			);
@@ -266,7 +354,7 @@ export const columns: ColumnDef<ExternalForm>[] = [
 ];
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
-	console.log(data);
+	// console.log(data);
 	const [showQRCodesAttendance, setShowQRCodesAttendance] = React.useState(false);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
