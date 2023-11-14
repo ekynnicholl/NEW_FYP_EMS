@@ -62,14 +62,14 @@ export default function ExternalForm() {
 		toast.success(message, {
 			duration: 3500,
 			style: {
-				border: '1px solid #86DC3D',
-				padding: '16px',
-				color: '#000000',
-				textAlign: 'justify',
+				border: "1px solid #86DC3D",
+				padding: "16px",
+				color: "#000000",
+				textAlign: "justify",
 			},
 			iconTheme: {
-				primary: '#86DC3D',
-				secondary: '#FFFAEE',
+				primary: "#86DC3D",
+				secondary: "#FFFAEE",
 			},
 		});
 	};
@@ -96,7 +96,7 @@ export default function ExternalForm() {
 			hrdf_claimable: "",
 
 			flight_date: undefined,
-			flight_time: "",
+			flight_time: null,
 			flight_number: "",
 			destination_from: "",
 			destination_to: "",
@@ -139,7 +139,7 @@ export default function ExternalForm() {
 
 	const checkFormStatus = () => {
 		setOpen(false);
-		if (form.getValues("check_out_date") < form.getValues("check_in_date")) {
+		if (form.getValues("check_out_date")! < form.getValues("check_in_date")!) {
 			toast.error("Check out date cannot be earlier than check in date");
 		}
 		if (form.getValues("completion_date") < form.getValues("commencement_date")) {
@@ -159,8 +159,8 @@ export default function ExternalForm() {
 		if (values.commencement_date.getHours() < 8) {
 			setCommencementDate(new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8)));
 		}
-		if (values.check_in_date.getHours() < 8) {
-			setCheckInDate(new Date(values.check_in_date.setHours(values.check_in_date.getHours() + 8)));
+		if (values.check_in_date?.getHours()! < 8) {
+			setCheckInDate(new Date(values.check_in_date?.setHours(values.check_in_date?.getHours() + 8)!));
 		}
 
 		const { data, error } = await supabase
@@ -188,6 +188,7 @@ export default function ExternalForm() {
 	}
 
 	const [group, setGroup] = useState(true);
+	const [useOwnTransport, setUseOwnTransport] = useState(false);
 
 	return (
 		<div>
@@ -324,7 +325,16 @@ export default function ExternalForm() {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Type of Transportation</FormLabel>
-														<Select onValueChange={field.onChange} defaultValue={field.value}>
+														<Select
+															onValueChange={e => {
+																field.onChange(e);
+																if (e === "own transport" || e === "company vehicle") {
+																	setUseOwnTransport(true);
+																} else {
+																	setUseOwnTransport(false);
+																}
+															}}
+															defaultValue={field.value}>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Please select an option" />
@@ -580,6 +590,7 @@ export default function ExternalForm() {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
+																		disabled={useOwnTransport}
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
@@ -592,7 +603,7 @@ export default function ExternalForm() {
 															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
-																	selected={field.value}
+																	selected={field.value!}
 																	onSelect={date => {
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -621,7 +632,11 @@ export default function ExternalForm() {
 													<FormItem>
 														<FormLabel>Flight Time</FormLabel>
 														<FormControl>
-															<Input type="time" {...field} />
+															<Input
+																disabled={useOwnTransport}
+																type="time"
+																{...field}
+															/>
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -636,7 +651,7 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Flight Number</FormLabel>
 													<FormControl>
-														<Input placeholder="" {...field} />
+														<Input disabled={useOwnTransport} {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -653,7 +668,11 @@ export default function ExternalForm() {
 														<FormItem>
 															<FormLabel>From</FormLabel>
 															<FormControl>
-																<Input placeholder="Sarawak" {...field} />
+																<Input
+																	disabled={useOwnTransport}
+																	placeholder="Sarawak"
+																	{...field}
+																/>
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -666,7 +685,11 @@ export default function ExternalForm() {
 														<FormItem>
 															<FormLabel>To</FormLabel>
 															<FormControl>
-																<Input placeholder="Singapore" {...field} />
+																<Input
+																	disabled={useOwnTransport}
+																	placeholder="Singapore"
+																	{...field}
+																/>
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -686,6 +709,7 @@ export default function ExternalForm() {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
+																		disabled={useOwnTransport}
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
@@ -698,7 +722,7 @@ export default function ExternalForm() {
 															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
-																	selected={field.value}
+																	selected={field.value!}
 																	onSelect={date => {
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -730,6 +754,7 @@ export default function ExternalForm() {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
+																		disabled={useOwnTransport}
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
@@ -742,7 +767,7 @@ export default function ExternalForm() {
 															<PopoverContent className="w-auto p-0" align="start">
 																<Calendar
 																	mode="single"
-																	selected={field.value}
+																	selected={field.value!}
 																	onSelect={date => {
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -757,9 +782,9 @@ export default function ExternalForm() {
 																			today = new Date();
 																			today.setHours(0, 0, 0, 0);
 																		} else {
-																			today.setHours(0, 0, 0, 0);
+																			today?.setHours(0, 0, 0, 0);
 																		}
-																		return date < today;
+																		return date < today!;
 																	}}
 																	initialFocus
 																/>
@@ -778,7 +803,7 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Hotel</FormLabel>
 													<FormControl>
-														<Input placeholder="" {...field} />
+														<Input disabled={useOwnTransport} {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1299,21 +1324,13 @@ export default function ExternalForm() {
 																				sigCanvas.current
 																					// @ts-ignore
 																					.getTrimmedCanvas()
-																					.toDataURL(
-																						"image/png",
-																					),
+																					.toDataURL("image/png"),
 																			);
-																			field.value =
-																				sigCanvas.current
-																					// @ts-ignore
-																					.getTrimmedCanvas()
-																					.toDataURL(
-																						"image/png",
-																					);
-																			console.log(
-																				"Field Value: " +
-																				field.value,
-																			);
+																			field.value = sigCanvas.current
+																				// @ts-ignore
+																				.getTrimmedCanvas()
+																				.toDataURL("image/png");
+																			console.log("Field Value: " + field.value);
 																		}}>
 																		Save
 																	</Button>

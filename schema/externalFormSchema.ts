@@ -46,23 +46,14 @@ const externalFormSchema = z
 			.nonempty({ message: "Please select one of the option." }),
 
 		// Section 3
-		flight_date: z.date({
-			required_error: "Flight Date is required.",
-			invalid_type_error: "Oops that's not a date!",
-		}),
-		flight_time: z.string().nonempty({ message: "Flight time is required" }),
-		flight_number: z.string().nonempty({ message: "Flight number is required" }),
-		destination_from: z.string().nonempty({ message: "Destination is required" }),
-		destination_to: z.string().nonempty({ message: "Destination is required" }),
-		check_in_date: z.date({
-			required_error: "Check-in date is required.",
-			invalid_type_error: "Oops that's not a date!",
-		}),
-		check_out_date: z.date({
-			required_error: "Check-out date is required.",
-			invalid_type_error: "Oops that's not a date!",
-		}),
-		hotel_name: z.string().nonempty({ message: "Hotel is required" }),
+		flight_date: z.date().optional().nullable(),
+		flight_time: z.string().optional().nullable(),
+		flight_number: z.string().optional().nullable(),
+		destination_from: z.string().optional().nullable(),
+		destination_to: z.string().optional().nullable(),
+		check_in_date: z.date().optional().nullable(),
+		check_out_date: z.date().optional().nullable(),
+		hotel_name: z.string().optional().nullable(),
 
 		// Section 4
 		course_fee: z
