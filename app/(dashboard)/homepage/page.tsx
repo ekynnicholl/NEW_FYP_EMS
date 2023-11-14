@@ -457,7 +457,7 @@ export default function Homepage() {
 	const [displayedEvents, setDisplayedEvents] = useState<any[]>([]);
 
 	// Function to compare dates (ignores time)
-	function isSameDate(date1: string, date2: string) {
+	function isSameDate(date1: string, date2: string) { //
 		const d1 = new Date(date1.substring(0, 10)); // Extract only the date part
 		const d2 = new Date(date2.substring(0, 10));
 		return (
@@ -517,12 +517,10 @@ export default function Homepage() {
 					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
 			);
 
-			// Filter upcoming events while excluding today's and past events
+			// Filter upcoming events while excluding past events
 			const upcomingEvents = mainEventData.filter(
 				(event) =>
-					!isSameDate(event.intFEventStartDate, today) &&
-					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime() &&
-					!todayEvents.some((todayEvent) => todayEvent.intFID === event.intFID)
+					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime()
 			);
 			const displayedEvents = upcomingEvents.slice(0, 3);
 			// Set the categorized events
@@ -6349,17 +6347,30 @@ export default function Homepage() {
 								<div className="mt-4">
 									<h3 className="text-xl font-semibold my-5 ml-6">Upcoming Events:</h3>
 									<ul className="space-y-2">
-										{displayedEvents.map((event) => {
-											const eventDate = new Date(event.intFEventStartDate);
-											const formattedDate = `${eventDate.getDate()} ${eventDate.toLocaleString('en-US', { month: 'long' })} ${eventDate.getFullYear()}`;
-
-
+									{displayedEvents.map((event) => {
+										const startDate = new Date(event.intFEventStartDate);
+										const endDate = new Date(event.intFEventEndDate);
+										const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
+										const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
+										const a =  new Date(event.intFEventStartDate).toISOString();
+										const b =  new Date(event.intFEventEndDate).toISOString();
+										if (isSameDate(a, b)) {
 											return (
-												<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-													<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
-													<span className="text-m mr-6">{formattedDate}</span>
-												</li>
+											<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+												<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
+												<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
+											</li>
 											);
+										} else {
+											return (
+											<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+												<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
+												<span className="text-m mr-6 mb-3">
+												{startDateFormatted} - {endDateFormatted}
+												</span>
+											</li>
+											);
+										}
 										})}
 									</ul>
 								</div>
