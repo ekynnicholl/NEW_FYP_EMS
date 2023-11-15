@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import DoubleRightArrow from '@/components/icons/DoubleRightArrow';
 import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
@@ -21,12 +21,15 @@ type ExpenditureDataType = {
     grand_total_fees: string;
 };
 
-interface Props {
-    itemsPerPage: number;
-}
 
-const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
+const ExpenditureUser = () => {
     const [expenditureData, setExpenditureData] = useState<ExpenditureDataType[]>([]);
+
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    const handleItemsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setItemsPerPage(Number(e.target.value));
+    };
 
     const supabase = createClientComponentClient();
     const fetchFeedbackData = async () => {
@@ -83,7 +86,7 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
 
     // Handle page change
     const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= Math.ceil(expenditureData.length / itemsPerPage)) {
+        if (page >= 1 && page <= Math.ceil(totalsData.length / itemsPerPage)) {
             setCurrentPage(page);
         }
     };
@@ -93,7 +96,7 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
         setCurrentPage(1);
     }, [itemsPerPage]);
 
-    const pageCount = Math.ceil(expenditureData.length / itemsPerPage);
+    const pageCount = Math.ceil(totalsData.length / itemsPerPage);
 
     // const pageNumbers = Array.from({ length: pageCount }, (_, index) => index + 1);
 
@@ -133,7 +136,7 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
 
     return (
         <div>
-            {expenditureData.length > 0 ? (
+            {totalsData.length > 0 ? (
                 <div>
                     <div className="">
                         <div className="mb-5">
@@ -150,110 +153,133 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
                             </button>
                         </div>
-                        <table className="lg:w-full w-auto">
-                            <thead>
-                                <tr>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
-                                        Staff Name (Staff ID)
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                        Faculty
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                        Grand Total (RM)
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                        Program Name(s) - Total (RM)
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentData.map((expenditureItem) => (
-                                    <tr key={expenditureItem.id}>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {expenditureItem.full_name} ({expenditureItem.staff_id})
-                                        </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {expenditureItem.faculty}
-                                        </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {expenditureItem.grand_total_fees}
-                                        </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {groupedData[expenditureItem.staff_id]?.map((programItem) => (
-                                                <div key={programItem.id}>
-                                                    {programItem.program_title} - {programItem.grand_total_fees}
-                                                </div>
-                                            ))}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
+                            <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
+                                <table className="lg:w-full w-auto">
+                                    <thead>
+                                        <tr>
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                                Staff Name (Staff ID)
+                                            </th>
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                                Faculty
+                                            </th>
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                                Grand Total (RM)
+                                            </th>
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                                Program Name(s) - Total (RM)
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentData.map((expenditureItem) => (
+                                            <tr key={expenditureItem.id}>
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {expenditureItem.full_name} ({expenditureItem.staff_id})
+                                                </td>
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {expenditureItem.faculty}
+                                                </td>
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {expenditureItem.grand_total_fees}
+                                                </td>
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {groupedData[expenditureItem.staff_id]?.map((programItem) => (
+                                                        <div key={programItem.id}>
+                                                            {programItem.program_title} - {Number(programItem.grand_total_fees).toFixed(2)}
+                                                        </div>
+                                                    ))}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Pagination */}
-                    <div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
-                        <button
-                            className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-                            onClick={() => handlePageChange(1)}
-                            disabled={currentPage === 1}
-                        >
-                            <img
-                                src={skipLeft.src}
-                                alt=""
-                                width={20}
-                                className="lg:w-[22px]"
-                            />
-                        </button>
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-                        >
-                            <img
-                                src={arrowLeft.src}
-                                alt=""
-                                width={12}
-                                className="lg:w-[13px]"
-                            />
-                        </button>
-
-                        {generatePageNumbers().map((pageNumber, index) => (
-                            <button
-                                key={index}
-                                className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-                                    }`}
-                                onClick={() => handlePageChange(pageNumber)}
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                            <label htmlFor="itemsPerPageSelect" className="mr-2">
+                                Show entries:
+                            </label>
+                            <select
+                                id="itemsPerPageSelect"
+                                name="itemsPerPage"
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                className="h-full rounded-l border bg-white border-gray-400 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
                             >
-                                {pageNumber === -1 ? '...' : pageNumber}
-                            </button>
-                        ))}
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
 
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === pageCount}
-                            className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-                        >
-                            <img
-                                src={arrowRight.src}
-                                alt=""
-                                width={12}
-                                className="lg:w-[13px]"
-                            />
-                        </button>
-                        <button
-                            className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-                            onClick={() => handlePageChange(pageCount)}
-                            disabled={currentPage === pageCount}
-                        >
-                            <img
-                                src={skipRight.src}
-                                alt=""
-                                width={17}
-                                className="lg:w-[18px]"
-                            />
-                        </button>
+                        {/* Pagination */}
+                        <div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
+                            <button
+                                className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                                onClick={() => handlePageChange(1)}
+                                disabled={currentPage === 1}
+                            >
+                                <img
+                                    src={skipLeft.src}
+                                    alt=""
+                                    width={20}
+                                    className="lg:w-[22px]"
+                                />
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                            >
+                                <img
+                                    src={arrowLeft.src}
+                                    alt=""
+                                    width={12}
+                                    className="lg:w-[13px]"
+                                />
+                            </button>
+
+                            {generatePageNumbers().map((pageNumber, index) => (
+                                <button
+                                    key={index}
+                                    className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+                                        }`}
+                                    onClick={() => handlePageChange(pageNumber)}
+                                >
+                                    {pageNumber === -1 ? '...' : pageNumber}
+                                </button>
+                            ))}
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === pageCount}
+                                className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                            >
+                                <img
+                                    src={arrowRight.src}
+                                    alt=""
+                                    width={12}
+                                    className="lg:w-[13px]"
+                                />
+                            </button>
+                            <button
+                                className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                                onClick={() => handlePageChange(pageCount)}
+                                disabled={currentPage === pageCount}
+                            >
+                                <img
+                                    src={skipRight.src}
+                                    alt=""
+                                    width={17}
+                                    className="lg:w-[18px]"
+                                />
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (

@@ -289,12 +289,6 @@ export default function Home() {
 		return 0;
 	});
 
-	const [itemsPerPage, setItemsPerPage] = useState(10);
-
-	const handleItemsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
-		setItemsPerPage(Number(e.target.value));
-	};
-
 	return (
 		<div>
 			<div className="">
@@ -874,7 +868,7 @@ export default function Home() {
 								{subEventsAttended
 									.map((subEvent, index) => (
 										<div key={index} className="bg-slate-100 p-4 rounded-lg overflow-auto shadow">
-											<table className="w-full overflow-auto">
+											<table className="overflow-auto min-w-full leading-normal">
 												<tr className="border-b-2 border-gray-200 bg-gray-100">
 													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
 														No.
@@ -919,19 +913,10 @@ export default function Home() {
 			<div className="flex flex-row">
 				<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
 					<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
-						<label htmlFor="itemsPerPageSelect">Show entries:</label>
-						<select
-							id="itemsPerPageSelect"
-							name="itemsPerPage"
-							value={itemsPerPage}
-							onChange={handleItemsPerPageChange}
-							className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
-						>
-							<option value="5">5</option>
-							<option value="10">10</option>
-							<option value="20">20</option>
-						</select>
-						<ExpenditureUser itemsPerPage={itemsPerPage} />
+						<div className="inline-flex mb-5">
+							<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Staff Expenditure</span></h1>
+						</div>
+						<ExpenditureUser />
 					</div>
 				</div>
 			</div>
