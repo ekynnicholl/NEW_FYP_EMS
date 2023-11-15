@@ -820,20 +820,20 @@ export default function Home() {
         setActiveTab('all');
     }, [selectedSubEvent, isAllButtonActive])
 
-     // For QR codes,
-     const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
-     const [selectedMainEventID, setSelectedMainEventID] = useState<string>("");
- 
-     //show qr codes for each session
-     const [showQRCodeModal, setShowQRCodeModal] = useState(false);
- 
-     const openQRCodeModal = async (event_id: string) => {
-         setSelectedMainEventID(event_id);
-         setShowQRCodeModal(true);
-     }
+    // For QR codes,
+    const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
+    const [selectedMainEventID, setSelectedMainEventID] = useState<string>("");
+
+    //show qr codes for each session
+    const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+
+    const openQRCodeModal = async (event_id: string) => {
+        setSelectedMainEventID(event_id);
+        setShowQRCodeModal(true);
+    }
 
     return (
-        <div className="h-screen flex flex-row justify-start">
+        <div className="flex flex-row justify-start">
             <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
                 <div className="bg-white rounded p-8 dark:bg-dark_mode_card">
                     <div className="inline-flex">
@@ -1086,7 +1086,7 @@ export default function Home() {
                                                             <DropdownMenuItem onClick={e => {
                                                                 e.stopPropagation();
                                                                 const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-                                                                
+
                                                                 if (filteredSubEvent) {
                                                                     openQRCodeModal(event.intFID);
                                                                 }
@@ -1643,35 +1643,35 @@ export default function Home() {
                     </ViewAttendance_Modal>
 
                     <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
-                        <div className="p-5">                            
+                        <div className="p-5">
                             {subEvents
                                 .filter(subEvent => subEvent.sub_eventsMainID === selectedMainEventID)
-                                .map((subEvent, index) => (                                    
+                                .map((subEvent, index) => (
                                     <div key={index} className="mt-4">
                                         <span className="text-lg text-center font-semibold">‣ Session {index + 1}</span>
                                         <div className="flex justify-center">
-                                        <button
-                                            type="button"
-                                            className="flex items-center bg-slate-200 rounded-lg py-2 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[9px] dark:bg-[#242729]"
-                                            onClick={e => {
-                                                setSelectedSubEventID(subEvent.sub_eventsID);
-                                                setShowQRCodesFeedback(true);
-                                                setShowQRCodeModal(false);
-                                            }}>
-                                            <span className="ml-2 text-slate-800 flex items-center mr-2">
-                                                <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-                                                <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
-                                                    Feedback
+                                            <button
+                                                type="button"
+                                                className="flex items-center bg-slate-200 rounded-lg py-2 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[9px] dark:bg-[#242729]"
+                                                onClick={e => {
+                                                    setSelectedSubEventID(subEvent.sub_eventsID);
+                                                    setShowQRCodesFeedback(true);
+                                                    setShowQRCodeModal(false);
+                                                }}>
+                                                <span className="ml-2 text-slate-800 flex items-center mr-2">
+                                                    <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+                                                    <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                        Feedback
+                                                    </span>
                                                 </span>
-                                            </span>
-                                        </button>                                        
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
                         </div>
                     </QRCodeModal>
 
-                    <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false);}}>
+                    <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false); }}>
                         <div className="ml-2 p-5 z-[999]">
                             <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
                                 Feedback
@@ -1811,14 +1811,14 @@ export default function Home() {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation();
-                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-                                                                
-                                                                if (filteredSubEvent) {
-                                                                    openQRCodeModal(event.intFID);
-                                                                }
-                                                            }}>Feedback Form
-                                                            </DropdownMenuItem>
+                                                            e.stopPropagation();
+                                                            const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                            if (filteredSubEvent) {
+                                                                openQRCodeModal(event.intFID);
+                                                            }
+                                                        }}>Feedback Form
+                                                        </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </td>
