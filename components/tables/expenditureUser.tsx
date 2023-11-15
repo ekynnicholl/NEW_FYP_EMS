@@ -4,6 +4,10 @@ import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
 import exportCSV from "@/public/images/export_csv.png";
+import arrowLeft from "@/public/images/arrow_left.png";
+import arrowRight from "@/public/images/arrow_right.png";
+import skipLeft from "@/public/images/skip_left.png";
+import skipRight from "@/public/images/skip_right.png";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type ExpenditureDataType = {
@@ -189,26 +193,36 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
                     </div>
 
                     {/* Pagination */}
-                    <div className="pagination flex justify-end items-end mt-5 pb-5">
+                    <div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
                         <button
-                            className="opacity-70 ml-2"
+                            className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                             onClick={() => handlePageChange(1)}
                             disabled={currentPage === 1}
                         >
-                            <DoubleLeftArrow />
+                            <img
+                                src={skipLeft.src}
+                                alt=""
+                                width={20}
+                                className="lg:w-[22px]"
+                            />
                         </button>
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className="opacity-70 ml-2 mr-2"
+                            className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                         >
-                            <LeftArrow />
+                            <img
+                                src={arrowLeft.src}
+                                alt=""
+                                width={12}
+                                className="lg:w-[13px]"
+                            />
                         </button>
 
                         {generatePageNumbers().map((pageNumber, index) => (
                             <button
                                 key={index}
-                                className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+                                className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
                                     }`}
                                 onClick={() => handlePageChange(pageNumber)}
                             >
@@ -219,16 +233,26 @@ const ExpenditureUser: React.FC<Props> = ({ itemsPerPage }) => {
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === pageCount}
-                            className="opacity-70 ml-2 mr-2"
+                            className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                         >
-                            <RightArrow />
+                            <img
+                                src={arrowRight.src}
+                                alt=""
+                                width={12}
+                                className="lg:w-[13px]"
+                            />
                         </button>
                         <button
-                            className="opacity-70 mr-2"
+                            className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                             onClick={() => handlePageChange(pageCount)}
                             disabled={currentPage === pageCount}
                         >
-                            <DoubleRightArrow />
+                            <img
+                                src={skipRight.src}
+                                alt=""
+                                width={17}
+                                className="lg:w-[18px]"
+                            />
                         </button>
                     </div>
                 </div>
