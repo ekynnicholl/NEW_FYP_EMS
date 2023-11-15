@@ -72,6 +72,8 @@ const showSuccessToast = (message: string) => {
 export default function DataTable({ data }: { data: ExternalForm[] }) {
 	let selectedOption = "";
 	const [selected, setSelected] = useState("");
+	const [formData, setFormData] = useState<ExternalForm | null>(null);
+	const router = useRouter();
 
 	const columns: ColumnDef<ExternalForm>[] = [
 		{
@@ -139,12 +141,10 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			id: "actions",
 			enableHiding: false,
 			cell: ({ row }) => {
-				const formData = row.original;
-
 				const handleUndoAction = async () => {
 					console.log("Undo Action clicked!");
 					const selectedStage = parseInt(selectedOption, 10);
-					const formID = formData.id;
+					const formID = row.original.id;
 
 					const { data, error } = await supabase
 						.from("external_forms")
@@ -156,11 +156,18 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					if (error) {
 						console.error("Error updating formStage:", error.message);
 					} else {
+						setFormData(row.original);
 						console.log("FormStage updated successfully:", data);
 						showSuccessToast("Action has been submitted.");
-						sendContactForm(formData);
 
-						window.location.reload();
+						setFormData((prevFormData) => ({
+							...prevFormData!,
+							formStage: selectedStage,
+						}));
+
+						// sendContactForm(formData);
+
+						router.refresh();
 					}
 				};
 
@@ -245,6 +252,12 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			},
 		},
 	];
+
+	useEffect(() => {
+		if (formData && formData.formStage !== undefined) {
+			sendContactForm(formData);
+		}
+	}, [formData]);
 
 	const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
 	const [sorting, setSorting] = useState<SortingState>([]);
