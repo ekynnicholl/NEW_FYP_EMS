@@ -297,7 +297,7 @@ export default function Home() {
 
 	return (
 		<div>
-			<div className="h-screen flex flex-row justify-start">
+			<div className="">
 				<div className="flex-1">
 					<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
 						<div className="bg-white rounded p-8 dark:bg-dark_mode_card">

@@ -323,11 +323,11 @@ export const columns: ColumnDef<ExternalForm>[] = [
 							</DialogDescription>
 							<select
 								className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
-								value={selectedOption}
+								value={row.original.formStage?.toString() ?? selectedOption}
 								onChange={(e) => setSelectedOption(e.target.value)}
 								required
 							>
-								<option value="" selected disabled>Select</option>
+								<option value="" disabled>Select</option>
 								<option value="1">Reverted to Staff</option>
 								<option value="2">Review by AAO</option>
 								<option value="3">Review by HOS/ ADCR/ MGR</option>
