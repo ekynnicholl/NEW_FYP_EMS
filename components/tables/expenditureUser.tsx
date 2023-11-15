@@ -139,7 +139,7 @@ const ExpenditureUser = () => {
             {totalsData.length > 0 ? (
                 <div>
                     <div className="">
-                        <div className="mb-5">
+                        {/* <div className="mb-5">
                             <button
                                 type="button"
                                 className="flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
@@ -152,7 +152,7 @@ const ExpenditureUser = () => {
                                 />
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
                             </button>
-                        </div>
+                        </div> */}
                         <div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
                             <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
                                 <table className="lg:w-full w-auto">

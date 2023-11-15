@@ -1482,7 +1482,7 @@ export default function Home() {
                                     {subEventsForFeedback.map((subEvent) => (
                                         <div
                                             key={subEvent.sub_eventsID}
-                                            className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                            className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                         >
                                             <button
@@ -1539,7 +1539,7 @@ export default function Home() {
                                     {subEventsForAttendance.map((subEvent) => (
                                         <div
                                             key={subEvent.sub_eventsID}
-                                            className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                            className={`font-bold flex items-center rounded-lg hover:bg-red-200 lg:text-[15px] text-[12px] shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                         >
                                             <button
@@ -1567,21 +1567,21 @@ export default function Home() {
                                 {attendanceData && attendanceData.length > 0 ? (
                                     <div className="lg:text-[16px] text-[12px]">
                                         <button
-                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
+                                            className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                             onClick={() => setActiveTab('all')}
                                         >
                                             All
                                         </button>
                                         <button
-                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
+                                            className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                             onClick={() => setActiveTab('staff')}
                                         >
                                             Staff
                                         </button>
                                         <button
-                                            className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
+                                            className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                             onClick={() => setActiveTab('student')}
                                         >

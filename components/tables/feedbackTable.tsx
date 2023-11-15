@@ -293,21 +293,21 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
         <div>
             <div className="mb-5">
                 <button
-                    className={`flex rounded-md items-center py-1 px-2 mr-3 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'summary' ? 'bg-slate-300' : 'bg-slate-200'
+                    className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-medium hover:bg-red-200 shadow-sm md:inline-flex mt-3 ${activeTab === 'summary' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                         }`}
                     onClick={() => toggleTab('summary')}
                 >
                     Summary
                 </button>
                 <button
-                    className={`flex rounded-md items-center py-1 px-2 mr-3 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'individual' ? 'bg-slate-300' : 'bg-slate-200'
+                    className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-medium hover:bg-red-200 shadow-sm md:inline-flex mt-3 ${activeTab === 'individual' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                         }`}
                     onClick={() => toggleTab('individual')}
                 >
                     Individual
                 </button>
                 <button
-                    className={`flex rounded-md items-center py-1 px-2 font-medium hover:bg-slate-300 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ${activeTab === 'graph' ? 'bg-slate-300' : 'bg-slate-200'
+                    className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 font-medium hover:bg-red-200 shadow-sm md:inline-flex mt-3 ${activeTab === 'graph' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                         }`}
                     onClick={() => toggleTab('graph')}
                 >
@@ -337,6 +337,8 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                         let courseDurationDisplay = false;
                         let trainerNameDisplayed = false;
                         let trainingProviderDisplayed = false;
+                        let commencementDateDisplayed = false;
+                        let completionDateDisplayed = false;
 
                         return (
                             <div key={columnIndex} className="mb-5">
@@ -406,6 +408,30 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                     return (
                                                         <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
                                                             {mainEvent.intFTrainerName}
+                                                        </p>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : ['fbCommencementDate'].includes(column) ? (
+                                            feedbackData.map((feedback, feedbackIndex) => {
+                                                if (!commencementDateDisplayed) {
+                                                    commencementDateDisplayed = true;
+                                                    return (
+                                                        <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                            {mainEvent.intFEventStartDate}
+                                                        </p>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : ['fbCompletionDate'].includes(column) ? (
+                                            feedbackData.map((feedback, feedbackIndex) => {
+                                                if (!completionDateDisplayed) {
+                                                    completionDateDisplayed = true;
+                                                    return (
+                                                        <p className="rounded-md bg-slate-100 p-2 mr-10 mt-2" key={feedbackIndex}>
+                                                            {mainEvent.intFEventEndDate}
                                                         </p>
                                                     );
                                                 }

@@ -2350,7 +2350,7 @@ export default function Homepage() {
 									{subEventsForFeedback.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 dark:bg-[#242729] dark:text-dark_text ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800'
+											className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 p-2 mr-3 dark:bg-[#242729] dark:text-dark_text ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 dark:bg-red-600 text-slate-100' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
@@ -2407,7 +2407,7 @@ export default function Homepage() {
 									{subEventsForAttendance.map((subEvent) => (
 										<div
 											key={subEvent.sub_eventsID}
-											className={`font-bold flex items-center bg-slate-200 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+											className={`font-bold flex items-center rounded-lg hover:bg-red-200 lg:text-[15px] text-[12px] shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 										>
 											<button
@@ -2435,21 +2435,21 @@ export default function Homepage() {
 								{attendanceData && attendanceData.length > 0 ? (
 									<div className="lg:text-[16px] text-[12px]">
 										<button
-											className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-slate-300' : 'bg-slate-200'
+											className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 											onClick={() => setActiveTab('all')}
 										>
 											All
 										</button>
 										<button
-											className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-slate-300' : 'bg-slate-200'
+											className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 											onClick={() => setActiveTab('staff')}
 										>
 											Staff
 										</button>
 										<button
-											className={`flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-slate-300' : 'bg-slate-200'
+											className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 												}`}
 											onClick={() => setActiveTab('student')}
 										>
@@ -6344,36 +6344,36 @@ export default function Homepage() {
 							<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
 							<Calendar onDateChange={handleDateChange} />
 							<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
-						{displayedEvents.length === 0 && (
-        				<li key="noEvents" className="text-center text-m">No upcoming events found</li>
-     						 )}
+							{displayedEvents.length === 0 && (
+								<li key="noEvents" className="text-center text-m">No upcoming events found</li>
+							)}
 							{displayedEvents.length > 0 && (
 								<div className="mt-4">
 									<ul className="space-y-2">
-									{displayedEvents.map((event) => {
-										const startDate = new Date(event.intFEventStartDate);
-										const endDate = new Date(event.intFEventEndDate);
-										const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
-										const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
-										const a =  new Date(event.intFEventStartDate).toISOString();
-										const b =  new Date(event.intFEventEndDate).toISOString();
-										if (isSameDate(a, b)) {
-											return (
-											<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-												<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
-												<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
-											</li>
-											);
-										} else {
-											return (
-											<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-												<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
-												<span className="text-m mr-6 mb-3">
-												{startDateFormatted} - {endDateFormatted}
-												</span>
-											</li>
-											);
-										}
+										{displayedEvents.map((event) => {
+											const startDate = new Date(event.intFEventStartDate);
+											const endDate = new Date(event.intFEventEndDate);
+											const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
+											const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
+											const a = new Date(event.intFEventStartDate).toISOString();
+											const b = new Date(event.intFEventEndDate).toISOString();
+											if (isSameDate(a, b)) {
+												return (
+													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+														<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
+														<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
+													</li>
+												);
+											} else {
+												return (
+													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+														<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
+														<span className="text-m mr-6 mb-3">
+															{startDateFormatted} - {endDateFormatted}
+														</span>
+													</li>
+												);
+											}
 										})}
 									</ul>
 								</div>
