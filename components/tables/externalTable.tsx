@@ -1,6 +1,7 @@
 "use client";
 
 import Modal from "@/components/QR_Codes_Modal";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useState, useEffect } from "react";
 import {
 	ColumnDef,
@@ -72,6 +73,7 @@ const showSuccessToast = (message: string) => {
 export default function DataTable({ data }: { data: ExternalForm[] }) {
 	let selectedOption = "";
 	const [selected, setSelected] = useState("");
+	let revertComment = "";
 	const [formData, setFormData] = useState<ExternalForm | null>(null);
 	const router = useRouter();
 
@@ -142,32 +144,34 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			enableHiding: false,
 			cell: ({ row }) => {
 				const handleUndoAction = async () => {
-					console.log("Undo Action clicked!");
-					const selectedStage = parseInt(selectedOption, 10);
-					const formID = row.original.id;
+					if (selectedOption != "" || parseInt(selectedOption, 10) != row.original.formStage) {
+						console.log("Undo Action clicked!");
+						const selectedStage = parseInt(selectedOption, 10);
+						const formID = row.original.id;
 
-					const { data, error } = await supabase
-						.from("external_forms")
-						.update({
-							formStage: selectedStage,
-						})
-						.eq("id", formID);
+						const { data, error } = await supabase
+							.from("external_forms")
+							.update({
+								formStage: selectedStage,
+							})
+							.eq("id", formID);
 
-					if (error) {
-						console.error("Error updating formStage:", error.message);
-					} else {
-						setFormData(row.original);
-						console.log("FormStage updated successfully:", data);
-						showSuccessToast("Action has been submitted.");
+						if (error) {
+							console.error("Error updating formStage:", error.message);
+						} else {
+							setFormData(row.original);
+							console.log("FormStage updated successfully:", data);
+							showSuccessToast("Action has been submitted.");
 
-						setFormData((prevFormData) => ({
-							...prevFormData!,
-							formStage: selectedStage,
-						}));
+							setFormData((prevFormData) => ({
+								...prevFormData!,
+								formStage: selectedStage,
+							}));
 
-						// sendContactForm(formData);
+							// sendContactForm(formData);
 
-						router.refresh();
+							router.refresh();
+						}
 					}
 				};
 
@@ -212,7 +216,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								<DialogTitle>Undo Action</DialogTitle>
 							</DialogHeader>
 							<DialogDescription>
-								Please CONFIRM your UNDO ACTION. After you click CONFIRM UNDO, it will automatically send the email(s) to the related
+								Please <span className="font-bold">CONFIRM</span> your <span className="font-bold">UNDO ACTION</span>. After you click <span className="font-bold">CONFIRM UNDO</span>, it will automatically send the email(s) to the related
 								parties.
 							</DialogDescription>
 							<Select
@@ -236,6 +240,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									</SelectGroup>
 								</SelectContent>
 							</Select>
+							{/* Input revert comment here. */}
 							<DialogFooter>
 								<DialogClose asChild>
 									<Button variant="outline">Cancel</Button>
