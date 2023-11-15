@@ -388,7 +388,7 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Name of other staff / student traveling together in group</FormLabel>
 													<FormControl>
-														<Input disabled={group} placeholder="" {...field} />
+														<Input disabled={group} {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
