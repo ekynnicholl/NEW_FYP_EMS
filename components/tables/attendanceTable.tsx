@@ -119,7 +119,41 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
 
     const pageCount = Math.ceil(attendanceData.length / itemsPerPage);
 
-    const pageNumbers = Array.from({ length: pageCount }, (_, index) => index + 1);
+    // const pageNumbers = Array.from({ length: pageCount }, (_, index) => index + 1);
+
+    const generatePageNumbers = (): number[] => {
+        const displayedPages = 5; // Adjust the number of pages to display
+        const halfDisplayed = Math.floor(displayedPages / 2);
+
+        if (pageCount <= displayedPages) {
+            return Array.from({ length: pageCount }, (_, index) => index + 1);
+        }
+
+        const start = Math.max(currentPage - halfDisplayed, 1);
+        const end = Math.min(start + displayedPages - 1, pageCount);
+
+        const pages: number[] = [];
+
+        if (start > 1) {
+            pages.push(1);
+            if (start > 2) {
+                pages.push(-1); // Ellipsis
+            }
+        }
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        if (end < pageCount) {
+            if (end < pageCount - 1) {
+                pages.push(-1); // Ellipsis
+            }
+            pages.push(pageCount);
+        }
+
+        return pages;
+    };
 
     return (
         <div>
@@ -207,14 +241,14 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                             <LeftArrow />
                         </button>
 
-                        {pageNumbers.map((pageNumber) => (
+                        {generatePageNumbers().map((pageNumber, index) => (
                             <button
-                                key={pageNumber}
-                                className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-800 bg-slate-200 ${currentPage === pageNumber ? 'currentPage' : 'page-item'
+                                key={index}
+                                className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
                                     }`}
                                 onClick={() => handlePageChange(pageNumber)}
                             >
-                                {pageNumber}
+                                {pageNumber === -1 ? '...' : pageNumber}
                             </button>
                         ))}
 
