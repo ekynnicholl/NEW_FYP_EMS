@@ -1,8 +1,15 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import Modal from "@/components/QR_Codes_Modal";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useState, useEffect } from "react";
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -47,9 +54,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { QRCodeSVG } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
-import toast from "react-hot-toast";
 
 const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 const supabase = createClientComponentClient();
@@ -72,10 +77,54 @@ const showSuccessToast = (message: string) => {
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
 	let selectedOption = "";
-	const [selected, setSelected] = useState("");
+	const [selectedRow, setSelectedRow] = useState<any>({});
 	let revertComment = "";
+	const [open, setOpen] = useState(false);
 	const [formData, setFormData] = useState<ExternalForm | null>(null);
 	const router = useRouter();
+
+	const handleUndoAction = async () => {
+		if (selectedOption != "" || parseInt(selectedOption, 10) != selectedRow.formStage) {
+			console.log("Undo Action clicked!");
+			const selectedStage = parseInt(selectedOption, 10);
+			const formID = selectedRow.id;
+
+			const { data, error } = await supabase
+				.from("external_forms")
+				.update({
+					formStage: selectedStage,
+				})
+				.eq("id", formID);
+
+			if (error) {
+				console.error("Error updating formStage:", error.message);
+			} else {
+				setFormData(selectedRow);
+				console.log("FormStage updated successfully:", data);
+				showSuccessToast("Action has been submitted.");
+
+				setFormData(prevFormData => ({
+					...prevFormData!,
+					formStage: selectedStage,
+				}));
+
+				// sendContactForm(formData);
+
+				router.refresh();
+			}
+		}
+	};
+
+	const schema = z.object({
+		undoOption: z.string().min(1, "Please select an option"),
+	});
+
+	const form = useForm({
+		resolver: zodResolver(schema),
+		defaultValues: {
+			undoOption: "",
+		},
+	});
 
 	const columns: ColumnDef<ExternalForm>[] = [
 		{
@@ -143,116 +192,44 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			id: "actions",
 			enableHiding: false,
 			cell: ({ row }) => {
-				const handleUndoAction = async () => {
-					if (selectedOption != "" || parseInt(selectedOption, 10) != row.original.formStage) {
-						console.log("Undo Action clicked!");
-						const selectedStage = parseInt(selectedOption, 10);
-						const formID = row.original.id;
-
-						const { data, error } = await supabase
-							.from("external_forms")
-							.update({
-								formStage: selectedStage,
-							})
-							.eq("id", formID);
-
-						if (error) {
-							console.error("Error updating formStage:", error.message);
-						} else {
-							setFormData(row.original);
-							console.log("FormStage updated successfully:", data);
-							showSuccessToast("Action has been submitted.");
-
-							setFormData((prevFormData) => ({
-								...prevFormData!,
-								formStage: selectedStage,
-							}));
-
-							// sendContactForm(formData);
-
-							router.refresh();
-						}
-					}
-				};
-
 				return (
-					<Dialog>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="ghost" className="h-8 w-8 p-0">
-									<span className="sr-only">Open menu</span>
-									<MoreHorizontal className="h-4 w-4" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuItem
-									onClick={() => {
-										const formId = row.original.id;
-										const newTab = window.open(`${url}/form/external_review/${formId}`, "_blank");
-										newTab?.focus();
-									}}>
-									View
-								</DropdownMenuItem>
-								<DialogTrigger asChild>
-									<DropdownMenuItem>Undo Action</DropdownMenuItem>
-								</DialogTrigger>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>
-										<span>Forward To</span>
-									</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
-											<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
-											<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-							</DropdownMenuContent>
-						</DropdownMenu>
-
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Undo Action</DialogTitle>
-							</DialogHeader>
-							<DialogDescription>
-								Please <span className="font-bold">CONFIRM</span> your <span className="font-bold">UNDO ACTION</span>. After you click <span className="font-bold">CONFIRM UNDO</span>, it will automatically send the email(s) to the related
-								parties.
-							</DialogDescription>
-							<Select
-								onValueChange={e => {
-									selectedOption = e;
-									console.log(selectedOption);
-									// setSelected(e)
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" className="h-8 w-8 p-0">
+								<span className="sr-only">Open menu</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								onClick={() => {
+									const formId = row.original.id;
+									const newTab = window.open(`${url}/form/external_review/${formId}`, "_blank");
+									newTab?.focus();
 								}}>
-								<SelectTrigger>
-									<SelectValue placeholder="Choose an option" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectLabel>Options</SelectLabel>
-										<SelectItem value="1">Reverted to Staff</SelectItem>
-										<SelectItem value="2">Review by AAO</SelectItem>
-										<SelectItem value="3">Review by HOS/ ADCR/ MGR</SelectItem>
-										<SelectItem value="4">Review by HMU/ Dean</SelectItem>
-										<SelectItem value="5">Approved</SelectItem>
-										<SelectItem value="6">Rejected</SelectItem>
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-							{/* Input revert comment here. */}
-							<DialogFooter>
-								<DialogClose asChild>
-									<Button variant="outline">Cancel</Button>
-								</DialogClose>
-								<DialogClose asChild>
-									<Button onClick={handleUndoAction}>
-										Confirm Undo
-									</Button>
-								</DialogClose>
-							</DialogFooter>
-						</DialogContent>
-					</Dialog>
+								View
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									setOpen(true);
+									setSelectedRow(row.original);
+								}}>
+								Undo Action
+							</DropdownMenuItem>
+							<DropdownMenuSub>
+								<DropdownMenuSubTrigger>
+									<span>Forward To</span>
+								</DropdownMenuSubTrigger>
+								<DropdownMenuPortal>
+									<DropdownMenuSubContent>
+										<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
+										<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
+										<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
+									</DropdownMenuSubContent>
+								</DropdownMenuPortal>
+							</DropdownMenuSub>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				);
 			},
 		},
@@ -404,6 +381,63 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</button>
 				</div>
 			</Modal>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent>
+					<Form {...form}>
+						<DialogHeader>
+							<DialogTitle>Undo Action</DialogTitle>
+						</DialogHeader>
+						<DialogDescription>
+							Please <span className="font-bold">CONFIRM</span> your <span className="font-bold">UNDO ACTION</span>. After you click{" "}
+							<span className="font-bold">CONFIRM UNDO</span>, it will automatically send the email(s) to the related parties.
+						</DialogDescription>
+						<FormField
+							control={form.control}
+							name="undoOption"
+							render={({ field }) => (
+								<FormItem>
+									<Select
+										onValueChange={e => {
+											field.onChange(e);
+											field.value = e;
+											selectedOption = e;
+											console.log("selectedOption: ", selectedOption);
+											console.log("field value: ", field.value);
+										}}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Choose an option" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>Options</SelectLabel>
+												<SelectItem value="1">Reverted to Staff</SelectItem>
+												<SelectItem value="2">Review by AAO</SelectItem>
+												<SelectItem value="3">Review by HOS/ ADCR/ MGR</SelectItem>
+												<SelectItem value="4">Review by HMU/ Dean</SelectItem>
+												<SelectItem value="5">Approved</SelectItem>
+												<SelectItem value="6">Rejected</SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<DialogFooter>
+							<DialogClose asChild>
+								<Button variant="outline">Cancel</Button>
+							</DialogClose>
+							<DialogClose asChild>
+								<Button onClick={handleUndoAction} disabled={form.getValues("undoOption") === "" ? true : false}>
+									Confirm Undo
+								</Button>
+							</DialogClose>
+						</DialogFooter>
+					</Form>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
