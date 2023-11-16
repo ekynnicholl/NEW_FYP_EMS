@@ -8,9 +8,10 @@ import { format, startOfMonth, endOfMonth, setHours, setMinutes, setSeconds } fr
 interface BarChartProps {
     startDate: string | null;
     endDate: string | null;
+    category: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
+const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => {
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chartInstance = useRef<Chart | null>(null);
     const supabase = createClientComponentClient();
@@ -23,7 +24,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
 
     useEffect(() => {
         fetchData();
-    }, [startDate, endDate]);
+    }, [startDate, endDate, category]);
 
     function generateRandomColors(count: number) {
         const colors = [];
@@ -50,11 +51,19 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate }) => {
             formattedEndDate = format(new Date(endDate), "yyyy-MM-dd 23:59:59");
         }
 
-        const { data, error } = await supabase
+        let query = supabase
             .from("attendance_forms")
             .select("*")
             .gte("attDateSubmitted", formattedStartDate)
             .lte("attDateSubmitted", formattedEndDate);
+
+        if (category === "student") {
+            query = query.not("attFormsStaffID", "like", "SS%");
+        } else if (category === "staff") {
+            query = query.like("attFormsStaffID", "SS%");
+        }
+
+        const { data, error } = await query;
 
         if (error) {
             console.error("Error fetching data:", error);

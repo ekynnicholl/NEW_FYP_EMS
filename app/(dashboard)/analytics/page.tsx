@@ -67,6 +67,12 @@ export default function Home() {
 		setTotalGrandTotal(total);
 	};
 
+	const [selectedCategory, setSelectedCategory] = useState('all');
+
+	const handleCategoryChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+		setSelectedCategory(e.target.value);
+	};
+
 	const currentDate = new Date();
 	const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
 	const currentYear = String(currentDate.getFullYear());
@@ -181,9 +187,25 @@ export default function Home() {
 									className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 								/>
 							</div>
+							<div className="ml-4">
+								<label htmlFor="category" className="mr-2">
+									Category:
+								</label>
+								<select
+									id="category"
+									name="category"
+									value={selectedCategory}
+									onChange={handleCategoryChange}
+									className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
+								>
+									<option value="all">All</option>
+									<option value="staff">Staff</option>
+									<option value="student">Student</option>
+								</select>
+							</div>
 						</div>
 						<div className="">
-							<BarGraphAttendance startDate={startDate} endDate={endDate} />
+							<BarGraphAttendance startDate={startDate} endDate={endDate} category={selectedCategory} />
 						</div>
 					</div>
 				</div>
