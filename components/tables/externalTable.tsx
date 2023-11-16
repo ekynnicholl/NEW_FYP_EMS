@@ -76,23 +76,22 @@ const showSuccessToast = (message: string) => {
 };
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
-	let selectedOption = "";
 	const [selectedRow, setSelectedRow] = useState<any>({});
-	let revertComment = "";
 	const [open, setOpen] = useState(false);
 	const [formData, setFormData] = useState<ExternalForm | null>(null);
 	const router = useRouter();
 
-	const handleUndoAction = async () => {
-		if (selectedOption != "" || parseInt(selectedOption, 10) != selectedRow.formStage) {
+	const handleUndoAction = async (values: z.infer<typeof schema>) => {
+		if (values.undoOption != "" || parseInt(values.undoOption, 10) != selectedRow.formStage) {
 			console.log("Undo Action clicked!");
-			const selectedStage = parseInt(selectedOption, 10);
+			const selectedStage = parseInt(values.undoOption , 10);
 			const formID = selectedRow.id;
 
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update({
-					formStage: selectedStage,
+					formStage: values.undoOption,
+					revertComment: values.revertComment,
 				})
 				.eq("id", formID);
 
@@ -117,12 +116,14 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 	const schema = z.object({
 		undoOption: z.string().min(1, "Please select an option"),
+		revertComment: z.string().optional(),
 	});
 
 	const form = useForm({
 		resolver: zodResolver(schema),
 		defaultValues: {
 			undoOption: "",
+			revertComment: "",
 		},
 	});
 
@@ -391,50 +392,65 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							Please <span className="font-bold">CONFIRM</span> your <span className="font-bold">UNDO ACTION</span>. After you click{" "}
 							<span className="font-bold">CONFIRM UNDO</span>, it will automatically send the email(s) to the related parties.
 						</DialogDescription>
-						<FormField
-							control={form.control}
-							name="undoOption"
-							render={({ field }) => (
-								<FormItem>
-									<Select
-										onValueChange={e => {
-											field.onChange(e);
-											field.value = e;
-											selectedOption = e;
-											console.log("selectedOption: ", selectedOption);
-											console.log("field value: ", field.value);
-										}}>
+						<form onSubmit={form.handleSubmit(handleUndoAction)} className="space-y-4">
+							<FormField
+								control={form.control}
+								name="undoOption"
+								render={({ field }) => (
+									<FormItem>
+										<Select
+											onValueChange={e => {
+												field.onChange(e);
+												field.value = e;
+												console.log("field value: ", field.value);
+											}}>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue placeholder="Choose an option" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>Options</SelectLabel>
+													<SelectItem value="1">Reverted to Staff</SelectItem>
+													<SelectItem value="2">Review by AAO</SelectItem>
+													<SelectItem value="3">Review by HOS/ ADCR/ MGR</SelectItem>
+													<SelectItem value="4">Review by HMU/ Dean</SelectItem>
+													<SelectItem value="5">Approved</SelectItem>
+													<SelectItem value="6">Rejected</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="revertComment"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Comment</FormLabel>
 										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Choose an option" />
-											</SelectTrigger>
+											<Input {...field} placeholder="Please enter your comment here..." />
 										</FormControl>
-										<SelectContent>
-											<SelectGroup>
-												<SelectLabel>Options</SelectLabel>
-												<SelectItem value="1">Reverted to Staff</SelectItem>
-												<SelectItem value="2">Review by AAO</SelectItem>
-												<SelectItem value="3">Review by HOS/ ADCR/ MGR</SelectItem>
-												<SelectItem value="4">Review by HMU/ Dean</SelectItem>
-												<SelectItem value="5">Approved</SelectItem>
-												<SelectItem value="6">Rejected</SelectItem>
-											</SelectGroup>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<DialogFooter>
-							<DialogClose asChild>
-								<Button variant="outline">Cancel</Button>
-							</DialogClose>
-							<DialogClose asChild>
-								<Button onClick={handleUndoAction} disabled={form.getValues("undoOption") === "" ? true : false}>
-									Confirm Undo
-								</Button>
-							</DialogClose>
-						</DialogFooter>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<DialogFooter>
+								<DialogClose asChild>
+									<Button variant="outline">Cancel</Button>
+								</DialogClose>
+								<DialogClose asChild>
+									<Button
+										type="submit"
+										disabled={form.getValues("undoOption") === "" ? true : false}>
+										Confirm Undo
+									</Button>
+								</DialogClose>
+							</DialogFooter>
+						</form>
 					</Form>
 				</DialogContent>
 			</Dialog>
