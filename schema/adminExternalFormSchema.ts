@@ -48,23 +48,14 @@ const adminExternalFormSchema = z
 			.min(1, { message: "Please select one of the option." }),
 
 		// Section 3
-		flight_date: z.date({
-			required_error: "Flight Date is required.",
-			invalid_type_error: "Oops that's not a date!",
-		}),
-		flight_time: z.string().min(1, { message: "Flight time is required" }),
-		flight_number: z.string().min(1, { message: "Flight number is required" }),
-		destination_from: z.string().min(1, { message: "Destination is required" }),
-		destination_to: z.string().min(1, { message: "Destination is required" }),
-		check_in_date: z.date({
-			required_error: "Check-in date is required.",
-			invalid_type_error: "Oops that's not a date!",
-		}),
-		check_out_date: z.date({
-			required_error: "Check-out date is required.",
-			invalid_type_error: "Oops that's not a date!",
-		}),
-		hotel_name: z.string().min(1, { message: "Hotel is required" }),
+		flight_date: z.date().optional().nullable(),
+		flight_time: z.string().optional(),
+		flight_number: z.string().optional(),
+		destination_from: z.string().optional(),
+		destination_to: z.string().optional(),
+		check_in_date: z.date().optional().nullable(),
+		check_out_date: z.date().optional().nullable(),
+		hotel_name: z.string().optional(),
 
 		// // Section 4
 		course_fee: z
@@ -184,32 +175,32 @@ const adminExternalFormSchema = z
 		verification_email: z.string().min(1, { message: "Applicant email is required" }),
 		approval_email: z.string().min(1, { message: "Applicant email is required" }),
 	})
-	.refine(
-		data => {
-			if (data.check_in_date && data.check_out_date) {
-				return data.check_in_date <= data.check_out_date;
-			}
-			return true;
-		},
-		{
-			message: "Check-in date must be before Check-out date.",
-			path: ["check_in_date"],
-		},
-	)
-	// if commencement date is before completion date, then return true
-	// else return false
-	.refine(
-		data => {
-			if (data.commencement_date && data.completion_date) {
-				return data.commencement_date <= data.completion_date;
-			}
-			return true;
-		},
-		{
-			message: "Commencement date must be before Completion date.",
-			path: ["commencement_date"],
-		},
-	)
+	// .refine(
+	// 	data => {
+	// 		if (data.check_in_date && data.check_out_date) {
+	// 			return data.check_in_date <= data.check_out_date;
+	// 		}
+	// 		return true;
+	// 	},
+	// 	{
+	// 		message: "Check-in date must be before Check-out date.",
+	// 		path: ["check_in_date"],
+	// 	},
+	// )
+	// // if commencement date is before completion date, then return true
+	// // else return false
+	// .refine(
+	// 	data => {
+	// 		if (data.commencement_date && data.completion_date) {
+	// 			return data.commencement_date <= data.completion_date;
+	// 		}
+	// 		return true;
+	// 	},
+	// 	{
+	// 		message: "Commencement date must be before Completion date.",
+	// 		path: ["commencement_date"],
+	// 	},
+	// )
 	// if travelling is in group, then other members is required
 	// else return true
 	.refine(

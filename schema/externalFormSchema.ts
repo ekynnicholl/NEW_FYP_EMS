@@ -47,13 +47,13 @@ const externalFormSchema = z
 
 		// Section 3
 		flight_date: z.date().optional().nullable(),
-		flight_time: z.string().optional().nullable(),
-		flight_number: z.string().optional().nullable(),
-		destination_from: z.string().optional().nullable(),
-		destination_to: z.string().optional().nullable(),
+		flight_time: z.string().optional(),
+		flight_number: z.string().optional(),
+		destination_from: z.string().optional(),
+		destination_to: z.string().optional(),
 		check_in_date: z.date().optional().nullable(),
 		check_out_date: z.date().optional().nullable(),
-		hotel_name: z.string().optional().nullable(),
+		hotel_name: z.string().optional(),
 
 		// Section 4
 		course_fee: z

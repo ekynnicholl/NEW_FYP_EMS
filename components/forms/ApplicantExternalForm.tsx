@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import SuccessIMG from "@/public/images/success_image.jpg";
@@ -17,7 +18,7 @@ import { BsFiletypePdf } from "react-icons/bs";
 import { toast } from "react-hot-toast";
 import externalFormSchema from "@/schema/externalFormSchema";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,7 +35,6 @@ import {
 	DialogTrigger,
 	DialogClose,
 } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
@@ -96,7 +96,7 @@ export default function ExternalForm() {
 			hrdf_claimable: "",
 
 			flight_date: undefined,
-			flight_time: null,
+			flight_time: undefined,
 			flight_number: "",
 			destination_from: "",
 			destination_to: "",
@@ -126,7 +126,7 @@ export default function ExternalForm() {
 			applicant_declaration_signature: "",
 			applicant_declaration_name: "",
 			applicant_declaration_position_title: "",
-			applicant_declaration_date: undefined,
+			applicant_declaration_date: new Date(),
 		},
 	});
 
@@ -150,6 +150,16 @@ export default function ExternalForm() {
 		}
 	};
 
+	// Debugging purpose only
+	useEffect(() => {
+		var files = form.getValues("supporting_documents") as FileList;
+		if (files) {
+			if (files.length > 0) {
+				console.log(files[0]);
+			}
+		}
+	}, [form.getValues("supporting_documents")]);
+
 	const [commencementDate, setCommencementDate] = useState<Date>();
 	const [checkInDate, setCheckInDate] = useState<Date>();
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
@@ -157,10 +167,29 @@ export default function ExternalForm() {
 		console.log(values);
 
 		if (values.commencement_date.getHours() < 8) {
-			setCommencementDate(new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8)));
+			new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8));
 		}
+
 		if (values.check_in_date?.getHours()! < 8) {
-			setCheckInDate(new Date(values.check_in_date?.setHours(values.check_in_date?.getHours() + 8)!));
+			new Date(values.check_in_date?.setHours(values.check_in_date?.getHours() + 8)!);
+		}
+
+		// Upload supporting document to bucket and return the path to the bucket
+		let documentPath: string | undefined = "";
+		const uniqueName = uuidv4()
+		let document = values.supporting_documents as FileList
+		if (document[0]) {
+			if (document.length > 0) {
+				const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${document[0].name}`, document[0], {
+					cacheControl: "3600",
+					upsert: false,
+				});
+				documentPath = upload.data?.path
+
+				if (upload.error) {
+					console.log(upload.error)
+				}
+			}
 		}
 
 		const { data, error } = await supabase
@@ -169,6 +198,7 @@ export default function ExternalForm() {
 				{
 					...values,
 					formStage: 2,
+					supporting_documents: documentPath
 				},
 			])
 			.select();
@@ -187,7 +217,7 @@ export default function ExternalForm() {
 		}
 	}
 
-	const [group, setGroup] = useState(true);
+	const [group, setGroup] = useState(false);
 	const [useOwnTransport, setUseOwnTransport] = useState(false);
 
 	return (
@@ -360,9 +390,9 @@ export default function ExternalForm() {
 															onValueChange={e => {
 																field.onChange(e);
 																if (e === "group") {
-																	setGroup(false);
-																} else {
 																	setGroup(true);
+																} else {
+																	setGroup(false);
 																}
 															}}
 															defaultValue={field.value}>
@@ -381,19 +411,21 @@ export default function ExternalForm() {
 												)}
 											/>
 										</div>
-										<FormField
-											control={form.control}
-											name="other_members"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Name of other staff / student traveling together in group</FormLabel>
-													<FormControl>
-														<Input disabled={group} {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
+										{group && (
+											<FormField
+												control={form.control}
+												name="other_members"
+												render={({ field }) => (
+													<FormItem>
+														<FormLabel>Name of other staff / student traveling together in group</FormLabel>
+														<FormControl>
+															<Input {...field} />
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+										)}
 									</div>
 								</section>
 
@@ -579,124 +611,116 @@ export default function ExternalForm() {
 								<section className="section-3" id="Logistic Arrangement">
 									<h2 className="text-2xl font-bold mb-4">3. Logistic Arrangement</h2>
 									<div className="grid gap-8">
-										<div className="grid grid-auto-fit-lg gap-8">
-											<FormField
-												control={form.control}
-												name="flight_date"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Flight Date</FormLabel>
-														<Popover>
-															<PopoverTrigger asChild>
+										{!useOwnTransport && (
+											<>
+												<div className="grid grid-auto-fit-lg gap-8">
+													<FormField
+														control={form.control}
+														name="flight_date"
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Flight Date</FormLabel>
+																<Popover>
+																	<PopoverTrigger asChild>
+																		<FormControl>
+																			<Button
+																				disabled={useOwnTransport}
+																				variant={"outline"}
+																				className={cn(
+																					"w-full pl-3 text-left font-normal",
+																					!field.value && "text-muted-foreground",
+																				)}>
+																				{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+																			</Button>
+																		</FormControl>
+																	</PopoverTrigger>
+																	<PopoverContent className="w-auto p-0" align="start">
+																		<Calendar
+																			mode="single"
+																			selected={field.value!}
+																			onSelect={date => {
+																				if (date !== undefined) {
+																					date.setHours(date.getHours() + 8);
+																					field.onChange(date);
+																					field.value = new Date(date);
+																				}
+																				console.log("Flight date: " + field.value);
+																			}}
+																			disabled={date => {
+																				const today = new Date();
+																				today.setHours(0, 0, 0, 0);
+																				return date < today;
+																			}}
+																			initialFocus
+																		/>
+																	</PopoverContent>
+																</Popover>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name="flight_time"
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Flight Time</FormLabel>
 																<FormControl>
-																	<Button
-																		disabled={useOwnTransport}
-																		variant={"outline"}
-																		className={cn(
-																			"w-full pl-3 text-left font-normal",
-																			!field.value && "text-muted-foreground",
-																		)}>
-																		{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-																	</Button>
+																	<Input disabled={useOwnTransport} type="time" {...field} />
 																</FormControl>
-															</PopoverTrigger>
-															<PopoverContent className="w-auto p-0" align="start">
-																<Calendar
-																	mode="single"
-																	selected={field.value!}
-																	onSelect={date => {
-																		if (date !== undefined) {
-																			date.setHours(date.getHours() + 8);
-																			field.onChange(date);
-																			field.value = new Date(date);
-																		}
-																		console.log("Flight date: " + field.value);
-																	}}
-																	disabled={date => {
-																		const today = new Date();
-																		today.setHours(0, 0, 0, 0);
-																		return date < today;
-																	}}
-																	initialFocus
-																/>
-															</PopoverContent>
-														</Popover>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="flight_time"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Flight Time</FormLabel>
-														<FormControl>
-															<Input
-																disabled={useOwnTransport}
-																type="time"
-																{...field}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+												</div>
 
-										<FormField
-											control={form.control}
-											name="flight_number"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Flight Number</FormLabel>
-													<FormControl>
-														<Input disabled={useOwnTransport} {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-
-										<div>
-											<h2 className="font-medium mb-3">Destination</h2>
-											<div className="grid grid-auto-fit-lg gap-8 ">
 												<FormField
 													control={form.control}
-													name="destination_from"
+													name="flight_number"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>From</FormLabel>
+															<FormLabel>Flight Number</FormLabel>
 															<FormControl>
-																<Input
-																	disabled={useOwnTransport}
-																	placeholder="Sarawak"
-																	{...field}
-																/>
+																<Input disabled={useOwnTransport} {...field} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
 													)}
 												/>
-												<FormField
-													control={form.control}
-													name="destination_to"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel>To</FormLabel>
-															<FormControl>
-																<Input
-																	disabled={useOwnTransport}
-																	placeholder="Singapore"
-																	{...field}
-																/>
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
-											</div>
-										</div>
+
+												<div>
+													<h2 className="font-medium mb-3">Destination</h2>
+													<div className="grid grid-auto-fit-lg gap-8 ">
+														<FormField
+															control={form.control}
+															name="destination_from"
+															render={({ field }) => (
+																<FormItem>
+																	<FormLabel>From</FormLabel>
+																	<FormControl>
+																		<Input disabled={useOwnTransport} placeholder="Sarawak" {...field} />
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+														<FormField
+															control={form.control}
+															name="destination_to"
+															render={({ field }) => (
+																<FormItem>
+																	<FormLabel>To</FormLabel>
+																	<FormControl>
+																		<Input disabled={useOwnTransport} placeholder="Singapore" {...field} />
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+													</div>
+												</div>
+											</>
+										)}
 
 										<div className="grid grid-auto-fit-lg gap-8 ">
 											<FormField
@@ -709,7 +733,6 @@ export default function ExternalForm() {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
-																		disabled={useOwnTransport}
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
@@ -754,7 +777,6 @@ export default function ExternalForm() {
 															<PopoverTrigger asChild>
 																<FormControl>
 																	<Button
-																		disabled={useOwnTransport}
 																		variant={"outline"}
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
@@ -803,7 +825,7 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Hotel</FormLabel>
 													<FormControl>
-														<Input disabled={useOwnTransport} {...field} />
+														<Input {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1157,9 +1179,9 @@ export default function ExternalForm() {
 														<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
 															<span className="font-semibold">Click to upload</span> or drag and drop
 														</p>
-														<p className="text-sm text-gray-500 dark:text-gray-400">PDF or Word (maximum 5MB)</p>
+														<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
 														{field?.value?.length! > 0 && (
-															<p className="mt-2 text-xl text-slate-700">{field.value?.length} Files Uploaded</p>
+															<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
 														)}
 													</div>
 												</FormLabel>
@@ -1168,7 +1190,7 @@ export default function ExternalForm() {
 														multiple
 														type="file"
 														className="hidden"
-														accept=".pdf,.doc,.docx"
+														accept=".pdf"
 														{...form.register("supporting_documents", {
 															required: false,
 														})}
