@@ -24,14 +24,14 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
     // Create an end date as the last day of the selected month and year
     const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59);
 
-    // function generateRandomColors(count: number) {
-    //     const colors = [];
-    //     for (let i = 0; i < count; i++) {
-    //         const color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.7)`;
-    //         colors.push(color);
-    //     }
-    //     return colors;
-    // }
+    function generateRandomColors(count: number) {
+        const colors = [];
+        for (let i = 0; i < count; i++) {
+            const color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.7)`;
+            colors.push(color);
+        }
+        return colors;
+    }
 
     useEffect(() => {
         // Calculate the total grand total
@@ -56,7 +56,7 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
 
             const distinctFaculties = Array.from(new Set(data.map(item => item.faculty)));
 
-            // const facultyColors = generateRandomColors(Object.keys(distinctFaculties).length);
+            const facultyColors = generateRandomColors(Object.keys(distinctFaculties).length);
 
             const monthlyData = distinctFaculties.map(faculty => ({
                 faculty: faculty,
@@ -98,7 +98,7 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                             {
                                 label: "Monthly Grand Total",
                                 data: monthlyData.map((entry) => entry.total),
-                                backgroundColor: "Red",
+                                backgroundColor: facultyColors,
                                 borderWidth: 2,
                             },
                         ],
@@ -124,6 +124,11 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                                 grid: {
                                     display: false,
                                 },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
                             },
                         },
                     },
