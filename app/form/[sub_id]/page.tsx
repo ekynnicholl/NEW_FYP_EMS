@@ -56,8 +56,10 @@ export default function AttendanceForm() {
 				return;
 			}
 
+			const eventStartDate = new Date(attendanceListData[0].sub_eventsStartDate);
+			const currentStartDate = new Date(eventStartDate.toDateString());
 			const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
-			const currentDate = new Date(eventEndDate.toDateString());
+			const currentEndDate = new Date(eventEndDate.toDateString());
 
 			// Get the start time and end time of the event,
 			const eventEndTimeStr = attendanceListData[0].sub_eventsEndTime;
@@ -68,13 +70,13 @@ export default function AttendanceForm() {
 			const [hoursStart, minutesStart, secondsStart] = eventStartTimeStr.split(':');
 
 			// Set the start time,
-			const eventStartTime = new Date(currentDate);
+			const eventStartTime = new Date(currentStartDate);
 			eventStartTime.setHours(Number(hoursStart));
 			eventStartTime.setMinutes(Number(minutesStart));
 			eventStartTime.setSeconds(Number(secondsStart));
 
 			// Set the end time,
-			const eventEndTime = new Date(currentDate);
+			const eventEndTime = new Date(currentEndDate);
 			eventEndTime.setHours(Number(hoursEnd));
 			eventEndTime.setMinutes(Number(minutesEnd));
 			eventEndTime.setSeconds(Number(secondsEnd));
@@ -86,16 +88,19 @@ export default function AttendanceForm() {
 			const endTimeWindow = new Date(eventEndTime);
 			endTimeWindow.setMinutes(endTimeWindow.getMinutes() + 15);
 
+			console.log(startTimeWindow);
+			console.log(endTimeWindow)
+
 			// Check if the current time is AFTER the event start date and time,
 			if (currentTime > endTimeWindow) {
-				router.push('/notFound?from=end_att');
+				// router.push('/notFound?from=end_att');
 				return;
 			}
 
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < startTimeWindow) {
 				const eventStartTimeString = startTimeWindow.toISOString();
-				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
+				// router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
 				// router.push('/notFound?from=start_att');
 				return;
 			}
