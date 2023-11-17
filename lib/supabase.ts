@@ -9,36 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      accounts: {
-        Row: {
-          accDateCreated: string | null
-          accEmail: string | null
-          accHomeView: number
-          accID: string
-          accIsDarkMode: boolean | null
-          accPassword: string | null
-          accUsername: string | null
-        }
-        Insert: {
-          accDateCreated?: string | null
-          accEmail?: string | null
-          accHomeView?: number
-          accID?: string
-          accIsDarkMode?: boolean | null
-          accPassword?: string | null
-          accUsername?: string | null
-        }
-        Update: {
-          accDateCreated?: string | null
-          accEmail?: string | null
-          accHomeView?: number
-          accID?: string
-          accIsDarkMode?: boolean | null
-          accPassword?: string | null
-          accUsername?: string | null
-        }
-        Relationships: []
-      }
       attendance_forms: {
         Row: {
           attDateSubmitted: string | null
@@ -66,33 +36,13 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "attendance_forms_attFSubEventID_fkey"
+            foreignKeyName: "attendance_forms_attfsubeventid_fkey"
             columns: ["attFSubEventID"]
+            isOneToOne: false
             referencedRelation: "sub_events"
             referencedColumns: ["sub_eventsID"]
           }
         ]
-      }
-      expenditure_testing: {
-        Row: {
-          dateEntered: string | null
-          expenditureAmount: number
-          facultyUnit: string | null
-          id: string
-        }
-        Insert: {
-          dateEntered?: string | null
-          expenditureAmount?: number
-          facultyUnit?: string | null
-          id?: string
-        }
-        Update: {
-          dateEntered?: string | null
-          expenditureAmount?: number
-          facultyUnit?: string | null
-          id?: string
-        }
-        Relationships: []
       }
       external_forms: {
         Row: {
@@ -143,6 +93,7 @@ export interface Database {
           staff_development_fund: string | null
           staff_id: string | null
           student_council_fund: string | null
+          supporting_documents: string | null
           total_members: number | null
           transport: string | null
           transportation_fee: number | null
@@ -204,6 +155,7 @@ export interface Database {
           staff_development_fund?: string | null
           staff_id?: string | null
           student_council_fund?: string | null
+          supporting_documents?: string | null
           total_members?: number | null
           transport?: string | null
           transportation_fee?: number | null
@@ -265,6 +217,7 @@ export interface Database {
           staff_development_fund?: string | null
           staff_id?: string | null
           student_council_fund?: string | null
+          supporting_documents?: string | null
           total_members?: number | null
           transport?: string | null
           transportation_fee?: number | null
@@ -277,48 +230,6 @@ export interface Database {
           verification_name?: string | null
           verification_position_title?: string | null
           verification_signature?: string | null
-        }
-        Relationships: []
-      }
-      external_testing: {
-        Row: {
-          cappedAmount: number | null
-          deanEmail: string | null
-          expenditureCapped: boolean | null
-          formID: string
-          formStage: number | null
-          fundAmount: number | null
-          fundSourceName: string
-          hosEmail: string | null
-          hosName: string | null
-          revertComment: string | null
-          securityKey: string | null
-        }
-        Insert: {
-          cappedAmount?: number | null
-          deanEmail?: string | null
-          expenditureCapped?: boolean | null
-          formID?: string
-          formStage?: number | null
-          fundAmount?: number | null
-          fundSourceName: string
-          hosEmail?: string | null
-          hosName?: string | null
-          revertComment?: string | null
-          securityKey?: string | null
-        }
-        Update: {
-          cappedAmount?: number | null
-          deanEmail?: string | null
-          expenditureCapped?: boolean | null
-          formID?: string
-          formStage?: number | null
-          fundAmount?: number | null
-          fundSourceName?: string
-          hosEmail?: string | null
-          hosName?: string | null
-          revertComment?: string | null
-          securityKey?: string | null
         }
         Relationships: []
       }
@@ -406,8 +317,9 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "feedback_forms_fbSubEventID_fkey"
+            foreignKeyName: "feedback_forms_fbsubeventid_fkey"
             columns: ["fbSubEventID"]
+            isOneToOne: false
             referencedRelation: "sub_events"
             referencedColumns: ["sub_eventsID"]
           }
@@ -416,44 +328,59 @@ export interface Database {
       internal_events: {
         Row: {
           date_created: string | null
+          intFDurationCourse: number | null
           intFEventDescription: string | null
           intFEventEndDate: string | null
           intFEventName: string
           intFEventStartDate: string | null
           intFID: string
+          intFTrainerName: string | null
+          intFTrainingProvider: string | null
         }
         Insert: {
           date_created?: string | null
+          intFDurationCourse?: number | null
           intFEventDescription?: string | null
           intFEventEndDate?: string | null
           intFEventName: string
           intFEventStartDate?: string | null
           intFID?: string
+          intFTrainerName?: string | null
+          intFTrainingProvider?: string | null
         }
         Update: {
           date_created?: string | null
+          intFDurationCourse?: number | null
           intFEventDescription?: string | null
           intFEventEndDate?: string | null
           intFEventName?: string
           intFEventStartDate?: string | null
           intFID?: string
+          intFTrainerName?: string | null
+          intFTrainingProvider?: string | null
         }
         Relationships: []
       }
       login: {
         Row: {
+          accHomeView: number | null
+          accIsDarkMode: boolean | null
           created_at: string | null
           email_address: string | null
           firebase_uid: string | null
           id: string
         }
         Insert: {
+          accHomeView?: number | null
+          accIsDarkMode?: boolean | null
           created_at?: string | null
           email_address?: string | null
           firebase_uid?: string | null
           id?: string
         }
         Update: {
+          accHomeView?: number | null
+          accIsDarkMode?: boolean | null
           created_at?: string | null
           email_address?: string | null
           firebase_uid?: string | null
@@ -503,8 +430,9 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "sub_events_sub_eventsMainID_fkey"
+            foreignKeyName: "sub_events_sub_eventsmainid_fkey"
             columns: ["sub_eventsMainID"]
+            isOneToOne: false
             referencedRelation: "internal_events"
             referencedColumns: ["intFID"]
           }
