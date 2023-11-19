@@ -88,19 +88,16 @@ export default function AttendanceForm() {
 			const endTimeWindow = new Date(eventEndTime);
 			endTimeWindow.setMinutes(endTimeWindow.getMinutes() + 15);
 
-			console.log(startTimeWindow);
-			console.log(endTimeWindow)
-
 			// Check if the current time is AFTER the event start date and time,
 			if (currentTime > endTimeWindow) {
-				// router.push('/notFound?from=end_att');
+				router.push('/notFound?from=end_att');
 				return;
 			}
 
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < startTimeWindow) {
 				const eventStartTimeString = startTimeWindow.toISOString();
-				// router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
+				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
 				// router.push('/notFound?from=start_att');
 				return;
 			}
