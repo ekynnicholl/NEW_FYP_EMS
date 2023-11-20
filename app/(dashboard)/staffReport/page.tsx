@@ -21,6 +21,7 @@ import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
 import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 import LeftArrow from "@/components/icons/LeftArrow";
 import ExpenditureUser from "@/components/tables/expenditureUser";
+import { Info } from "lucide-react";
 
 type Info = {
 	attFormsStaffID: string;
@@ -165,7 +166,6 @@ export default function Home() {
 
 			// Set the aggregated data in the state
 			setAggregatedInfo(Object.values(groupedData));
-
 		};
 		fetchInfos();
 	};
@@ -183,24 +183,38 @@ export default function Home() {
 		setAggregatedInfo(filteredData);
 	};
 
-	// export to CSV format
+	type ColumnMapping = {
+		[key: string]: string;
+	};
+
+	const columnMapping: ColumnMapping = {
+		attFormsStaffID: 'Staff/ Student ID',
+		attFormsStaffName: 'Staff Name',
+		attFormsFacultyUnit: 'Faculty/Unit',
+		totalSubEvents: 'Total Events Attended'
+	};	
+
+	//export to CSV format
 	const exportToCSV = () => {
 		// Generate header row
-		const header = Object.keys(infos[0]).join(",");
-		const dataRows = infos.map(e => Object.values(e).join(",")).join("\n");
-
-		// Combine header and data rows
-		const csvContent = `${header}\n${dataRows}`;
+		const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
+		 // Combine header and data rows
+		 const csvContent = `${header}\n${aggregatedInfo.map(row => {
+			// Exclude the eventsAttended field
+			const { eventsAttended, ...rowWithoutEvents } = row;
+			return Object.values(rowWithoutEvents).map(value => `"${value}"`).join(",");
+		}).join("\n")}`;
 
 		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 		const link = document.createElement("a");
 
 		link.href = URL.createObjectURL(blob);
-		link.setAttribute("download", "attendance_data.csv");
+		link.setAttribute("download", "staff_attendance_data.csv");
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
 	};
+	
 
 	// go to previous page
 	const handleArrowLeftClick = () => {
@@ -426,10 +440,10 @@ export default function Home() {
 													NO.
 												</th>
 												<th className="flex-1 px-[21px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-													<span className="ml-1">Staff Name</span>
+													<span className="ml-1">Name</span>
 												</th>
 												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-													<span className="-ml-[1px]">Staff ID</span>
+													<span className="-ml-[1px]">Staff / Student ID</span>
 												</th>
 												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
 													<span className="-ml-[1px]">Faculty / Unit</span>
@@ -701,7 +715,7 @@ export default function Home() {
 												</tr>
 												<tr className="border-b-2 border-gray-200 bg-gray-100">
 													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-														Staff Name
+														Name
 													</th>
 													<td className="float-right text-xs mt-3 px-4">
 														{info.staffName}
@@ -709,7 +723,7 @@ export default function Home() {
 												</tr>
 												<tr className="border-b-2 border-gray-200 bg-gray-100">
 													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-														Staff ID
+														Staff / Student ID
 													</th>
 													<td className="float-right text-xs mt-3 px-4">
 														{info.staffID}
@@ -805,7 +819,6 @@ export default function Home() {
 						</div>
 					</div>
 
-					{/* mobile view event attended modal */}
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Attended</p>
 						<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto">
@@ -833,7 +846,7 @@ export default function Home() {
 												key={subEvent.sub_eventsID}
 												onClick={() => setShowModal(true)}>
 												<td className="flex-1 pl-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<div className="flex items-center">
+													<div className="items-center">
 														<div className="ml-[14px]">
 															<p className="text-gray-900 whitespace-nowrap">
 																{(currentPage - 1) * entriesToShow + index + 1}
@@ -842,19 +855,19 @@ export default function Home() {
 													</div>
 												</td>
 												<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-nowrap ml-7">
+													<p className="text-gray-900 whitespace-nowrap ml-4">
 														{mainEventAttended[index]?.intFEventName || "N/A"}
 													</p>
 												</td>
 
 												<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-nowrap ml-1">
+													<p className="text-gray-900 whitespace-nowrap ml-3">
 														{subEvent.sub_eventsName}
 													</p>
 												</td>
 
 												<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-nowrap -ml-2">
+													<p className="text-gray-900 whitespace-nowrap ml-1">
 														{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
 													</p>
 												</td>

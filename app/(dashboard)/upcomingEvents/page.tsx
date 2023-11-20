@@ -1608,22 +1608,7 @@ export default function Home() {
                                         <div className="flex justify-center">
                                             <button
                                                 type="button"
-                                                className="flex items-center bg-slate-200 rounded-lg py-2 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[9px] dark:bg-[#242729]"
-                                                onClick={e => {
-                                                    setSelectedSubEventID(subEvent.sub_eventsID);
-                                                    setShowQRCodesFeedback(true);
-                                                    setShowQRCodeModal(false);
-                                                }}>
-                                                <span className="ml-2 text-slate-800 flex items-center mr-2">
-                                                    <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-                                                    <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
-                                                        Feedback
-                                                    </span>
-                                                </span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-9 px-[5px] dark:bg-[#242729]"
+                                                className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
                                                 onClick={e => {
                                                     setSelectedSubEventID(subEvent.sub_eventsID);
                                                     setShowQRCodesAttendance(true);
@@ -1636,6 +1621,21 @@ export default function Home() {
                                                     </span>
                                                 </span>
                                             </button>
+                                            <button
+                                                type="button"
+                                                className="flex items-center bg-slate-200 rounded-lg py-2 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-9 px-[9px] dark:bg-[#242729]"
+                                                onClick={e => {
+                                                    setSelectedSubEventID(subEvent.sub_eventsID);
+                                                    setShowQRCodesFeedback(true);
+                                                    setShowQRCodeModal(false);
+                                                }}>
+                                                <span className="ml-2 text-slate-800 flex items-center mr-2">
+                                                    <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+                                                    <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                        Feedback
+                                                    </span>
+                                                </span>
+                                            </button>                                            
                                         </div>
                                     </div>
                                 ))}
