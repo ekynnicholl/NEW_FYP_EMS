@@ -117,24 +117,23 @@ const adminExternalFormSchema = z
 
 		// Section 5
 		supporting_documents: z
-			.any()
-			.optional()
-			.nullable()
-			.refine(
-				fileList => {
-					if (fileList) {
-						for (let i = 0; i < fileList.length; i++) {
-							if (fileList?.item(i)?.size! > MAX_FILE_SIZE) {
-								return false;
-							}
-						}
-					}
-					return true;
-				},
-				{
-					message: "All files must be smaller than 5MB.",
-				},
-			),
+			.any(),
+		// .optional()
+		// .refine(
+		// 	fileList => {
+		// 		if (fileList) {
+		// 			for (let i = 0; i < fileList.length; i++) {
+		// 				if (fileList?.item(i)?.size! > MAX_FILE_SIZE) {
+		// 					return false;
+		// 				}
+		// 			}
+		// 		}
+		// 		return true;
+		// 	},
+		// 	{
+		// 		message: "All files must be smaller than 5MB.",
+		// 	},
+		// ),
 
 		// Section 6
 		applicant_declaration_name: z
