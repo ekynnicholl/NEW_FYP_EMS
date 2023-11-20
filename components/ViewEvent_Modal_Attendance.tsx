@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[999]" id="wrapper" onClick={handleClose}>
-      <div className="w-[400px] lg:w-[950px] flex flex-col relative p-10 lg:p-0">
+      <div className="w-[80%] lg:w-[60%] xl:w-[40%] 2xl:w-[30%] flex flex-col relative p-10 lg:p-0">
         <div>
           <div className="bg-white rounded-lg border border-slate-200 shadow-md">
             {children}

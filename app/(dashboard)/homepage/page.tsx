@@ -2384,8 +2384,8 @@ export default function Homepage() {
 					<ViewAttendance_Modal
 						isVisible={showAttendanceModal}
 						onClose={() => setShowAttendanceModal(false)}>
-						<div className="flex flex-col lg:flex-row h-[450px] lg:h-[825px] overflow-y-auto">
-							<div className={`w-${attendanceData && attendanceData.length > 0 ? '1/2' : 'full'} lg:h-[700px] h-[600px] w-full`}>
+						<div className="flex flex-col lg:flex-row relative h-[90vh] overflow-y-auto">
+							<div className={`${attendanceData && attendanceData.length > 0 ? 'w-1/2 lg:h-[700px] h-[600px]' : 'w-full lg:h-[450px] h-[300px]'}`}>
 								<div className="flex items-start justify-start text-text text-[20px] text-center">
 									<PencilNoteIcon />{" "}
 									<span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px]">Attendance List</span>
