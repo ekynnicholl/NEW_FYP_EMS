@@ -2326,7 +2326,7 @@ export default function Homepage() {
 						isVisible={showFeedbackModal}
 						onClose={() => setShowFeedbackModal(false)}>
 						<div className="flex">
-							<div className="h-[600px] lg:h-[700px] w-full mr-3">
+							<div className="h-[90vh] w-full mr-3">
 								<div className="flex items-left justify-start">
 									<div className="flex items-center justify-center text-text text-[16px] lg:text-[20px] text-center text-slate-800 dark:text-dark_text">
 										<PencilNoteIcon />{" "}
