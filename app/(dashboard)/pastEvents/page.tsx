@@ -1621,8 +1621,7 @@ export default function Home() {
                                                 <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                             ) : (
                                                 <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
-                                            )
-                                            }
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
@@ -1632,7 +1631,7 @@ export default function Home() {
                                 )}
                             </div>
                             {filteredAttendanceData && filteredAttendanceData.length > 0 ? (
-                                <div className="w-full lg:flex flex-col items-center justify-center mt-24">
+                                <div className="w-1/2 lg:flex flex-col items-center justify-center mt-24">
                                     <div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
                                     <div className="w-[400px] h-[400px] lg:w-[650px] lg:h-[750px] flex items-center justify-center mt-5">
                                         <canvas id="attendanceFacultyPieChart" ref={chartContainer} />

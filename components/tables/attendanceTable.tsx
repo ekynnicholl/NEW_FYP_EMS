@@ -155,11 +155,15 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         return pages;
     };
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [attendanceData])
+
     return (
         <div>
             {attendanceData.length > 0 ? (
                 <div>
-                    <div className="">
+                    <div className="w-full">
                         <div className="mb-5">
                             <button
                                 type="button"
