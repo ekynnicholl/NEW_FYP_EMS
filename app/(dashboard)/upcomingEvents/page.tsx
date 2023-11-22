@@ -949,7 +949,7 @@ export default function Home() {
                                                     </div>
                                                 </td>
                                                 <td className="flex-1 py-5">
-                                                    <p className="text-gray-900 -ml-10 dark:text-dark_text">
+                                                    <p className="text-gray-900 -ml-10 dark:text-dark_text w-52">
                                                         {event.intFEventName}
                                                     </p>
                                                 </td>
