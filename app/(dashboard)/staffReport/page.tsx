@@ -174,13 +174,16 @@ export default function Home() {
 	// Handle search input
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
+		console.log("query:",query);
 		const filteredData = aggregatedInfo.filter(
 			info =>
 				info.staffName.toLowerCase().includes(query.toLowerCase()) ||
-				info.staffID ||
+				info.staffID.toString().includes(query) ||
 				info.staffFaculty.toLowerCase().includes(query.toLowerCase()),
 		);
+		console.log("filter data: ", filteredData);
 		setAggregatedInfo(filteredData);
+		
 	};
 
 	type ColumnMapping = {
