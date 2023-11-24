@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,14 +15,18 @@ import {
 import Link from "next/link";
 
 export default function MobileTopBar() {
+	const [isOpen, setIsOpen] = useState(false);
+	
+	useEffect(() => {
+		console.log("isOpen", isOpen);
+	}, [isOpen]);
+
 	return (
 		<div className="md:hidden sm:block">
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<div className="space-y-1 transition-all">
-						<div className="w-4 h-[2px] bg-black-500"></div>
-						<div className="w-4 h-[2px] bg-black-500"></div>
-					</div>
+			<div onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X /> : <Menu />}</div>
+			<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+				<DropdownMenuTrigger>
+					{/* <div onClick={() => {console.log("clicked")}}>{isOpen ? <X /> : <Menu />}</div> */}
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="mt-3 border-0 shadow-none w-screen h-screen">
 					<DropdownMenuItem className="h-12 border-b-2 border-gray-200" asChild>
