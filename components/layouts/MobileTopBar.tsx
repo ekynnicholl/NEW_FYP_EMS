@@ -22,7 +22,7 @@ export default function MobileTopBar() {
 	}, [isOpen]);
 
 	return (
-		<div className="md:hidden sm:block">
+		<div className="hidden max-md:block">
 			<div onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X /> : <Menu />}</div>
 			<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
 				<DropdownMenuTrigger>

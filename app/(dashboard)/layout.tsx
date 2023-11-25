@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
 
             <div className="w-full">
-                <div className="hidden sm:block">
+                <div>
                     <TopBar onViewModeChange={handleViewModeChange} onIsDarkModeChange={handeIsDarkModeChange} />
                 </div>
                 {children}

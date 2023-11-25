@@ -363,7 +363,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
-		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card sm:flex-row-reverse md:flex-row">
+		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card max-md:flex-row-reverse">
 			<AddAdmin_Modal isVisible={showModalAddAdmin} onClose={() => setShowModalAddAdmin(false)}>
 				<form onSubmit={(e) => handleCreateAccount(e)}>
 
@@ -423,11 +423,11 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 				</form>
 			</AddAdmin_Modal>
 
-			<div className="md:block sm:hidden">
+			<div className="max-md:hidden">
 				<BreadCrumb />
 			</div>
 
-			<div className="flex space-x-6 pr-2 pl-12 md:flex sm:hidden">
+			<div className="flex space-x-6 pr-2 pl-12 max-md:hidden">
 				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
 					{!isDarkMode ? (
 						<BiSun className="text-[27px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />

@@ -15,6 +15,18 @@ module.exports = {
 				"2xl": "1400px",
 			},
 		},
+		screens: {
+			"max-md": {'max': '768px'},
+			"max-sm": {'max': '640px'},
+			"max-lg": {'max': '1024px'},
+			"max-xl": {'max': '1280px'},
+			"max-2xl": {'max': '1536px'},
+			"sm": {'min': '640px'},
+			"md": {'min': '768px'},
+			"lg": {'min': '1024px'},
+			"xl": {'min': '1280px'},
+			"2xl": {'min': '1536px'},
+		},
 		extend: {
 			colors: {
 				primary: {
