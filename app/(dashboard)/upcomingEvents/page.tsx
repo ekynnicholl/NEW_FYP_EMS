@@ -13,21 +13,17 @@ import { FaSortAlphaUp, FaCalendarAlt } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
-import { MdOutlineEventNote } from "react-icons/md";
-import { IoPeopleSharp } from "react-icons/io5";
 import { Chart, registerables } from 'chart.js/auto';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { LiaQrcodeSolid } from "react-icons/lia";
-import { VscFeedback } from "react-icons/vsc";
 import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
-import { table } from "console";
 import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import LeftArrow from "@/components/icons/LeftArrow";
@@ -101,8 +97,8 @@ type FeedbackDataType = {
 
 
 export default function Home() {
-    const supabase = createClientComponentClient();
     const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
+    const supabase = createClientComponentClient();    
 
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
     const [searchQuery, setSearchQuery] = useState(""); // Search queries for search bar
@@ -157,7 +153,7 @@ export default function Home() {
     // This is for the pie chart,
     const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
     const chartContainer = useRef<HTMLCanvasElement | null>(null);
-    const chartInstanceRef = useRef<Chart<"pie", number[], string> | null>(null);
+    const chartInstanceRef = useRef<Chart<"bar", number[], string> | null>(null);
     const [isAllButtonActive, setIsAllButtonActive] = useState(true);
     const viewMode = useViewModeStore((state) => state.viewMode);
 
@@ -351,9 +347,28 @@ export default function Home() {
                     return;
                 }
 
-                // Set the attendance data for the selected sub-event
-                setAttendanceData(attendanceForms);
+                // Fetch the sub-event name,
+                const { data: subEvents, error: subEventsError } = await supabase
+                    .from("sub_events")
+                    .select()
+                    .eq("sub_eventsID", subEvent.sub_eventsID);
 
+                if (subEventsError) {
+                    console.error("Error fetching sub_events:", subEventsError);
+                    return;
+                } else {
+                    const subEventNameMap: { [key: string]: string } = {};
+                    subEvents.forEach(subEvent => {
+                        subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+                    });
+
+                    const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
+                        ...attendanceItem,
+                        sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+                    }));
+
+                    setAttendanceData(attendanceDataWithSubEventNames);
+                }
             } catch (error) {
                 const typedError = error as Error;
                 console.error("Error:", typedError.message);
@@ -438,7 +453,7 @@ export default function Home() {
         }
     };
 
-    // Pie chart,
+    // Bar chart,
     const createHorizontalBarChart = (
         chartContainer: HTMLCanvasElement | null,
         labels: string[],
@@ -534,6 +549,7 @@ export default function Home() {
         }
     };
 
+
     // Refresh data from database
     const refreshData = async () => {
         // Get the current date
@@ -573,12 +589,13 @@ export default function Home() {
 
     const handleAttendanceSearch = (query: string) => {
         setSearchAttendanceQuery(query);
-        const filteredStaffData = attendanceData.filter(
-            staff =>
-                staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
-                staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
-        );
-        setFilteredAttendanceData(filteredStaffData);
+        // const filteredStaffData = attendanceData.filter(
+        //     staff =>
+        //         staff.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
+        //         staff.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase())
+        // );
+        // setFilteredAttendanceData(filteredStaffData);
+        filterAttendanceData(activeTab, query);
     }
 
     const handleArrowLeftClick = () => {
@@ -755,6 +772,32 @@ export default function Home() {
             setSelectedSubEvent("");
         }
     };
+
+    const filterAttendanceData = (tab: 'all' | 'staff' | 'student', query: string) => {
+        let filteredData = attendanceData;
+        if (tab === 'staff') {
+            filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
+        } else if (tab === 'student') {
+            filteredData = attendanceData.filter((item) => !item.attFormsStaffID.startsWith('SS'));
+        }
+
+        // Apply search filter
+        if (query) {
+            filteredData = filteredData.filter((item) => {
+                return item.attFormsStaffName.toLowerCase().includes(query.toLowerCase());
+            });
+        }
+
+        setFilteredAttendanceData(filteredData);
+    };
+
+    useEffect(() => {
+        filterAttendanceData(activeTab, searchAttendanceQuery);
+    }, [activeTab, searchAttendanceQuery, attendanceData]);
+
+    useEffect(() => {
+        setActiveTab('all');
+    }, [selectedSubEvent, isAllButtonActive])
 
     // For QR codes,
     const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
