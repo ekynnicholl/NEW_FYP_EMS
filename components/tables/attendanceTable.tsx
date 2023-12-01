@@ -167,7 +167,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                         <div className="mb-5">
                             <button
                                 type="button"
-                                className="flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
+                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
                                 onClick={() => downloadCSV(attendanceData)}>
                                 <img
                                     src={exportCSV.src}
@@ -228,48 +228,92 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                         </table>
                     </div>
 
-                    {/* Pagination */}
-                    <div className="pagination flex justify-end items-end mt-5 pb-5">
-                        <button
-                            className="opacity-70 ml-2"
-                            onClick={() => handlePageChange(1)}
-                            disabled={currentPage === 1}
-                        >
-                            <DoubleLeftArrow />
-                        </button>
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="opacity-70 ml-2 mr-2"
-                        >
-                            <LeftArrow />
-                        </button>
-
-                        {generatePageNumbers().map((pageNumber, index) => (
+                    {/* Pagination for Desktop */}
+                    <div className="hidden lg:block">
+                        <div className="pagination flex justify-end items-end mt-5 pb-5">
                             <button
-                                key={index}
-                                className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-                                    }`}
-                                onClick={() => handlePageChange(pageNumber)}
+                                className="opacity-70 ml-2"
+                                onClick={() => handlePageChange(1)}
+                                disabled={currentPage === 1}
                             >
-                                {pageNumber === -1 ? '...' : pageNumber}
+                                <DoubleLeftArrow />
                             </button>
-                        ))}
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="opacity-70 ml-2 mr-2"
+                            >
+                                <LeftArrow />
+                            </button>
 
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === pageCount}
-                            className="opacity-70 ml-2 mr-2"
-                        >
-                            <RightArrow />
-                        </button>
-                        <button
-                            className="opacity-70 mr-2"
-                            onClick={() => handlePageChange(pageCount)}
-                            disabled={currentPage === pageCount}
-                        >
-                            <DoubleRightArrow />
-                        </button>
+                            {generatePageNumbers().map((pageNumber, index) => (
+                                <button
+                                    key={index}
+                                    className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+                                        }`}
+                                    onClick={() => handlePageChange(pageNumber)}
+                                >
+                                    {pageNumber === -1 ? '...' : pageNumber}
+                                </button>
+                            ))}
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === pageCount}
+                                className="opacity-70 ml-2 mr-2"
+                            >
+                                <RightArrow />
+                            </button>
+                            <button
+                                className="opacity-70 mr-2"
+                                onClick={() => handlePageChange(pageCount)}
+                                disabled={currentPage === pageCount}
+                            >
+                                <DoubleRightArrow />
+                            </button>
+                        </div>
+                    </div>
+                    {/* Pagination for Mobile */}
+                    <div className="block lg:hidden">
+                        <div className="pagination flex justify-center items-center mt-5 pb-5">
+                            <button
+                                className="opacity-70 ml-2"
+                                onClick={() => handlePageChange(1)}
+                                disabled={currentPage === 1}
+                            >
+                                <DoubleLeftArrow />
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="opacity-70 ml-2 mr-2"
+                            >
+                                <LeftArrow />
+                            </button>
+
+                            <button
+                                className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
+                                onClick={() => handlePageChange(currentPage)}
+                            >
+                                {currentPage}/ {pageCount}
+                            </button>
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === pageCount}
+                                className="opacity-70 ml-2 mr-2"
+                            >
+                                <RightArrow />
+                            </button>
+
+                            <button
+                                className="opacity-70 mr-2"
+                                onClick={() => handlePageChange(pageCount)}
+                                disabled={currentPage === pageCount}
+                            >
+                                <DoubleRightArrow />
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (

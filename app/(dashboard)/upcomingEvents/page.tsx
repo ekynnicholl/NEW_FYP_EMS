@@ -98,7 +98,7 @@ type FeedbackDataType = {
 
 export default function Home() {
     const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
-    const supabase = createClientComponentClient();    
+    const supabase = createClientComponentClient();
 
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
     const [searchQuery, setSearchQuery] = useState(""); // Search queries for search bar
@@ -1515,8 +1515,8 @@ export default function Home() {
                     <ViewAttendance_Modal
                         isVisible={showAttendanceModal}
                         onClose={() => setShowAttendanceModal(false)}>
-                        <div className="flex flex-col lg:flex-row relative h-[90vh] overflow-y-auto">
-                            <div className={`${attendanceData && attendanceData.length > 0 ? 'w-1/2 lg:h-[700px] h-[600px]' : 'w-full lg:h-[450px] h-[300px]'}`}>
+                        <div className="lg:flex lg:flex-row relative h-[90vh] overflow-y-auto">
+                            <div className={`${attendanceData && attendanceData.length > 0 ? 'w-full lg:w-1/2 lg:h-[700px] h-[1650px]' : 'w-full lg:h-[450px] h-[300px]'}`}>
                                 <div className="flex items-start justify-start text-text text-[20px] text-center">
                                     <PencilNoteIcon />{" "}
                                     <span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px]">Attendance List</span>
@@ -1526,7 +1526,7 @@ export default function Home() {
                                 </div>
                                 <div className="flex flex-wrap">
                                     <button
-                                        className={`font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 ${isAllButtonActive ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                             }`}
                                         onClick={() => {
                                             setIsAllButtonActive(true);
@@ -1538,7 +1538,7 @@ export default function Home() {
                                     {subEventsForAttendance.map((subEvent) => (
                                         <div
                                             key={subEvent.sub_eventsID}
-                                            className={`font-bold flex items-center rounded-lg hover:bg-red-200 lg:text-[15px] text-[12px] shadow-sm mb-3.5 p-2 ml-3 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                            className={`font-bold items-center rounded-lg hover:bg-red-200 lg:text-[15px] text-[12px] shadow-sm mb-3.5 p-2 mr-2 ${selectedSubEvent === subEvent.sub_eventsID ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
                                                 }`}
                                         >
                                             <button
@@ -1558,50 +1558,54 @@ export default function Home() {
                                         fetchAttendanceList(attendanceMainEventID);
                                         setIsAllButtonActive(true);
                                     }}
-                                    className="font-bold flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
+                                    className="font-bold hidden lg:flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
                                 >
                                     Refresh
                                 </button>
                                 {/* This is to loop through the attendance data. */}
                                 {attendanceData && attendanceData.length > 0 ? (
                                     <div className="lg:text-[16px] text-[12px]">
-                                        <button
-                                            className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
-                                                }`}
-                                            onClick={() => setActiveTab('all')}
-                                        >
-                                            All
-                                        </button>
-                                        <button
-                                            className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
-                                                }`}
-                                            onClick={() => setActiveTab('staff')}
-                                        >
-                                            Staff
-                                        </button>
-                                        <button
-                                            className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
-                                                }`}
-                                            onClick={() => setActiveTab('student')}
-                                        >
-                                            Student
-                                        </button>
-                                        <label htmlFor="itemsPerPageSelect">Show entries:</label>
-                                        <select
-                                            id="itemsPerPageSelect"
-                                            name="itemsPerPage"
-                                            value={itemsPerPage}
-                                            onChange={handleItemsPerPageChange}
-                                            className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
-                                        >
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="20">20</option>
-                                        </select>
+                                        <div className="flex flex-row">
+                                            <button
+                                                className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                                    }`}
+                                                onClick={() => setActiveTab('all')}
+                                            >
+                                                All
+                                            </button>
+                                            <button
+                                                className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                                    }`}
+                                                onClick={() => setActiveTab('staff')}
+                                            >
+                                                Staff
+                                            </button>
+                                            <button
+                                                className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                                    }`}
+                                                onClick={() => setActiveTab('student')}
+                                            >
+                                                Student
+                                            </button>
+                                        </div>
+                                        <div className="hidden lg:block">
+                                            <label htmlFor="itemsPerPageSelect">Show entries:</label>
+                                            <select
+                                                id="itemsPerPageSelect"
+                                                name="itemsPerPage"
+                                                value={itemsPerPage}
+                                                onChange={handleItemsPerPageChange}
+                                                className="ml-2 h-full rounded-l border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+                                            >
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                            </select>
+                                        </div>
 
                                         {/* Search Input */}
                                         <div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
-                                            <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2 ">
+                                            <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
                                                 <svg
                                                     viewBox="0 0 24 24"
                                                     className="h-4 w-4 fill-current text-gray-500">
@@ -1630,9 +1634,9 @@ export default function Home() {
                                 )}
                             </div>
                             {filteredAttendanceData && filteredAttendanceData.length > 0 ? (
-                                <div className="w-1/2 lg:flex flex-col items-center justify-center mt-24">
+                                <div className="w-full h-full lg:w-1/2 lg:flex lg:flex-col lg:items-center lg:justify-center mt-24">
                                     <div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
-                                    <div className="w-[400px] h-[400px] lg:w-[650px] lg:h-[750px] flex items-center justify-center mt-5">
+                                    <div className="w-[400px] h-[400px] lg:w-[650px] lg:h-[750px] mt-5">
                                         <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
                                     </div>
                                 </div>
