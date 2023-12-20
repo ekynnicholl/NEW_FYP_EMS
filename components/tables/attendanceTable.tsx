@@ -119,10 +119,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
 
     const pageCount = Math.ceil(attendanceData.length / itemsPerPage);
 
-    // const pageNumbers = Array.from({ length: pageCount }, (_, index) => index + 1);
-
     const generatePageNumbers = (): number[] => {
-        const displayedPages = 5; // Adjust the number of pages to display
+        const displayedPages = 5;
         const halfDisplayed = Math.floor(displayedPages / 2);
 
         if (pageCount <= displayedPages) {
@@ -137,7 +135,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         if (start > 1) {
             pages.push(1);
             if (start > 2) {
-                pages.push(-1); // Ellipsis
+                pages.push(-1);
             }
         }
 
@@ -147,7 +145,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
 
         if (end < pageCount) {
             if (end < pageCount - 1) {
-                pages.push(-1); // Ellipsis
+                pages.push(-1);
             }
             pages.push(pageCount);
         }

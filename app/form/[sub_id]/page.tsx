@@ -133,8 +133,13 @@ export default function AttendanceForm() {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit) {
-			return;
+		if (userType == 'visitor') {
+			info.attFormsStaffID = '0';
+			info.attFormsFacultyUnit = 'Visitor';
+		} else {
+			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit) {
+				return;
+			}
 		}
 
 		let attFormsStaffID = info.attFormsStaffID.trim().toUpperCase();
@@ -350,53 +355,7 @@ export default function AttendanceForm() {
 						<label
 							htmlFor="name"
 							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Name
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="text"
-							name="name"
-							id="name"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							onChange={event =>
-								setInfo({ ...info, attFormsStaffName: event.target.value })
-							}
-						/>
-					</div>
-				</div>
-
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="name"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Staff/ Student ID
-							<span className="text-red-500"> *</span>
-						</label>
-						<input
-							type="text"
-							name="name"
-							id="name"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							onChange={event =>
-								setInfo({ ...info, attFormsStaffID: event.target.value })
-							}
-						/>
-					</div>
-				</div>
-
-				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-					<div className="ml-1">
-						<label
-							htmlFor="name"
-							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Are you a student or a staff? (Please select correctly)
+							Are you a staff, student, or a visitor?
 							<span className="text-red-500"> *</span>
 						</label>
 						<div>
@@ -423,56 +382,137 @@ export default function AttendanceForm() {
 								<span className="ml-2 font-medium text-sm lg:text-base">Student</span>
 							</label>
 						</div>
+						<div className="mt-2">
+							<label className="ml-1">
+								<input
+									type="radio"
+									name="userType"
+									value="visitor"
+									checked={userType === 'visitor'}
+									onChange={handleUserTypeChange}
+								/>
+								<span className="ml-2 font-medium text-sm lg:text-base">External Visitor</span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+					<div className="ml-1">
+						<label
+							htmlFor="name"
+							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							Name
+							<span className="text-red-500"> *</span>
+						</label>
+						<input
+							type="text"
+							name="name"
+							id="name"
+							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+							required
+							placeholder="Your answer"
+							style={{ paddingLeft: "5px" }}
+							onChange={event =>
+								setInfo({ ...info, attFormsStaffName: event.target.value })
+							}
+						/>
 					</div>
 				</div>
 
 				{userType === 'staff' && (
-					<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-						<div className="ml-1">
-							<label
-								htmlFor="facultyUnit"
-								className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-								Faculty/ Unit (STAFF)
-								<span className="text-red-500"> *</span>
-							</label>
-							<select
-								name="facultyUnit"
-								id="facultyUnit"
-								defaultValue=""
-								className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-								required
-								onChange={event =>
-									setInfo({ ...info, attFormsFacultyUnit: event.target.value })
-								}
-							>
-								<option value="" disabled>Select Faculty/ Unit</option>
-								<option value="Academic Office">Academic Office</option>
-								<option value="Audit and Risk">Audit and Risk</option>
-								<option value="Building Facilities">Building Facilities</option>
-								<option value="Business Development and Liaison">Business Development and Liaison</option>
-								<option value="Campus Services">Campus Services</option>
-								<option value="Director Administration Office">Director Administration Office</option>
-								<option value="Finance and Business Analysis">Finance and Business Analysis</option>
-								<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
-								<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
-								<option value="Human Resources">Human Resources</option>
-								<option value="Information Resources">Information Resources</option>
-								<option value="Information Technology">Information Technology</option>
-								<option value="Learning and Teaching Unit">Learning and Teaching Unit</option>
-								<option value="Market and Student Recruitment">Market and Student Recruitment</option>
-								<option value="PVC & CEO Office">PVC & CEO Office</option>
-								<option value="Policy, Planning and Quality">Policy, Planning and Quality</option>
-								<option value="School of Foundation Studies">School of Foundation Studies</option>
-								<option value="School of Research">School of Research</option>
-								<option value="Swinburne Innovation Malaysia Sdn Bhd">Swinburne Innovation Malaysia Sdn Bhd</option>
-								<option value="Student Engagement">Student Engagement</option>
-							</select>
+					<div>
+						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+							<div className="ml-1">
+								<label
+									htmlFor="name"
+									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+									Staff ID
+									<span className="text-red-500"> *</span>
+								</label>
+								<input
+									type="text"
+									name="name"
+									id="name"
+									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+									required
+									placeholder="Your answer"
+									style={{ paddingLeft: "5px" }}
+									onChange={event =>
+										setInfo({ ...info, attFormsStaffID: event.target.value })
+									}
+								/>
+							</div>
+						</div>
+						<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+							<div className="ml-1">
+								<label
+									htmlFor="facultyUnit"
+									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+									Faculty/ Unit (STAFF)
+									<span className="text-red-500"> *</span>
+								</label>
+								<select
+									name="facultyUnit"
+									id="facultyUnit"
+									defaultValue=""
+									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+									required
+									onChange={event =>
+										setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+									}
+								>
+									<option value="" disabled>Select Faculty/ Unit</option>
+									<option value="Academic Office">Academic Office</option>
+									<option value="Audit and Risk">Audit and Risk</option>
+									<option value="Building Facilities">Building Facilities</option>
+									<option value="Business Development and Liaison">Business Development and Liaison</option>
+									<option value="Campus Services">Campus Services</option>
+									<option value="Director Administration Office">Director Administration Office</option>
+									<option value="Finance and Business Analysis">Finance and Business Analysis</option>
+									<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
+									<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
+									<option value="Human Resources">Human Resources</option>
+									<option value="Information Resources">Information Resources</option>
+									<option value="Information Technology">Information Technology</option>
+									<option value="Learning and Teaching Unit">Learning and Teaching Unit</option>
+									<option value="Market and Student Recruitment">Market and Student Recruitment</option>
+									<option value="PVC & CEO Office">PVC & CEO Office</option>
+									<option value="Policy, Planning and Quality">Policy, Planning and Quality</option>
+									<option value="School of Foundation Studies">School of Foundation Studies</option>
+									<option value="School of Research">School of Research</option>
+									<option value="Swinburne Innovation Malaysia Sdn Bhd">Swinburne Innovation Malaysia Sdn Bhd</option>
+									<option value="Student Engagement">Student Engagement</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				)}
 
 				{userType === 'student' && (
 					<div>
+						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+							<div className="ml-1">
+								<label
+									htmlFor="name"
+									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+									Student ID
+									<span className="text-red-500"> *</span>
+								</label>
+								<input
+									type="text"
+									name="name"
+									id="name"
+									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+									required
+									placeholder="Your answer"
+									style={{ paddingLeft: "5px" }}
+									onChange={event =>
+										setInfo({ ...info, attFormsStaffID: event.target.value })
+									}
+								/>
+							</div>
+						</div>
 						<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 							<div className="ml-1">
 								<label
@@ -538,17 +578,31 @@ export default function AttendanceForm() {
 								Cancel
 							</button>
 						)}
-						<button
-							type="submit"
-							className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-							onClick={() => {
-								if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
-									handleSubmit
-								}
-							}}
-							disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
-							Submit
-						</button>
+						{userType === 'visitor' ? (
+							<button
+								type="submit"
+								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+								onClick={() => {
+									if (info.attFormsStaffName) {
+										handleSubmit
+									}
+								}}
+								disabled={!info.attFormsStaffName}>
+								Submit
+							</button>
+						) : (
+							<button
+								type="submit"
+								className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+								onClick={() => {
+									if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
+										handleSubmit
+									}
+								}}
+								disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
+								Submit
+							</button>
+						)}
 					</div>
 				</Fragment>
 

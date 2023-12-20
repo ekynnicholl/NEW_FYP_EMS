@@ -271,7 +271,7 @@ export default function Homepage() {
 	const [subEventsForAttendance, setSubEventsForAttendance] = useState<subEvents[]>([]);
 	const [searchAttendanceQuery, setSearchAttendanceQuery] = useState("");
 	const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
-	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
+	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
 
 	// This is for the pie chart,
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
@@ -1502,12 +1502,14 @@ export default function Homepage() {
 		// console.log("filter data: ", filteredAttendanceData);
 	}
 
-	const filterAttendanceData = (tab: 'all' | 'staff' | 'student', query: string) => {
+	const filterAttendanceData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
 		let filteredData = attendanceData;
 		if (tab === 'staff') {
 			filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
 		} else if (tab === 'student') {
-			filteredData = attendanceData.filter((item) => !item.attFormsStaffID.startsWith('SS'));
+			filteredData = attendanceData.filter((item) => item.attFormsStaffID !== '0' && !item.attFormsStaffID.startsWith('SS'));
+		} else if (tab === 'visitor') {
+			filteredData = attendanceData.filter((item) => item.attFormsStaffID === '0');
 		}
 
 		// Apply search filter
@@ -2455,6 +2457,13 @@ export default function Homepage() {
 												onClick={() => setActiveTab('student')}
 											>
 												Student
+											</button>
+											<button
+												className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+													}`}
+												onClick={() => setActiveTab('visitor')}
+											>
+												Visitor
 											</button>
 										</div>
 										<div className="hidden lg:block">
