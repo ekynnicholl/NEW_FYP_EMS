@@ -109,11 +109,11 @@ export default function Home() {
 		<div className="h-screen flex flex-row justify-start bg-slate-100 dark:bg-dark_mode_bg">
 			<div className="flex-1">
 				<div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
-					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg">
+					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
 						<div className="text-center">
-							<h1 className="font-bold p-5 text-[20px]">Budget Expenditure/ Faculty/ School/ Unit</h1>
+							<h1 className="font-bold p-5 text-[20px] dark:text-dark_text">Budget Expenditure/ Faculty/ School/ Unit</h1>
 							<div>
-								<label htmlFor="month">Month: </label>
+								<label htmlFor="month" className="text-light dark:text-dark_text">Month: </label>
 								<select
 									className="h-full mr-2 rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 									id="month"
@@ -133,7 +133,7 @@ export default function Home() {
 									<option value="11">November</option>
 									<option value="12">December</option>
 								</select>
-								<label htmlFor="year">Year: </label>
+								<label htmlFor="year" className="text-light dark:text-dark_text">Year: </label>
 								<select
 									className="h-full rounded-md border mr-2 bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 									id="year"
