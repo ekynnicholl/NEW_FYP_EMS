@@ -19,8 +19,8 @@ export default async function ExternalPage() {
 	}
 
 	return (
-		<div className="h-screen w-full grid justify-items-center p-5">
-			<div className="w-full bg-white p-5">
+		<div className="h-screen w-full grid justify-items-center p-5 dark:bg-dark_mode_bg">
+			<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
 				<ExternalTable data={data ? data : []} />
 			</div>
 		</div>

@@ -302,7 +302,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				</button>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="outline" className="ml-auto">
+						<Button variant="outline" className="ml-auto dark:text-dark_text border dark:border-[#363B3D]">
 							Columns <ChevronDown className="ml-2 h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
@@ -327,14 +327,14 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
-			<div className="rounded-md border">
+			<div className="rounded-md border border-[#323638]">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map(header => {
 									return (
-										<TableHead key={header.id} className="text-center bg-gray-100">
+										<TableHead key={header.id} className="text-center bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1] border border-[#323638]">
 											{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
 										</TableHead>
 									);
@@ -345,7 +345,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map(row => (
-								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="text-center">
+								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="text-center dark:bg-dark_mode_card dark:text-dark_text border border-[#323638]">
 									{row.getVisibleCells().map(cell => (
 										<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
 									))}
@@ -353,7 +353,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={columns.length} className="h-24 text-center">
+								<TableCell colSpan={columns.length} className="h-24 text-center dark:text-dark_text">
 									No results.
 								</TableCell>
 							</TableRow>
@@ -361,7 +361,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</TableBody>
 				</Table>
 			</div>
-			<div className="flex items-center justify-end space-x-2 py-4">
+			<div className="flex items-center justify-end space-x-2 py-4 dark:text-dark_text">
 				<div className="space-x-2">
 					<Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
 						Previous
