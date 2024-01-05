@@ -106,7 +106,7 @@ export default function Home() {
 	};
 
 	return (
-		<div className="h-screen flex flex-row justify-start bg-slate-100 dark:bg-dark_mode_bg">
+		<div className="">
 			<div className="flex-1">
 				<div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
 					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
