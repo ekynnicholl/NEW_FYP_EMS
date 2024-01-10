@@ -6,6 +6,7 @@ interface Commits {
     commit: {
         message: string;
         author: {
+            name: string;
             date: string;
         };
     };
@@ -41,7 +42,7 @@ const UpdateLogs: React.FC = () => {
             <ul>
                 {commits.map((commit) => (
                     <li key={commit.sha}>
-                        <p className="font-bold">{new Date(commit.commit.author.date).toLocaleString()}</p>
+                        <p className="font-bold">{new Date(commit.commit.author.date).toLocaleString()} | By: {commit.commit.author.name}</p>
                         <p>{commit.commit.message}</p>
                         <br />
                     </li>
