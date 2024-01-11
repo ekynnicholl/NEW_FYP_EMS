@@ -162,7 +162,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	useEffect(() => {
 		fetchHomepageView();
-		// fetchIsDarkMode();
+		fetchIsDarkMode();
 	}, []);
 
 	const fetchHomepageView = async () => {
@@ -194,16 +194,14 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 		// Set the homepageView based on the fetched value
 		setIsDarkMode(data[0].accIsDarkMode);
+		console.log("allaa" + data[0].accIsDarkMode)
 		useDarkLight.setState({ isDarkMode: data[0].accIsDarkMode });
 
-		// On page load or when changing themes, best to add inline in `head` to avoid FOUC
-		if (isDarkMode) {
+		if (data[0].accIsDarkMode) {
 			document.documentElement.classList.add('dark');
 		} else {
 			document.documentElement.classList.remove('dark');
 		}
-
-		console.log(localStorage.theme);
 	};
 
 	// 0 is vanilla, 1 is dark mode.
@@ -220,6 +218,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		} else {
 			fetchIsDarkMode();
 			onIsDarkModeChange();
+			console.log(status);
 		}
 	};
 
@@ -362,8 +361,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
-
-
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
 		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card max-md:flex-row-reverse">
@@ -432,10 +429,10 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 			<div className="flex space-x-6 pr-2 pl-12 max-md:hidden">
 				<div className="rounded-full p-[6px] bg-slate-100 cursor-pointer mt-[3px] opacity-80 hover:opacity-90 dark:bg-[#1D1F1F]">
-					{!isDarkMode ? (
-						<BiSun className="text-[27px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />
+					{isDarkMode ? (
+						<BiSun className="text-[27px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(false)} />
 					) : (
-						<HiOutlineMoon className="text-[27px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(false)} />
+						<HiOutlineMoon className="text-[27px] text-slate-900 dark:text-dark_text" onClick={() => updateIsDarkMode(true)} />
 					)}
 				</div>
 				<Notification />
