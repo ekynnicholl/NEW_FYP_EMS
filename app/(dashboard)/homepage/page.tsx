@@ -520,8 +520,10 @@ export default function Homepage() {
 			// Filter upcoming events while excluding past events
 			const upcomingEvents = mainEventData.filter(
 				(event) =>
+					!tomorrowEvents.some((tomorrowEvent) => tomorrowEvent.intFID === event.intFID) &&
 					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime()
 			);
+
 			const displayedEvents = upcomingEvents.slice(0, 3);
 			// Set the categorized events
 			setTodayEvents(todayEvents);
