@@ -106,12 +106,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
                         labels: chartData.labels,
                         datasets: [
                             {
-                                label: `Section A(1)`,
-                                data: chartData.data,
-                                backgroundColor: barColors,
-                            },
-                            {
-                                label: `Section A(2)`,
+                                label: ``,
                                 data: chartData.data,
                                 backgroundColor: barColors,
                             },
