@@ -35,14 +35,14 @@ const Suggestion = () => {
         <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-1/2">
             <h1 className="font-bold text-[20px] dark:text-dark_text">Submit your suggestions!</h1>
             <div className="border-t border-gray-300 my-2"></div>
-            <div>
+            <div className="dark:text-dark_text">
                 <p>Your suggestions are invaluable in enhancing our system and making it even better.
                     We appreciate your input and look forward to hearing your ideas!</p>
                 {submissionStatus === 1 && (
                     <div className="">
                         <form onSubmit={handleSubmit}>
                             <div className="mt-3">
-                                <label htmlFor="suggBy" className="block text-gray-700 text-sm lg:text-base font-medium mb-2">Your Name:</label>
+                                <label htmlFor="suggBy" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 dark:text-dark_text">Your Name:</label>
                                 <input
                                     type="text"
                                     id="suggBy"
@@ -50,19 +50,19 @@ const Suggestion = () => {
                                     placeholder="Name"
                                     value={suggBy}
                                     onChange={(e) => setSuggBy(e.target.value)}
-                                    className="w-full border-[1px] p-3 rounded-md focus:outline-none text-sm lg:text-base"
+                                    className="w-full border-[1px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-black-500"
                                     required
                                 />
                             </div>
                             <div className="mt-5">
-                                <label htmlFor="suggDesc" className="block text-gray-700 text-sm lg:text-base font-medium mb-2">Your Suggestion:</label>
+                                <label htmlFor="suggDesc" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 dark:text-dark_text">Your Suggestion:</label>
                                 <textarea
                                     id="suggDesc"
                                     name="suggDesc"
                                     value={suggDesc}
                                     placeholder="I suggest for a feature that can..."
                                     onChange={(e) => setSuggDesc(e.target.value)}
-                                    className="w-full border-[2px] p-3 rounded-md focus:outline-none text-sm lg:text-base"
+                                    className="w-full border-[2px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-black-500"
                                     required
                                 />
                             </div>
