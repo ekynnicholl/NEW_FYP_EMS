@@ -129,13 +129,14 @@ const BreadCrumb = () => {
 	const pathArrayLength = pathArray.length;
 	const lastPath = pathArray[pathArrayLength - 1];
 	const lastPathCapitalized = lastPath.charAt(0).toUpperCase() + lastPath.slice(1);
+	const lastPathSpaced = lastPathCapitalized.replace(/([a-z])([A-Z])/g, '$1 $2');
 
 	return (
 		<div className="flex items-center space-x-2 text-[15px] ml-[11px] text-slate-800 dark:text-dark_text">
 			<Link href="/homepage">Home</Link>
 			<p>/</p>
 			<Link href={pathname} className="underline underline-offset-4 font-medium">
-				{lastPathCapitalized}
+				{lastPathSpaced}
 			</Link>
 		</div>
 	);
@@ -196,11 +197,13 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		useDarkLight.setState({ isDarkMode: data[0].accIsDarkMode });
 
 		// On page load or when changing themes, best to add inline in `head` to avoid FOUC
-		if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-			document.documentElement.classList.add('dark')
+		if (isDarkMode) {
+			document.documentElement.classList.add('dark');
 		} else {
-			document.documentElement.classList.remove('dark')
+			document.documentElement.classList.remove('dark');
 		}
+
+		console.log(localStorage.theme);
 	};
 
 	// 0 is vanilla, 1 is dark mode.

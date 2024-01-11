@@ -119,7 +119,7 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                             y: {
                                 title: {
                                     display: true,
-                                    text: "Total Grand Total",
+                                    text: "Grand Total (RM)",
                                 },
                                 grid: {
                                     display: false,

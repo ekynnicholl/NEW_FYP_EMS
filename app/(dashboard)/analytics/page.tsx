@@ -150,7 +150,7 @@ export default function Home() {
 							selectedYear={parseInt(selectedYear, 10)}
 							onTotalGrandTotalChange={handleTotalGrandTotalChange}
 						/>
-						<div className="text-center p-5 text-[20px] font-bold">
+						<div className="text-center p-5 text-[20px] font-bold dark:text-dark_text">
 							<h2>Total Expenditure for {getMonthText(selectedMonth)}, {selectedYear}: RM{totalGrandTotal}</h2>
 						</div>
 					</div>

@@ -58,13 +58,11 @@ const NavigationBarDesktop = () => {
 
 	// Put fixed if want the navigation bar to scroll together but if I put fixed, the side elements will not change size when navigation bar is open.
 	const wrapper = classNames(
-		"h-full p-5 dark:bg-dark_mode_card", {
+		"h-full p-5 dark:bg-dark_mode_card bg-white border-r dark:border-[#2D3133]", {
 		/* Display the whole navigation IF it is NOT CLOSED OR IT IS HOVERED, */
 		["w-72"]: !closeNav || isHovered,
 
 		["w-21"]: closeNav,
-		["bg-white border-r dark:border-[#2D3133]"]: !isDarkMode,
-		["bg-black-500"]: isDarkMode,
 	});
 
 	const ToggleNavBarClass = classNames(
