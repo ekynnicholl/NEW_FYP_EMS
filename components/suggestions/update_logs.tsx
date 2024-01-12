@@ -29,9 +29,9 @@ const UpdateLogs: React.FC = () => {
         const fetchCommits = async () => {
             try {
                 const response = await axios.get<Commits[]>(
-                    'https://api.github.com/repos/Pinkslushie/NEW_FYP_EMS/commits', {
+                    'https://api.github.com/repos/ekynnicholl/NEW_FYP_EMS/commits', {
                     headers: {
-                        Authorization: `Bearer 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`,
+                        Authorization: `Bearer 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`,
                     },
                     params: {
                         per_page: 100,
