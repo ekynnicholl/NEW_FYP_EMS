@@ -152,97 +152,107 @@ export default function Login() {
 	};
 
 	return (
-		<div className="min-h-screen bg-slate-200 text-gray-900 flex justify-center dark:bg-[#242729]">
-			<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1 lg:flex-row dark:bg-[#1E2021]">
-				<div className="hidden lg:flex flex-1 bg-slate-100 text-center dark:bg-[#1E2021]">
-					<div
-						className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat h-full"
-						style={{
-							backgroundImage: `url(${login_bg.src})`,
-							minHeight: "100%",
-							marginTop: "-3px",
-						}}></div>
-				</div>
+		<div>
+			<div className="min-h-screen bg-slate-200 text-gray-900 flex justify-center dark:bg-[#242729]">
+				<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1 lg:flex-row dark:bg-[#1E2021]">
+					<div className="hidden lg:flex flex-1 bg-slate-100 text-center dark:bg-[#1E2021]">
+						<div
+							className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat h-full"
+							style={{
+								backgroundImage: `url(${login_bg.src})`,
+								minHeight: "100%",
+								marginTop: "-3px",
+							}}></div>
+					</div>
 
-				<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-[80px] lg:-mt-4 dark:bg-dark_mode_card">
-					<Image src={swin_logo} alt="logo" width={260} height={280} className="mb-5 lg:w-[315px] mx-auto" />
-					<h1 className="text-2xl lg:text-3xl font-extrabold mb-6 lg:mb-8 text-center text-slate-800 dark:text-[#D6D2CD]">
-						Sign In
-					</h1>
+					<div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12 flex flex-col justify-center -mt-[80px] lg:-mt-4 dark:bg-dark_mode_card">
+						<Image src={swin_logo} alt="logo" width={260} height={280} className="mb-5 lg:w-[315px] mx-auto" />
+						<h1 className="text-2xl lg:text-3xl font-extrabold mb-6 lg:mb-8 text-center text-slate-800 dark:text-[#D6D2CD]">
+							Sign In
+						</h1>
 
-					<div className="w-full">
-						<form onSubmit={handleLogin} className="max-w-xs mx-auto">
+						<div className="w-full">
+							<form onSubmit={handleLogin} className="max-w-xs mx-auto">
 
-							{/* Email Input*/}
-							<input
-								className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-								type="email"
-								placeholder="Email address"
-								name="email"
-								value={email}
-								onChange={e => setEmail(e.target.value)}
-								required
-							/>
-							<p className="text-red-500 text-left ml-3 lg:ml-2 text-[0.65rem] lg:text-xs -mt-4 lg:-mt-[17px] dark:text-red-600">
-								{errorMessageLogin}
-							</p>
-
-							{/* Password Input*/}
-							<div className="relative">
+								{/* Email Input*/}
 								<input
-									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-									type={showPassword ? "password" : "text"}
-									placeholder="Password"
-									id="password"
-									name="password"
-									autoComplete="off"
-									value={password}
-									onChange={e => setPassword(e.target.value)}
+									className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[20px] mt-1 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+									type="email"
+									placeholder="Email address"
+									name="email"
+									value={email}
+									onChange={e => setEmail(e.target.value)}
 									required
 								/>
-								<button
-									className="btn btn-outline-secondary absolute top-11 right-0 -mt-1 mr-4"
-									type="button"
-									id="password-toggle"
-									onClick={togglePasswordVisibility}>
-									{showPassword ? (
-										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									) : (
-										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									)}
-								</button>
-							</div>
-
-							{/* Forgot Password*/}
-							<div className="-mt-[10px] lg:-mt-3 mr-1">
-								<p className="text-right">
-									<a
-										href="/forgotPassword"
-										className="text-xs lg:text-sm text-slate-700 font-semibold dark:text-dark_text2">
-										Forgot password
-									</a>
+								<p className="text-red-500 text-left ml-3 lg:ml-2 text-[0.65rem] lg:text-xs -mt-4 lg:-mt-[17px] dark:text-red-600">
+									{errorMessageLogin}
 								</p>
-							</div>
 
-							{/* Submit Button */}
-							<button
-								type="submit"
-								className="mt-6 lg:mt-8 tracking-wide font-semibold bg-slate-900 text-gray-100 w-full py-[15px] lg:py-4 rounded-lg hover:bg-slate-950 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:bg-slate-800">
-								<svg
-									className="w-6 h-6 -ml-2"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round">
-									{/* Submit SVG Path */}
-								</svg>
-								<span className="mr-4 text-base lg:text-lg text-slate-200 dark:-mt-[3px]">Login</span>
-							</button>
-						</form>
+								{/* Password Input*/}
+								<div className="relative">
+									<input
+										className="w-full px-8 py-[15px] lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm lg:text-base focus:outline-none focus:border-gray-400 focus:bg-white mb-[10px] lg:mb-4 mt-6 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+										type={showPassword ? "text" : "password"}
+										placeholder="Password"
+										id="password"
+										name="password"
+										autoComplete="off"
+										value={password}
+										onChange={e => setPassword(e.target.value)}
+										required
+									/>
+									<button
+										className="btn btn-outline-secondary absolute top-11 right-0 -mt-1 mr-4"
+										type="button"
+										id="password-toggle"
+										onClick={togglePasswordVisibility}>
+										{showPassword ? (
+											<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+										) : (
+											<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+										)}
+									</button>
+								</div>
+
+								{/* Forgot Password*/}
+								<div className="-mt-[10px] lg:-mt-3 mr-1">
+									<p className="text-right">
+										<a
+											href="/forgotPassword"
+											className="text-xs lg:text-sm text-slate-700 font-semibold dark:text-dark_text2">
+											Forgot Password?
+										</a>
+									</p>
+								</div>
+
+								{/* Submit Button */}
+								<button
+									type="submit"
+									className="mt-6 lg:mt-8 tracking-wide font-semibold bg-slate-900 text-gray-100 w-full py-[15px] lg:py-4 rounded-lg hover:bg-slate-950 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:bg-slate-800">
+									<svg
+										className="w-6 h-6 -ml-2"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round">
+										{/* Submit SVG Path */}
+									</svg>
+									<span className="mr-4 text-base lg:text-lg text-slate-200 dark:-mt-[3px]">Login</span>
+								</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
+			<footer className="text-white bg-black-500 text-center py-[1px]">
+				<p className="text-sm">
+					© 2024 Event Management and Attendance Tracking System. All rights reserved.
+				</p>
+				{/* <p className="text-xs">
+					Owned by Academic Administration Office, Swinburne University of Technology Sarawak.
+				</p> */}
+			</footer>
 		</div>
 	);
 }
