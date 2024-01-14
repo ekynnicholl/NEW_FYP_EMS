@@ -192,11 +192,13 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			return;
 		}
 
-		// Set the homepageView based on the fetched value
-		setIsDarkMode(data[0].accIsDarkMode);
-		useDarkLight.setState({ isDarkMode: data[0].accIsDarkMode });
+		const accIsDarkMode = data?.[0]?.accIsDarkMode ?? false;
 
-		if (data[0].accIsDarkMode) {
+		// Set the homepageView based on the fetched value
+		setIsDarkMode(accIsDarkMode);
+		useDarkLight.setState({ isDarkMode: accIsDarkMode });
+
+		if (accIsDarkMode) {
 			document.documentElement.classList.add('dark');
 		} else {
 			document.documentElement.classList.remove('dark');

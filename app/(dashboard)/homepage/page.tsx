@@ -6400,7 +6400,7 @@ export default function Homepage() {
 
 
 				) : (
-					<div className="w-full bg-slate-100 flex pb-28 dark:bg-dark_mode_bg">
+					<div className={`w-full bg-slate-100 flex pb-28 ${(todayEvents.length === 0 && tomorrowEvents.length === 0 && upcomingEvents.length === 0) ? 'h-screen' : ''} dark:bg-dark_mode_bg`}>
 						<div className="w-full pr-6 bg-slate-100 dark:bg-dark_mode_bg">
 							<div className="w-full bg-slate-100 dark:bg-dark_mode_bg">
 								<div className="ml-1 font-bold text-lg dark:text-dark_text">

@@ -6,6 +6,7 @@ const ToDo = () => {
             <div className="dark:text-dark_text">
                 <ul className="list-disc pl-5">
                     <li> <span className="text-red-500">Combine graphs according to sections based on HR requirement for feedback forms </span> (Requested by Ms. Bibiana).</li>
+                    <li> <span className="text-green-500">Added visitor option for attendance forms</span>.</li>
                     <li>Notifications module for Nominations/ Travelling Form (UI).</li>
                     <li>Geolocation Attendance Tracking.</li>
                     <li>Nominations/ Travelling Form daily reminder to review.</li>
