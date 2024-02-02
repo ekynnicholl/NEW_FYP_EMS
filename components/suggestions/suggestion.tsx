@@ -66,7 +66,7 @@ const Suggestion = () => {
                                     required
                                 />
                             </div>
-                            <div className="mt-5">
+                            <div className="mt-5 text-right">
                                 <button
                                     type="submit"
                                     disabled={!suggBy && !suggDesc}
