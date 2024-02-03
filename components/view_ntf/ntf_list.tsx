@@ -18,6 +18,7 @@ interface Form {
     completion_date: string;
     organiser: string;
     venue: string;
+    formStage: number;
 }
 
 const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredAt }) => {
@@ -39,18 +40,23 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredA
                     const { data, error } = await (isEmail
                         ? supabase
                             .from('external_forms')
-                            .select('id, email, program_title, commencement_date, completion_date, organiser, venue')
+                            .select('id, email, program_title, commencement_date, completion_date, organiser, venue, formStage')
                             .eq('email', searchQuery)
+                            .order('formStage')
                         : supabase
                             .from('external_forms')
-                            .select('id, email, program_title, commencement_date, completion_date, organiser, venue')
-                            .eq('staff_id', searchQuery));
+                            .select('id, email, program_title, commencement_date, completion_date, organiser, venue, formStage')
+                            .eq('staff_id', searchQuery)
+                            .order('formStage'));
 
                     if (error) {
                         console.error('Error querying external_forms:', error);
                         toast.error('Error fetching forms');
                         return;
                     }
+
+                    console.log(data);
+
                     setForms(data || []);
                 }
             } catch (e) {
@@ -119,22 +125,25 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredA
                     <table className="table-auto">
                         <thead>
                             <tr>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
                                     Program Title
                                 </th>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
                                     Commencement Date
                                 </th>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
                                     Completion Date
                                 </th>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
                                     Organiser
                                 </th>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
                                     Venue
                                 </th>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
+                                    Status
+                                </th>
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
                                     Action
                                 </th>
                             </tr>
@@ -156,6 +165,26 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredA
                                     </td>
                                     <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                         {form.venue}
+                                    </td>
+                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        {(() => {
+                                            switch (form.formStage) {
+                                                case 1:
+                                                    return <div className="uppercase text-red-500">Reverted to Staff</div>;
+                                                case 2:
+                                                    return <div className="uppercase text-blue-500">Reviewing by AAO</div>;
+                                                case 3:
+                                                    return <div className="uppercase text-blue-500">Reviewing by HOS/ ADCR/ MGR</div>;
+                                                case 4:
+                                                    return <div className="uppercase text-blue-500">Reviewing by HMU/ Dean</div>;
+                                                case 5:
+                                                    return <div className="uppercase text-green-500">Approved</div>;
+                                                case 6:
+                                                    return <div className="uppercase text-red-500">Rejected</div>;
+                                                default:
+                                                    return <div className="uppercase">Unknown</div>;
+                                            }
+                                        })()}
                                     </td>
                                     <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                         View
