@@ -25,6 +25,7 @@ import { FaWpforms } from "react-icons/fa"
 import { RxHamburgerMenu } from "react-icons/rx"
 import { IoIosArrowBack } from "react-icons/io"
 import { FaRegLightbulb } from "react-icons/fa";
+import { IoSettingsSharp } from "react-icons/io5";
 
 // IMPORT THIS TO USE THE DARK/ LIGHT MODE STATE,
 import darkLightStorage from '@/components/zustand/darkLightStorage';
@@ -37,7 +38,8 @@ const NavLinks = [
 	{ id: 3, name: "Reports", icon: TbReportSearch, link: "/staffReport" },
 	{ id: 4, name: "Chatbot", icon: HiOutlineChatBubbleBottomCenterText, link: "/chatbot" },
 	{ id: 5, name: "Nominations Travelling Form", icon: FaWpforms, link: "/external" },
-	{ id: 6, name: "Suggestions/ Update Logs", icon: FaRegLightbulb, link: "/suggestions" }
+	{ id: 6, name: "Suggestions/ Update Logs", icon: FaRegLightbulb, link: "/suggestions" },
+	{ id: 7, name: "Settings", icon: IoSettingsSharp, link: "/settings" }
 ];
 
 const NavigationBarDesktop = () => {

@@ -3,7 +3,6 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 const RequestNTF = () => {
     const supabase = createClientComponentClient();
