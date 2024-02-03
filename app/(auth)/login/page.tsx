@@ -111,11 +111,6 @@ export default function Login() {
 			return;
 		}
 
-		setCaptcha(null);
-		if (recaptchaRef.current) {
-			recaptchaRef.current.reset();
-		}
-
 		try {
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
 			const userId = user.uid; // Extract user ID
@@ -160,6 +155,11 @@ export default function Login() {
 			} else {
 				console.error("Login error: ", error);
 			}
+		}
+
+		setCaptcha(null);
+		if (recaptchaRef.current) {
+			recaptchaRef.current.reset();
 		}
 	};
 
