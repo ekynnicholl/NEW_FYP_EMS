@@ -18,6 +18,16 @@ type Info = {
 	attFormsFacultyUnit: string;
 };
 
+type FacultyUnit = {
+	attsID: string;
+	attsName: string;
+	attsCategory: number;
+	attsSubcategory: number;
+	attsType: number;
+	attsPosition: number;
+	attsFacultyUnit: number;
+};
+
 export default function AttendanceForm() {
 	const supabase = createClientComponentClient();
 	const [info, setInfo] = useState<Info>({} as Info);
@@ -27,7 +37,7 @@ export default function AttendanceForm() {
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
 	const [showModalFailure, setShowModalFailure] = useState(false);
 
-	// const [attendance_id, setAttendanceID] = useState("");
+	const [attendance_id, setAttendanceID] = useState("");
 
 	// Get the Event ID from the link,
 	const { sub_id } = useParams();
@@ -52,7 +62,7 @@ export default function AttendanceForm() {
 
 			if (attendanceListError || attendanceListData.length == 0) {
 				console.error('Error fetching attendance list data:', attendanceListError);
-				router.push('/notFound');
+				//router.push('/notFound');
 				return;
 			}
 
@@ -98,7 +108,7 @@ export default function AttendanceForm() {
 			if (currentTime < startTimeWindow) {
 				const eventStartTimeString = startTimeWindow.toISOString();
 				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
-				// router.push('/notFound?from=start_att');
+				router.push('/notFound?from=start_att');
 				return;
 			}
 
@@ -191,128 +201,179 @@ export default function AttendanceForm() {
 		window.location.reload();
 	};
 
-	// const [selectedOption, setSelectedOption] = useState('');
+	// Fetch the attendance forms settings,
+	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
+	const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
+	const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
 
-	// const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-	// 	setSelectedOption(event.target.value);
-	// };
+	useEffect(() => {
+		// Function to fetch data from Supabase
+		const fetchFacultyOptions = async () => {
+			try {
+				const { data, error } = await supabase
+					.from('attendance_settings')
+					.select('attsName')
+					.eq('attsType', 1)
+					.order('attsName', { ascending: true });
 
-	// const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
-	// 	const selectedCourse = event.target.value;
-	// 	// Concatenate the faculty/unit and the selected course
-	// 	const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
-	// 	setInfo({ ...info, attFormsFacultyUnit: updatedSelectedOption })
-	// };
+				if (error) {
+					console.error('Error fetching faculty options:', error.message);
+					return;
+				}
 
-	// const getSecondSelectOptions = () => {
-	// 	switch (selectedOption) {
-	// 		case 'Faculty of Business, Design and Arts':
-	// 			return (
-	// 				<>
-	// 					<option value="" disabled>Select Option</option>
-	// 					<optgroup label="Foundation Study">
-	// 						<option value="Swinburne Foundation Studies (Business)">Swinburne Foundation Studies (Business)</option>
-	// 						<option value="Swinburne Foundation Studies (Design)">Swinburne Foundation Studies (Design)</option>
-	// 					</optgroup>
+				// Extracting only the 'attsName' values from the data
+				const facultyNames = data.map((item) => item.attsName);
 
-	// 					<optgroup label="Bachelor Degrees">
-	// 						<option value="Bachelor of Business">Bachelor of Business</option>
-	// 						<option value="Bachelor of Business (Accounting)">Bachelor of Business (Accounting)</option>
-	// 						<option value="Bachelor of Business (Accounting and Finance)">Bachelor of Business (Accounting and Finance)</option>
-	// 						<option value="Bachelor of Business (Finance)">Bachelor of Business (Finance)</option>
-	// 						<option value="Bachelor of Business (Human Resource Management)">Bachelor of Business (Human Resource Management)</option>
-	// 						<option value="Bachelor of Business (International Business)">Bachelor of Business (International Business)</option>
-	// 						<option value="Bachelor of Business (Management)">Bachelor of Business (Management)</option>
-	// 						<option value="Bachelor of Business (Marketing)">Bachelor of Business (Marketing)</option>
-	// 						<option value="Bachelor of Business (Management and Digital Media)">Bachelor of Business (Management and Digital Media)</option>
-	// 						<option value="Bachelor of Design (Multimedia Design)">Bachelor of Design (Multimedia Design)</option>
-	// 					</optgroup>
+				setFacultyOptions(facultyNames);
+			} catch (error) {
+				console.error('Error:', error);
+			}
+		};
 
-	// 					<optgroup label="Professional Short Courses">
-	// 						<option value="Professional Short Courses">Professional Short Courses</option>
-	// 					</optgroup>
+		// Fetch the faculty options when the component mounts
+		fetchFacultyOptions();
+	}, [])
 
-	// 					<optgroup label="Master by Research">
-	// 						<option value="Master of Business (Research)">Master of Business (Research)</option>
-	// 					</optgroup>
+	useEffect(() => {
+		const fetchFacultyStudent = async () => {
+			const { data, error } = await supabase
+				.from('attendance_settings')
+				.select('attsName')
+				.eq('attsType', 0)
+				.order('attsName', { ascending: true });
 
-	// 					<optgroup label="Master by Coursework">
-	// 						<option value="Master of Arts (Teaching English to Speakers of Other Languages)">Master of Arts (Teaching English to Speakers of Other Languages)</option>
-	// 						<option value="Master of Business Administration (International)">Master of Business Administration (International)</option>
-	// 						<option value="Master of Human Resource Management">Master of Human Resource Management</option>
-	// 					</optgroup>
+			if (error) {
+				console.error('Error fetching faculty units:', error);
+				return;
+			}
 
-	// 					<optgroup label="Doctor of Philosophy by Research">
-	// 						<option value="Doctor of Philosophy">Doctor of Philosophy</option>
-	// 					</optgroup>
+			const facultyStudents = data.map((item) => item.attsName);
+			setFacultyStudents(facultyStudents);
+		};
 
-	// 					<optgroup label="Not Mentioned Above">
-	// 						<option value="Other">Other</option>
-	// 					</optgroup>
-	// 				</>
-	// 			);
-	// 		case 'Faculty of Engineering, Computing and Science':
-	// 			return (
-	// 				<>
-	// 					<option value="" disabled>Select Option</option>
-	// 					<optgroup label="Foundation Study">
-	// 						<option value="Swinburne Foundation Studies (Engineering/Science)">Swinburne Foundation Studies (Engineering/Science)</option>
-	// 						<option value="Swinburne Foundation Studies (Information Technology/ Multimedia)">Swinburne Foundation Studies (Information Technology/ Multimedia)</option>
-	// 					</optgroup>
+		fetchFacultyStudent();
+	}, []);
 
-	// 					<optgroup label="Engineering Degrees and Double Degrees">
-	// 						<option value="Bachelor of Engineering (Honours) (Civil)">Bachelor of Engineering (Honours) (Civil)</option>
-	// 						<option value="Bachelor of Engineering (Honours) (Chemical)">Bachelor of Engineering (Honours) (Chemical)</option>
-	// 						<option value="Bachelor of Engineering (Honours) (Electrical and Electronic)">Bachelor of Engineering (Honours) (Electrical and Electronic)</option>
-	// 						<option value="Bachelor of Engineering (Honours) (Mechanical)">Bachelor of Engineering (Honours) (Mechanical)</option>
-	// 						<option value="Bachelor of Quantity Surveying (Honours)">Bachelor of Quantity Surveying (Honours)</option>
-	// 						<option value="Bachelor of Engineering (Honours) (Civil)/ Bachelor of Business">Bachelor of Engineering (Honours) (Civil)/ Bachelor of Business</option>
-	// 						<option value="Bachelor of Engineering (Mechanical) (Honours)/ Bachelor of Business">Bachelor of Engineering (Mechanical) (Honours)/ Bachelor of Business</option>
-	// 						<option value="Bachelor of Engineering (Honours) (Robotics and Mechatronics)/ Bachelor of Computer Science">Bachelor of Engineering (Honours) (Robotics and Mechatronics)/ Bachelor of Computer Science</option>
-	// 					</optgroup>
+	
+	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[];}[]>([]);
+	
+	// retrieve units according categories
+	useEffect(() => {
+		const fetchFacultyUnits = async () => {
+			const { data, error } = await supabase
+				.from('attendance_settings')
+				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
+				.eq('attsType', 2)
+				.order('attsCategory, attsName');
+				// .order('attsCategory, attsPosition');
 
-	// 					<optgroup label="Bachelor Degrees">
-	// 						<option value="Bachelor of Information and Communication Technology">Bachelor of Information and Communication Technology</option>
-	// 						<option value="Bachelor of Computer Science">Bachelor of Computer Science</option>
-	// 						<option value="Bachelor of Engineering (Honours) (Software)">Bachelor of Engineering (Honours) (Software)</option>
-	// 					</optgroup>
+			if (error) {
+				console.error('Error fetching faculty units:', error);
+				return;
+			}
 
-	// 					<optgroup label="Science Degrees">
-	// 						<option value="Bachelor of Science (Biotechnology)">Bachelor of Science (Biotechnology)</option>
-	// 						<option value="Bachelor of Science (Environmental Science)">Bachelor of Science (Environmental Science)</option>
-	// 					</optgroup>
+			if (data) {
+				setFacultyUnits(data);
+				console.log(data);
 
-	// 					<optgroup label="Built Environment">
-	// 						<option value="Master of Construction Management">Master of Construction Management</option>
-	// 						<option value="Graduate Certificate of Construction Management">Graduate Certificate of Construction Management</option>
-	// 					</optgroup>
+				// Extract unique categories and subcategories
+				const uniqueCategories = Array.from(new Set(data
+					.filter(unit => unit.attsCategory > 0)));
 
-	// 					<optgroup label="Master by Coursework">
-	// 						<option value="Master of Information Technology">Master of Information Technology</option>
-	// 					</optgroup>
+				const uniqueSubcategories = Array.from(new Set(data
+					.filter(unit => unit.attsSubcategory > 0)));
 
-	// 					<optgroup label="Master by Research">
-	// 						<option value="Master of Science (Research)">Master of Science (Research)</option>
-	// 						<option value="Master of Engineering (Research)">Master of Engineering (Research)</option>
-	// 					</optgroup>
+				// Create categories array with subcategories
+				const categoriesArray = uniqueCategories.map((category) => ({
+					id: category.attsCategory,
+					category: category.attsPosition,
+					name: category.attsName,
+					subcategories:uniqueSubcategories
+						.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
+						.map(subcategory => ({
+							name: subcategory.attsName,
+							facultyUnit: subcategory.attsFacultyUnit }))
+				}));
 
-	// 					<optgroup label="Doctor of Philosophy by Research">
-	// 						<option value="Doctor of Philosophy">Doctor of Philosophy</option>
-	// 					</optgroup>
 
-	// 					<optgroup label="Not Mentioned Above">
-	// 						<option value="Other">Other</option>
-	// 					</optgroup>
-	// 				</>
-	// 			);
-	// 		default:
-	// 			return (
-	// 				<option value="" disabled>
-	// 					Select Option
-	// 				</option>
-	// 			);
-	// 	}
-	// };
+				setCategories(categoriesArray);
+				console.log(categoriesArray);
+			}
+		};
+
+		fetchFacultyUnits();
+	}, []);
+
+
+	const [selectedOption, setSelectedOption] = useState('');
+
+	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+		setSelectedOption(event.target.value);
+	};
+
+	const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
+		const selectedCourse = event.target.value;
+		// Concatenate the faculty/unit and the selected course
+		const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
+		setInfo({ ...info, attFormsFacultyUnit: updatedSelectedOption })
+	};
+
+	const getSecondSelectOptions = () => {
+		switch (selectedOption) {
+			case 'Faculty of Business, Design and Arts':
+				return (
+					<>						
+						<option value="" disabled>Select Option</option>						
+						{categories
+							.filter(category => category.category === 1 || category.category === 3)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 1 || subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+										<option key={index} value={subcategory.name}>
+											{subcategory.name}
+										</option>
+									))}							
+								</optgroup>
+							))}						
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'Faculty of Engineering, Computing and Science':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 2 || category.category === 3)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 2 || subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+										<option key={index} value={subcategory.name}>
+											{subcategory.name}
+										</option>
+									))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			default:
+				return (
+					<option value="" disabled>
+						Select Option
+					</option>
+				);
+		}		
+	};
 
 	return (
 		<div className="flex flex-col items-center min-h-screen bg-slate-100">
@@ -461,28 +522,16 @@ export default function AttendanceForm() {
 									onChange={event =>
 										setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 									}
+									
 								>
-									<option value="" disabled>Select Faculty/ Unit</option>
-									<option value="Academic Office">Academic Office</option>
-									<option value="Audit and Risk">Audit and Risk</option>
-									<option value="Building Facilities">Building Facilities</option>
-									<option value="Business Development and Liaison">Business Development and Liaison</option>
-									<option value="Campus Services">Campus Services</option>
-									<option value="Director Administration Office">Director Administration Office</option>
-									<option value="Finance and Business Analysis">Finance and Business Analysis</option>
-									<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
-									<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
-									<option value="Human Resources">Human Resources</option>
-									<option value="Information Resources">Information Resources</option>
-									<option value="Information Technology">Information Technology</option>
-									<option value="Learning and Teaching Unit">Learning and Teaching Unit</option>
-									<option value="Market and Student Recruitment">Market and Student Recruitment</option>
-									<option value="PVC & CEO Office">PVC & CEO Office</option>
-									<option value="Policy, Planning and Quality">Policy, Planning and Quality</option>
-									<option value="School of Foundation Studies">School of Foundation Studies</option>
-									<option value="School of Research">School of Research</option>
-									<option value="Swinburne Innovation Malaysia Sdn Bhd">Swinburne Innovation Malaysia Sdn Bhd</option>
-									<option value="Student Engagement">Student Engagement</option>
+									<option value="" disabled>
+										Select Faculty/ Unit
+									</option>
+									{facultyOptions.map((faculty, index) => (
+										<option key={index} value={faculty}>
+											{faculty}
+										</option>
+									))}
 								</select>
 							</div>
 						</div>
@@ -528,18 +577,19 @@ export default function AttendanceForm() {
 									defaultValue=""
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
 									required
-									// onChange={handleSelectChange}
-									onChange={event =>
-										setInfo({ ...info, attFormsFacultyUnit: event.target.value })
-									}
+									onChange={event => {setInfo({ ...info, attFormsFacultyUnit: event.target.value });
+														handleSelectChange(event);}}						
 								>
 									<option value="" disabled>Select Faculty/ Unit</option>
-									<option value="Faculty of Business, Design and Arts">Faculty of Business, Design and Arts</option>
-									<option value="Faculty of Engineering, Computing and Science">Faculty of Engineering, Computing and Science</option>
+									{facultyStudents.map((faculty, index) => (
+										<option key={index} value={faculty}>
+											{faculty}
+										</option>
+									))}
 								</select>
 							</div>
 						</div>
-						{/* {selectedOption &&
+						{selectedOption &&
 							<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 								<div className="ml-1">
 									<label
@@ -561,7 +611,7 @@ export default function AttendanceForm() {
 									</select>
 								</div>
 							</div>
-						} */}
+						}						
 					</div>
 				)}
 
