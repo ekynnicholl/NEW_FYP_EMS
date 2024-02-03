@@ -4,16 +4,24 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import Image from "next/image";
 import ReCAPTCHA from "react-google-recaptcha";
+import toast from 'react-hot-toast';
 
 const RequestNTF = () => {
     const supabase = createClientComponentClient();
     const [submissionStatus, setSubmissionStatus] = useState(false);
     const [staffEmailID, setStaffEmailID] = useState('');
+    const [captcha, setCaptcha] = useState<string | null>();
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+
         if (!staffEmailID) {
             // Empty input,
+            return;
+        }
+
+        if (!captcha) {
+            toast.error('Please verify you are not a robot... Are you... a... robot?!');
             return;
         }
 
@@ -36,6 +44,7 @@ const RequestNTF = () => {
             }
 
             setSubmissionStatus(true);
+            setCaptcha(null);
 
             if (data && data.length > 0) {
                 // Do something when their NTFs exist,
@@ -71,10 +80,13 @@ const RequestNTF = () => {
                                         required
                                     />
                                 </div>
-                                <ReCAPTCHA
-                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-                                />
-                                <div className="mt-5 text-right">
+                                <div className="mt-3">
+                                    <ReCAPTCHA
+                                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                                        onChange={setCaptcha}
+                                    />
+                                </div>
+                                <div className="mt-3 text-right">
                                     <button
                                         type="submit"
                                         disabled={!staffEmailID}

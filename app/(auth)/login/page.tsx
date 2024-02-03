@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import login_bg from "@/public/images/event_manager.png";
 import swin_logo from "@/public/swinburne_logo.png"
@@ -10,8 +10,8 @@ import { auth, provider } from "../../../google_config";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from 'js-cookie';
-// npm install js-cookie
-// npm install --save-dev @types/js-cookie
+import ReCAPTCHA from "react-google-recaptcha";
+import toast from 'react-hot-toast';
 
 type Info = {
 	id: string
@@ -20,6 +20,8 @@ type Info = {
 
 export default function Login() {
 	const [showPassword, setShowPassword] = useState(false);
+	const [captcha, setCaptcha] = useState<string | null>();
+	const recaptchaRef = useRef<ReCAPTCHA>(null);
 
 	// Toggle Password Visibility
 	const togglePasswordVisibility = () => {
@@ -103,6 +105,16 @@ export default function Login() {
 	// Handle Login Button Click
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (!captcha) {
+			toast.error('Please verify you are not a robot... Are you... a... robot?!');
+			return;
+		}
+
+		setCaptcha(null);
+		if (recaptchaRef.current) {
+			recaptchaRef.current.reset();
+		}
 
 		try {
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
@@ -225,10 +237,18 @@ export default function Login() {
 									</p>
 								</div>
 
+								<div className="mt-3">
+									<ReCAPTCHA
+										ref={recaptchaRef}
+										sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+										onChange={setCaptcha}
+									/>
+								</div>
+
 								{/* Submit Button */}
 								<button
 									type="submit"
-									className="mt-6 lg:mt-8 tracking-wide font-semibold bg-slate-900 text-gray-100 w-full py-[15px] lg:py-4 rounded-lg hover:bg-slate-950 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:bg-slate-800">
+									className="mt-3 lg:mt-5 tracking-wide font-semibold bg-slate-900 text-gray-100 w-full py-[15px] lg:py-4 rounded-lg hover:bg-slate-950 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:bg-slate-800">
 									<svg
 										className="w-6 h-6 -ml-2"
 										fill="none"
