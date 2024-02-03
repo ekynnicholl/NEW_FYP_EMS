@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 interface NTFListProps {
     atIdentifier: string | null;
     atCreatedAt: string | null;
+    atExpiredAt: string | null;
 }
 
 interface Form {
@@ -19,7 +20,7 @@ interface Form {
     venue: string;
 }
 
-const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
+const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredAt }) => {
     const supabase = createClientComponentClient();
     const [forms, setForms] = useState<Form[]>([]);
     const [timeRemaining, setTimeRemaining] = useState<string | null>('Processing...');
@@ -28,10 +29,22 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
         const fetchData = async () => {
             try {
                 if (atIdentifier) {
-                    const { data, error } = await supabase
-                        .from('external_forms')
-                        .select('id, email, program_title, commencement_date, completion_date, organiser, venue')
-                        .eq('email', atIdentifier);
+                    const isEmail = /@/.test(atIdentifier);
+                    let searchQuery = atIdentifier;
+
+                    if (!isEmail) {
+                        searchQuery = atIdentifier.startsWith('SS') ? atIdentifier : `SS${atIdentifier}`;
+                    }
+
+                    const { data, error } = await (isEmail
+                        ? supabase
+                            .from('external_forms')
+                            .select('id, email, program_title, commencement_date, completion_date, organiser, venue')
+                            .eq('email', searchQuery)
+                        : supabase
+                            .from('external_forms')
+                            .select('id, email, program_title, commencement_date, completion_date, organiser, venue')
+                            .eq('staff_id', searchQuery));
 
                     if (error) {
                         console.error('Error querying external_forms:', error);
@@ -49,13 +62,13 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
     }, [atIdentifier]);
 
     useEffect(() => {
-        if (atCreatedAt) {
-            const expirationTime = new Date(atCreatedAt);
-            expirationTime.setHours(expirationTime.getHours() + 4);
+        if (atCreatedAt && atExpiredAt) {
+            const createdAtTime = new Date(atCreatedAt);
+            const expiredAtTime = new Date(atExpiredAt);
 
             const interval = setInterval(() => {
                 const now = new Date();
-                const remaining = expirationTime.getTime() - now.getTime();
+                const remaining = expiredAtTime.getTime() - now.getTime();
 
                 if (remaining > 0) {
                     const hours = Math.floor(remaining / (60 * 60 * 1000));
@@ -71,7 +84,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
 
             return () => clearInterval(interval);
         }
-    }, [atCreatedAt]);
+    }, [atCreatedAt, atExpiredAt]);
 
     const formattedDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -91,7 +104,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
     return (
         <div>
             <div className="text-justify pr-5">
-                <p className="text-[20px] font-bold">Past Nominations/ Travelling Forms</p>
+                <p className="text-[20px] font-bold">Past Nominations/ Travelling Forms - {atIdentifier}</p>
                 <p className="text-sm italic mt-1">Take note that your access tokens have a life span of 4 hours. After 4 hours, you will need to request for a new access token to be able to access this list.</p>
             </div>
 
@@ -121,6 +134,9 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
                                 <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
                                     Venue
                                 </th>
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -140,6 +156,9 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
                                     </td>
                                     <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                         {form.venue}
+                                    </td>
+                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        View
                                     </td>
                                 </tr>
                             ))}

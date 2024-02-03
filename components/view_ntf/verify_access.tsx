@@ -19,6 +19,7 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
 
     const [atIdentifier, setAtIdentifier] = useState<string | null>(null);
     const [atCreatedAt, setAtCreatedAt] = useState<string | null>(null);
+    const [atExpiredAt, setAtExpiredAt] = useState<string | null>(null);
 
     const isValidUUID = (uuid: string | null) => {
         if (!uuid) return false;
@@ -66,10 +67,20 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
             }
 
             if (data && data.length > 0) {
-                setVerifyStatus(true);
-                setAtIdentifier(data[0].atIdentifier);
-                setAtCreatedAt(data[0].atCreatedAt);
-                toast.success('Identity confirmed!');
+                const atExpiredAt = new Date(data[0].atExpiredAt);
+                const isExpired = atExpiredAt < new Date();
+
+                if (isExpired) {
+                    toast.error("The access token you have entered is either expired or doesn't exist. Please ensure you've entered it correctly or request for a new access token.");
+                } else {
+                    setVerifyStatus(true);
+
+                    setAtIdentifier(data[0].atIdentifier);
+                    setAtCreatedAt(data[0].atCreatedAt);
+                    setAtExpiredAt(data[0].atExpiredAt);
+
+                    toast.success('Identity confirmed!');
+                }
             } else {
                 toast.error("The access token you have entered is either expired or doesn't exist. Please ensure you've entered it correctly or request for a new access token.");
             }
@@ -77,6 +88,24 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
             console.error('Error in handleSubmit:', e);
         }
     };
+
+    const updateExpiration = async () => {
+        try {
+            await supabase
+                .from('access_tokens')
+                .update({ atExpiredAt: new Date().toISOString() })
+                .eq('atID', token);
+
+            setAtExpiredAt(new Date().toISOString());
+            toast.success("Access token has been disabled. You won't be able to use this access token anymore.");
+        } catch (error) {
+            // console.error('Error updating expiration:', error);
+            toast.error('Access token failed to be disabled. Please contact the webmaster.');
+        }
+    };
+
+    const isExpired = atExpiredAt && new Date() > new Date(atExpiredAt);
+
     return (
         <div className="flex items-center justify-center h-screen">
             <div className="p-8 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
@@ -119,7 +148,19 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
                         </form>
                     </div>
                 ) : (
-                    <NTFList atIdentifier={atIdentifier} atCreatedAt={atCreatedAt} />
+                    <div>
+                        <NTFList atIdentifier={atIdentifier} atCreatedAt={atCreatedAt} atExpiredAt={atExpiredAt} />
+                        <div className="mt-3 text-right">
+                            {!isExpired && (
+                                <button
+                                    onClick={updateExpiration}
+                                    className="bg-red-500 text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-sm lg:text-base"
+                                >
+                                    Disable Access Token
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

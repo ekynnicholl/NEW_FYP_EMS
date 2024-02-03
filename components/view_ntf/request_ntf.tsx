@@ -47,7 +47,24 @@ const RequestNTF = () => {
             setCaptcha(null);
 
             if (data && data.length > 0) {
-                // Do something when their NTFs exist,
+                const currentDateTime = new Date();
+                const newTime = new Date(currentDateTime.getTime() + 4 * 60 * 60 * 1000);
+
+                const { data: insertData, error: insertError } = await supabase
+                    .from('access_tokens')
+                    .insert([
+                        {
+                            atUsage: "Nominations/ Travelling Form",
+                            atIdentifier: staffEmailID,
+                            atExpiredAt: newTime,
+                        },
+                    ]);
+
+                if (insertError) {
+                    // console.error('Error inserting into access_tokens:', insertError);
+                } else {
+                    // console.log('New row inserted into access_tokens:', insertData);
+                }
             } else {
                 // Don't exist,
             }
