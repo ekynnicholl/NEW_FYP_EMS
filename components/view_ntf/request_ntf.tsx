@@ -3,6 +3,7 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import Image from "next/image";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const RequestNTF = () => {
     const supabase = createClientComponentClient();
@@ -70,6 +71,9 @@ const RequestNTF = () => {
                                         required
                                     />
                                 </div>
+                                <ReCAPTCHA
+                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                                />
                                 <div className="mt-5 text-right">
                                     <button
                                         type="submit"

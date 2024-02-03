@@ -65,6 +65,7 @@
 		"react-datepicker": "^4.21.0",
 		"react-day-picker": "^8.8.2",
 		"react-dom": "18.2.0",
+		"react-google-recaptcha": "^3.1.0",
 		"react-hook-form": "^7.46.2",
 		"react-hot-toast": "^2.4.1",
 		"react-icons": "^4.11.0",
@@ -81,6 +82,7 @@
 	"devDependencies": {
 		"@shrutibalasa/tailwind-grid-auto-fit": "^1.1.0",
 		"@types/js-cookie": "^3.0.4",
+		"@types/react-google-recaptcha": "^2.1.9",
 		"@types/react-signature-canvas": "^1.0.4",
 		"encoding": "^0.1.13",
 		"tailwindcss-animate": "^1.0.7",
