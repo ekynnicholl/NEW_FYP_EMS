@@ -38,13 +38,10 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt }) => {
                         toast.error('Error fetching forms');
                         return;
                     }
-
-                    console.log(data);
-
                     setForms(data || []);
                 }
             } catch (e) {
-                console.error('Error in fetchData:', e);
+                // console.error('Error in fetchData:', e);
             }
         };
 
