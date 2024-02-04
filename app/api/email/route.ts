@@ -101,7 +101,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
                     <p class="no-p-m">We regret to inform you that your Nominations/ Travelling Form has been rejected. You may review the PDF version of it here: </p>
-                    <p class="no-p-m">${link}</p>
+                    <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     ${rejectMessage}
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
@@ -146,7 +146,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h3 class="no-p-m">Congratulations! </h3>
                     <br/>
                     <p class="no-p-m">Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here: </p>
-                    <p class="no-p-m">${link}</p>
+                    <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
@@ -171,7 +171,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields2 && optionalFields2.trim() !== '') {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></p>
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><a href="${link}/?secKey=${optionalFields2}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></a></p>
                 <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
         }
@@ -245,7 +245,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     approved or rejected. If you have any questions, please do not hesitate to contact us at ...@...</p>
                     <br/>
                     <p class="no-p-m">You may review your submitted form here:</p>
-                    ${link}
+                    <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     <br/>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>

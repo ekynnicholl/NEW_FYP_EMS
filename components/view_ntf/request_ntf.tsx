@@ -1,10 +1,11 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import ReCAPTCHA from "react-google-recaptcha";
 import toast from 'react-hot-toast';
+import { sendNTFAccess } from "@/lib/api";
 
 const RequestNTF = () => {
     const supabase = createClientComponentClient();
@@ -39,7 +40,7 @@ const RequestNTF = () => {
                 .ilike(isEmail ? 'email' : 'staff_id', `${searchQuery}`);
 
             if (error) {
-                // console.error('Error querying external_forms:', error);
+                toast.error('Technical error. Please contact the developers of the website...');
                 return;
             }
 
@@ -47,29 +48,47 @@ const RequestNTF = () => {
             setCaptcha(null);
 
             if (data && data.length > 0) {
-                const currentDateTime = new Date();
-                const newTime = new Date(currentDateTime.getTime() + 4 * 60 * 60 * 1000);
+                const matchingRecord = data[0];
 
-                const { data: insertData, error: insertError } = await supabase
-                    .from('access_tokens')
-                    .insert([
-                        {
-                            atUsage: "Nominations/ Travelling Form",
-                            atIdentifier: staffEmailID,
-                            atExpiredAt: newTime,
-                        },
-                    ]);
+                if (/@/.test(matchingRecord.email)) {
+                    // The matching record has a valid email address
+                    const currentDateTime = new Date();
+                    const newTime = new Date(currentDateTime.getTime() + 4 * 60 * 60 * 1000);
 
-                if (insertError) {
-                    // console.error('Error inserting into access_tokens:', insertError);
+                    const { data: insertData, error: insertError } = await supabase
+                        .from('access_tokens')
+                        .insert([
+                            {
+                                atUsage: "Nominations/ Travelling Form",
+                                atIdentifier: matchingRecord.email,
+                                atExpiredAt: newTime,
+                            },
+                        ])
+                        .select();
+
+                    if (insertError) {
+                        // console.error('Error inserting into access_tokens:', insertError);
+                    } else {
+                        // Successfully inserted, now fetch the inserted row
+                        const { data: insertedRow, error: fetchError } = await supabase
+                            .from('access_tokens')
+                            .select('*')
+                            .eq('atID', insertData[0].atID);
+
+                        if (fetchError) {
+                            // console.error('Error fetching inserted row from access_tokens:', fetchError);
+                        } else {
+                            sendNTFAccess(insertedRow);
+                        }
+                    }
                 } else {
-                    // console.log('New row inserted into access_tokens:', insertData);
+                    // console.error('The fetched record does not have a valid email address.');
                 }
             } else {
-                // Don't exist,
+                // console.error('No matching record found in external_forms.');
             }
         } catch (e) {
-            console.error('Error in handleSubmit:', e);
+            // console.error('Error in handleSubmit:', e);
         }
     };
 

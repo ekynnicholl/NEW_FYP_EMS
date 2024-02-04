@@ -9,7 +9,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 export default function Home() {
     const supabase = createClientComponentClient();
     const searchParams = useSearchParams()
-    const search = searchParams.get('tokenid')
+    const tokenID = searchParams.get('tokenid')
+    const pToken = searchParams.get('ptoken')
     const [isValidToken, setIsValidToken] = useState(false);
 
     const isValidUUID = (uuid: string | null) => {
@@ -21,11 +22,11 @@ export default function Home() {
 
     const checkTokenValidity = async () => {
         try {
-            if (search) {
+            if (tokenID) {
                 const { data, error } = await supabase
                     .from('access_tokens')
                     .select('atID')
-                    .eq('atID', search);
+                    .eq('atID', tokenID);
 
                 if (error) {
                     // console.error('Error checking token validity:', error);
@@ -44,7 +45,7 @@ export default function Home() {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (isValidUUID(search)) {
+            if (isValidUUID(tokenID)) {
                 await checkTokenValidity();
                 if (!isValidToken) {
                     // console.log('Token is not valid.');
@@ -55,7 +56,7 @@ export default function Home() {
         };
 
         fetchData();
-    }, [search]);
+    }, [tokenID]);
 
     return (
         <div className="">
@@ -64,7 +65,7 @@ export default function Home() {
                     {!isValidToken ? (
                         <RequestNTF />
                     ) : (
-                        <VerifyAccess token={search || ''} />
+                        <VerifyAccess token={tokenID || ''} ptoken={pToken || ''} />
                     )}
                 </div>
             </div>

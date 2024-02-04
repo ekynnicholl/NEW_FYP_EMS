@@ -8,11 +8,12 @@ import NTFList from "@/components/view_ntf/ntf_list";
 
 interface VerifyAccessProps {
     token: string;
+    ptoken: string;
 }
 
-const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
+const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
     const supabase = createClientComponentClient();
-    const [accessToken, setAccessToken] = useState('');
+    const [accessToken, setAccessToken] = useState<string>(ptoken || '');
     const [verifyStatus, setVerifyStatus] = useState(false);
     const [captcha, setCaptcha] = useState<string | null>();
     const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -20,6 +21,7 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
     const [atIdentifier, setAtIdentifier] = useState<string | null>(null);
     const [atCreatedAt, setAtCreatedAt] = useState<string | null>(null);
     const [atExpiredAt, setAtExpiredAt] = useState<string | null>(null);
+    const [expiredClicked, setExpiredClicked] = useState<boolean>(false);
 
     const isValidUUID = (uuid: string | null) => {
         if (!uuid) return false;
@@ -97,6 +99,7 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
                 .eq('atID', token);
 
             setAtExpiredAt(new Date().toISOString());
+            setExpiredClicked(true);
             toast.success("Access token has been disabled. You won't be able to use this access token anymore.");
         } catch (error) {
             // console.error('Error updating expiration:', error);
@@ -154,7 +157,9 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token }) => {
                             {!isExpired && (
                                 <button
                                     onClick={updateExpiration}
-                                    className="bg-red-500 text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-sm lg:text-base"
+                                    disabled={expiredClicked}
+                                    className={`${expiredClicked ? 'bg-gray-500 cursor-not-allowed' : 'bg-red-500'
+                                        } text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-sm lg:text-base`}
                                 >
                                     Disable Access Token
                                 </button>
