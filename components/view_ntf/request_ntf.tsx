@@ -93,8 +93,8 @@ const RequestNTF = () => {
     };
 
     return (
-        <div className="flex items-center justify-center h-screen">
-            <div className="p-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-max w-11/12">
                 {!submissionStatus ? (
                     <div className="p-5">
                         <div className="text-center pl-5 pr-5">
@@ -146,7 +146,7 @@ const RequestNTF = () => {
                             <h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
                                 Please check your email.
                             </h3>
-                            <div className="w-96">
+                            <div className="lg:w-96">
                                 <p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-justify">
                                     If there are records of any Nominations/ Travelling Forms for the given staff ID/ email, we will send you a link to the said email. <br /> <br />Please check your junk/ spam folder as well.
                                 </p>

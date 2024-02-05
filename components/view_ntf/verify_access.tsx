@@ -111,9 +111,9 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
 
     return (
         <div className="flex items-center justify-center h-screen">
-            <div className="p-8 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+            <div className="lg:p-8 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-max w-11/12">
                 {!verifyStatus ? (
-                    <div>
+                    <div className="p-5">
                         <div className="text-justify pr-5 max-w-md">
                             <p className="text-[20px] font-bold">Attention!</p>
                             <p>Please enter the access token that was sent to your email.</p>
@@ -151,7 +151,7 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
                         </form>
                     </div>
                 ) : (
-                    <div>
+                    <div className="p-5">
                         <NTFList atIdentifier={atIdentifier} atCreatedAt={atCreatedAt} atExpiredAt={atExpiredAt} />
                         <div className="mt-3 text-right">
                             {!isExpired && (
