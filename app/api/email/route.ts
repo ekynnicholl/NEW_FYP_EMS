@@ -284,7 +284,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
 export async function POST(request: Request) {
     try {
-        const requestData = await request.json();
+        const tempData = await request.json();
+        const requestData = tempData[0];
 
         const formStage = requestData.formStage;
         const formID = requestData.id;
@@ -292,19 +293,22 @@ export async function POST(request: Request) {
         const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
         const verificationEmail = requestData.verification_email;
         const approvalEmail = requestData.approval_email;
-        console.log("Debugging Form Stage: " + formStage);
 
-        console.log('Received request data:', requestData);
+        // Debugging statements,
+        // console.log("Debugging Form Stage: " + formStage);
+        // console.log('Received request data:', requestData);
 
         if (formStage === 2) {
             const recipients = ['fypemsmaster369@gmail.com', staffEmail];
             const formIDs = [1, 5];
-            console.log("Started sending email process: ")
+            // Debugging statements,
+            // console.log("Started sending email process: ")
 
             for (let i = 0; i < recipients.length; i++) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipients[i];
-                console.log("Sending email: " + recipients[i])
+                // Debugging statements,
+                // console.log("Sending email: " + recipients[i])
 
                 const formIDForRecipient = formIDs[i];
 
@@ -318,7 +322,8 @@ export async function POST(request: Request) {
         } else if (formStage === 3) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = verificationEmail;
-            console.log("Started sending email process: " + verificationEmail)
+            // Debugging statements,
+            // console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
@@ -329,7 +334,8 @@ export async function POST(request: Request) {
         } else if (formStage === 4) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = approvalEmail;
-            console.log("Started sending email process: " + approvalEmail)
+            // Debugging statements,
+            // console.log("Started sending email process: " + approvalEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",
@@ -351,7 +357,8 @@ export async function POST(request: Request) {
         } else if (formStage === 1) {
             const mailOptionsCopy = { ...mailOptions };
             mailOptionsCopy.to = staffEmail;
-            console.log("Debugging reverted comment: " + requestData.revertComment);
+            // Debugging statements,
+            // console.log("Debugging reverted comment: " + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "[NTF] Nominations Travelling Form",

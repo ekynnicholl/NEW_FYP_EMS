@@ -46,9 +46,11 @@ export default function ExternalForm() {
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
-	const [externalForm, setExternalForm] = useState<any>({
-		id: "",
-	});
+
+	// Can be removed,
+	// const [externalForm, setExternalForm] = useState<any>({
+	// 	id: "",
+	// });
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -130,12 +132,13 @@ export default function ExternalForm() {
 		},
 	});
 
-	useEffect(() => {
-		if (externalForm.id != "" || externalForm.id != null) {
-			console.log("Email has been sent out!");
-			sendContactForm(externalForm);
-		}
-	}, [externalForm.id]);
+	// Can be removed,
+	// useEffect(() => {
+	// 	if (externalForm.id != "" || externalForm.id != null) {
+	// 		console.log("Email has been sent out!");
+	// 		sendContactForm(externalForm);
+	// 	}
+	// }, [externalForm.id]);
 
 	const checkFormStatus = () => {
 		setOpen(false);
@@ -162,6 +165,7 @@ export default function ExternalForm() {
 
 	const [commencementDate, setCommencementDate] = useState<Date>();
 	const [checkInDate, setCheckInDate] = useState<Date>();
+
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
 		console.log(values);
@@ -207,11 +211,23 @@ export default function ExternalForm() {
 			console.log(error);
 			toast.error("Error submitting form");
 		} else {
-			console.log(data);
-			setExternalForm({ ...values, id: data[0].id });
-			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-			setFormIsSuccess(true);
+			// console.log(data);
+			// setExternalForm({ ...values, id: data[0].id });
 
+			const { data: fetchedForms, error: fetchedError } = await supabase
+				.from("external_forms")
+				.select("*")
+				.eq("id", data[0].id)
+
+			console.log(`Fetched forms ${fetchedForms}`);
+
+			if (fetchedError) {
+				// console.log(fetchedError);
+			} else {
+				sendContactForm(fetchedForms);
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+				setFormIsSuccess(true);
+			}
 			router.refresh();
 			// window.location.reload();
 		}
