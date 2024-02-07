@@ -298,7 +298,7 @@ export default function Homepage() {
 					new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }),
 				)
 				.order("intFEventStartDate", { ascending: true })
-				.range(0, 5)
+				// .range(0, 5)
 				.select();
 
 			if (internalError) {
