@@ -102,7 +102,7 @@ export default function Home() {
 		const { data: subEvents, error: subEventsError } = await supabase
 			.from("sub_events")
 			.select("*")
-			.in("sub_eventsID", event_id);
+			.in("sub_eventsID", event_id)
 
 		if (subEventsError) {
 			console.error("Error fetching sub_events:", subEventsError);
@@ -112,20 +112,24 @@ export default function Home() {
 		setSubEventsAttended(subEvents || []);
 
 		const mainEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsMainID);
-
-		//extract the main event title
+		
+		//extract the main event title		
 		const { data: mainEvent, error: mainEventError } = await supabase
 			.from("internal_events")
 			.select("intFEventName")
 			.in("intFID", mainEventIDs)
+			.order("intFEventStartDate");
 
 		if (mainEventError) {
 			console.error("Error fetching sub_events:", mainEventError);
 			return;
 		}
 
-		console.log("main event: ", mainEvent);
-		setMainEventAttended(mainEvent || []);
+		console.log(mainEvent);
+		setMainEventAttended((prevMainEvents) => [
+            ...prevMainEvents,
+            ...(mainEvent || []),
+        ]);
 	}
 
 	//display the sub event attended modal
@@ -139,7 +143,7 @@ export default function Home() {
 		const fetchInfos = async () => {
 			const { data: staffData, error: attendedEventError } = await supabase
 				.from("attendance_forms")
-				.select("*");
+				.select("*")
 
 			if (attendedEventError) {
 				console.error("Error fetching staff attendance data:", attendedEventError);
@@ -305,6 +309,63 @@ export default function Home() {
 		}
 		return 0;
 	});
+
+	// Calculate the start and end indices for the current page
+    const startIndex = (currentPage - 1) * entriesToShow;
+    const endIndex = startIndex + entriesToShow;
+
+    const currentData = aggregatedInfo.slice(startIndex, endIndex);
+
+    // Handle page change
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= Math.ceil(aggregatedInfo.length / entriesToShow)) {
+            setCurrentPage(page);
+        }
+    };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [entriesToShow]);
+
+    const pageCount = Math.ceil(aggregatedInfo.length / entriesToShow);
+
+    const generatePageNumbers = (): number[] => {
+        const displayedPages = 5;
+        const halfDisplayed = Math.floor(displayedPages / 2);
+
+        if (pageCount <= displayedPages) {
+            return Array.from({ length: pageCount }, (_, index) => index + 1);
+        }
+
+        const start = Math.max(currentPage - halfDisplayed, 1);
+        const end = Math.min(start + displayedPages - 1, pageCount);
+
+        const pages: number[] = [];
+
+        if (start > 1) {
+            pages.push(1);
+            if (start > 2) {
+                pages.push(-1);
+            }
+        }
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        if (end < pageCount) {
+            if (end < pageCount - 1) {
+                pages.push(-1);
+            }
+            pages.push(pageCount);
+        }
+
+        return pages.slice(0, displayedPages);
+    };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [aggregatedInfo])
 
 	return (
 		<div>
@@ -589,20 +650,12 @@ export default function Home() {
 												1-{entriesToShow} of {aggregatedInfo?.length} entries
 											</span>
 
-											<div className="flex">
-												{/* Skip To First Page Button */}
+											<div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
 												<button
-													type="button"
-													className="py-2 px-1 ml-8"
-													onClick={handleSkipToFirstPage}
+													className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													onClick={() => handlePageChange(1)}
 													disabled={currentPage === 1}
-													style={{
-														cursor:
-															currentPage === 1
-																? "not-allowed"
-																: "pointer",
-														opacity: currentPage === 1 ? 0.5 : 1,
-													}}>
+												>
 													<img
 														src={skipLeft.src}
 														alt=""
@@ -610,16 +663,11 @@ export default function Home() {
 														className="lg:w-[22px]"
 													/>
 												</button>
-
-												{/* Arrow Previous Page Button */}
 												<button
-													type="button"
-													className="py-2 px-1 ml-5"
-													onClick={handleArrowLeftClick}
+													onClick={() => handlePageChange(currentPage - 1)}
 													disabled={currentPage === 1}
-													style={{
-														opacity: currentPage === 1 ? 0.5 : 1,
-													}}>
+													className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+												>
 													<img
 														src={arrowLeft.src}
 														alt=""
@@ -628,50 +676,22 @@ export default function Home() {
 													/>
 												</button>
 
-												{/* Pagination Buttons */}
-												<div className="flex">
-													{[1, 2, 3, 4, 5].map(pageNumber => (
-														<button
-															type="button"
-															className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-																? "text-slate-100 bg-slate-900"
-																: "text-slate-800 bg-slate-200"
-																}`}
-															key={pageNumber}
-															onClick={() => {
-																if (
-																	pageNumber <=
-																	Math.ceil(
-																		aggregatedInfo.length /
-																		entriesToShow,
-																	)
-																) {
-																	handlePageClick(pageNumber);
-																}
-															}}>
-															{pageNumber}
-														</button>
-													))}
-												</div>
+												{generatePageNumbers().map((pageNumber, index) => (
+													<button
+														key={index}
+														className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+															}`}
+														onClick={() => handlePageChange(pageNumber)}
+													>
+														{pageNumber === -1 ? '...' : pageNumber}
+													</button>
+												))}
 
-												{/* Arrow Next Page Button */}
 												<button
-													type="button"
-													className="py-2 px-1 ml-5"
-													onClick={handleArrowRightClick}
-													disabled={
-														currentPage ===
-														Math.ceil(aggregatedInfo?.length / entriesToShow)
-													}
-													style={{
-														opacity:
-															currentPage ===
-																Math.ceil(
-																	aggregatedInfo?.length / entriesToShow,
-																)
-																? 0.5
-																: 1,
-													}}>
+													onClick={() => handlePageChange(currentPage + 1)}
+													disabled={currentPage === pageCount}
+													className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+												>
 													<img
 														src={arrowRight.src}
 														alt=""
@@ -679,16 +699,11 @@ export default function Home() {
 														className="lg:w-[13px]"
 													/>
 												</button>
-
-												{/* Skip To Last Page Button */}
 												<button
-													type="button"
-													className={`py-2 px-1 ml-5 ${currentPage ===
-														Math.ceil(aggregatedInfo?.length / entriesToShow)
-														? "pointer-events-none opacity-50"
-														: ""
-														}`}
-													onClick={handleSkipToLastPage}>
+													className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													onClick={() => handlePageChange(pageCount)}
+													disabled={currentPage === pageCount}
+												>
 													<img
 														src={skipRight.src}
 														alt=""
@@ -846,34 +861,35 @@ export default function Home() {
 									{subEventsAttended
 										.map((subEvent, index) => (
 											<tr className="flex"
-												key={subEvent.sub_eventsID}
+												key={index}
 												onClick={() => setShowModal(true)}>
-												<td className="flex-1 pl-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<div className="items-center">
-														<div className="ml-[14px]">
-															<p className="text-gray-900 whitespace-nowrap">
-																{(currentPage - 1) * entriesToShow + index + 1}
-															</p>
-														</div>
-													</div>
-												</td>
-												<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-nowrap ml-4">
+												
+												<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
+                                                    <div>
+                                                        <div className="ml-[2px]">
+                                                            <p className="text-gray-900">
+                                                                {index + 1}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="flex-1 py-5 text-xs lg:text-md -ml-24">
+                                                    <p className="text-gray-900">
 														{mainEventAttended[index]?.intFEventName || "N/A"}
-													</p>
-												</td>
+                                                    </p>
+                                                </td>
 
-												<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-nowrap ml-3">
+                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md ">
+                                                    <p className="text-gray-900 ml-1">
 														{subEvent.sub_eventsName}
-													</p>
-												</td>
+                                                    </p>
+                                                </td>
 
-												<td className="flex-1 pr-[120px] py-5 border-b border-gray-200 bg-white text-xs lg:text-sm">
-													<p className="text-gray-900 whitespace-nowrap ml-1">
+                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
+                                                    <p className="text-gray-900 -ml-2">
 														{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-													</p>
-												</td>
+                                                    </p>
+                                                </td>                                            
 											</tr>
 										))}
 								</tbody>
@@ -890,7 +906,7 @@ export default function Home() {
 														No.
 													</th>
 													<td className="float-right flex text-xs mt-3 px-4">
-														{(currentPage - 1) * entriesToShow + index + 1}
+														{index + 1}
 													</td>
 												</tr>
 												<tr className="border-b-2 border-gray-200 bg-gray-100">
