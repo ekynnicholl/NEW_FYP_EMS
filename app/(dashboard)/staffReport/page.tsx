@@ -74,19 +74,19 @@ export default function Home() {
 
 			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 			const groupedData = staffData.reduce((result, form) => {
-				const staffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
+				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
 				
-				if (!result[staffID]) {
-					result[staffID] = {
-						staffID,
+				if (!result[uniqueStaffID]) {
+					result[uniqueStaffID] = {
+						staffID: form.attFormsStaffID,
 						staffName: form.attFormsStaffName,
 						staffFaculty: form.attFormsFacultyUnit,
 						totalSubEvents: 0,
 						eventsAttended: [],
 					};
 				}
-				result[staffID].totalSubEvents++;
-				result[staffID].eventsAttended.push(form.attFSubEventID);
+				result[uniqueStaffID].totalSubEvents++;
+				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
 				
 				return result;
 
@@ -149,19 +149,19 @@ export default function Home() {
 
 			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 			const groupedData = staffData.reduce((result, form) => {
-				const staffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
+				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
 				
-				if (!result[staffID]) {
-					result[staffID] = {
-						staffID,
+				if (!result[uniqueStaffID]) {
+					result[uniqueStaffID] = {
+						staffID: form.attFormsStaffID,
 						staffName: form.attFormsStaffName,
 						staffFaculty: form.attFormsFacultyUnit,
 						totalSubEvents: 0,
 						eventsAttended: [],
 					};
 				}
-				result[staffID].totalSubEvents++;
-				result[staffID].eventsAttended.push(form.attFSubEventID);
+				result[uniqueStaffID].totalSubEvents++;
+				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
 				
 				return result;
 
