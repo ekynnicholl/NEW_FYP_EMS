@@ -79,10 +79,10 @@ const NotificationsPage = () => {
                         <h1 className="text-xl font-bold">Notifications</h1>
                         <div className="border-t border-gray-300 my-2"></div>
                         {notifications.map((notification) => (
-                            <div>
+                            <div key={notification.notifID}>
                                 <a href={notification.notifLink} target="_blank">
                                     <div className="w-full p-5 cursor-pointer hover:bg-gray-100 rounded-md">
-                                        <div key={notification.notifID}>
+                                        <div>
                                             <p><span className="font-bold">[{notification.notifType}]</span> {notification.notifDesc}</p>
                                         </div>
                                         <div className="text-gray-400 text-xs flex justify-start pt-2">
