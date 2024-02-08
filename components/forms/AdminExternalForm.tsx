@@ -46,6 +46,7 @@ import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
 
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
+	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
@@ -77,12 +78,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// // Fetch the current stage of the form to capture whether the stage has changed to submit email,
 	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
 
-	useEffect(() => {
-		if (externalForm.formStage != fetchedFormStage) {
-			console.log(externalForm);
-			sendContactForm(externalForm);
-		}
-	}, [externalForm.formStage]);
+	// useEffect(() => {
+	// 	if (externalForm.formStage != fetchedFormStage) {
+	// 		console.log(externalForm);
+	// 		sendContactForm(externalForm);
+	// 	}
+	// }, [externalForm.formStage]);
 
 	const applicantSigCanvas = useRef({});
 	const applicantSigClear = (field: FieldValues) => {
@@ -275,7 +276,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		// }
 
 		// Generate the security key,
-		const securityKeyUID = uuidv4();
+		// const securityKeyUID = uuidv4();
 
 		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
 		if (externalForm.formStage === 2) {
@@ -287,7 +288,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						expenditure_cap: externalForm.expenditure_cap,
 						expenditure_cap_amount: externalForm.expenditure_cap_amount,
 						revertComment: "None",
-						securityKey: securityKeyUID,
+						// securityKey: securityKeyUID,
 						formStage: 3,
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
@@ -297,24 +298,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 			if (error) {
 				toast.error("Error submitting form");
-				console.error("Error updating data:", error);
+				// console.error("Error updating data:", error);
 			} else {
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-				console.log("Data updated successfully:", data);
-
-				setExternalForm({
-					...externalForm,
-					revertComment: "",
-					expenditure_cap: externalForm.expenditure_cap,
-					expenditure_cap_amount: externalForm.expenditure_cap_amount,
-					verification_email: values.verification_email!,
-					approval_email: values.approval_email!,
-					securityKey: securityKeyUID,
-					formStage: 3,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_3");
 			}
 		}
 		// This part is when the staff re-submits the form to the AAO after being reverted,
@@ -341,20 +327,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.eq("id", externalForm.id);
 
 			if (error) {
-				console.log(error);
+				// console.log(error);
 
 				toast.error("Error submitting form");
 			} else {
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				setExternalForm({
-					...externalForm,
-					securityKey: null,
-					formStage: 2,
-				});
-
-				router.push("/external_status?status=re-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_2");
 			}
 		}
 
@@ -368,7 +345,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 4,
-						securityKey: securityKeyUID,
+						// securityKey: securityKeyUID,
 						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 
 						verification_email: values.verification_email,
@@ -387,19 +364,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.eq("id", externalForm.id);
 
 			if (error) {
-				console.error("Error inserting data:", error);
+				// console.error("Error inserting data:", error);
 			} else {
-				console.log("Data inserted successfully:", values);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				setExternalForm({
-					...externalForm,
-					securityKey: securityKeyUID,
-					formStage: 4,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_4");
 			}
 		}
 
@@ -411,7 +378,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 5,
-						securityKey: securityKeyUID,
+						// securityKey: securityKeyUID,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
@@ -429,24 +396,82 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.eq("id", externalForm.id);
 
 			if (error) {
-				console.error("Error inserting data:", error);
+				// console.error("Error inserting data:", error);
 			} else {
-				console.log("Data inserted successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				setExternalForm({
-					...externalForm,
-					formStage: 5,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_5");
 			}
 		}
-	}
+	};
+
+	const createNotifications = async (message: string, formId: string) => {
+		try {
+			const notifDesc = message;
+			const notifType = "Nominations/ Travelling Form";
+			const notifLink = `${url}/form/external_review/${formId}`;
+
+			const { data: notificationData, error: notificationError } = await supabase
+				.from("notifications")
+				.insert([
+					{
+						notifDesc,
+						notifType,
+						notifLink,
+					},
+				]);
+
+			if (notificationError) {
+
+			} else {
+
+			}
+		} catch (error) {
+
+		}
+	};
+
+	const fetchAndUpdateFormData = async (formId: string, formStage: string) => {
+		try {
+			const { data: updatedData, error: updatedError } = await supabase
+				.from("external_forms")
+				.select("*")
+				.eq("id", formId);
+
+			if (updatedError) {
+				// console.error("Error fetching updated data:", updatedError);
+			} else {
+				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+
+				let message = "";
+
+				if (formStage == "to_1") {
+					message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reverted back to the user with reason(s): ${updatedData[0].revertComment}`;
+				} else if (formStage == "to_2") {
+					message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been re-submitted by the user.`;
+				} else if (formStage == "to_3") {
+					message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reviewed by AAO and submitted to HOS/ ADCR/ MGR.`;
+				} else if (formStage == "to_4") {
+					message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reviewed by HOS/ ADCR/ MGR and submitted to HMU/ Dean.`;
+				} else if (formStage == "to_5") {
+					message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been approved.`;
+				} else if (formStage == "to_6") {
+					message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been rejected with reason(s): ${updatedData[0].revertComment}`;
+				} else {
+					message = `Notifications error. Please contact the webmaster.`;
+				}
+
+				createNotifications(message, updatedData[0].id);
+
+				sendContactForm(updatedData);
+
+				router.push("/external_status");
+			}
+		} catch (error) {
+			// console.error("Error in fetchAndUpdateFormData:", error);
+		}
+	};
 
 	const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
-		const securityKeyUID = uuidv4();
+		// const securityKeyUID = uuidv4();
 
 		// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
 		if (externalForm.formStage === 3) {
@@ -456,7 +481,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
-						securityKey: securityKeyUID,
+						// securityKey: securityKeyUID,
 						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
@@ -477,17 +502,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				console.error("Error updating data:", error);
 			} else {
-				console.log("Data updated successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				setExternalForm({
-					...externalForm,
-					revertComment: values.revertComment!,
-					formStage: 6,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_6");
 			}
 		} else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
@@ -496,7 +511,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
-						securityKey: securityKeyUID,
+						// securityKey: securityKeyUID,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
@@ -517,17 +532,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				console.log(error);
 			} else {
-				console.log("Data updated successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				setExternalForm({
-					...externalForm,
-					revertComment: values.revertComment!,
-					formStage: 6,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_6");
 			}
 		}
 
@@ -542,7 +547,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						expenditure_cap: values.expenditure_cap,
 						expenditure_cap_amount: values.expenditure_cap_amount,
 						revertComment: values.revertComment,
-						securityKey: securityKeyUID,
+						// securityKey: securityKeyUID,
 						formStage: 1,
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
@@ -553,20 +558,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				console.error("Error updating data:", error);
 			} else {
-				console.log("Data updated successfully:", data);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
-
-				// showSuccessToast('You have successfully reverted the form. Emails have been sent out.');
-
-				setExternalForm({
-					...externalForm,
-					securityKey: securityKeyUID,
-					revertComment: values.revertComment!,
-					formStage: 1,
-				});
-
-				router.push("/external_status");
-				// window.location.reload();
+				fetchAndUpdateFormData(externalForm.id, "to_1");
 			}
 		} else if (showCommentInput == false) {
 			setShowCommentInput(true);

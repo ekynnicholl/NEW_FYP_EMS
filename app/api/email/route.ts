@@ -16,7 +16,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== '') {
             securityKeySentence = `
-                <br/>   
                 <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
                 <br/>
                 <p class="no-p-m">Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
@@ -50,7 +49,9 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <br/>
                     <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
+                    <br/>
                     <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
+                    <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -75,7 +76,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         if (optionalFields && optionalFields.trim() !== '') {
             rejectMessage = `
                 <br/>
-                <p class="no-p-m" style="font-weight:bold;"> Reason(s) of rejection: </p>
+                <br/>
+                <p class="no-p-m" style="font-weight:bold;"> Reason(s) of Rejection: </p>
                 <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                 <br/>
             `;
@@ -147,7 +149,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <p class="no-p-m">Your Nominations/ Travelling Form has been approved! You may view the PDF version of it here: </p>
                     <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
-                    <br/>
+                    <br/><br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>

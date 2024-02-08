@@ -30,6 +30,7 @@ import { BsThreeDotsVertical } from "react-icons/bs"
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BiSun } from "react-icons/bi"
 import { HiOutlineMoon } from "react-icons/hi"
+import Notification from "@/components/notifications/notification_topbar"
 
 import {
 	DropdownMenu,
@@ -41,56 +42,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { usePathname } from "next/navigation";
-
-const Notification = () => {
-	return (
-		<div className="cursor-pointer">
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<div className="rounded-full bg-slate-100 opacity-80 mt-[4px] p-2 hover:opacity-90 dark:bg-[#1D1F1F]">
-						<MdNotificationsActive className="text-[25px] text-slate-900 dark:text-dark_text -mt-[2px]" />
-					</div>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent side="top" sideOffset={-4}>
-					<DropdownMenuLabel>Notification</DropdownMenuLabel>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem>
-						<div className="flex items-center hover:bg-gray-100 pl-2.5 cursor-pointer hover:text-gray-700">
-							<div className="w-8 h-8 -mt-2 -ml-2 -mr-2">
-								<NotifIcon />
-							</div>
-							<div className="flex flex-col flex-grow pl-2">
-								<div className="text-[12px] text-gray-700 hover:text-gray-900 pt-2.5 text-justify pr-3">
-									You have a pending NTF Form to approve. Submitted by
-									User A.
-								</div>
-								<div className="text-gray-400 text-[10px] cursor-pointer flex justify-end pr-3 ml-1 pb-2.5 mt-1">
-									11:59 PM, 15 September 2023
-								</div>
-							</div>
-						</div>
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						<div className="flex items-center hover:bg-gray-100 pl-2.5 cursor-pointer hover:text-gray-700">
-							<div className="w-8 h-8 -mt-2 -ml-2 -mr-2">
-								<NotifIcon />
-							</div>
-							<div className="flex flex-col flex-grow pl-2">
-								<div className="text-[12px] text-gray-700 hover:text-gray-900 pt-2.5 text-justify pr-3">
-									You have a pending NTF Form to approve. Submitted by
-									User A.
-								</div>
-								<div className="text-gray-400 text-[10px]  cursor-pointer flex justify-end pr-3 ml-1 pb-2.5 mt-1">
-									11:59 PM, 15 September 2023
-								</div>
-							</div>
-						</div>
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</div>
-	);
-};
 
 const User = () => {
 	return (
@@ -483,7 +434,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					</DropdownMenu>
 				</div>
 			</div>
-
 			<MobileTopBar />
 		</div>
 	);

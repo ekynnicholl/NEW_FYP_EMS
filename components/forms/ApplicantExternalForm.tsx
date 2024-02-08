@@ -40,6 +40,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 
 export default function ExternalForm() {
+	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 	const supabase = createClientComponentClient();
 	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
 	const router = useRouter();
@@ -224,6 +225,28 @@ export default function ExternalForm() {
 			if (fetchedError) {
 				// console.log(fetchedError);
 			} else {
+				// Create notifications,
+				const notifDesc = `A Nominations/ Travelling Form has been submitted by ${data[0].full_name} (${data[0].staff_id}).`;
+				const notifType = "Nominations/ Travelling Form";
+				const notifLink = `${url}/form/external_review/${data[0].id}`;
+
+				const { data: notificationData, error: notificationError } = await supabase
+					.from("notifications")
+					.insert([
+						{
+							notifDesc,
+							notifType,
+							notifLink,
+						},
+					]);
+
+				if (notificationError) {
+					// console.error(notificationError);
+				} else {
+					// console.log("Notification inserted successfully:", notificationData);
+				}
+
+				// Send email,
 				sendContactForm(fetchedForms);
 				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 				setFormIsSuccess(true);
