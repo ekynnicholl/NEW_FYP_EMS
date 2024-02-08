@@ -74,25 +74,26 @@ export default function Home() {
 
 			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 			const groupedData = staffData.reduce((result, form) => {
-				const staffID = form.attFormsStaffID;
-				if (!result[staffID]) {
-					result[staffID] = {
-						staffID,
+				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
+				
+				if (!result[uniqueStaffID]) {
+					result[uniqueStaffID] = {
+						staffID: form.attFormsStaffID,
 						staffName: form.attFormsStaffName,
 						staffFaculty: form.attFormsFacultyUnit,
 						totalSubEvents: 0,
 						eventsAttended: [],
 					};
 				}
-				result[staffID].totalSubEvents++;
-				result[staffID].eventsAttended.push(form.attFSubEventID);
+				result[uniqueStaffID].totalSubEvents++;
+				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
+				
 				return result;
 
 			}, {});
 
 			// Set the aggregated data in the state
 			setAggregatedInfo(Object.values(groupedData));
-
 		};
 		fetchInfos();
 	}, [supabase]);
@@ -103,16 +104,17 @@ export default function Home() {
 			.from("sub_events")
 			.select("*")
 			.in("sub_eventsID", event_id)
+			.order("sub_eventsStartDate");
 
 		if (subEventsError) {
 			console.error("Error fetching sub_events:", subEventsError);
 			return;
 		}
-
-		setSubEventsAttended(subEvents || []);
+		
+		setSubEventsAttended(subEvents || []);		
 
 		const mainEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsMainID);
-		
+
 		//extract the main event title		
 		const { data: mainEvent, error: mainEventError } = await supabase
 			.from("internal_events")
@@ -124,17 +126,12 @@ export default function Home() {
 			console.error("Error fetching sub_events:", mainEventError);
 			return;
 		}
-
-		console.log(mainEvent);
-		setMainEventAttended((prevMainEvents) => [
-            ...prevMainEvents,
-            ...(mainEvent || []),
-        ]);
-	}
+		setMainEventAttended((mainEvent || []));
+	}	
 
 	//display the sub event attended modal
 	const openModal = async (staff_event_id: string[]) => {
-		fetchSubEventList(staff_event_id);
+		fetchSubEventList(staff_event_id);		
 		setShowModal(true);
 	}
 
@@ -152,24 +149,27 @@ export default function Home() {
 
 			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 			const groupedData = staffData.reduce((result, form) => {
-				const staffID = form.attFormsStaffID;
-				if (!result[staffID]) {
-					result[staffID] = {
-						staffID,
+				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
+				
+				if (!result[uniqueStaffID]) {
+					result[uniqueStaffID] = {
+						staffID: form.attFormsStaffID,
 						staffName: form.attFormsStaffName,
 						staffFaculty: form.attFormsFacultyUnit,
 						totalSubEvents: 0,
 						eventsAttended: [],
 					};
 				}
-				result[staffID].totalSubEvents++;
-				result[staffID].eventsAttended.push(form.attFSubEventID);
+				result[uniqueStaffID].totalSubEvents++;
+				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
+				
 				return result;
 
 			}, {});
 
 			// Set the aggregated data in the state
 			setAggregatedInfo(Object.values(groupedData));
+			
 		};
 		fetchInfos();
 	};
@@ -185,7 +185,7 @@ export default function Home() {
 				info.staffID.toString().includes(query) ||
 				info.staffFaculty.toLowerCase().includes(query.toLowerCase()),
 		);
-		console.log("filter data: ", filteredData);
+
 		setAggregatedInfo(filteredData);
 		
 	};
@@ -539,7 +539,7 @@ export default function Home() {
 														</td>
 														<td className="flex-1 -ml-16 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 															<p className="text-gray-900 whitespace-no-wrap lg:ml-3 dark:text-dark_text">
-																{info.staffName}
+																{info.staffName}																
 															</p>
 														</td>
 														<td className="flex-1 -ml-2 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
@@ -646,7 +646,7 @@ export default function Home() {
 											</div>
 										</div>
 										<div className="ems-center hidden lg:flex">
-											<span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+											<span className="text-sm mt-6 lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
 												1-{entriesToShow} of {aggregatedInfo?.length} entries
 											</span>
 
@@ -766,7 +766,7 @@ export default function Home() {
 
 												<tr className="bg-gray-100">
 													<span className="text-sky-800 float-right border bg-slate-200 rounded-full p-2 mt-2">
-														<p onClick={() => { openModal(info.eventsAttended) }}>View</p>
+														<p onClick={() => { openModal(info.eventsAttended);}}>View</p>
 													</span>
 												</tr>
 											</table>
