@@ -127,9 +127,11 @@ const Notification = () => {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <div className="text-center text-blue-500 cursor-pointer">
-                            View All Notification(s)
-                        </div>
+                        <a href="/notifications">
+                            <div className="text-center text-blue-500 cursor-pointer">
+                                View All Notification(s)
+                            </div>
+                        </a>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
