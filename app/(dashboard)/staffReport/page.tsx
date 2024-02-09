@@ -52,6 +52,15 @@ export default function Home() {
 	const [infos, setInfos] = useState<Info[]>([] as Info[]);
 	const [subEventsAttended, setSubEventsAttended] = useState<subEvents[]>([]);
 	const [mainEventAttended, setMainEventAttended] = useState<{ intFEventName: string[]; }[]>([]);
+
+	const [dataResults, setDataResults] = useState<{
+		staffID: number;
+		staffName: string;
+		staffFaculty: string;
+		totalSubEvents: number;
+		eventsAttended: string[];
+	}[]>([]);
+
 	const [aggregatedInfo, setAggregatedInfo] = useState<{
 		staffID: number;
 		staffName: string;
@@ -74,8 +83,8 @@ export default function Home() {
 
 			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 			const groupedData = staffData.reduce((result, form) => {
-				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
-				
+				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;
+
 				if (!result[uniqueStaffID]) {
 					result[uniqueStaffID] = {
 						staffID: form.attFormsStaffID,
@@ -87,7 +96,7 @@ export default function Home() {
 				}
 				result[uniqueStaffID].totalSubEvents++;
 				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
-				
+
 				return result;
 
 			}, {});
@@ -110,8 +119,8 @@ export default function Home() {
 			console.error("Error fetching sub_events:", subEventsError);
 			return;
 		}
-		
-		setSubEventsAttended(subEvents || []);		
+
+		setSubEventsAttended(subEvents || []);
 
 		const mainEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsMainID);
 
@@ -127,11 +136,11 @@ export default function Home() {
 			return;
 		}
 		setMainEventAttended((mainEvent || []));
-	}	
+	}
 
 	//display the sub event attended modal
 	const openModal = async (staff_event_id: string[]) => {
-		fetchSubEventList(staff_event_id);		
+		fetchSubEventList(staff_event_id);
 		setShowModal(true);
 	}
 
@@ -149,8 +158,8 @@ export default function Home() {
 
 			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 			const groupedData = staffData.reduce((result, form) => {
-				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;				
-				
+				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;
+
 				if (!result[uniqueStaffID]) {
 					result[uniqueStaffID] = {
 						staffID: form.attFormsStaffID,
@@ -162,23 +171,26 @@ export default function Home() {
 				}
 				result[uniqueStaffID].totalSubEvents++;
 				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
-				
+
 				return result;
 
 			}, {});
 
 			// Set the aggregated data in the state
 			setAggregatedInfo(Object.values(groupedData));
-			
+
 		};
 		fetchInfos();
 	};
 
-
 	// Handle search input
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
-		console.log("query:",query);
+
+		// Clear the data results,
+		setDataResults([]);
+
+		// console.log("query:", query);
 		const filteredData = aggregatedInfo.filter(
 			info =>
 				info.staffName.toLowerCase().includes(query.toLowerCase()) ||
@@ -186,8 +198,11 @@ export default function Home() {
 				info.staffFaculty.toLowerCase().includes(query.toLowerCase()),
 		);
 
-		setAggregatedInfo(filteredData);
-		
+		// console.log("filtered" + filteredData);
+		// console.log("filteredData" + dataResults);
+
+		setDataResults(filteredData);
+		// setAggregatedInfo(filteredData);
 	};
 
 	type ColumnMapping = {
@@ -199,14 +214,14 @@ export default function Home() {
 		attFormsStaffName: 'Staff Name',
 		attFormsFacultyUnit: 'Faculty/Unit',
 		totalSubEvents: 'Total Events Attended'
-	};	
+	};
 
 	//export to CSV format
 	const exportToCSV = () => {
 		// Generate header row
 		const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
-		 // Combine header and data rows
-		 const csvContent = `${header}\n${aggregatedInfo.map(row => {
+		// Combine header and data rows
+		const csvContent = `${header}\n${aggregatedInfo.map(row => {
 			// Exclude the eventsAttended field
 			const { eventsAttended, ...rowWithoutEvents } = row;
 			return Object.values(rowWithoutEvents).map(value => `"${value}"`).join(",");
@@ -221,7 +236,7 @@ export default function Home() {
 		link.click();
 		document.body.removeChild(link);
 	};
-	
+
 
 	// go to previous page
 	const handleArrowLeftClick = () => {
@@ -285,87 +300,89 @@ export default function Home() {
 	];
 
 	// Modify the sorting logic based on the selected option and sort order
-	const sortedData = aggregatedInfo.slice().sort((a, b) => {
-		if (sortBy === "staffid") {
-			// Sort by ID
-			if (sortOrder === "asc") {
-				return a.staffID - b.staffID;
-			} else {
-				return b.staffID - a.staffID;
+	const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
+		.slice()
+		.sort((a, b) => {
+			if (sortBy === "staffid") {
+				// Sort by ID
+				if (sortOrder === "asc") {
+					return a.staffID - b.staffID;
+				} else {
+					return b.staffID - a.staffID;
+				}
+			} else if (sortBy === "name") {
+				if (sortOrder === "asc") {
+					return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
+				} else {
+					return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
+				}
 			}
-		} else if (sortBy === "name") {
-			if (sortOrder === "asc") {
-				return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
-			} else {
-				return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
+			else if (sortBy === "eventattended") {
+				if (sortOrder === "asc") {
+					return b.totalSubEvents - a.totalSubEvents;
+				} else {
+					return a.totalSubEvents - b.totalSubEvents;
+				}
 			}
-		}
-		else if (sortBy === "eventattended") {
-			if (sortOrder === "asc") {
-				return b.totalSubEvents - a.totalSubEvents;
-			} else {
-				return a.totalSubEvents - b.totalSubEvents;
-			}
-		}
-		return 0;
-	});
+			return 0;
+		});
 
 	// Calculate the start and end indices for the current page
-    const startIndex = (currentPage - 1) * entriesToShow;
-    const endIndex = startIndex + entriesToShow;
+	const startIndex = (currentPage - 1) * entriesToShow;
+	const endIndex = startIndex + entriesToShow;
 
-    const currentData = aggregatedInfo.slice(startIndex, endIndex);
+	const currentData = aggregatedInfo.slice(startIndex, endIndex);
 
-    // Handle page change
-    const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= Math.ceil(aggregatedInfo.length / entriesToShow)) {
-            setCurrentPage(page);
-        }
-    };
+	// Handle page change
+	const handlePageChange = (page: number) => {
+		if (page >= 1 && page <= Math.ceil(aggregatedInfo.length / entriesToShow)) {
+			setCurrentPage(page);
+		}
+	};
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [entriesToShow]);
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [entriesToShow]);
 
-    const pageCount = Math.ceil(aggregatedInfo.length / entriesToShow);
+	const pageCount = Math.ceil(aggregatedInfo.length / entriesToShow);
 
-    const generatePageNumbers = (): number[] => {
-        const displayedPages = 5;
-        const halfDisplayed = Math.floor(displayedPages / 2);
+	const generatePageNumbers = (): number[] => {
+		const displayedPages = 5;
+		const halfDisplayed = Math.floor(displayedPages / 2);
 
-        if (pageCount <= displayedPages) {
-            return Array.from({ length: pageCount }, (_, index) => index + 1);
-        }
+		if (pageCount <= displayedPages) {
+			return Array.from({ length: pageCount }, (_, index) => index + 1);
+		}
 
-        const start = Math.max(currentPage - halfDisplayed, 1);
-        const end = Math.min(start + displayedPages - 1, pageCount);
+		const start = Math.max(currentPage - halfDisplayed, 1);
+		const end = Math.min(start + displayedPages - 1, pageCount);
 
-        const pages: number[] = [];
+		const pages: number[] = [];
 
-        if (start > 1) {
-            pages.push(1);
-            if (start > 2) {
-                pages.push(-1);
-            }
-        }
+		if (start > 1) {
+			pages.push(1);
+			if (start > 2) {
+				pages.push(-1);
+			}
+		}
 
-        for (let i = start; i <= end; i++) {
-            pages.push(i);
-        }
+		for (let i = start; i <= end; i++) {
+			pages.push(i);
+		}
 
-        if (end < pageCount) {
-            if (end < pageCount - 1) {
-                pages.push(-1);
-            }
-            pages.push(pageCount);
-        }
+		if (end < pageCount) {
+			if (end < pageCount - 1) {
+				pages.push(-1);
+			}
+			pages.push(pageCount);
+		}
 
-        return pages.slice(0, displayedPages);
-    };
+		return pages.slice(0, displayedPages);
+	};
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [aggregatedInfo])
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [aggregatedInfo])
 
 	return (
 		<div>
@@ -539,7 +556,7 @@ export default function Home() {
 														</td>
 														<td className="flex-1 -ml-16 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 															<p className="text-gray-900 whitespace-no-wrap lg:ml-3 dark:text-dark_text">
-																{info.staffName}																
+																{info.staffName}
 															</p>
 														</td>
 														<td className="flex-1 -ml-2 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
@@ -766,7 +783,7 @@ export default function Home() {
 
 												<tr className="bg-gray-100">
 													<span className="text-sky-800 float-right border bg-slate-200 rounded-full p-2 mt-2">
-														<p onClick={() => { openModal(info.eventsAttended);}}>View</p>
+														<p onClick={() => { openModal(info.eventsAttended); }}>View</p>
 													</span>
 												</tr>
 											</table>
@@ -863,33 +880,33 @@ export default function Home() {
 											<tr className="flex"
 												key={index}
 												onClick={() => setShowModal(true)}>
-												
+
 												<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
-                                                    <div>
-                                                        <div className="ml-[2px]">
-                                                            <p className="text-gray-900">
-                                                                {index + 1}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="flex-1 py-5 text-xs lg:text-md -ml-24">
-                                                    <p className="text-gray-900">
+													<div>
+														<div className="ml-[2px]">
+															<p className="text-gray-900">
+																{index + 1}
+															</p>
+														</div>
+													</div>
+												</td>
+												<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
+													<p className="text-gray-900">
 														{mainEventAttended[index]?.intFEventName || "N/A"}
-                                                    </p>
-                                                </td>
+													</p>
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md ">
-                                                    <p className="text-gray-900 ml-1">
+												<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
+													<p className="text-gray-900 ml-1">
 														{subEvent.sub_eventsName}
-                                                    </p>
-                                                </td>
+													</p>
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-xs lg:text-md">
-                                                    <p className="text-gray-900 -ml-2">
+												<td className="flex-1 px-3 py-5 text-xs lg:text-md">
+													<p className="text-gray-900 -ml-2">
 														{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-                                                    </p>
-                                                </td>                                            
+													</p>
+												</td>
 											</tr>
 										))}
 								</tbody>
