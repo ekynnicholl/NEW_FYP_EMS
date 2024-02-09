@@ -9,9 +9,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MdNotificationsActive } from "react-icons/md";
-import NotifIcon from "@/components/icons/NotifIcon";
+import { FaBell } from "react-icons/fa";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
+import { CiRead } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 interface Notification {
     notifID: string;
@@ -24,6 +27,7 @@ interface Notification {
 const Notification = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const supabase = createClientComponentClient();
+    const [hoveredNotification, setHoveredNotification] = useState<string | null>(null);
 
     const timeAgo = (timestamp: string | number | Date) => {
         const now = new Date();
@@ -57,6 +61,44 @@ const Notification = () => {
         }
 
         return `${Math.floor(seconds)} seconds ago`;
+    };
+
+    const handleNotificationAction = async (action: 'read' | 'delete', notifID: string) => {
+        if (action === 'read') {
+            const { data, error } = await supabase
+                .from('notifications')
+                .update({ notifIsRead: 1 })
+                .eq('notifID', notifID);
+
+            if (error) {
+                console.error(`Error marking notification ${notifID} as read:`, error);
+            } else {
+                console.log(`Notification ${notifID} marked as read successfully.`, data);
+            }
+        } else if (action === 'delete') {
+            const { data, error } = await supabase
+                .from('notifications')
+                .delete()
+                .eq('notifID', notifID);
+
+            if (error) {
+                console.error(`Error deleting notification ${notifID}:`, error);
+            } else {
+                console.log(`Notification ${notifID} deleted successfully.`, data);
+            }
+        }
+
+        const { data: updatedData, error: updatedError } = await supabase
+            .from('notifications')
+            .select('notifID, notifDesc, notifIsRead, notifLink, notifCreatedAt')
+            .order('notifCreatedAt', { ascending: false })
+            .range(0, 9);
+
+        if (updatedError) {
+            console.error('Error fetching updated notifications:', updatedError);
+        } else {
+            setNotifications(updatedData || []);
+        };
     };
 
     useEffect(() => {
@@ -94,7 +136,7 @@ const Notification = () => {
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" sideOffset={-4}>
-                    <DropdownMenuLabel>Notification</DropdownMenuLabel>
+                    <DropdownMenuLabel>Notification(s)</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <div className="h-[383px] overflow-auto w-[450px]">
                         {notifications.map((notification) => (
@@ -102,26 +144,67 @@ const Notification = () => {
                             // className={`${notification.notifIsRead === 0 ? "bg-gray-200" : ""
                             //     }`}
                             >
-                                <a
-                                    href={notification.notifLink}
-                                    className="flex items-center hover:bg-gray-100 pl-2.5 cursor-pointer hover:text-gray-700 flex-1"
-                                    target="_blank"
+                                <div className="items-center pl-2.5 cursor-pointer flex-1 flex hover:bg-gray-100 rounded-md dark:hover:bg-black-500 dark:text-dark_text"
+                                    onMouseEnter={() => setHoveredNotification(notification.notifID)}
+                                // onMouseLeave={() => setHoveredNotification(null)}
                                 >
-                                    <div className="flex items-center hover:bg-gray-100 pl-2.5 cursor-pointer hover:text-gray-700 flex-1">
-                                        <div className="w-8 h-8 -mt-2 -ml-2 -mr-2">
-                                            <NotifIcon />
-                                        </div>
-                                        <div className="flex flex-col justify-between pl-3 flex-grow">
-                                            <div className="text-[12px] text-gray-700 hover:text-gray-900 pt-2.5 text-justify pr-3">
-                                                {notification.notifDesc}
+                                    <a
+                                        className="flex flex-1"
+                                        href={notification.notifLink}
+                                        target="_blank"
+                                    >
+                                        <div className="flex items-center pl-2.5 cursor-pointer flex-1"
+                                        >
+                                            <div className="w-8 h-8 -mt-2 -ml-2 -mr-2">
+                                                <FaBell className="dark:text-dark_text" />
                                             </div>
-                                            {/* Timestamp will be pushed to the end */}
-                                            <div className="text-gray-400 text-[10px] cursor-pointer flex justify-start pr-3 pb-2.5 mt-1">
-                                                {timeAgo(notification.notifCreatedAt)}
+                                            <div className="flex flex-col justify-between pl-3 flex-grow">
+                                                <div className="text-[12px] pt-2.5 text-justify pr-3">
+                                                    {notification.notifDesc}
+                                                </div>
+                                                {/* Timestamp will be pushed to the end */}
+                                                <div className="text-gray-400 text-[10px] cursor-pointer flex justify-start pr-3 pb-2.5 mt-1">
+                                                    {timeAgo(notification.notifCreatedAt)}
+                                                </div>
                                             </div>
+                                            {hoveredNotification === notification.notifID && (
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger>
+                                                        <BsThreeDotsVertical
+                                                            size={25}
+                                                            className="text-[20px] text-slate-900 -mt-[2px] bg-gray-200 rounded-full p-1"
+                                                        />
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent side="bottom" sideOffset={-4}>
+                                                        <DropdownMenuLabel>Action(s)</DropdownMenuLabel>
+                                                        <div className="cursor-pointer">
+                                                            <div className="text-sm flex-grow flex flex-col pl-1">
+                                                                <div className="hover:bg-gray-100 hover:text-gray-700 p-1.5 rounded-sm flex">
+                                                                    <CiRead />
+                                                                    <button
+                                                                        className="cursor-pointer pl-1.5 -mt-0.5"
+                                                                        onClick={() => handleNotificationAction('read', notification.notifID)}
+                                                                    >
+                                                                        Mark as Read
+                                                                    </button>
+                                                                </div>
+                                                                <div className="hover:bg-gray-100 hover:text-gray-700 p-1.5 rounded-sm flex">
+                                                                    <MdDelete />
+                                                                    <button
+                                                                        className="cursor-pointer pl-1.5 -mt-0.5"
+                                                                        onClick={() => handleNotificationAction('delete', notification.notifID)}
+                                                                    >
+                                                                        Delete
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            )}
                                         </div>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
                             </DropdownMenuItem>
                         ))}
                     </div>
