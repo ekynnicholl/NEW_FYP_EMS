@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-import 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 type FeedbackDataType = {
     fbID: string;
@@ -49,13 +49,14 @@ interface IndividualFeedbackProps {
 }
 
 const sectionTitlesMap: { [key: string]: string } = {
-    'fbSectionA': 'Section A',
-    'fbSectionB': 'Section B',
-    'fbSectionC': 'Section C',
-    'fbSectionD': 'Section D',
+    'fbSectionA': 'Section A: Course Quality',
+    'fbSectionB': 'Section B: Training Experience',
+    'fbSectionC': 'Section C: Duration',
+    'fbSectionD': 'Section D: Recommendation',
 };
 
 const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData }) => {
+    Chart.register(ChartDataLabels);
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chart = useRef<Chart | null>(null);
 
@@ -92,6 +93,8 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
                 label: yLabels[index],
                 data: transposedValues,
                 backgroundColor: barColors[index % barColors.length],
+                barPercentage: 1,
+                barThickness: 30,
             };
         });
         return transposedData;
@@ -158,7 +161,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
                                 beginAtZero: true,
                                 suggestedMax: feedbackData.length,
                                 grid: {
-                                    display: false,
+                                    display: true,
                                 },
                             },
                             x: {
@@ -176,16 +179,19 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
                                 },
                             },
                             datalabels: {
-                                anchor: 'end', // Position of the labels (start, end, center, etc.)
-                                align: 'end', // Alignment of the labels (start, end, center, etc.)
-                                color: 'blue', // Color of the labels
-                                font: {
-                                    weight: 'bold',
+                                display: true,
+                                anchor: 'end',
+                                align: 'end',
+                                labels: {
+                                    value: {
+                                        color: 'black'
+                                    },
                                 },
                                 formatter: function (value, context) {
-                                    return value; // Display the actual data value
-                                }
-                            }
+                                    const percentage = (value / feedbackData.length) * 100;
+                                    return percentage.toFixed(0) + '%';
+                                },
+                            },
                         },
                     },
                 });
@@ -205,11 +211,11 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
 
     return (
         <div className="w-full">
-            <h2 className="text-left font-bold text-[24px]">{sectionTitlesMap[columnStart]}</h2>
+            <h2 className="text-left font-bold text-[24px]">{sectionTitlesMap[columnStart]} ({feedbackData.length} Responses)</h2>
             <div className="border-t border-gray-400 my-2 mr-10"></div>
             <div className="mt-10">
                 <div className="w-full h-[700px]">
-                    <canvas width={200} height={200} ref={chartRef} />
+                    <canvas width={400} height={200} ref={chartRef} />
                 </div>
             </div>
         </div>
