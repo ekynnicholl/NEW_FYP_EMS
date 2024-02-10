@@ -30,6 +30,7 @@ type FeedbackDataType = {
     fbSectionEAdditional: string;
     fbFullName: string;
     fbEmailAddress: string;
+    [key: string]: string;
 }
 
 type mainEvent = {
@@ -170,6 +171,11 @@ const ratingDescriptions: { [key: string]: string } = {
     5: "Strongly Agree",
 };
 
+interface SectionData {
+    label: string;
+    data: number[];
+}
+
 const sectionsToDisplay = ['fbSectionA1', 'fbSectionA2', 'fbSectionA3', 'fbSectionA4', 'fbSectionA5', 'fbSectionB1', 'fbSectionB2', 'fbSectionB3', 'fbSectionB4', 'fbSectionC1', 'fbSectionD1'];
 
 const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
@@ -245,6 +251,68 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
         };
     }, []);
 
+    const organizedData: Record<string, Record<string, number[]>> = {};
+    const [sectionA, setSectionA] = useState<SectionData[]>([]);
+    const [sectionB, setSectionB] = useState<SectionData[]>([]);
+    const [sectionC, setSectionC] = useState<SectionData[]>([]);
+    const [sectionD, setSectionD] = useState<SectionData[]>([]);
+
+    useEffect(() => {
+        // Iterate through each row of data
+        feedbackData.forEach(row => {
+            // Iterate through each column in the row
+            for (const column in row) {
+                if (column.startsWith('fbSectionA') || column.startsWith('fbSectionB') || column.startsWith('fbSectionC') || column.startsWith('fbSectionD')) {
+                    // Create the column if it doesn't exist in the result
+                    if (!organizedData[column]) {
+                        organizedData[column] = {};
+                    }
+
+                    // Add the value to the respective row of the column
+                    const key = 'Ratings'; // You can change this to any string you prefer
+                    organizedData[column][key] = organizedData[column][key] || [];
+                    organizedData[column][key].push(Number(row[column]));
+                }
+            }
+        });
+
+        const sectionAData = Object.keys(organizedData)
+            .filter(label => label.startsWith('fbSectionA'))
+            .map(label => ({
+                label,
+                data: organizedData[label].Ratings,
+            }));
+
+        const sectionBData = Object.keys(organizedData)
+            .filter(label => label.startsWith('fbSectionB'))
+            .map(label => ({
+                label,
+                data: organizedData[label].Ratings,
+            }));
+
+        const sectionCData = Object.keys(organizedData)
+            .filter(label => label.startsWith('fbSectionC'))
+            .map(label => ({
+                label,
+                data: organizedData[label].Ratings,
+            }));
+
+        const sectionDData = Object.keys(organizedData)
+            .filter(label => label.startsWith('fbSectionD'))
+            .map(label => ({
+                label,
+                data: organizedData[label].Ratings,
+            }));
+
+        setSectionA(sectionAData);
+        setSectionB(sectionBData);
+        setSectionC(sectionCData);
+        setSectionD(sectionDData);
+
+        console.log(sectionAData);
+
+    }, [feedbackData]);
+
     const navigateNext = () => {
         if (currentIndex < feedbackData.length - 1) {
             setCurrentIndex(currentIndex + 1);
@@ -287,7 +355,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
         return ratingCounts;
     };
 
-    console.log(mainEvent);
+    // console.log(mainEvent);
 
     return (
         <div>
@@ -377,7 +445,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                 <div className="border-t border-gray-300 my-2 mr-14"></div>
                                 <div className="max-h-[200px] overflow-y-auto mr-14">
                                     <span className="">
-                                        {['fbCourseName'].includes(column) ? (
+                                        {['fbCourseName'].includes(column as string) ? (
                                             feedbackData.map((feedback, feedbackIndex) => {
                                                 if (!courseNameDisplayed) {
                                                     courseNameDisplayed = true;
@@ -389,7 +457,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                 }
                                                 return null;
                                             })
-                                        ) : ['fbDuration'].includes(column) ? (
+                                        ) : ['fbDuration'].includes(column as string) ? (
                                             feedbackData.map((feedback, feedbackIndex) => {
                                                 if (!courseDurationDisplay) {
                                                     courseDurationDisplay = true;
@@ -401,7 +469,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                 }
                                                 return null;
                                             })
-                                        ) : ['fbTrainersName'].includes(column) ? (
+                                        ) : ['fbTrainersName'].includes(column as string) ? (
                                             feedbackData.map((feedback, feedbackIndex) => {
                                                 if (!trainerNameDisplayed) {
                                                     trainerNameDisplayed = true;
@@ -413,7 +481,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                 }
                                                 return null;
                                             })
-                                        ) : ['fbCommencementDate'].includes(column) ? (
+                                        ) : ['fbCommencementDate'].includes(column as string) ? (
                                             feedbackData.map((feedback, feedbackIndex) => {
                                                 if (!commencementDateDisplayed) {
                                                     commencementDateDisplayed = true;
@@ -425,7 +493,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                 }
                                                 return null;
                                             })
-                                        ) : ['fbCompletionDate'].includes(column) ? (
+                                        ) : ['fbCompletionDate'].includes(column as string) ? (
                                             feedbackData.map((feedback, feedbackIndex) => {
                                                 if (!completionDateDisplayed) {
                                                     completionDateDisplayed = true;
@@ -437,7 +505,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                 }
                                                 return null;
                                             })
-                                        ) : ['fbTrainingProvider'].includes(column) ? (
+                                        ) : ['fbTrainingProvider'].includes(column as string) ? (
                                             feedbackData.map((feedback, feedbackIndex) => {
                                                 if (!trainingProviderDisplayed) {
                                                     trainingProviderDisplayed = true;
@@ -449,7 +517,7 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                                                 }
                                                 return null;
                                             })
-                                        ) : /^fbSection[ABCD][1-5]$/.test(column) ? (
+                                        ) : /^fbSection[ABCD][1-5]$/.test(column as string) ? (
                                             // Custom rendering for other columns matching the pattern
                                             Object.keys(calculateRatingCounts(column)).map((rating, ratingIndex) => (
                                                 <div key={ratingIndex}>
@@ -537,14 +605,31 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
             )}
 
             {activeTab === 'graph' && (
-                <div className="w-full mb-5">
-                    {sectionsToDisplay.map((sectionName) => (
+                <div>
+                    <div className="w-full mb-5">
                         <IndividualFeedback
-                            key={sectionName}
-                            sectionName={sectionName}
+                            columnStart={'fbSectionA'}
                             feedbackData={feedbackData}
                         />
-                    ))}
+                    </div>
+                    <div className="w-full mb-5">
+                        <IndividualFeedback
+                            columnStart={'fbSectionB'}
+                            feedbackData={feedbackData}
+                        />
+                    </div>
+                    <div className="w-full mb-5">
+                        <IndividualFeedback
+                            columnStart={'fbSectionC'}
+                            feedbackData={feedbackData}
+                        />
+                    </div>
+                    <div className="w-full mb-5">
+                        <IndividualFeedback
+                            columnStart={'fbSectionD'}
+                            feedbackData={feedbackData}
+                        />
+                    </div>
                 </div>
             )}
         </div>

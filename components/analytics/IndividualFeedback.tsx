@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import 'chartjs-plugin-datalabels';
 
 type FeedbackDataType = {
     fbID: string;
@@ -43,45 +44,90 @@ const sectionNamesMap: { [key: string]: string } = {
 };
 
 interface IndividualFeedbackProps {
-    sectionName: string;
+    columnStart: string;
     feedbackData: FeedbackDataType[];
 }
 
-const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, feedbackData }) => {
+const sectionTitlesMap: { [key: string]: string } = {
+    'fbSectionA': 'Section A',
+    'fbSectionB': 'Section B',
+    'fbSectionC': 'Section C',
+    'fbSectionD': 'Section D',
+};
+
+const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData }) => {
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chart = useRef<Chart | null>(null);
 
     const prepareChartData = () => {
-        const labels: string[] = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
-        const data: number[] = [];
+        const validSectionKeys = Object.keys(feedbackData[0]).filter((key) => key.startsWith(columnStart));
 
-        for (let i = 1; i <= 5; i++) {
-            const columnName = `${sectionName}` as keyof FeedbackDataType;
-            const ratingCounts = calculateRatingCounts(columnName);
-            const ratingData = Object.keys(ratingCounts).map((rating) => ratingCounts[rating]);
-            data.push(...ratingData);
-            console.log(columnName);
-        }
+        const xLabels: string[] = validSectionKeys.map((sectionKey) => sectionNamesMap[sectionKey]);
 
-        console.log(data);
+        const originalDatasets = validSectionKeys.map((sectionKey, index) => {
+            const ratingCounts = calculateRatingCounts(sectionKey);
+            const data = Object.values(ratingCounts);
 
-        return {
-            labels,
-            data,
-        };
+            return {
+                label: `Label ${sectionKey.slice(-2)}`,
+                data,
+                backgroundColor: barColors[index],
+            };
+        });
+
+        // Transpose the datasets
+        const transposedDatasets = transposeData(originalDatasets);
+
+        console.log('test' + JSON.stringify(transposedDatasets));
+
+        return { labels: xLabels, datasets: transposedDatasets };
     };
 
-    const calculateRatingCounts = (columnName: keyof FeedbackDataType) => {
-        const ratingCounts: { [rating: string]: number } = {};
+    const transposeData = (inputData: any[]) => {
+        const yLabels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
 
-        for (let i = 1; i <= 5; i++) {
-            ratingCounts[i.toString()] = 0;
-        }
+        const transposedData = Array.from({ length: inputData[0].data.length }, (_, index) => {
+            const transposedValues = inputData.map((item) => item.data[index]);
+            return {
+                label: yLabels[index],
+                data: transposedValues,
+                backgroundColor: barColors[index % barColors.length],
+            };
+        });
+        return transposedData;
+    };
+
+    const calculateRatingCounts = (sectionKey: string) => {
+        const ratingCounts: { [rating: string]: number } = {
+            "Strongly Disagree": 0,
+            "Disagree": 0,
+            "Neutral": 0,
+            "Agree": 0,
+            "Strongly Agree": 0,
+        };
 
         feedbackData.forEach((feedback) => {
-            const rating = parseInt(feedback[columnName], 10);
+            const rating = parseInt((feedback as any)[sectionKey], 10);
             if (!isNaN(rating) && rating >= 1 && rating <= 5) {
-                ratingCounts[rating.toString()] += 1;
+                switch (rating) {
+                    case 1:
+                        ratingCounts["Strongly Disagree"] += 1;
+                        break;
+                    case 2:
+                        ratingCounts["Disagree"] += 1;
+                        break;
+                    case 3:
+                        ratingCounts["Neutral"] += 1;
+                        break;
+                    case 4:
+                        ratingCounts["Agree"] += 1;
+                        break;
+                    case 5:
+                        ratingCounts["Strongly Agree"] += 1;
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -104,13 +150,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
                     type: 'bar',
                     data: {
                         labels: chartData.labels,
-                        datasets: [
-                            {
-                                label: ``,
-                                data: chartData.data,
-                                backgroundColor: barColors,
-                            },
-                        ],
+                        datasets: chartData.datasets,
                     },
                     options: {
                         scales: {
@@ -129,8 +169,23 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
                         },
                         plugins: {
                             legend: {
-                                display: false,
+                                display: true,
+                                position: 'left', // You can set the position (top, bottom, left, right)
+                                labels: {
+                                    color: 'black',
+                                },
                             },
+                            datalabels: {
+                                anchor: 'end', // Position of the labels (start, end, center, etc.)
+                                align: 'end', // Alignment of the labels (start, end, center, etc.)
+                                color: 'blue', // Color of the labels
+                                font: {
+                                    weight: 'bold',
+                                },
+                                formatter: function (value, context) {
+                                    return value; // Display the actual data value
+                                }
+                            }
                         },
                     },
                 });
@@ -138,7 +193,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
                 chart.current = newChart;
             }
         }
-    }, [feedbackData, sectionName]);
+    }, [feedbackData]);
 
     useEffect(() => {
         return () => {
@@ -150,10 +205,10 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ sectionName, fe
 
     return (
         <div className="w-full">
-            <h2 className="text-left font-bold text-[24px]">{sectionNamesMap[sectionName]}</h2>
+            <h2 className="text-left font-bold text-[24px]">{sectionTitlesMap[columnStart]}</h2>
             <div className="border-t border-gray-400 my-2 mr-10"></div>
-            <div className="flex items-center justify-center mt-10">
-                <div className="w-[500px] h-[500px]">
+            <div className="mt-10">
+                <div className="w-full h-[700px]">
                     <canvas width={200} height={200} ref={chartRef} />
                 </div>
             </div>

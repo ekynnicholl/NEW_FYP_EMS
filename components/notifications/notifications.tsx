@@ -72,8 +72,12 @@ const NotificationsPage = () => {
         }
 
         interval = Math.floor(seconds / 86400);
-        if (interval > 1) {
-            return `${interval} days ago`;
+        if (interval >= 1) {
+            if (interval === 1) {
+                return `${interval} day ago`;
+            } else {
+                return `${interval} days ago`;
+            }
         }
 
         interval = Math.floor(seconds / 3600);
