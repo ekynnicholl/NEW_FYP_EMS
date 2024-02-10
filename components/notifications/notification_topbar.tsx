@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { CiRead } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import toast from "react-hot-toast";
 
 interface Notification {
     notifID: string;
@@ -71,9 +72,11 @@ const Notification = () => {
                 .eq('notifID', notifID);
 
             if (error) {
-                console.error(`Error marking notification ${notifID} as read:`, error);
+                toast.error('Technical error. Please contact the developers of the website... (HANDEL)');
+                // console.error(`Error marking notification ${notifID} as read:`, error);
             } else {
-                console.log(`Notification ${notifID} marked as read successfully.`, data);
+                toast.success('Notification has been successfully marked as read.');
+                // console.log(`Notification ${notifID} marked as read successfully.`, data);
             }
         } else if (action === 'delete') {
             const { data, error } = await supabase
@@ -82,9 +85,11 @@ const Notification = () => {
                 .eq('notifID', notifID);
 
             if (error) {
-                console.error(`Error deleting notification ${notifID}:`, error);
+                toast.error('Technical error. Please contact the developers of the website... (HANDEL)');
+                // console.error(`Error deleting notification ${notifID}:`, error);
             } else {
-                console.log(`Notification ${notifID} deleted successfully.`, data);
+                toast.success('Notification has been successfully deleted.');
+                // console.log(`Notification ${notifID} deleted successfully.`, data);
             }
         }
 
@@ -95,7 +100,8 @@ const Notification = () => {
             .range(0, 9);
 
         if (updatedError) {
-            console.error('Error fetching updated notifications:', updatedError);
+            toast.error('Technical error. Please contact the developers of the website... (HANUP)');
+            // console.error('Error fetching updated notifications:', updatedError);
         } else {
             setNotifications(updatedData || []);
         };
@@ -111,7 +117,8 @@ const Notification = () => {
                 .range(0, 9);
 
             if (error) {
-                console.error("Error fetching notifications:", error);
+                toast.error('Technical error. Please contact the developers of the website... (FENOTIF)');
+                // console.error("Error fetching notifications:", error);
             } else {
                 setNotifications(data || []);
             }
