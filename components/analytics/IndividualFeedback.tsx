@@ -29,18 +29,18 @@ type FeedbackDataType = {
     fbEmailAddress: string;
 }
 
-const sectionNamesMap: { [key: string]: string } = {
-    fbSectionA1: 'The contents were clear and easy to understand.',
-    fbSectionA2: 'The course objectives were successfully achieved.',
-    fbSectionA3: 'The course materials were enough and helpful.',
-    fbSectionA4: 'The class environment enabled me to learn.',
-    fbSectionA5: 'The program was well coordinated (e.g. registration, pre-program information, etc.)',
-    fbSectionB1: 'My learning was enhanced by the knowledge and experience shared by the trainer.',
-    fbSectionB2: 'I was well engaged during the session by the trainer.',
-    fbSectionB3: 'The course exposed me to new knowledge and practices.',
-    fbSectionB4: 'I understand how to apply what I learned.',
-    fbSectionC1: 'The duration of the course was just right.',
-    fbSectionD1: 'I would recommend this course to my colleagues.'
+const sectionNamesMap: { [key: string]: string[] } = {
+    fbSectionA1: ['The contents were clear', 'and easy to understand.'],
+    fbSectionA2: ['The course objectives', ' were successfully achieved.'],
+    fbSectionA3: ['The course materials', ' were enough and helpful.'],
+    fbSectionA4: ['The class environment', 'enabled me to learn.'],
+    fbSectionA5: ['The program was well coordinated', '(e.g. registration, pre-program', 'information, etc.)'],
+    fbSectionB1: ['My learning was enhanced by', 'the knowledge and experience', 'shared by the trainer.'],
+    fbSectionB2: ['I was well engaged during', 'the session by the trainer.'],
+    fbSectionB3: ['The course exposed me', 'to new knowledge and', 'practices.'],
+    fbSectionB4: ['I understand how to', 'apply what I learned.'],
+    fbSectionC1: ['The duration of the course was just right.'],
+    fbSectionD1: ['I would recommend this course to my colleagues.']
 };
 
 interface IndividualFeedbackProps {
@@ -63,7 +63,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
     const prepareChartData = () => {
         const validSectionKeys = Object.keys(feedbackData[0]).filter((key) => key.startsWith(columnStart));
 
-        const xLabels: string[] = validSectionKeys.map((sectionKey) => sectionNamesMap[sectionKey]);
+        const xLabels: string[][] = validSectionKeys.map((sectionKey) => sectionNamesMap[sectionKey]);
 
         const originalDatasets = validSectionKeys.map((sectionKey, index) => {
             const ratingCounts = calculateRatingCounts(sectionKey);
@@ -189,7 +189,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
                                 },
                                 formatter: function (value, context) {
                                     const percentage = (value / feedbackData.length) * 100;
-                                    return percentage.toFixed(0) + '%';
+                                    return Math.round(percentage) + '%';
                                 },
                             },
                         },
@@ -214,7 +214,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
             <h2 className="text-left font-bold text-[24px]">{sectionTitlesMap[columnStart]} ({feedbackData.length} Responses)</h2>
             <div className="border-t border-gray-400 my-2 mr-10"></div>
             <div className="mt-10">
-                <div className="w-full h-[700px]">
+                <div className="w-full h-[580px]">
                     <canvas width={400} height={200} ref={chartRef} />
                 </div>
             </div>
