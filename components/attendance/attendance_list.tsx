@@ -6,12 +6,7 @@ import { ChangeEvent, ReactNode, useEffect, useRef, useState, MouseEvent } from 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Chart, { registerables } from "chart.js/auto";
 import AttendanceTable from "@/components/tables/attendanceTable";
-
-interface ModalProps {
-    isVisible: boolean;
-    onClose: () => void;
-    children: ReactNode;
-}
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 type SubEventsDataType = {
     sub_eventsMainID: string;
@@ -42,12 +37,11 @@ interface Props {
 };
 
 const AttendanceList: React.FC<Props> = ({ event_id }) => {
-
+    Chart.register(ChartDataLabels);
     const supabase = createClientComponentClient();
 
     // This is for attendance modal,
     const [attendanceData, setAttendanceData] = useState<AttendanceDataType[]>([]);
-    const [showAttendanceModal, setShowAttendanceModal] = useState(false);
     const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
     const [subEventsForAttendance, setSubEventsForAttendance] = useState<SubEventsDataType[]>([]);
     const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
@@ -66,10 +60,16 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     const chartContainer = useRef<HTMLCanvasElement | null>(null);
     const chartInstanceRef = useRef<Chart<"bar", number[], string> | null>(null);
     const [isAllButtonActive, setIsAllButtonActive] = useState(true);
+    const isMounted = useRef(false);
 
     useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        }
+
         openAttendanceModal(event_id);
-    }, [event_id]);
+    }, []);
 
     // This is for attendance modal,
     const openAttendanceModal = async (event_id: string) => {
@@ -81,7 +81,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                 .eq("sub_eventsMainID", event_id);
 
             if (subEventsError) {
-                console.error("Error fetching sub_events:", subEventsError);
+                // console.error("Error fetching sub_events:", subEventsError);
                 return;
             }
 
@@ -104,7 +104,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                 .in("attFSubEventID", subEventIDs);
 
             if (formsError) {
-                console.error("Error fetching attendance forms:", formsError);
+                // console.error("Error fetching attendance forms:", formsError);
                 return;
             }
 
@@ -119,11 +119,10 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             // Fetch the attendance list for that event,
             fetchAttendanceList(event_id);
 
-            console.log("Attendance forms data:", attendanceDataWithSubEventNames);
-            setShowAttendanceModal(true);
+            console.log("Attendance forms data lalalala:", attendanceDataWithSubEventNames);
         } catch (error) {
-            const typedError = error as Error;
-            console.error("Error:", typedError.message);
+            // const typedError = error as Error;
+            // console.error("Error:", typedError.message);
         }
     };
 
@@ -184,8 +183,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     };
 
     useEffect(() => {
-        // console.log(filteredAttendanceData);
-        if (filteredAttendanceData && filteredAttendanceData.length > 0) {
+        if (filteredAttendanceData && filteredAttendanceData.length > 0 && activeTab != 'all') {
             // Calculate labels (faculty/unit) and label data (counts)
             const facultyCounts: { [key: string]: number } = {};
 
@@ -252,6 +250,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                 }
 
                 const modifiedLabels = labels.map((label) => label.split(' - '));
+                const maxDataValue = Math.max(...data) + 1;
 
                 //@ts-ignore
                 chartInstanceRef.current = new Chart(ctx, {
@@ -277,14 +276,11 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                             },
                             datalabels: {
                                 color: '#000000',
-                                font: {
-                                    weight: 'bold',
-                                },
                                 align: 'end',
+                                anchor: 'end',
                                 formatter: (value: number) => {
                                     return value.toString();
                                 },
-                                clamp: true,
                             },
                         },
                         scales: {
@@ -296,6 +292,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 ticks: {
                                     stepSize: 1,
                                 },
+                                suggestedMax: maxDataValue,
                             },
                             y: {
                                 grid: {
@@ -350,27 +347,6 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                 const typedError = error as Error;
                 console.error("Error:", typedError.message);
             }
-        } else if (type == 2) {
-            // try {
-            //     // Fetch attendance data for the selected sub-event
-            //     setSelectedSubEvent(subEvent.sub_eventsID);
-            //     const { data: feedbackForms, error: formsError } = await supabase
-            //         .from("feedback_forms")
-            //         .select()
-            //         .eq("fbSubEventID", subEvent.sub_eventsID);
-
-            //     if (formsError) {
-            //         console.error("Error fetching feedback forms:", formsError);
-            //         return;
-            //     }
-
-            //     // Set the attendance data for the selected sub-event
-            //     setFeedbackData(feedbackForms);
-
-            // } catch (error) {
-            //     const typedError = error as Error;
-            //     console.error("Error:", typedError.message);
-            // }
         }
     };
 
