@@ -183,7 +183,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     };
 
     useEffect(() => {
-        if (filteredAttendanceData && filteredAttendanceData.length > 0 && activeTab != 'all') {
+        if (filteredAttendanceData && filteredAttendanceData.length > 0) {
             // Calculate labels (faculty/unit) and label data (counts)
             const facultyCounts: { [key: string]: number } = {};
 
