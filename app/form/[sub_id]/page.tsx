@@ -662,7 +662,7 @@ export default function AttendanceForm() {
 				)}
 
 				<Fragment>
-					<div>
+					<div className="flex justify-end">
 						{authToken && (
 							<button
 								type="button"
