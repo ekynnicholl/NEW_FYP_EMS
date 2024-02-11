@@ -60,14 +60,8 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     const chartContainer = useRef<HTMLCanvasElement | null>(null);
     const chartInstanceRef = useRef<Chart<"bar", number[], string> | null>(null);
     const [isAllButtonActive, setIsAllButtonActive] = useState(true);
-    const isMounted = useRef(false);
 
     useEffect(() => {
-        if (!isMounted.current) {
-            isMounted.current = true;
-            return;
-        }
-
         openAttendanceModal(event_id);
     }, []);
 
