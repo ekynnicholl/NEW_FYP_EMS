@@ -1623,42 +1623,46 @@ export default function Homepage() {
 					<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
 						<div className="ml-2 p-5 z-[999]">
 							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-								Attendance
+								Attendance Forms
 							</h3>
-							<QRCodeSVG
-								value={`${url}/form/${selectedSubEventID}`}
-							/>
-							<button
-								onClick={() =>
-									copyToClipboard(
-										`${url}/form/${selectedSubEventID}`
-									)
-								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
-							>
-								Copy Link
-							</button>
+							<div className="flex flex-col items-center justify-center">
+								<QRCodeSVG
+									value={`${url}/form/${selectedSubEventID}`}
+								/>
+								<button
+									onClick={() =>
+										copyToClipboard(
+											`${url}/form/${selectedSubEventID}`
+										)
+									}
+									className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+								>
+									Copy Link
+								</button>
+							</div>
 						</div>
 					</Modal>
 
 					<Modal isVisible={showQRCodesFeedback} onClose={() => setShowQRCodesFeedback(false)}>
 						<div className="ml-2 p-5 z-[999]">
 							<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
-								Feedback
+								Feedback Forms
 							</h3>
-							<QRCodeSVG
-								value={`${url}/form/feedback/${selectedSubEventID}`}
-							/>
-							<button
-								onClick={() =>
-									copyToClipboard(
-										`${url}/form/feedback/${selectedSubEventID}`
-									)
-								}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105"
-							>
-								Copy Link
-							</button>
+							<div className="flex flex-col items-center justify-center">
+								<QRCodeSVG
+									value={`${url}/form/feedback/${selectedSubEventID}`}
+								/>
+								<button
+									onClick={() =>
+										copyToClipboard(
+											`${url}/form/feedback/${selectedSubEventID}`
+										)
+									}
+									className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+								>
+									Copy Link
+								</button>
+							</div>
 						</div>
 					</Modal>
 
@@ -5751,7 +5755,7 @@ export default function Homepage() {
 								) : (
 									todayEvents.map((event) => (
 										<div key={event.intFID}
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
+											className="bg-white border dark:bg-dark_mode_bg border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
@@ -5844,7 +5848,7 @@ export default function Homepage() {
 									tomorrowEvents.map((event) => (
 										<div
 											key={event.intFID}
-											className="bg-white border border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
+											className="bg-white border dark:bg-dark_mode_bg border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 												console.log(filteredSubEvent);

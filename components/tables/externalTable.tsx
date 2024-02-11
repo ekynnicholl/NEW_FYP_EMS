@@ -84,7 +84,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 	const handleUndoAction = async (values: z.infer<typeof schema>) => {
 		if (values.undoOption != "" || parseInt(values.undoOption, 10) != selectedRow.formStage) {
 			console.log("Undo Action clicked!");
-			const selectedStage = parseInt(values.undoOption , 10);
+			const selectedStage = parseInt(values.undoOption, 10);
 			const formID = selectedRow.id;
 
 			const { data, error } = await supabase
@@ -242,7 +242,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		}
 	}, [formData]);
 
-	const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
+	const [showQRCodesNTF, setShowQRCodesNTF] = useState(false);
+	const [showQRCodesNTFList, setShowQRCodesNTFList] = useState(false);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -289,14 +290,27 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				/>
 				<button
 					type="button"
-					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
+					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729] mr-5"
 					onClick={() => {
-						setShowQRCodesAttendance(true);
+						setShowQRCodesNTF(true);
 					}}>
 					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
 						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
 						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
 							Nominations/ Travelling Forms
+						</span>
+					</span>
+				</button>
+				<button
+					type="button"
+					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
+					onClick={() => {
+						setShowQRCodesNTFList(true);
+					}}>
+					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+							View Submitted Nominations/ Travelling Forms
 						</span>
 					</span>
 				</button>
@@ -371,17 +385,37 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</Button>
 				</div>
 			</div>
-			<Modal isVisible={showQRCodesAttendance} onClose={() => setShowQRCodesAttendance(false)}>
+
+			<Modal isVisible={showQRCodesNTF} onClose={() => setShowQRCodesNTF(false)}>
 				<div className="ml-2 p-5 z-[999]">
-					<h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">NTF</h3>
-					<QRCodeSVG value={`${url}/form/external`} />
-					<button
-						onClick={() => copyToClipboard(`${url}/form/external`)}
-						className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] lg:ml-2 transform hover:scale-105">
-						Copy Link
-					</button>
+					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">Nominations/ Travelling Forms</p>
+					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">This is where the staff can access to submit their forms.</p>
+					<div className="flex flex-col items-center justify-center">
+						<QRCodeSVG value={`${url}/form/external`} />
+						<button
+							onClick={() => copyToClipboard(`${url}/form/external`)}
+							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
+							Copy Link
+						</button>
+					</div>
 				</div>
 			</Modal>
+
+			<Modal isVisible={showQRCodesNTFList} onClose={() => setShowQRCodesNTFList(false)}>
+				<div className="ml-2 p-5 z-[999]">
+					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">View Nominations/ Travelling Forms List</p>
+					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">This is where the staff is able to access their past submitted forms.</p>
+					<div className="flex flex-col items-center justify-center">
+						<QRCodeSVG value={`${url}/ntf_view`} />
+						<button
+							onClick={() => copyToClipboard(`${url}/ntf_view`)}
+							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
+							Copy Link
+						</button>
+					</div>
+				</div>
+			</Modal>
+
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<Form {...form}>

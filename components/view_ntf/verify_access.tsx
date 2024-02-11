@@ -17,6 +17,7 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
     const [verifyStatus, setVerifyStatus] = useState(false);
     const [captcha, setCaptcha] = useState<string | null>();
     const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const isCompact = typeof window !== 'undefined' && window.innerWidth <= 640;
 
     const [atIdentifier, setAtIdentifier] = useState<string | null>(null);
     const [atCreatedAt, setAtCreatedAt] = useState<string | null>(null);
@@ -138,6 +139,7 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
                                     ref={recaptchaRef}
                                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
                                     onChange={setCaptcha}
+                                    size={isCompact ? "compact" : "normal"}
                                 />
                             </div>
                             <div className="mt-3 text-right">

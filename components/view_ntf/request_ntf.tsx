@@ -12,6 +12,7 @@ const RequestNTF = () => {
     const [submissionStatus, setSubmissionStatus] = useState(false);
     const [staffEmailID, setStaffEmailID] = useState('');
     const [captcha, setCaptcha] = useState<string | null>();
+    const isCompact = typeof window !== 'undefined' && window.innerWidth <= 640;
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -120,6 +121,7 @@ const RequestNTF = () => {
                                     <ReCAPTCHA
                                         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
                                         onChange={setCaptcha}
+                                        size={isCompact ? "compact" : "normal"}
                                     />
                                 </div>
                                 <div className="mt-3 text-right">

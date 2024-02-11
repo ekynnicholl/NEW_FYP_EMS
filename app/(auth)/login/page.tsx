@@ -22,6 +22,7 @@ export default function Login() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [captcha, setCaptcha] = useState<string | null>();
 	const recaptchaRef = useRef<ReCAPTCHA>(null);
+	const isCompact = typeof window !== 'undefined' && window.innerWidth <= 640;
 
 	// Toggle Password Visibility
 	const togglePasswordVisibility = () => {
@@ -242,6 +243,7 @@ export default function Login() {
 										ref={recaptchaRef}
 										sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
 										onChange={setCaptcha}
+										size={isCompact ? "compact" : "normal"}
 									/>
 								</div>
 
