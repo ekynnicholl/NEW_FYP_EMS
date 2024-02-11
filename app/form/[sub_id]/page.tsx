@@ -254,9 +254,9 @@ export default function AttendanceForm() {
 		fetchFacultyStudent();
 	}, []);
 
-	
-	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[];}[]>([]);
-	
+
+	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
+
 	// retrieve units according categories
 	useEffect(() => {
 		const fetchFacultyUnits = async () => {
@@ -265,7 +265,7 @@ export default function AttendanceForm() {
 				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
 				.eq('attsType', 2)
 				.order('attsCategory, attsName');
-				// .order('attsCategory, attsPosition');
+			// .order('attsCategory, attsPosition');
 
 			if (error) {
 				console.error('Error fetching faculty units:', error);
@@ -288,11 +288,12 @@ export default function AttendanceForm() {
 					id: category.attsCategory,
 					category: category.attsPosition,
 					name: category.attsName,
-					subcategories:uniqueSubcategories
+					subcategories: uniqueSubcategories
 						.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
 						.map(subcategory => ({
 							name: subcategory.attsName,
-							facultyUnit: subcategory.attsFacultyUnit }))
+							facultyUnit: subcategory.attsFacultyUnit
+						}))
 				}));
 
 
@@ -322,8 +323,8 @@ export default function AttendanceForm() {
 		switch (selectedOption) {
 			case 'Faculty of Business, Design and Arts':
 				return (
-					<>						
-						<option value="" disabled>Select Option</option>						
+					<>
+						<option value="" disabled>Select Option</option>
 						{categories
 							.filter(category => category.category === 1 || category.category === 3)
 							.map((category) => (
@@ -331,12 +332,12 @@ export default function AttendanceForm() {
 									{category.subcategories
 										.filter(subcategory => subcategory.facultyUnit === 1 || subcategory.facultyUnit === 3)
 										.map((subcategory, index) => (
-										<option key={index} value={subcategory.name}>
-											{subcategory.name}
-										</option>
-									))}							
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
 								</optgroup>
-							))}						
+							))}
 
 						<optgroup label="Not Mentioned Above">
 							<option value="Other">Other</option>
@@ -354,10 +355,10 @@ export default function AttendanceForm() {
 									{category.subcategories
 										.filter(subcategory => subcategory.facultyUnit === 2 || subcategory.facultyUnit === 3)
 										.map((subcategory, index) => (
-										<option key={index} value={subcategory.name}>
-											{subcategory.name}
-										</option>
-									))}
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
 								</optgroup>
 							))}
 
@@ -372,7 +373,30 @@ export default function AttendanceForm() {
 						Select Option
 					</option>
 				);
-		}		
+		}
+	};
+
+	const formatTimeToAMPM = (time: string | undefined) => {
+		if (!time) {
+			return '';
+		}
+
+		const [hours, minutes, seconds] = time.split(':');
+		let period = 'AM';
+
+		let formattedHours = parseInt(hours, 10);
+		if (formattedHours >= 12) {
+			period = 'PM';
+			formattedHours = formattedHours % 12 || 12;
+		}
+
+		return `${formattedHours}:${minutes}:${seconds} ${period}`;
+	};
+
+	const formatDate = (dateString: string) => {
+		const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+		const date = new Date(dateString);
+		return date.toLocaleDateString('en-GB', options);
 	};
 
 	return (
@@ -397,15 +421,35 @@ export default function AttendanceForm() {
 							Event Attendance
 						</p>
 						<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
+							<p>Please ensure you are attending the correct event,</p>
+							<br />
 							{eventData && (
 								<div>
 									<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
-									<p>Date: <span className="font-bold">{eventData.sub_eventsStartDate} - {eventData.sub_eventsEndDate}</span></p>
-									<p>Time: <span className="font-bold">{eventData.sub_eventsStartTime} - {eventData.sub_eventsEndTime}</span></p>
+									<p>
+										Date:{" "}
+										<span className="font-bold">
+											{formatDate(eventData.sub_eventsStartDate)} -{" "}
+											{formatDate(eventData.sub_eventsEndDate)}
+										</span>
+									</p>
+									<p>Time:{" "}
+										<span className="font-bold">
+											{formatTimeToAMPM(eventData.sub_eventsStartTime)} -{" "}
+											{formatTimeToAMPM(eventData.sub_eventsEndTime)}
+										</span>
+									</p>
 									<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
 								</div>
 							)}
-							<p>Contact us at <span className="font-bold">(123) 456-7890</span> or <span className="font-bold">no_reply@example.com</span></p>
+							<br />
+							<p>
+								Encountered a technical error? Contact us @{" "}
+								<span className="underline text-blue-700">
+									<a href="mailto:fypemsmaster369@gmail.com">fypemsmaster369@gmail.com</a>
+								</span>
+								.
+							</p>
 							<p className="pt-3 text-red-500 font-medium">* Required</p>
 						</div>
 					</div>
@@ -522,7 +566,7 @@ export default function AttendanceForm() {
 									onChange={event =>
 										setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 									}
-									
+
 								>
 									<option value="" disabled>
 										Select Faculty/ Unit
@@ -577,8 +621,10 @@ export default function AttendanceForm() {
 									defaultValue=""
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
 									required
-									onChange={event => {setInfo({ ...info, attFormsFacultyUnit: event.target.value });
-														handleSelectChange(event);}}						
+									onChange={event => {
+										setInfo({ ...info, attFormsFacultyUnit: event.target.value });
+										handleSelectChange(event);
+									}}
 								>
 									<option value="" disabled>Select Faculty/ Unit</option>
 									{facultyStudents.map((faculty, index) => (
@@ -611,7 +657,7 @@ export default function AttendanceForm() {
 									</select>
 								</div>
 							</div>
-						}						
+						}
 					</div>
 				)}
 
