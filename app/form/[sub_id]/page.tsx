@@ -403,7 +403,7 @@ export default function AttendanceForm() {
 		<div className="flex flex-col items-center min-h-screen bg-slate-100">
 			<form
 				onSubmit={handleSubmit}
-				className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[50px]">
+				className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
 				<div
 					className="mb-4 bg-white rounded-md relative"
 					style={{ height: "200px" }}>
@@ -666,7 +666,7 @@ export default function AttendanceForm() {
 						{authToken && (
 							<button
 								type="button"
-								className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base mr-3"
+								className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base mr-3"
 								onClick={() => {
 									router.push("/homepage")
 								}}
@@ -677,7 +677,7 @@ export default function AttendanceForm() {
 						{userType === 'visitor' ? (
 							<button
 								type="submit"
-								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 								onClick={() => {
 									if (info.attFormsStaffName) {
 										handleSubmit
@@ -689,7 +689,7 @@ export default function AttendanceForm() {
 						) : (
 							<button
 								type="submit"
-								className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+								className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 								onClick={() => {
 									if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
 										handleSubmit
