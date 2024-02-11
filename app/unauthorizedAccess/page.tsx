@@ -1,10 +1,27 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import Link from "next/link";
 import image_401 from "@/public/images/401.jpg";
+import cookie from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 const PageNotFound = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkIsUserLoggedIn = () => {
+      const authToken = cookie.get('authToken');
+      if (authToken) {
+        router.push("/homepage");
+      }
+    };
+
+    checkIsUserLoggedIn();
+  });
+
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900 p-5 -mt-12 lg:-mt-5">
+    <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 bg-white dark:bg-dark_mode_bg p-5 -mt-12 lg:-mt-5">
       <img src={image_401.src} alt="" className="w-[300px] lg:w-[420px]" />
       <div className="max-w-[546px] mx-auto w-full mt-6">
         <p className="text-slate-800 mb-2 lg:mb-4 text-xl lg:text-3xl font-bold">UNAUTHORIZED ACCESS!</p>

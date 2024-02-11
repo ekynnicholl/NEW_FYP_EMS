@@ -189,7 +189,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
                                 },
                                 formatter: function (value, context) {
                                     const percentage = (value / feedbackData.length) * 100;
-                                    return Math.round(percentage) + '%';
+                                    return percentage.toFixed(0) + '%';
                                 },
                             },
                         },

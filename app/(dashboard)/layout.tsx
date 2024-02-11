@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     // Define a function to change the view mode
     const handleViewModeChange = (newViewMode: number) => {
         setViewMode(newViewMode);
-        console.log(children);
+        // console.log(children);
     };
 
     const handeIsDarkModeChange = () => {
