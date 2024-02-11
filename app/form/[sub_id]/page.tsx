@@ -416,7 +416,7 @@ export default function AttendanceForm() {
 				</div>
 
 				<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
-					<div className="ml-1">
+					<div className="ml-1 mr-1">
 						<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
 							Event Attendance
 						</p>
