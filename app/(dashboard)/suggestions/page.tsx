@@ -4,24 +4,8 @@ import Suggestion from '@/components/suggestions/suggestion';
 import UpdateLogs from '@/components/suggestions/update_logs';
 import ToDo from '@/components/suggestions/to_do';
 import SuggestList from '@/components/suggestions/suggest_list';
-import cookie from 'js-cookie';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 export default function Home() {
-    const router = useRouter();
-
-    useEffect(() => {
-        const checkIsUserLoggedIn = () => {
-            const authToken = cookie.get('authToken');
-            if (!authToken) {
-                router.push("/unauthorizedAccess");
-            }
-        };
-
-        checkIsUserLoggedIn();
-    });
-
     return (
         <div className="">
             <div className="flex-1">

@@ -43,8 +43,6 @@ import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
 import darkLightStorage from '@/components/zustand/darkLightStorage';
-import cookie from 'js-cookie';
-import { useRouter } from "next/navigation";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AttendanceTable from "@/components/tables/attendanceTable";
 import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
@@ -170,17 +168,6 @@ type FeedbackDataType = {
 export default function Homepage() {
 	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
-	useEffect(() => {
-		const checkIsUserLoggedIn = () => {
-			const authToken = cookie.get('authToken');
-			if (!authToken) {
-				router.push("/unauthorizedAccess");
-			}
-		};
-
-		checkIsUserLoggedIn();
-	});
-
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
 
@@ -271,9 +258,6 @@ export default function Homepage() {
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const [showSubEventModal, setShowSubEventModal] = useState(false);
-
-	// This is for checking login and redirecting with router,
-	const router = useRouter();
 
 	// Function to fetch the 6 latest events
 	useEffect(() => {

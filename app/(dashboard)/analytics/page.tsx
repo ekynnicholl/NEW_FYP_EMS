@@ -6,23 +6,8 @@ import ExpenditureGraph from "@/components/analytics/ExpenditureGraph";
 import BarGraphAttendance from "@/components/analytics/BarGraphAttendance";
 import PieChart from "@/components/analytics/PieChart";
 import { SetStateAction, useEffect, useState } from "react";
-import cookie from 'js-cookie';
-import { useRouter } from "next/navigation";
 
 export default function Home() {
-	const router = useRouter();
-
-	useEffect(() => {
-		const checkIsUserLoggedIn = () => {
-			const authToken = cookie.get('authToken');
-			if (!authToken) {
-				router.push("/unauthorizedAccess");
-			}
-		};
-
-		checkIsUserLoggedIn();
-	})
-
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 
