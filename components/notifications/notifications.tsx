@@ -221,11 +221,11 @@ const NotificationsPage = () => {
                             <div>
                                 {selectedTab == 'all' ? (
                                     <div className="text-gray-400 text-[12px] text-center">
-                                        You're all caught up! You have no new notifications.
+                                        You&apos;re all caught up! You have no new notifications.
                                     </div>
                                 ) : (
                                     <div className="text-gray-400 text-[12px] text-center">
-                                        You're all caught up! You have no unread notifications.
+                                        You&apos;re all caught up! You have no unread notifications.
                                     </div>
                                 )}
                             </div>
