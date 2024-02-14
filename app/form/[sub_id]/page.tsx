@@ -108,7 +108,6 @@ export default function AttendanceForm() {
 			if (currentTime < startTimeWindow) {
 				const eventStartTimeString = startTimeWindow.toISOString();
 				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
-				router.push('/notFound?from=start_att');
 				return;
 			}
 
