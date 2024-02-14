@@ -3,11 +3,27 @@ const ToDo = () => {
         <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-1/2">
             <h1 className="font-bold text-[20px] dark:text-dark_text">Future/ Upcoming Updates</h1>
             <div className="border-t border-gray-300 my-2"></div>
-            <div className="dark:text-dark_text">
+            <div className="dark:text-dark_text text-justify">
                 <ul className="list-disc pl-5">
-                    <li> <span className="text-red-500">Combine graphs according to sections based on HR requirement for feedback forms </span> (Requested by Ms. Bibiana).</li>
-                    <li> <span className="text-green-500">Added visitor option for attendance forms</span>.</li>
-                    <li>Notifications module for Nominations/ Travelling Form (UI).</li>
+                    <li> <span className="text-green-500">Combine graphs according to sections based on HR requirement for feedback forms (Requested by Ms. Bibiana).</span></li>
+                    <li> <span className="text-green-500">Added visitor option for attendance forms.</span></li>
+                    <li> <span className="text-green-500">Notifications module for Nominations/ Travelling Form (UI).</span></li>
+                    <ul className="list-disc pl-10">
+                        <li><span className="text-green-500">All the statuses of the forms will create a new notification i.e., reviewing, approved, rejected.</span></li>
+                        <li><span className="text-green-500">Users can choose to delete or mark notifications as read. View more here: <a className="text-blue-600" href="https://new-fyp-ems.vercel.app/notifications">https://new-fyp-ems.vercel.app/notifications</a></span></li>
+                    </ul>
+                    <li> <span className="text-green-500">View past Nominations/ Travelling Forms for staff.</span></li>
+                    <ul className="list-disc pl-10">
+                        <li><span className="text-green-500">Users can now view all their submitted Nominations/ Travelling Forms using either their Staff ID or email. Access it via here: </span><a className="text-blue-600" href="https://new-fyp-ems.vercel.app/ntf_view">https://new-fyp-ems.vercel.app/ntf_view</a></li>
+                        <li><span className="text-red-500">Ability to view detailed form details still in progress.</span></li>
+                    </ul>
+                    <li> <span className="text-green-500">Google reCaptcha has been added to certain forms to prevent spams.</span></li>
+                    <li> <span className="text-green-500">Loading has been updated so unauthorized access will not see any slight view of the layout before being redirected to the unauthorized access page.</span></li>
+                    <li> <span className="text-green-500">Dark/ light mode is now working.</span></li>
+                    <li> <span className="text-green-500">Attendance forms courses/ units dropdown can now be dynamically fetched from database.</span></li>
+                    <ul className="list-disc pl-10">
+                        <li><span className="text-red-500">Ability to change the courses/ units still in progress.</span></li>
+                    </ul>
                     <li>Geolocation Attendance Tracking.</li>
                     <li>Nominations/ Travelling Form daily reminder to review.</li>
                 </ul>
