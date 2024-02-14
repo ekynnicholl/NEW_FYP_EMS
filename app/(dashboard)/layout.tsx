@@ -35,11 +35,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         checkIsUserLoggedIn();
     }, [router]);
 
-    useEffect(() => {
-        // console.log('Current viewMode:', useViewModeStore.getState().viewMode);
-        // console.log('Current viewMode:', darkLightStorage.getState().isDarkMode);
-    }, []);
-
     // Define a function to change the view mode
     const handleViewModeChange = (newViewMode: number) => {
         setViewMode(newViewMode);
@@ -53,12 +48,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         <>
             {isLoading && (
-                // Loading state, you can customize this as needed
                 <div className="flex justify-center items-center h-screen bg-white">
                     <img src={loadingGIF.src} alt="" className="w-[300px] lg:w-[420px]" />
                 </div>
             )}
-            {!isLoading && isAuthenticated !== null && (
+            {!isLoading && isAuthenticated && (
                 <div className="flex justify-start bg-slate-100">
                     <div className="sm:hidden">
                         <SideBarMobile />
