@@ -9,9 +9,6 @@ import { IoMdAdd, IoIosAddCircleOutline, IoIosCloseCircleOutline, IoMdArrowDropd
 import { Tab } from '@headlessui/react';
 import DeleteModal from "@/components/EditEvent_Modal";
 import AddFacultyUnitModal from "@/components/EditEvent_Modal";
-import EditSubEvent_Modal from "@/components/EditSubEvent_Modal";
-import { tr } from "date-fns/locale";
-import { error } from "console";
 
 const AttendanceSettings = () => {
 	const supabase = createClientComponentClient();
@@ -95,48 +92,48 @@ const AttendanceSettings = () => {
 	
 
    // retrieve units according categories
+   const fetchFacultyUnits = async () => {
+		const { data, error } = await supabase
+			.from('attendance_settings')
+			.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
+			.eq('attsType', 2)
+			.order('attsCategory, attsName');
+			// .order('attsCategory, attsPosition');
+
+		if (error) {
+			console.error('Error fetching faculty units:', error);
+			return;
+		}
+
+		if (data) {
+			setFacultyUnitsStudents(data);
+
+			// Extract unique categories and subcategories
+			const uniqueCategories = Array.from(new Set(data
+				.filter(unit => unit.attsCategory > 0)));
+
+			const uniqueSubcategories = Array.from(new Set(data
+				.filter(unit => unit.attsSubcategory > 0)));
+
+			// Create categories array with subcategories
+			const categoriesArray = uniqueCategories.map((category) => ({
+				id: category.attsCategory,
+				category: category.attsPosition,
+				name: category.attsName,
+				subcategories:uniqueSubcategories
+					.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
+					.map(subcategory => ({
+						id: subcategory.attsID,
+						name: subcategory.attsName,
+						facultyUnit: subcategory.attsFacultyUnit }))
+			}));
+
+
+			setCategories(categoriesArray);
+		}
+	};
+
 	useEffect(() => {
-		const fetchFacultyUnits = async () => {
-			const { data, error } = await supabase
-				.from('attendance_settings')
-				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
-				.eq('attsType', 2)
-				.order('attsCategory, attsName');
-				// .order('attsCategory, attsPosition');
-
-			if (error) {
-				console.error('Error fetching faculty units:', error);
-				return;
-			}
-
-			if (data) {
-				setFacultyUnitsStudents(data);
-
-				// Extract unique categories and subcategories
-				const uniqueCategories = Array.from(new Set(data
-					.filter(unit => unit.attsCategory > 0)));
-
-				const uniqueSubcategories = Array.from(new Set(data
-					.filter(unit => unit.attsSubcategory > 0)));
-
-				// Create categories array with subcategories
-				const categoriesArray = uniqueCategories.map((category) => ({
-					id: category.attsCategory,
-					category: category.attsPosition,
-					name: category.attsName,
-					subcategories:uniqueSubcategories
-						.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
-						.map(subcategory => ({
-							id: subcategory.attsID,
-							name: subcategory.attsName,
-							facultyUnit: subcategory.attsFacultyUnit }))
-				}));
-
-
-				setCategories(categoriesArray);
-			}
-		};
-
 		fetchFacultyUnits();
 	}, []);
 
@@ -146,8 +143,8 @@ const AttendanceSettings = () => {
 	const [editOption, setEditOption] = useState("");
 	const [cancelOptionUpdate, setCancelOptionUpdate] = useState(false);
 	const [updateOption, setUpdateOption] = useState(false);
-	const [isButtonActive, setIsButtonActive] = useState(true);
 	const [newFacultyName, setNewFacultyName] = useState("");
+	const [newCategory, setNewCategory] = useState("");
 	const [activeTab, setActiveTab] = useState('Staff');
 	const [category, setCategory] = useState("");
 	const [selectedOption, setSelectedOption] = useState('');
@@ -223,9 +220,10 @@ const AttendanceSettings = () => {
 		setShowDeleteModal(true);
 	}
 
-	const [newCourse, setNewCourse] = useState<FacultyUnit[]>([]);
-
-	const hanldeNewCourseUpdate()
+	const [newCourse, setNewCourse] = useState({
+		attsSubcategory: 0,
+		attsFacultyUnit: 0,
+	});
 
 	const createNewFacultyUnit = async(newValue: string) => {
 		try{
@@ -260,36 +258,64 @@ const AttendanceSettings = () => {
 			}
 	}
 
-	const createNewCourse = async(facultyUnit: number, categoryID: number, subcategoryID: string, categoryPosition: number, newCourse: string) => {
+	const createNewCategory = async(newCategory: string, categoryID: number, categoryPosition: number) => {
+		try{
+			const {data, error} = await supabase
+				.from('attendance_settings')
+				.insert({
+					attsName: newCategory,
+					attsCategory: categoryID,
+					attsSubcategory: 0,
+					attsType: 2,
+					attsPosition: categoryPosition,
+					attsFacultyUnit: 0
+				})
+
+				if (error) {
+					console.error('Error creating new faculty unit:', error);
+					return;
+				}
+			
+			setNewCategory('');
+			fetchFacultyUnits();
+		} catch(error) {
+			console.error('Error creating new category:', error);
+		}
+	}
+
+	const openAddCourseModal = async(
+		course_subcategory: number,
+		course_facultyUnit: number
+	) => {
+			setNewCourse({
+				attsSubcategory: course_subcategory,
+				attsFacultyUnit: course_facultyUnit
+		})
+
+		setShowCreateOptionModal(true);
+	}
+
+	const createNewCourse = async(newCourse: string, categoryNum: number, facultyUnit: number ) => {
 		try{
 			const {data, error} = await supabase
 				.from('attendance_settings')
 				.insert({
 					attsName: newCourse,
 					attsCategory: 0,
-					attsSubcategory: categoryID,
+					attsSubcategory: categoryNum,
 					attsType: 2,
 					attsPosition: 0,
-					attsFacultyUnit: facultyUnit + 1
+					attsFacultyUnit: facultyUnit
 				})
-
-				setCategories(prevCategories => {
-					return prevCategories.map(category => {
-						const updatedSubcategories = category.subcategories.map(subcategory => {
-							if (subcategory.id === subcategoryID) {
-								return { ...subcategory, name: newCourse };
-							}
-							return subcategory;
-						});
-						return { ...category, subcategories: updatedSubcategories };
-					});
-				});
-
+				
 			setNewFacultyName(''); 
+			fetchFacultyUnits();
 		} catch (error){
 			console.error('Error creating new course:', error);
 		}
 	}
+
+	const [catFacultyID, setCatFacultyID] = useState(0);
 
 	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
 		setSelectedOption(event.target.value);
@@ -478,9 +504,9 @@ const AttendanceSettings = () => {
 											/><br/>
 											
 											<button
-												className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right dark:bg-slate-800 mt-16 mr-3 float-right ${newFacultyName.length === 0 ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+												className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right dark:bg-slate-800 mt-16 mr-3 float-right ${!newFacultyName ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
 												onClick={() => {createNewFacultyUnit(newFacultyName);}}
-												disabled={newFacultyName.length === 0}
+												disabled={!newFacultyName}
 											>Add</button>
 										
 										</div>
@@ -497,7 +523,7 @@ const AttendanceSettings = () => {
 												defaultValue=""
 												className="w-full px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
 												required
-												onChange={event => handleSelectChange(event)}					
+												onChange={event => {handleSelectChange(event); setCatFacultyID(event.target.selectedIndex);}}					
 											>
 												<option value="" disabled>Select Faculty/ Unit</option>
 												{facultyStudents.map((faculty, index) => (
@@ -505,22 +531,24 @@ const AttendanceSettings = () => {
 														{faculty}
 													</option>
 												))}
+												<option value="Both">Both</option>
 											</select>
 											
 											{selectedOption &&
 												<>
 													<input type="text" 
 													placeholder="Enter New Category..." 
-													value={newFacultyName}
+													value={newCategory}
 													className="mt-7 border-[1px] border-slate-200 rounded-sm w-[373px] px-2 py-1"
-													onChange={e => setNewFacultyName(e.target.value)}
+													onChange={e => setNewCategory(e.target.value)}
 													/><br/>
 												</>											
 											}
 
 											<button
-												className=" bg-slate-900 text-white rounded-lg py-3 px-[50px] lg:px-[25px] font-medium hover:bg-red-600 focus:shadow-outline focus:outline-none focus:ring-2 hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800 mt-16 mr-3 float-right"
-												onClick={() => {createNewFacultyUnit(newFacultyName);}}					
+												className={` rounded-lg py-3 px-[50px] lg:px-[25px] font-medium dark:bg-slate-800 mt-16 mr-3 float-right  ${!newCategory ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  focus:shadow-outline focus:outline-none focus:ring-2 bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+												onClick={() => {createNewCategory(newCategory, categories.length + 1, catFacultyID);}}	
+												disabled = {!newCategory}				
 											>Add</button>
 										</div>			
 
@@ -536,11 +564,16 @@ const AttendanceSettings = () => {
 														.filter(cat => cat.category === category || cat.category === 3)
 														.map(categories => (
 														<React.Fragment key={categories.id}>
+															
 															<div className="w-1/2 mt-5">
 																<div className=" flex items-center justify-between border-[1px] bg-slate-800 text-white py-2 px-4 mt-2 rounded-t-md">
 																	<p>{categories.name}</p>
 																	<button className="flex cursor-pointer text-white text-2xl"
-																		onClick={() => {setShowCreateOptionModal(true); setCategory(categories.name)}}
+																		onClick={() => {
+																			setShowCreateOptionModal(true); 
+																			setCategory(categories.name);
+																			openAddCourseModal(categories.id, index + 1);
+																		}}
 																	>																		
 																			<IoIosAddCircleOutline/>
 																			<span className="text-base ml-1 mr-2">Add Course</span>
@@ -554,7 +587,7 @@ const AttendanceSettings = () => {
 																	</div>		 */}
 																</div>																													
 																
-																	<table className="w-full shadow-sm">
+																<table className="w-full shadow-sm">
 																	<thead>
 																		<tr>
 																			<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">Course</th>
@@ -564,8 +597,9 @@ const AttendanceSettings = () => {
 	
 																	<tbody>
 																		{categories.subcategories
-																		.filter(subcategory => subcategory.facultyUnit === category || subcategory.facultyUnit === 3)
-																		.map(subcategory => (
+																			.filter(subcategory => subcategory.facultyUnit === category || subcategory.facultyUnit === 3)
+																			.map(subcategory => (
+																		
 																			subcategory.id === editOption && updateOption && !cancelOptionUpdate ? (
 																				<tr>
 																					<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
@@ -597,10 +631,10 @@ const AttendanceSettings = () => {
 																				</tr>	
 																			):(
 																				<tr>
-																					<td key={index} className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/2">
+																					<td key={index} className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-1/2">
 																						{subcategory.name}
 																					</td>
-																					<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
+																					<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-3/4">
 																						<div className="flex ml-40">
 																							<button onClick={() => {
 																								handleEditOption(subcategory.id);
@@ -620,6 +654,7 @@ const AttendanceSettings = () => {
 																	</tbody>
 																</table>
 															</div>
+															
 														</React.Fragment>
 														))}
 												</div>
@@ -673,7 +708,12 @@ const AttendanceSettings = () => {
 										onClick={() => setShowCreateOptionModal(false)}>Cancel</button>
 									<button 
 										className="border-2 rounded-md bg-red-600 ml-2 text-white px-4 py-3 font-semibold hover:bg-red-700 duration-300 ease-in-out"
-										onClick={() => {createNewCourse(newFacultyName); setShowCreateOptionModal(false);}}>Submit</button>
+										onClick={() => {
+											createNewCourse(newFacultyName, newCourse.attsSubcategory, newCourse.attsFacultyUnit); 
+											setShowCreateOptionModal(false);}}
+										>
+											Submit
+									</button>
 								</div>								
 							</div>
 						</AddFacultyUnitModal>
