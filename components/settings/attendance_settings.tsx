@@ -631,8 +631,8 @@ const AttendanceSettings = () => {
 																							</td>
 																						</tr>
 																					) : (
-																						<tr>
-																							<td key={index} className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-1/2">
+																						<tr key={index}>
+																							<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-1/2">
 																								{subcategory.name}
 																							</td>
 																							<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-3/4">
