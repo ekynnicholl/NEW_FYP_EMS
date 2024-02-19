@@ -274,7 +274,7 @@ export default function Homepage() {
 				)
 				.order("intFEventStartDate", { ascending: true })
 				// .range(0, 5)
-				.eq("isHidden", "0");
+				.eq("intFIsHidden", 0);
 
 			if (internalError) {
 				console.error("Error fetching latest event:", internalError);
@@ -362,7 +362,7 @@ export default function Homepage() {
 					'intFEventEndDate',
 					currentDate.toISOString(),
 				)
-				.eq("isHidden", 0);
+				.eq("intFIsHidden", 0);
 
 			if (error) {
 				throw new Error(`Error fetching total upcoming events: ${error.message}`);
