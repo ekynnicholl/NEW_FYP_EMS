@@ -361,7 +361,8 @@ export default function Homepage() {
 				.gte(
 					'intFEventEndDate',
 					currentDate.toISOString(),
-				);
+				)
+				.eq("isHidden", 0);
 
 			if (error) {
 				throw new Error(`Error fetching total upcoming events: ${error.message}`);
@@ -395,7 +396,8 @@ export default function Homepage() {
 				.lt(
 					'intFEventEndDate',
 					currentDate.toISOString(),
-				);
+				)
+				.eq("isHidden", 0);
 
 			if (error) {
 				throw new Error(`Error fetching total past events: ${error.message}`);

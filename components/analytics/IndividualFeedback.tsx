@@ -55,6 +55,16 @@ const sectionTitlesMap: { [key: string]: string } = {
     'fbSectionD': 'Section D: Recommendation',
 };
 
+type ExtendedChartOptions = {
+    plugins?: {
+        // Your plugins configuration here
+    };
+};
+
+interface ExtendedChart extends Chart {
+    options: ExtendedChartOptions;
+}
+
 const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData }) => {
     Chart.register(ChartDataLabels);
     const chartRef = useRef<HTMLCanvasElement | null>(null);
@@ -147,6 +157,16 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
 
             const ctx = chartRef.current.getContext('2d');
 
+            var backgroundColor = 'white';
+            Chart.register({
+                id: 'backgroundPlugin',
+                beforeDraw: function (c: any) {
+                    var ctx = c.ctx;
+                    ctx.fillStyle = backgroundColor;
+                    ctx.fillRect(0, 0, c.width, c.height);
+                }
+            });
+
             if (ctx) {
                 const chartData = prepareChartData();
                 const newChart = new Chart(ctx, {
@@ -173,7 +193,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
                         plugins: {
                             legend: {
                                 display: true,
-                                position: 'left', // You can set the position (top, bottom, left, right)
+                                position: 'left', // (top, bottom, left, right)
                                 labels: {
                                     color: 'black',
                                 },
@@ -209,14 +229,52 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
         };
     }, []);
 
+    const downloadChart = () => {
+        if (chartRef.current) {
+            const originalCanvas = chartRef.current;
+            const originalCtx = originalCanvas.getContext('2d');
+
+            // Create a new canvas with a margin
+            const newCanvas = document.createElement('canvas');
+            const newCtx = newCanvas.getContext('2d');
+
+            if (originalCtx && newCtx) {
+                const margin = 50; // Set a margin so the graph looks better,
+
+                newCanvas.width = originalCanvas.width + 2 * margin;
+                newCanvas.height = originalCanvas.height + 2 * margin;
+
+                newCtx.fillStyle = 'white';
+                newCtx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+                newCtx.drawImage(originalCanvas, margin, margin);
+
+                const dataUrl = newCanvas.toDataURL('image/png', 1.0);
+
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'Feedback_Chart.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    };
+
     return (
         <div className="w-full">
             <h2 className="text-left font-bold text-[24px]">{sectionTitlesMap[columnStart]} ({feedbackData.length} Responses)</h2>
             <div className="border-t border-gray-400 my-2 mr-10"></div>
             <div className="mt-10">
-                <div className="w-full h-[580px]">
+                <div className="w-full h-[580px] bg-white">
                     <canvas width={400} height={200} ref={chartRef} />
                 </div>
+                <button
+                    type="button"
+                    className=" bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729] mt-5"
+                    onClick={downloadChart}>
+                    Download Chart
+                </button>
             </div>
         </div>
     );
