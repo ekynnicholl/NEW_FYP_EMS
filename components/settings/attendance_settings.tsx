@@ -1,7 +1,7 @@
 "use client";
 
 import { IoMdArrowDroprightCircle, IoMdArrowDropleftCircle } from "react-icons/io";
-import React, { useState, useEffect, SetStateAction  } from 'react';
+import React, { useState, useEffect, SetStateAction } from 'react';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { HiPencilAlt } from "react-icons/hi";
 import { BsFillTrash3Fill } from "react-icons/bs";
@@ -12,16 +12,16 @@ import AddFacultyUnitModal from "@/components/EditEvent_Modal";
 
 const AttendanceSettings = () => {
 	const supabase = createClientComponentClient();
-    const [isExpanded, setIsExpanded] = useState(false);
+	const [isExpanded, setIsExpanded] = useState(false);
 	const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
 
-    const toggleExpansion = () => {
-        setIsExpanded(!isExpanded);
-    };
+	const toggleExpansion = () => {
+		setIsExpanded(!isExpanded);
+	};
 
 	const toggleCategoryExpansion = () => {
-        setIsCategoryExpanded(!isCategoryExpanded);
-    };
+		setIsCategoryExpanded(!isCategoryExpanded);
+	};
 
 	type FacultyUnit = {
 		attsID: string;
@@ -39,7 +39,7 @@ const AttendanceSettings = () => {
 	const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
 	const [facultyUnitsStudents, setFacultyUnitsStudents] = useState<FacultyUnit[]>([]);
 
-    useEffect(() => {
+	useEffect(() => {
 		// Function to fetch data from Supabase
 		const fetchFacultyOptions = async () => {
 			try {
@@ -87,18 +87,18 @@ const AttendanceSettings = () => {
 		fetchFacultyStudent();
 	}, []);
 
-	
-	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { id: string; name: string; facultyUnit: number }[];}[]>([]);
-	
 
-   // retrieve units according categories
-   const fetchFacultyUnits = async () => {
+	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { id: string; name: string; facultyUnit: number }[]; }[]>([]);
+
+
+	// retrieve units according categories
+	const fetchFacultyUnits = async () => {
 		const { data, error } = await supabase
 			.from('attendance_settings')
 			.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
 			.eq('attsType', 2)
 			.order('attsCategory, attsName');
-			// .order('attsCategory, attsPosition');
+		// .order('attsCategory, attsPosition');
 
 		if (error) {
 			console.error('Error fetching faculty units:', error);
@@ -120,12 +120,13 @@ const AttendanceSettings = () => {
 				id: category.attsCategory,
 				category: category.attsPosition,
 				name: category.attsName,
-				subcategories:uniqueSubcategories
+				subcategories: uniqueSubcategories
 					.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
 					.map(subcategory => ({
 						id: subcategory.attsID,
 						name: subcategory.attsName,
-						facultyUnit: subcategory.attsFacultyUnit }))
+						facultyUnit: subcategory.attsFacultyUnit
+					}))
 			}));
 
 
@@ -149,7 +150,7 @@ const AttendanceSettings = () => {
 	const [category, setCategory] = useState("");
 	const [selectedOption, setSelectedOption] = useState('');
 
-	
+
 
 	const handleEditOption = (optionID: string) => {
 		setEditOption(optionID);
@@ -161,7 +162,7 @@ const AttendanceSettings = () => {
 				.from('attendance_settings')
 				.update({ attsName: facultyName })
 				.eq('attsID', facultyID);
-	
+
 			if (error) {
 				console.error('Error updating faculty name: ', error);
 				return;
@@ -178,7 +179,7 @@ const AttendanceSettings = () => {
 					return { ...category, subcategories: updatedSubcategories };
 				});
 			});
-	
+
 			setEditedFacultyName('');
 
 		} catch (error) {
@@ -188,13 +189,13 @@ const AttendanceSettings = () => {
 
 	//This is to delete the Faculty / Unit from the drop down list
 	const handleDeleteFacultyName = async (facultyID: string) => {
-		try{
-			const {error} = await supabase
+		try {
+			const { error } = await supabase
 				.from('attendance_settings')
 				.delete()
 				.eq('attsID', facultyID);
 
-			if(error){
+			if (error) {
 				console.error('Errror deleting faculty name: ', error);
 				return;
 			}
@@ -208,7 +209,7 @@ const AttendanceSettings = () => {
 
 			setShowDeleteModal(false);
 
-		}catch (error){
+		} catch (error) {
 			console.log(error);
 		}
 	}
@@ -225,9 +226,9 @@ const AttendanceSettings = () => {
 		attsFacultyUnit: 0,
 	});
 
-	const createNewFacultyUnit = async(newValue: string) => {
-		try{
-			const {data, error} = await supabase
+	const createNewFacultyUnit = async (newValue: string) => {
+		try {
+			const { data, error } = await supabase
 				.from('attendance_settings')
 				.insert({
 					attsName: newValue,
@@ -238,29 +239,29 @@ const AttendanceSettings = () => {
 					attsFacultyUnit: 0
 				})
 
-				if (error) {
-					console.error('Error creating new faculty unit:', error);
-					return;
-				}
-
-				 // Fetch the updated list of faculty units from the database
-				 const { data: updatedFacultyUnits, error: fetchError } = await supabase
-					.from('attendance_settings')
-					.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
-					.eq('attsType', 1)
-					.order('attsName');
-
-				setFacultyUnits(updatedFacultyUnits || []);
-				setNewFacultyName(''); 
-
-			} catch (error) {
+			if (error) {
 				console.error('Error creating new faculty unit:', error);
+				return;
 			}
+
+			// Fetch the updated list of faculty units from the database
+			const { data: updatedFacultyUnits, error: fetchError } = await supabase
+				.from('attendance_settings')
+				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
+				.eq('attsType', 1)
+				.order('attsName');
+
+			setFacultyUnits(updatedFacultyUnits || []);
+			setNewFacultyName('');
+
+		} catch (error) {
+			console.error('Error creating new faculty unit:', error);
+		}
 	}
 
-	const createNewCategory = async(newCategory: string, categoryID: number, categoryPosition: number) => {
-		try{
-			const {data, error} = await supabase
+	const createNewCategory = async (newCategory: string, categoryID: number, categoryPosition: number) => {
+		try {
+			const { data, error } = await supabase
 				.from('attendance_settings')
 				.insert({
 					attsName: newCategory,
@@ -271,33 +272,33 @@ const AttendanceSettings = () => {
 					attsFacultyUnit: 0
 				})
 
-				if (error) {
-					console.error('Error creating new faculty unit:', error);
-					return;
-				}
-			
+			if (error) {
+				console.error('Error creating new faculty unit:', error);
+				return;
+			}
+
 			setNewCategory('');
 			fetchFacultyUnits();
-		} catch(error) {
+		} catch (error) {
 			console.error('Error creating new category:', error);
 		}
 	}
 
-	const openAddCourseModal = async(
+	const openAddCourseModal = async (
 		course_subcategory: number,
 		course_facultyUnit: number
 	) => {
-			setNewCourse({
-				attsSubcategory: course_subcategory,
-				attsFacultyUnit: course_facultyUnit
+		setNewCourse({
+			attsSubcategory: course_subcategory,
+			attsFacultyUnit: course_facultyUnit
 		})
 
 		setShowCreateOptionModal(true);
 	}
 
-	const createNewCourse = async(newCourse: string, categoryNum: number, facultyUnit: number ) => {
-		try{
-			const {data, error} = await supabase
+	const createNewCourse = async (newCourse: string, categoryNum: number, facultyUnit: number) => {
+		try {
+			const { data, error } = await supabase
 				.from('attendance_settings')
 				.insert({
 					attsName: newCourse,
@@ -307,10 +308,10 @@ const AttendanceSettings = () => {
 					attsPosition: 0,
 					attsFacultyUnit: facultyUnit
 				})
-				
-			setNewFacultyName(''); 
+
+			setNewFacultyName('');
 			fetchFacultyUnits();
-		} catch (error){
+		} catch (error) {
 			console.error('Error creating new course:', error);
 		}
 	}
@@ -325,13 +326,13 @@ const AttendanceSettings = () => {
 		switch (selectedOption) {
 			case 'Faculty of Business, Design and Arts':
 				return (
-					<>						
-						<option value="" disabled>Select Category</option>						
+					<>
+						<option value="" disabled>Select Category</option>
 						{categories
 							.filter(category => category.category === 1 || category.category === 3)
 							.map((category, index) => (
 								<option key={index} value={category.name}>
-										{category.name}
+									{category.name}
 								</option>
 							))}
 					</>
@@ -344,7 +345,7 @@ const AttendanceSettings = () => {
 							.filter(category => category.category === 2 || category.category === 3)
 							.map((category, index) => (
 								<option key={index} value={category.name}>
-										{category.name}
+									{category.name}
 								</option>
 							))}
 					</>
@@ -355,42 +356,42 @@ const AttendanceSettings = () => {
 						Select Category
 					</option>
 				);
-		}		
+		}
 	};
 
-    return (
-        <div className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? 'max-w-full' : 'max-w-[25%]'}`}>
-            <div className="flex items-center">
-                <h1 className="font-bold text-[20px] dark:text-dark_text">Attendance Forms Settings</h1>
-                <div onClick={toggleExpansion} className="ml-auto cursor-pointer">
-                    {isExpanded ? (
-                        <IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
-                    ) : (
-                        <IoMdArrowDroprightCircle className="text-[30px] dark:text-dark_text" />
-                    )}
-                </div>
-            </div>
-            <div className="border-t border-gray-300 my-2"></div>
-            {isExpanded ? (
-                <div className="overflow-y-auto max-h-fit">
-                    <div className="overflow-y-auto max-h-[500px]">
-                        <div>
-                            <p>Change the options for the drop-down menu for students and staff in the attendance forms.</p>
-                        </div>
+	return (
+		<div className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? 'max-w-full' : 'max-w-[25%]'}`}>
+			<div className="flex items-center">
+				<h1 className="font-bold text-[20px] dark:text-dark_text">Attendance Forms Settings</h1>
+				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
+					{isExpanded ? (
+						<IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
+					) : (
+						<IoMdArrowDroprightCircle className="text-[30px] dark:text-dark_text" />
+					)}
+				</div>
+			</div>
+			<div className="border-t border-gray-300 my-2"></div>
+			{isExpanded ? (
+				<div className="overflow-y-auto max-h-fit">
+					<div className="overflow-y-auto max-h-[500px]">
+						<div>
+							<p>Change the options for the drop-down menu for students and staff in the attendance forms.</p>
+						</div>
 						<div>
 							<Tab.Group>
 								<Tab.List className="mt-3 ml-2">
-									<Tab 
+									<Tab
 										className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
 										${activeTab === 'Staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'}`}
 										onClick={() => setActiveTab('Staff')}>
-											Staff
+										Staff
 									</Tab>
-									<Tab 
+									<Tab
 										className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
 										${activeTab === 'Student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'}`}
 										onClick={() => setActiveTab('Student')}>
-											Student
+										Student
 									</Tab>
 								</Tab.List>
 
@@ -407,7 +408,7 @@ const AttendanceSettings = () => {
 													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
 														<p className="-ml-56">Faculty / Unit</p>
 													</th>
-													
+
 													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
 														Action
 													</th>
@@ -422,35 +423,35 @@ const AttendanceSettings = () => {
 															</td>
 
 															<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
-																<input type="text" 
+																<input type="text"
 																	placeholder="Enter Faculty / Unit..."
-																	className="border-2 ml-3 px-2 py-1 text-base w-full" 
+																	className="border-2 ml-3 px-2 py-1 text-base w-full"
 																	value={editedFacultyName}
-																	onChange={e => setEditedFacultyName(e.target.value)}/>
+																	onChange={e => setEditedFacultyName(e.target.value)} />
 															</td>
 
 															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-																<button 
+																<button
 																	className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
 																	onClick={() => {
-																		if(editedFacultyName.length > 0){
+																		if (editedFacultyName.length > 0) {
 																			setFacultyUnits(prevFacultyUnits => {
-																					const updatedFacultyUnits = [...prevFacultyUnits];
-																					updatedFacultyUnits[index].attsName = editedFacultyName;
-																					return updatedFacultyUnits;
-																				});
+																				const updatedFacultyUnits = [...prevFacultyUnits];
+																				updatedFacultyUnits[index].attsName = editedFacultyName;
+																				return updatedFacultyUnits;
+																			});
 
 																			handleUpdateFacultyName(faculty.attsID, editedFacultyName);
-																		}																
-																		
+																		}
+
 																		setUpdateOption(false);
 																	}}
 																>
 																	Update
 																</button>
-																<button 
+																<button
 																	className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
-																	onClick={() => {setCancelOptionUpdate(true); }}
+																	onClick={() => { setCancelOptionUpdate(true); }}
 																>
 																	Cancel
 																</button>
@@ -496,25 +497,25 @@ const AttendanceSettings = () => {
 												<span className="text-base text-slate-100 ml-[2px] -mt-[2.5px]">Add Faculty / Unit</span>
 											</button> */}
 											<p className="font-bold text-md">Add New Faculty / Unit</p>
-											<input type="text" 
-												placeholder="Enter Faculty / Unit..." 
+											<input type="text"
+												placeholder="Enter Faculty / Unit..."
 												value={newFacultyName}
 												className="mt-7 border-[1px] border-slate-200 rounded-sm w-[360px] px-2 py-1"
 												onChange={e => setNewFacultyName(e.target.value)}
-											/><br/>
-											
+											/><br />
+
 											<button
 												className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right dark:bg-slate-800 mt-16 mr-3 float-right ${!newFacultyName ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
-												onClick={() => {createNewFacultyUnit(newFacultyName);}}
+												onClick={() => { createNewFacultyUnit(newFacultyName); }}
 												disabled={!newFacultyName}
 											>Add</button>
-										
+
 										</div>
 									</Tab.Panel>
 
 									{/* Settings for Student */}
 									<Tab.Panel>
-										<div className="border-2 p-7 mt-12 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right w-1/4">                                                                
+										<div className="border-2 p-7 mt-12 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right w-1/4">
 											<p className="font-bold text-md">Add New Category</p>
 
 											<select
@@ -523,7 +524,7 @@ const AttendanceSettings = () => {
 												defaultValue=""
 												className="w-full px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
 												required
-												onChange={event => {handleSelectChange(event); setCatFacultyID(event.target.selectedIndex);}}					
+												onChange={event => { handleSelectChange(event); setCatFacultyID(event.target.selectedIndex); }}
 											>
 												<option value="" disabled>Select Faculty/ Unit</option>
 												{facultyStudents.map((faculty, index) => (
@@ -533,27 +534,27 @@ const AttendanceSettings = () => {
 												))}
 												<option value="Both">Both</option>
 											</select>
-											
+
 											{selectedOption &&
 												<>
-													<input type="text" 
-													placeholder="Enter New Category..." 
-													value={newCategory}
-													className="mt-7 border-[1px] border-slate-200 rounded-sm w-[373px] px-2 py-1"
-													onChange={e => setNewCategory(e.target.value)}
-													/><br/>
-												</>											
+													<input type="text"
+														placeholder="Enter New Category..."
+														value={newCategory}
+														className="mt-7 border-[1px] border-slate-200 rounded-sm w-[373px] px-2 py-1"
+														onChange={e => setNewCategory(e.target.value)}
+													/><br />
+												</>
 											}
 
 											<button
 												className={` rounded-lg py-3 px-[50px] lg:px-[25px] font-medium dark:bg-slate-800 mt-16 mr-3 float-right  ${!newCategory ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  focus:shadow-outline focus:outline-none focus:ring-2 bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
-												onClick={() => {createNewCategory(newCategory, categories.length + 1, catFacultyID);}}	
-												disabled = {!newCategory}				
+												onClick={() => { createNewCategory(newCategory, categories.length + 1, catFacultyID); }}
+												disabled={!newCategory}
 											>Add</button>
-										</div>			
+										</div>
 
 										{facultyStudents.map((faculty, index) => {
-										
+
 											const category = index === 0 ? 1 : 2;
 
 											return (
@@ -563,168 +564,169 @@ const AttendanceSettings = () => {
 													{categories
 														.filter(cat => cat.category === category || cat.category === 3)
 														.map(categories => (
-														<React.Fragment key={categories.id}>
-															
-															<div className="w-1/2 mt-5">
-																<div className=" flex items-center justify-between border-[1px] bg-slate-800 text-white py-2 px-4 mt-2 rounded-t-md">
-																	<p>{categories.name}</p>
-																	<button className="flex cursor-pointer text-white text-2xl"
-																		onClick={() => {
-																			setShowCreateOptionModal(true); 
-																			setCategory(categories.name);
-																			openAddCourseModal(categories.id, index + 1);
-																		}}
-																	>																		
-																			<IoIosAddCircleOutline/>
+															<React.Fragment key={categories.id}>
+
+																<div className="w-1/2 mt-5">
+																	<div className=" flex items-center justify-between border-[1px] bg-slate-800 text-white py-2 px-4 mt-2 rounded-t-md">
+																		<p>{categories.name}</p>
+																		<button className="flex cursor-pointer text-white text-2xl"
+																			onClick={() => {
+																				setShowCreateOptionModal(true);
+																				setCategory(categories.name);
+																				openAddCourseModal(categories.id, index + 1);
+																			}}
+																		>
+																			<IoIosAddCircleOutline />
 																			<span className="text-base ml-1 mr-2">Add Course</span>
-																	</button>
-																	{/* <div onClick={toggleCategoryExpansion}>
+																		</button>
+																		{/* <div onClick={toggleCategoryExpansion}>
 																		{isCategoryExpanded ? (
 																			<IoMdArrowDropupCircle className="text-[25px] dark:text-dark_text cursor-pointer" />
 																		) : (
 																			<IoMdArrowDropdownCircle className="text-[25px] dark:text-dark_text cursor-pointer" />
 																		)}
 																	</div>		 */}
-																</div>																													
-																
-																<table className="w-full shadow-sm">
-																	<thead>
-																		<tr>
-																			<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">Course</th>
-																			<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">Action</th>
-																		</tr>
-																	</thead>
-	
-																	<tbody>
-																		{categories.subcategories
-																			.filter(subcategory => subcategory.facultyUnit === category || subcategory.facultyUnit === 3)
-																			.map(subcategory => (
-																		
-																			subcategory.id === editOption && updateOption && !cancelOptionUpdate ? (
-																				<tr>
-																					<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
-																						<input type="text" 
-																							placeholder="Enter Courses..."
-																							className="border-2 ml-3 px-2 py-1 text-base w-full" 
-																							value={editedFacultyName}
-																							onChange={e => setEditedFacultyName(e.target.value)}/>
-																					</td>
-																					<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-																						<div className="flex">
-																							<button 
-																								className="border-[0.5px] rounded-md bg-slate-900 p-2 ml-28 text-white hover:bg-red-600"
-																								onClick={() => {																					
-																								if(editedFacultyName.length > 0){
-																									handleUpdateFacultyName(subcategory.id, editedFacultyName);
-																								}
-																								setUpdateOption(false);
-																							}}>
-																								Update
-																							</button>
-																							<button 
-																								className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200"
-																								onClick={() => {setCancelOptionUpdate(true); }}>
-																								Cancel
-																							</button>
-																						</div>
-																					</td>
-																				</tr>	
-																			):(
-																				<tr>
-																					<td key={index} className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-1/2">
-																						{subcategory.name}
-																					</td>
-																					<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-3/4">
-																						<div className="flex ml-40">
-																							<button onClick={() => {
-																								handleEditOption(subcategory.id);
-																								setUpdateOption(true);
-																								setCancelOptionUpdate(false);
-																								setEditedFacultyName(subcategory.name);
-																							}}>
-																								<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
-																							</button>
-																							<button onClick={() => openDeleteModal(subcategory.id, subcategory.name)}>
-																								<BsFillTrash3Fill className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] ml-4 text-[14px] lg:text-base dark:text-dark_text2" />
-																							</button>
-																						</div>
-																					</td>
-																				</tr>)
-																		))}
-																	</tbody>
-																</table>
-															</div>
-															
-														</React.Fragment>
+																	</div>
+
+																	<table className="w-full shadow-sm">
+																		<thead>
+																			<tr>
+																				<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">Course</th>
+																				<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">Action</th>
+																			</tr>
+																		</thead>
+
+																		<tbody>
+																			{categories.subcategories
+																				.filter(subcategory => subcategory.facultyUnit === category || subcategory.facultyUnit === 3)
+																				.map(subcategory => (
+
+																					subcategory.id === editOption && updateOption && !cancelOptionUpdate ? (
+																						<tr key={index}>
+																							<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+																								<input type="text"
+																									placeholder="Enter Courses..."
+																									className="border-2 ml-3 px-2 py-1 text-base w-full"
+																									value={editedFacultyName}
+																									onChange={e => setEditedFacultyName(e.target.value)} />
+																							</td>
+																							<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
+																								<div className="flex">
+																									<button
+																										className="border-[0.5px] rounded-md bg-slate-900 p-2 ml-28 text-white hover:bg-red-600"
+																										onClick={() => {
+																											if (editedFacultyName.length > 0) {
+																												handleUpdateFacultyName(subcategory.id, editedFacultyName);
+																											}
+																											setUpdateOption(false);
+																										}}>
+																										Update
+																									</button>
+																									<button
+																										className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200"
+																										onClick={() => { setCancelOptionUpdate(true); }}>
+																										Cancel
+																									</button>
+																								</div>
+																							</td>
+																						</tr>
+																					) : (
+																						<tr>
+																							<td key={index} className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-1/2">
+																								{subcategory.name}
+																							</td>
+																							<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-3/4">
+																								<div className="flex ml-40">
+																									<button onClick={() => {
+																										handleEditOption(subcategory.id);
+																										setUpdateOption(true);
+																										setCancelOptionUpdate(false);
+																										setEditedFacultyName(subcategory.name);
+																									}}>
+																										<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
+																									</button>
+																									<button onClick={() => openDeleteModal(subcategory.id, subcategory.name)}>
+																										<BsFillTrash3Fill className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] ml-4 text-[14px] lg:text-base dark:text-dark_text2" />
+																									</button>
+																								</div>
+																							</td>
+																						</tr>)
+																				))}
+																		</tbody>
+																	</table>
+																</div>
+
+															</React.Fragment>
 														))}
 												</div>
 											);
 										})}
 
-												
+
 									</Tab.Panel>
 								</Tab.Panels>
 							</Tab.Group>
 						</div>
-						
-						
+
+
+					</div>
+
+					<DeleteModal
+						isVisible={showDeleteModal}
+						onClose={() => setShowDeleteModal(false)}>
+						<div className="p-4 text-lg text-center">
+							<IoIosCloseCircleOutline className="m-auto text-8xl text-red-600" />
+							<p className="mt-6">Are you sure to delete <span className="font-bold">{deletingFaculty.name}</span>? This action cannot be undone.</p>
+
+							<div className="mt-12">
+								<button
+									className="border-[0.5px] rounded-md bg-white px-6 py-2 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
+									onClick={() => setShowDeleteModal(false)}>Cancel</button>
+
+								<button
+									className="border-2 rounded-md bg-red-600 ml-2 text-white px-6 py-2 font-semibold hover:bg-red-700 duration-300 ease-in-out"
+									onClick={() => handleDeleteFacultyName(deletingFaculty.id)}>Delete</button>
+							</div>
 						</div>
+					</DeleteModal>
 
-						<DeleteModal 
-							isVisible={showDeleteModal} 
-							onClose={() => setShowDeleteModal(false)}>
-							<div className="p-4 text-lg text-center">
-								<IoIosCloseCircleOutline className="m-auto text-8xl text-red-600"/>
-								<p className="mt-6">Are you sure to delete <span className="font-bold">{deletingFaculty.name}</span>? This action cannot be undone.</p>
+					<AddFacultyUnitModal
+						isVisible={showCreateOptionModal}
+						onClose={() => setShowCreateOptionModal(false)}
+					>
+						<div className="p-8 text-[17px]">
+							<p className="font-semibold">Add New Course for <span className="font-bold">{category}</span></p>
+							<input type="text"
+								placeholder="Enter New Course..."
+								value={newFacultyName}
+								className="mt-10 border-[1px] text-base border-slate-200 rounded-sm w-full px-2 py-2"
+								onChange={e => setNewFacultyName(e.target.value)}
+							/>
 
-								<div className="mt-12">
-									<button 
-										className="border-[0.5px] rounded-md bg-white px-6 py-2 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
-										onClick={() => setShowDeleteModal(false)}>Cancel</button>
-
-									<button 
-										className="border-2 rounded-md bg-red-600 ml-2 text-white px-6 py-2 font-semibold hover:bg-red-700 duration-300 ease-in-out"
-										onClick={() => handleDeleteFacultyName(deletingFaculty.id)}>Delete</button>
-								</div>	
+							<div className="flex mt-16 float-right">
+								<button
+									className="border-[0.5px] rounded-md bg-white px-4 py-3 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
+									onClick={() => setShowCreateOptionModal(false)}>Cancel</button>
+								<button
+									className="border-2 rounded-md bg-red-600 ml-2 text-white px-4 py-3 font-semibold hover:bg-red-700 duration-300 ease-in-out"
+									onClick={() => {
+										createNewCourse(newFacultyName, newCourse.attsSubcategory, newCourse.attsFacultyUnit);
+										setShowCreateOptionModal(false);
+									}}
+								>
+									Submit
+								</button>
 							</div>
-						</DeleteModal>
-
-						<AddFacultyUnitModal
-							isVisible={showCreateOptionModal}
-							onClose={() => setShowCreateOptionModal(false)}
-						>
-							<div className="p-8 text-[17px]">
-								<p className="font-semibold">Add New Course for <span className="font-bold">{category}</span></p>
-								<input type="text" 
-									placeholder="Enter New Course..." 
-									value={newFacultyName}
-									className="mt-10 border-[1px] text-base border-slate-200 rounded-sm w-full px-2 py-2"
-									onChange={e => setNewFacultyName(e.target.value)}
-								/>
-
-								<div className="flex mt-16 float-right">
-									<button 
-										className="border-[0.5px] rounded-md bg-white px-4 py-3 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
-										onClick={() => setShowCreateOptionModal(false)}>Cancel</button>
-									<button 
-										className="border-2 rounded-md bg-red-600 ml-2 text-white px-4 py-3 font-semibold hover:bg-red-700 duration-300 ease-in-out"
-										onClick={() => {
-											createNewCourse(newFacultyName, newCourse.attsSubcategory, newCourse.attsFacultyUnit); 
-											setShowCreateOptionModal(false);}}
-										>
-											Submit
-									</button>
-								</div>								
-							</div>
-						</AddFacultyUnitModal>
-                    </div>					
-            ) : (
-                <div>
-                    <p>Change the options for the drop-down menu for students and staff in the attendance forms.</p>
-                </div>
-            )}
-        </div>
-    );
+						</div>
+					</AddFacultyUnitModal>
+				</div>
+			) : (
+				<div>
+					<p>Change the options for the drop-down menu for students and staff in the attendance forms.</p>
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default AttendanceSettings;

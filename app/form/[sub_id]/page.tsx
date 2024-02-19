@@ -506,7 +506,7 @@ export default function AttendanceForm() {
 						<label
 							htmlFor="name"
 							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Name
+							Name (As per your Staff Card)
 							<span className="text-red-500"> *</span>
 						</label>
 						<input
@@ -531,7 +531,7 @@ export default function AttendanceForm() {
 								<label
 									htmlFor="name"
 									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Staff ID
+									Staff ID (As per your Staff Card i.e., SS207 OR 207)
 									<span className="text-red-500"> *</span>
 								</label>
 								<input

@@ -1,18 +1,17 @@
 "use client";
 
-import SideBarDesktop from "@/components/layouts/SideBarDesktop";
-import TopBar from "@/components/layouts/TopBar";
-
 import React, { useEffect } from "react";
 import Image from "next/image";
 import chatbot_bg from "@/public/images/chatbot_bg3.png";
 import robot_profile from "@/public/images/robot_icon1.png";
 import user_profile from "@/public/images/user_icon1.png";
 import { BsSend } from "react-icons/bs";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { useChat, Message } from "ai/react";
 
 export default function Home() {
+	const supabase = createClientComponentClient();
 	const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat();
 
 	// const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
