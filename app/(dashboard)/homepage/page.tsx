@@ -397,7 +397,7 @@ export default function Homepage() {
 					'intFEventEndDate',
 					currentDate.toISOString(),
 				)
-				.eq("isHidden", 0);
+				.eq("intFIsHidden", 0);
 
 			if (error) {
 				throw new Error(`Error fetching total past events: ${error.message}`);
