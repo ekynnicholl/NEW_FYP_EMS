@@ -147,7 +147,7 @@ export default function Home() {
                 .select("*")
                 .filter('intFEventEndDate', 'gte', currentDate)
                 .order("intFEventStartDate", { ascending: true })
-                .select();
+                .eq("isHidden", 0);
 
             if (internalError) {
                 console.error("Error fetching past event:", internalError);
@@ -237,7 +237,7 @@ export default function Home() {
             .select("*")
             .filter('intFEventEndDate', 'gte', currentDate)
             .order("intFEventStartDate", { ascending: true })
-            .select();
+            .eq("isHidden", 0);
 
         if (internalError) {
             console.error("Error fetching latest event:", internalError);

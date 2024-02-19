@@ -274,7 +274,7 @@ export default function Homepage() {
 				)
 				.order("intFEventStartDate", { ascending: true })
 				// .range(0, 5)
-				.select();
+				.eq("isHidden", "0");
 
 			if (internalError) {
 				console.error("Error fetching latest event:", internalError);
