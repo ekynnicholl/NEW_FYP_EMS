@@ -217,8 +217,6 @@ export default function Home() {
         });
 
         // Fetch the attendance list for that event,
-        // fetchAttendanceList(event_id);
-        console.log("open view event modals");
         setShowSubEventModal(true);
     };
 
@@ -574,7 +572,7 @@ export default function Home() {
                     </div>
                     <div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
                         <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
-                            <table className="min-w-full leading-normal">
+                            <table className="min-w-full leading-normal min-h-screen">
                                 {/* Table Header */}
                                 <thead>
                                     <tr className="flex justify-between  border-b-2 border-gray-200 bg-gray-100 dark:bg-[#1D2021] dark:border-[#363B3D]">
@@ -601,125 +599,131 @@ export default function Home() {
 
                                 {/* Table Body */}
                                 <tbody>
-                                    {sortedData
-                                        .slice(
-                                            (currentPage - 1) * entriesToShow,
-                                            currentPage * entriesToShow,
-                                        )
-                                        .map((event, index) => (
-                                            <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-                                                <td className="flex-1 py-5 mt-1">
-                                                    <div className="flex items-center">
-                                                        <div className="ml-4">
-                                                            <p className="text-gray-900 dark:text-dark_text">
-                                                                {(currentPage - 1) *
-                                                                    entriesToShow +
-                                                                    index +
-                                                                    1}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="flex-1 py-5">
-                                                    <p className="text-gray-900 -ml-10 dark:text-dark_text w-52">
-                                                        {event.intFEventName}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 py-5 -ml-3">
-                                                    <p className="text-gray-900 -ml-1 dark:text-dark_text">
-                                                        {event.intFEventDescription}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 py-5 ml-12">
-                                                    <p className="text-gray-900 whitespace-nowrap ml-[94px] dark:text-dark_text">
-                                                        {event.intFEventStartDate}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 py-5 ml-12">
-                                                    <div className="flex items-end">
-                                                        <span className="relative px-3 py-[5px] font-semibold text-slate-800 text-xs flex items-center ml-10">
-                                                            <span aria-hidden className="absolute inset-0 bg-green-500 opacity-50 rounded-full"></span>
-                                                            <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-                                                            <span className="relative mt-[1px] leading-3 tracking-wider ">Completed</span>
-                                                        </span>
-                                                    </div>
-                                                </td>
-
-                                                <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
-                                                                <BsThreeDots />
+                                    {searchQuery.length > 0 && dataResults.length === 0 ? (
+                                        <p className="text-lg text-center mt-4">No data available.</p>
+                                    ) : (
+                                        sortedData
+                                            .slice(
+                                                (currentPage - 1) * entriesToShow,
+                                                currentPage * entriesToShow,
+                                            )
+                                            .map((event, index) => (
+                                                
+                                                <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
+                                                    <td className="flex-1 py-5 mt-1">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-4">
+                                                                <p className="text-gray-900 dark:text-dark_text">
+                                                                    {(currentPage - 1) *
+                                                                        entriesToShow +
+                                                                        index +
+                                                                        1}
+                                                                </p>
                                                             </div>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent className="-mt-1">
-                                                            <DropdownMenuItem
-                                                                className="cursor-pointer"
-                                                                onClick={e => {
+                                                        </div>
+                                                    </td>
+                                                    <td className="flex-1 py-5">
+                                                        <p className="text-gray-900 -ml-10 dark:text-dark_text w-52">
+                                                            {event.intFEventName}
+                                                        </p>
+                                                    </td>
+    
+                                                    <td className="flex-1 py-5 -ml-3">
+                                                        <p className="text-gray-900 -ml-1 dark:text-dark_text">
+                                                            {event.intFEventDescription}
+                                                        </p>
+                                                    </td>
+    
+                                                    <td className="flex-1 py-5 ml-12">
+                                                        <p className="text-gray-900 whitespace-nowrap ml-[94px] dark:text-dark_text">
+                                                            {event.intFEventStartDate}
+                                                        </p>
+                                                    </td>
+    
+                                                    <td className="flex-1 py-5 ml-12">
+                                                        <div className="flex items-end">
+                                                            <span className="relative px-3 py-[5px] font-semibold text-slate-800 text-xs flex items-center ml-10">
+                                                                <span aria-hidden className="absolute inset-0 bg-green-500 opacity-50 rounded-full"></span>
+                                                                <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+                                                                <span className="relative mt-[1px] leading-3 tracking-wider ">Completed</span>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+    
+                                                    <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
+                                                                    <BsThreeDots />
+                                                                </div>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent className="-mt-1">
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
+                                                                    onClick={e => {
+                                                                        e.stopPropagation();
+    
+                                                                        const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+    
+                                                                        if (filteredSubEvent) {
+                                                                            openModal(
+                                                                                event.intFID,
+                                                                                event.intFEventName,
+                                                                                event.intFEventDescription,
+                                                                                event.intFEventStartDate,
+                                                                                event.intFEventEndDate,
+                                                                                filteredSubEvent.sub_eventsID,
+                                                                                filteredSubEvent.sub_eventsMainID,
+                                                                                filteredSubEvent.sub_eventsName,
+                                                                                filteredSubEvent.sub_eventsVenue,
+                                                                                filteredSubEvent.sub_eventsStartDate,
+                                                                                filteredSubEvent.sub_eventsEndDate,
+                                                                                filteredSubEvent.sub_eventsStartTime,
+                                                                                filteredSubEvent.sub_eventsEndTime,
+                                                                                filteredSubEvent.sub_eventsMaxSeats,
+                                                                                filteredSubEvent.sub_eventsOrganizer,
+                                                                                filteredSubEvent.sub_eventsFaculty
+                                                                            );
+                                                                        }
+    
+                                                                    }}
+                                                                >Sub-Events Details</DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
+                                                                    onClick={e => {
+                                                                        e.stopPropagation()
+                                                                        openAttendanceModal(event.intFID);
+                                                                    }}
+                                                                >Attendance List
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem onClick={e => {
                                                                     e.stopPropagation();
-
+                                                                    setMainEventForFeedback(event);
+                                                                    openFeedbackModal(
+                                                                        event.intFID,
+                                                                    );
+                                                                }}>Event Feedback
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+    
+                                                                <DropdownMenuItem onClick={e => {
+                                                                    e.stopPropagation();
                                                                     const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
+    
                                                                     if (filteredSubEvent) {
-                                                                        openModal(
-                                                                            event.intFID,
-                                                                            event.intFEventName,
-                                                                            event.intFEventDescription,
-                                                                            event.intFEventStartDate,
-                                                                            event.intFEventEndDate,
-                                                                            filteredSubEvent.sub_eventsID,
-                                                                            filteredSubEvent.sub_eventsMainID,
-                                                                            filteredSubEvent.sub_eventsName,
-                                                                            filteredSubEvent.sub_eventsVenue,
-                                                                            filteredSubEvent.sub_eventsStartDate,
-                                                                            filteredSubEvent.sub_eventsEndDate,
-                                                                            filteredSubEvent.sub_eventsStartTime,
-                                                                            filteredSubEvent.sub_eventsEndTime,
-                                                                            filteredSubEvent.sub_eventsMaxSeats,
-                                                                            filteredSubEvent.sub_eventsOrganizer,
-                                                                            filteredSubEvent.sub_eventsFaculty
-                                                                        );
+                                                                        openQRCodeModal(event.intFID);
                                                                     }
-
-                                                                }}
-                                                            >Sub-Events Details</DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem
-                                                                className="cursor-pointer"
-                                                                onClick={e => {
-                                                                    e.stopPropagation()
-                                                                    openAttendanceModal(event.intFID);
-                                                                }}
-                                                            >Attendance List
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation();
-                                                                setMainEventForFeedback(event);
-                                                                openFeedbackModal(
-                                                                    event.intFID,
-                                                                );
-                                                            }}>Event Feedback
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-
-                                                            <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation();
-                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
-                                                                if (filteredSubEvent) {
-                                                                    openQRCodeModal(event.intFID);
-                                                                }
-                                                            }}>Feedback Form
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                                }}>Feedback Form
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                    )}
+                                    
 
                                     {/* pagination */}
                                     {Array.from({
@@ -849,15 +853,15 @@ export default function Home() {
 
                                         {/* Pagination Buttons */}
                                         {generatePageNumbers().map((pageNumber, index) => (
-													<button
-														key={index}
-														className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-															}`}
-														onClick={() => handlePageChange(pageNumber)}
+											<button
+												key={index}
+												className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+												}`}
+											    onClick={() => handlePageChange(pageNumber)}
 													>
-														{pageNumber === -1 ? '...' : pageNumber}
-													</button>
-												))}
+												{pageNumber === -1 ? '...' : pageNumber}
+											</button>
+										))}
 
                                         {/* Arrow Next Page Button */}
                                         <button
@@ -936,7 +940,7 @@ export default function Home() {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="min-h-[500vh]">
+                                <tbody>
                                     {subEvents
                                         .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
                                         .map((subEvent, index) => (
@@ -1075,7 +1079,9 @@ export default function Home() {
                         <AttendanceList event_id={attendanceID} />
                     </ViewAttendance_Modal>
 
-                    <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
+                    <QRCodeModal 
+                        isVisible={showQRCodeModal} 
+                        onClose={() => setShowQRCodeModal(false)}>
                         <div className="p-5">
                             {subEvents
                                 .filter(subEvent => subEvent.sub_eventsMainID === selectedMainEventID)
@@ -1104,7 +1110,9 @@ export default function Home() {
                         </div>
                     </QRCodeModal>
 
-                    <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false); }}>
+                    <Modal 
+                        isVisible={showQRCodesFeedback} 
+                        onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false); }}>
                         <div className="ml-2 p-5 z-[999]">
                             <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
                                 Feedback Forms
