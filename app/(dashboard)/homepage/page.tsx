@@ -472,7 +472,7 @@ export default function Homepage() {
 					'intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate'
 				)
 				.order('intFEventStartDate', { ascending: true })
-				.select();
+				.eq("intFIsHidden", 0);
 
 			if (internalError) {
 				console.error('Error fetching latest event:', internalError);
