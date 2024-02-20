@@ -73,7 +73,7 @@ export async function POST(request: Request) {
                     It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
                     +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
                     unauthorised access or unauthorised amendment. <br/>
-                    Process: [Certificate of Participation]
+                    Process: [Confirmation of Participation]
                     </p>
                 </div>
             </body>
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
 
         await transporter.sendMail({
             ...mailOptionsCopy,
-            subject: "Certificate of Participation",
+            subject: "Confirmation of Participation",
             text: mailContent,
             html: mailContent
         });
