@@ -10,11 +10,14 @@ import Modal from "@/components/Modal";
 import { BiCalendar } from "react-icons/bi";
 import { useParams, useRouter } from "next/navigation";
 import cookie from 'js-cookie';
+import toast from "react-hot-toast";
+import { sendParticipationCert } from "@/lib/api";
 
 type Info = {
 	attFormsAttendanceID: string;
 	attFormsStaffName: string;
 	attFormsStaffID: string;
+	attFormsStaffEmail: string;
 	attFormsFacultyUnit: string;
 };
 
@@ -61,8 +64,9 @@ export default function AttendanceForm() {
 				.eq('sub_eventsID', sub_id);
 
 			if (attendanceListError || attendanceListData.length == 0) {
-				console.error('Error fetching attendance list data:', attendanceListError);
-				//router.push('/notFound');
+				// console.error('Error fetching attendance list data:', attendanceListError);
+				toast.error("The event associated with this link doesn't exist. Please contact the developers if you think this was a mistake.")
+				router.push('/notFound');
 				return;
 			}
 
@@ -123,7 +127,7 @@ export default function AttendanceForm() {
 					.eq('intFID', event_id);
 
 				if (eventError) {
-					console.error('Error fetching event details:', eventError);
+					// console.error('Error fetching event details:', eventError);
 				} else {
 					const combinedData = {
 						...attendanceListData[0],
@@ -142,11 +146,18 @@ export default function AttendanceForm() {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		const isValidEmail = validateEmail(info.attFormsStaffEmail);
+
+		if (!isValidEmail) {
+			toast.error("Please input the email in a valid format.")
+			return;
+		}
+
 		if (userType == 'visitor') {
 			info.attFormsStaffID = '0';
 			info.attFormsFacultyUnit = 'Visitor';
 		} else {
-			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit) {
+			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !info.attFormsStaffEmail) {
 				return;
 			}
 		}
@@ -167,31 +178,53 @@ export default function AttendanceForm() {
 			.eq("attFSubEventID", sub_id)
 			.eq("attFormsStaffID", attFormsStaffID);
 
-		if (existingForms && existingForms.length > 0) {
+		if (existingForms && existingForms.length > 0 && userType != 'visitor') {
 			setShowModalFailure(true);
 			return;
 		} else {
-			const { data, error } = await supabase
+			const { data: oldForms, error } = await supabase
 				.from("attendance_forms")
 				.upsert([
 					{
 						attFSubEventID: sub_id,
 						attFormsStaffName: info.attFormsStaffName,
+						attFormsStaffEmail: info.attFormsStaffEmail,
 						attFormsStaffID: attFormsStaffID,
 						attFormsFacultyUnit: info.attFormsFacultyUnit,
 					},
-				]);
+				])
+				.select();
 
 			if (error) {
-				console.error("Error inserting data:", error);
+				// console.error("Error inserting data:", error);
 			} else {
-				console.log("Data inserted successfully:", data);
+				// console.log("Data inserted successfully:", data);
 				setInfo({} as Info);
 				setShowModalSuccess(true);
+
+				const { data: newForms, error } = await supabase
+					.from("attendance_forms")
+					.select("attDateSubmitted")
+					.eq("attFormsID", oldForms[0].attFormsID);
+
+				if (error) {
+
+				} else {
+					const participationData = {
+						eventName: eventData.sub_eventsName,
+						eventVenue: eventData.sub_eventsVenue,
+						eventStartDate: formatDate(eventData.sub_eventsStartDate),
+						eventEndDate: formatDate(eventData.sub_eventsEndDate),
+						attFormsStaffEmail: info.attFormsStaffEmail,
+						attDateSubmitted: newForms[0].attDateSubmitted
+					};
+
+					sendParticipationCert(participationData);
+				}
 			}
 		}
 
-		setInfo({} as Info);
+		// setInfo({} as Info);
 	};
 
 	const handleOK = () => {
@@ -216,7 +249,7 @@ export default function AttendanceForm() {
 					.order('attsName', { ascending: true });
 
 				if (error) {
-					console.error('Error fetching faculty options:', error.message);
+					// console.error('Error fetching faculty options:', error.message);
 					return;
 				}
 
@@ -225,7 +258,7 @@ export default function AttendanceForm() {
 
 				setFacultyOptions(facultyNames);
 			} catch (error) {
-				console.error('Error:', error);
+				// console.error('Error:', error);
 			}
 		};
 
@@ -242,7 +275,7 @@ export default function AttendanceForm() {
 				.order('attsName', { ascending: true });
 
 			if (error) {
-				console.error('Error fetching faculty units:', error);
+				// console.error('Error fetching faculty units:', error);
 				return;
 			}
 
@@ -267,13 +300,13 @@ export default function AttendanceForm() {
 			// .order('attsCategory, attsPosition');
 
 			if (error) {
-				console.error('Error fetching faculty units:', error);
+				// console.error('Error fetching faculty units:', error);
 				return;
 			}
 
 			if (data) {
 				setFacultyUnits(data);
-				console.log(data);
+				// console.log(data);
 
 				// Extract unique categories and subcategories
 				const uniqueCategories = Array.from(new Set(data
@@ -398,18 +431,32 @@ export default function AttendanceForm() {
 		return date.toLocaleDateString('en-GB', options);
 	};
 
+	const validateEmail = (email: string) => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	};
+
 	return (
 		<div className="flex flex-col items-center min-h-screen bg-slate-100">
 			<form
 				onSubmit={handleSubmit}
 				className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
 				<div
-					className="mb-4 bg-white rounded-md relative"
-					style={{ height: "200px" }}>
+					className="mb-4 rounded-md relative block lg:hidden">
 					<img
-						src="https://source.unsplash.com/600x300?social"
+						src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
 						alt="Random"
-						className="w-full h-full object-cover rounded-lg"
+						className="object-cover rounded-lg h-full w-full"
+						style={{ objectPosition: "center top" }}
+					/>
+				</div>
+
+				<div
+					className="mb-4 rounded-md relative hidden lg:block">
+					<img
+						src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
+						alt="Random"
+						className="object-cover rounded-lg h-1/2 w-1/2"
 						style={{ objectPosition: "center top" }}
 					/>
 				</div>
@@ -515,10 +562,33 @@ export default function AttendanceForm() {
 							id="name"
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 							required
-							placeholder="Your answer"
+							placeholder="e.g., John Lennon"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
 								setInfo({ ...info, attFormsStaffName: event.target.value })
+							}
+						/>
+					</div>
+				</div>
+
+				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+					<div className="ml-1">
+						<label
+							htmlFor="name"
+							className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+							Email
+							<span className="text-red-500"> *</span>
+						</label>
+						<input
+							type="text"
+							name="name"
+							id="name"
+							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+							required
+							placeholder="e.g., bloh@swinburne.edu.my"
+							style={{ paddingLeft: "5px" }}
+							onChange={event =>
+								setInfo({ ...info, attFormsStaffEmail: event.target.value })
 							}
 						/>
 					</div>
@@ -531,7 +601,7 @@ export default function AttendanceForm() {
 								<label
 									htmlFor="name"
 									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Staff ID
+									Staff ID (e.g., SS207 OR 207)
 									<span className="text-red-500"> *</span>
 								</label>
 								<input
@@ -716,7 +786,7 @@ export default function AttendanceForm() {
 							Success!
 						</h3>
 						<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-							Your attendance has been successfully recorded!
+							Your attendance has been successfully recorded! An email of confirmation will be sent to your email. Please check your junk/ spam folder.
 						</p>
 						<div className="text-center ml-4">
 							<button
