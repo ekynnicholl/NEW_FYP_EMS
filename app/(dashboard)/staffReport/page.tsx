@@ -190,16 +190,12 @@ export default function Home() {
 		// Clear the data results,
 		setDataResults([]);
 
-		// console.log("query:", query);
 		const filteredData = aggregatedInfo.filter(
 			info =>
 				info.staffName.toLowerCase().includes(query.toLowerCase()) ||
 				info.staffID.toString().includes(query) ||
 				info.staffFaculty.toLowerCase().includes(query.toLowerCase()),
 		);
-
-		// console.log("filtered" + filteredData);
-		// console.log("filteredData" + dataResults);
 
 		setDataResults(filteredData);
 		// setAggregatedInfo(filteredData);
@@ -326,12 +322,6 @@ export default function Home() {
 			}
 			return 0;
 		});
-
-	// Calculate the start and end indices for the current page
-	const startIndex = (currentPage - 1) * entriesToShow;
-	const endIndex = startIndex + entriesToShow;
-
-	const currentData = aggregatedInfo.slice(startIndex, endIndex);
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
@@ -693,6 +683,7 @@ export default function Home() {
 													/>
 												</button>
 
+												{/* Pagination Buttons */}
 												{generatePageNumbers().map((pageNumber, index) => (
 													<button
 														key={index}

@@ -115,6 +115,7 @@ export default function Home() {
         intFTrainingProvider: ''
     });
     const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
+    const [dataResults, setDataResults] = useState<mainEvent[]>([] as mainEvent[]);
 
     const [selectedEvent, setSelectedEvent] = useState({
         intFID: "",
@@ -252,15 +253,73 @@ export default function Home() {
         setMainEvents(mainEventData || []);
     };
 
-    const handleSearch = async (query: string) => {
+    //Handle search input
+    const handleSearch = (query: string) => {
         setSearchQuery(query);
+
+        //Clear the data results
+        setDataResults([]);
+        
         const filteredData = mainEvents.filter(
             event =>
                 event.intFEventName.toLowerCase().includes(query.toLowerCase()) ||
                 event.intFEventStartDate.toLowerCase().includes(query.toLowerCase())
         );
-        setMainEvents(filteredData);
+
+        setDataResults(filteredData);
     };
+
+    // Handle page change
+	const handlePageChange = (page: number) => {
+		if (page >= 1 && page <= Math.ceil(mainEvents.length / entriesToShow)) {
+			setCurrentPage(page);
+		}
+	};
+
+    useEffect(() => {
+		setCurrentPage(1);
+	}, [entriesToShow]);
+
+    const pageCount = Math.ceil(mainEvents.length / entriesToShow);
+
+    const generatePageNumbers = (): number[] => {
+		const displayedPages = 5;
+		const halfDisplayed = Math.floor(displayedPages / 2);
+
+		if (pageCount <= displayedPages) {
+			return Array.from({ length: pageCount }, (_, index) => index + 1);
+		}
+
+		const start = Math.max(currentPage - halfDisplayed, 1);
+		const end = Math.min(start + displayedPages - 1, pageCount);
+
+		const pages: number[] = [];
+
+		if (start > 1) {
+			pages.push(1);
+			if (start > 2) {
+				pages.push(-1);
+			}
+		}
+
+		for (let i = start; i <= end; i++) {
+			pages.push(i);
+		}
+
+		if (end < pageCount) {
+			if (end < pageCount - 1) {
+				pages.push(-1);
+			}
+			pages.push(pageCount);
+		}
+
+		return pages.slice(0, displayedPages);
+	};
+
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [mainEvents]);
+
 
     const handleArrowLeftClick = () => {
         if (currentPage > 1) {
@@ -340,7 +399,9 @@ export default function Home() {
     ];
 
     // Modify the sorting logic based on the selected option and sort order
-    const sortedData = mainEvents.slice().sort((a, b) => {
+    const sortedData = (dataResults.length > 0 ? dataResults : mainEvents)
+        .slice()
+        .sort((a, b) => {
         if (sortBy === "event") {
             if (sortOrder === "asc") {
                 return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
@@ -787,30 +848,16 @@ export default function Home() {
                                         </button>
 
                                         {/* Pagination Buttons */}
-                                        <div className="flex">
-                                            {[1, 2, 3, 4, 5].map(pageNumber => (
-                                                <button
-                                                    type="button"
-                                                    className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-                                                        ? "text-slate-100 bg-slate-900"
-                                                        : "text-slate-800 bg-slate-200"
-                                                        }`}
-                                                    key={pageNumber}
-                                                    onClick={() => {
-                                                        if (
-                                                            pageNumber <=
-                                                            Math.ceil(
-                                                                mainEvents.length /
-                                                                entriesToShow,
-                                                            )
-                                                        ) {
-                                                            handlePageClick(pageNumber);
-                                                        }
-                                                    }}>
-                                                    {pageNumber}
-                                                </button>
-                                            ))}
-                                        </div>
+                                        {generatePageNumbers().map((pageNumber, index) => (
+													<button
+														key={index}
+														className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+															}`}
+														onClick={() => handlePageChange(pageNumber)}
+													>
+														{pageNumber === -1 ? '...' : pageNumber}
+													</button>
+												))}
 
                                         {/* Arrow Next Page Button */}
                                         <button
@@ -889,7 +936,7 @@ export default function Home() {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="min-h-[500vh]">
                                     {subEvents
                                         .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
                                         .map((subEvent, index) => (
