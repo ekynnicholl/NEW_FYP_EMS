@@ -59,16 +59,16 @@ export default function Home() {
     }, [tokenID]);
 
     return (
-        <div className="">
-            <div className="flex-1">
-                <div className="flex-1 bg-slate-100 dark:bg-dark_mode_bg h-screen">
-                    {!isValidToken ? (
+        <>
+            <div className="bg-slate-100 dark:bg-dark_mode_bg h-screen">
+                {!isValidToken ? (
+                    <div className="flex-1">
                         <RequestNTF />
-                    ) : (
-                        <VerifyAccess token={tokenID || ''} ptoken={pToken || ''} />
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <VerifyAccess token={tokenID || ''} ptoken={pToken || ''} />
+                )}
             </div>
-        </div>
+        </>
     )
 }

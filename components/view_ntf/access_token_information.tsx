@@ -75,8 +75,9 @@ const VerifiedAccess: React.FC<VerifiedAccesProps> = ({ atExpiredAt, atCreatedAt
     const isExpiredBool = atExpiredAt && new Date() > new Date(atExpiredAt);
 
     return (
-        <div className="mt-3 p-5">
+        <div className="mt-3">
             <div className="text-justify pr-5">
+                <p className="font-bold text-lg">Attention!</p>
                 <p className="text-sm italic mt-1">Take note that your access tokens have a life span of 4 hours. After 4 hours, you will need to request for a new access token to be able to access this list.</p>
             </div>
 

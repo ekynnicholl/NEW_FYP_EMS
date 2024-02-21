@@ -121,14 +121,34 @@ const RequestNTF = () => {
             <div className="lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-max w-11/12">
                 {!submissionStatus ? (
                     <div className="p-5">
-                        <div className="text-center pl-5 pr-5">
-                            <p className="text-[20px] font-bold">Please enter your staff ID or email.</p>
-                            <p>If there are records of any Nominations/ Travelling Forms for the given staff ID/ email, we will send you a link to the said email.</p>
+                        <div className="text-left pl-5 pr-5">
+                            <p className="text-[20px] font-bold">
+                                Attendance List Request
+                            </p>
+                            <div className="border-t border-gray-300 my-2"></div>
+                            <div className="text-justify">
+                                <p>
+                                    If there are any records of any attendance (including Nominations/ Travelling Forms for staff), an email will be sent to you.
+                                </p>
+                            </div>
+                            <p className="text-base font-bold mt-3 underline">
+                                Please take into consideration when filling out the form,
+                            </p>
+                            <div className="text-justify">
+                                <p>
+                                    1. <span className="font-bold">Using ID</span>, ensure that you have entered your ID correctly including all the alphanumericals as how it is shown in your staff/ student card.
+                                    <br />
+                                    2. <span className="font-bold">Using EMAIL</span>, ensure that you have entered your email in the correct format and is what you have used in the events.
+                                </p>
+                            </div>
+                            <p className="text-base italic mt-3 text-red-600">
+                                Failure to abide to the above format(s) might result in you not receiving any emails. Thank you.
+                            </p>
                         </div>
                         <div className="pl-5 pr-5">
                             <form onSubmit={handleSubmit}>
                                 <div className="mt-3">
-                                    <label htmlFor="staffEmailID" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 dark:text-dark_text">Staff ID/ Email:</label>
+                                    <label htmlFor="staffEmailID" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 dark:text-dark_text">Staff ID/ Student ID/ Email:</label>
                                     <input
                                         type="text"
                                         id="staffEmailID"
