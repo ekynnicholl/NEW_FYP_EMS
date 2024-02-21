@@ -223,7 +223,13 @@ export default function AttendanceForm() {
 					};
 
 					const certificateContent = GenerateCertificateParticipation(info.attFormsStaffName, eventData.sub_eventsName, formatDate(eventData.sub_eventsStartDate), newForms[0].attDateSubmitted, eventData.intFEventName);
-					sendParticipationCert({ ...participationData, certificateContent });
+
+					const combinedData = {
+						...participationData,
+						certificateContent,
+					};
+
+					sendParticipationCert(combinedData);
 				}
 			}
 		}
