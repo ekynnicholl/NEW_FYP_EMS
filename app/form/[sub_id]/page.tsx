@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Fragment, useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { GenerateCertificateParticipation } from '@/components/certificates/parti_cert'
 
 import Modal from "@/components/Modal";
 
@@ -212,14 +213,17 @@ export default function AttendanceForm() {
 				} else {
 					const participationData = {
 						eventName: eventData.sub_eventsName,
-						eventVenue: eventData.sub_eventsVenue,
-						eventStartDate: formatDate(eventData.sub_eventsStartDate),
-						eventEndDate: formatDate(eventData.sub_eventsEndDate),
+						// eventVenue: eventData.sub_eventsVenue,
+						// eventStartDate: formatDate(eventData.sub_eventsStartDate),
+						// eventEndDate: formatDate(eventData.sub_eventsEndDate),
+						attFormsStaffName: info.attFormsStaffName,
+						attFormsStaffID: info.attFormsStaffID,
 						attFormsStaffEmail: info.attFormsStaffEmail,
-						attDateSubmitted: newForms[0].attDateSubmitted
+						// attDateSubmitted: newForms[0].attDateSubmitted
 					};
 
-					sendParticipationCert(participationData);
+					const certificateContent = GenerateCertificateParticipation(info.attFormsStaffName, eventData.sub_eventsName, formatDate(eventData.sub_eventsStartDate), newForms[0].attDateSubmitted, eventData.intFEventName);
+					sendParticipationCert({ ...participationData, certificateContent });
 				}
 			}
 		}
@@ -585,7 +589,7 @@ export default function AttendanceForm() {
 							id="name"
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 							required
-							placeholder="e.g., bloh@swinburne.edu.my"
+							placeholder="e.g., bloh@swinburne.edu.my OR 10274627@students.swinburne.edu.my"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
 								setInfo({ ...info, attFormsStaffEmail: event.target.value })
@@ -667,7 +671,7 @@ export default function AttendanceForm() {
 									id="name"
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 									required
-									placeholder="Your answer"
+									placeholder="e.g., 107462748"
 									style={{ paddingLeft: "5px" }}
 									onChange={event =>
 										setInfo({ ...info, attFormsStaffID: event.target.value })

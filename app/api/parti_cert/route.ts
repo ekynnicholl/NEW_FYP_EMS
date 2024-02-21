@@ -1,27 +1,22 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
+import puppeteer from 'puppeteer';
 
 const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
+
+const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html);
+    const pdfBuffer = await page.pdf({ landscape: true, printBackground: true });
+    await browser.close();
+    return pdfBuffer;
+};
 
 // To handle a GET request to /ap
 export async function GET(request: Request) {
     return NextResponse.json({ request }, { status: 200 });
 }
-
-const formattedDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZoneName: 'short',
-    };
-
-    return date.toLocaleString('en-US', options);
-};
 
 export async function POST(request: Request) {
     try {
@@ -31,9 +26,11 @@ export async function POST(request: Request) {
 
         const atEmail = requestData.attFormsStaffEmail;
         const atEventName = requestData.eventName;
-        const atEventVenue = requestData.eventVenue;
-        const atEventStartDate = requestData.eventStartDate;
-        const atDateSubmitted = formattedDate(requestData.attDateSubmitted);
+        const atStaffID = requestData.attFormsStaffID;
+        const atStaffName = requestData.attFormsStaffName;
+        const certificateContent = requestData.certificateContent;
+
+        const pdfBuffer = await generatePdfFromHtml(certificateContent);
 
         const mailContent = `
             <html>
@@ -55,12 +52,9 @@ export async function POST(request: Request) {
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
-                    <p class="no-p-m">This email serves to inform you that you have successfully participated in following event, </p>
+                    <p class="no-p-m">This email serves to inform you that you have successfully participated in an event called ${atEventName}! </p>
                     <br/>
-                    <p class="no-p-m">Event Name: ${atEventName}</p>
-                    <p class="no-p-m">Venue: ${atEventVenue}</p>
-                    <p class="no-p-m">Date: ${atEventStartDate}</p>
-                    <p class="no-p-m">Time of Submission: ${atDateSubmitted}</p>
+                    <p class="no-p-m">Please refer to the PDF for your certificate of participation.</p>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
@@ -87,11 +81,19 @@ export async function POST(request: Request) {
             throw new Error('Recipient email address not specified.');
         }
 
+        const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Participation.pdf`;
+
         await transporter.sendMail({
             ...mailOptionsCopy,
-            subject: "Confirmation of Participation",
-            text: mailContent,
-            html: mailContent
+            subject: "Certificate of Participation",
+            text: "Please enable HTML in your email client to view this message.",
+            html: mailContent,
+            attachments: [
+                {
+                    filename: pdfFilename,
+                    content: pdfBuffer,
+                },
+            ],
         });
 
         return NextResponse.json({ success: true }, { status: 200 });
