@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     try {
         const requestData = await request.json();
 
-        // console.log('Received request data:', requestData);
+        console.log('Received request data in route:', requestData);
 
         const atEmail = requestData.attFormsStaffEmail;
         const atEventName = requestData.eventName;
