@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
 import puppeteer from 'puppeteer';
+// import pdf from 'html-pdf';
 
 const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
@@ -12,6 +13,18 @@ const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
     await browser.close();
     return pdfBuffer;
 };
+
+// const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
+//     return new Promise<Buffer>((resolve, reject) => {
+//         pdf.create(html).toBuffer((err, buffer) => {
+//             if (err) {
+//                 reject(err);
+//             } else {
+//                 resolve(buffer);
+//             }
+//         });
+//     });
+// };
 
 // To handle a GET request to /ap
 export async function GET(request: Request) {
@@ -28,9 +41,9 @@ export async function POST(request: Request) {
         const atEventName = requestData.eventName;
         const atStaffID = requestData.attFormsStaffID;
         const atStaffName = requestData.attFormsStaffName;
-        const certificateContent = requestData.certificateContent;
+        // const certificateContent = requestData.certificateContent;
 
-        const pdfBuffer = await generatePdfFromHtml(certificateContent);
+        // const pdfBuffer = await generatePdfFromHtml(certificateContent);
 
         const mailContent = `
             <html>
@@ -54,8 +67,8 @@ export async function POST(request: Request) {
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <p class="no-p-m">This email serves to inform you that you have successfully participated in an event called ${atEventName}! </p>
                     <br/>
-                    <p class="no-p-m">Please refer to the PDF for your certificate of participation.</p>
-                    <br/>
+                    <!-- <p class="no-p-m">Please refer to the PDF for your certificate of participation.</p>
+                    <br/> -->
                     <p class="no-p-m">Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
@@ -85,15 +98,15 @@ export async function POST(request: Request) {
 
         await transporter.sendMail({
             ...mailOptionsCopy,
-            subject: "Certificate of Participation",
+            subject: "Confirmation of Participation",
             text: "Please enable HTML in your email client to view this message.",
             html: mailContent,
-            attachments: [
-                {
-                    filename: pdfFilename,
-                    content: pdfBuffer,
-                },
-            ],
+            // attachments: [
+            //     {
+            //         filename: pdfFilename,
+            //         content: pdfBuffer,
+            //     },
+            // ],
         });
 
         return NextResponse.json({ success: true }, { status: 200 });

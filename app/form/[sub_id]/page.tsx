@@ -222,14 +222,14 @@ export default function AttendanceForm() {
 						// attDateSubmitted: newForms[0].attDateSubmitted
 					};
 
-					const certificateContent = GenerateCertificateParticipation(info.attFormsStaffName, eventData.sub_eventsName, formatDate(eventData.sub_eventsStartDate), newForms[0].attDateSubmitted, eventData.intFEventName);
+					// const certificateContent = GenerateCertificateParticipation(info.attFormsStaffName, eventData.sub_eventsName, formatDate(eventData.sub_eventsStartDate), newForms[0].attDateSubmitted, eventData.intFEventName);
 
-					const combinedData = {
-						...participationData,
-						certificateContent,
-					};
+					// const combinedData = {
+					// 	...participationData,
+					// 	certificateContent,
+					// };
 
-					sendParticipationCert(combinedData);
+					sendParticipationCert(participationData);
 				}
 			}
 		}
