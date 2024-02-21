@@ -113,6 +113,7 @@ export default function Home() {
         intFTrainingProvider: ''
     });
     const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
+    const [dataResults, setDataResults] = useState<mainEvent[]>([] as mainEvent[]);
 
     const [selectedEvent, setSelectedEvent] = useState({
         intFID: "",
@@ -250,13 +251,69 @@ export default function Home() {
     // Handle search input
     const handleSearch = (query: string) => {
         setSearchQuery(query);
+
+        //Clear the data results
+        setDataResults([]);
+        
         const filteredData = mainEvents.filter(
             event =>
                 event.intFEventName.toLowerCase().includes(query.toLowerCase()) ||
                 event.intFEventStartDate.toLowerCase().includes(query.toLowerCase())
         );
-        setMainEvents(filteredData);
+
+        setDataResults(filteredData);
     };
+
+     // Handle page change
+	const handlePageChange = (page: number) => {
+		if (page >= 1 && page <= Math.ceil(mainEvents.length / entriesToShow)) {
+			setCurrentPage(page);
+		}
+	};
+
+    useEffect(() => {
+		setCurrentPage(1);
+	}, [entriesToShow]);
+
+    const pageCount = Math.ceil(mainEvents.length / entriesToShow);
+
+    const generatePageNumbers = (): number[] => {
+		const displayedPages = 5;
+		const halfDisplayed = Math.floor(displayedPages / 2);
+
+		if (pageCount <= displayedPages) {
+			return Array.from({ length: pageCount }, (_, index) => index + 1);
+		}
+
+		const start = Math.max(currentPage - halfDisplayed, 1);
+		const end = Math.min(start + displayedPages - 1, pageCount);
+
+		const pages: number[] = [];
+
+		if (start > 1) {
+			pages.push(1);
+			if (start > 2) {
+				pages.push(-1);
+			}
+		}
+
+		for (let i = start; i <= end; i++) {
+			pages.push(i);
+		}
+
+		if (end < pageCount) {
+			if (end < pageCount - 1) {
+				pages.push(-1);
+			}
+			pages.push(pageCount);
+		}
+
+		return pages.slice(0, displayedPages);
+	};
+
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [mainEvents])
 
     const handleArrowLeftClick = () => {
         if (currentPage > 1) {
@@ -336,7 +393,9 @@ export default function Home() {
     ];
 
     // Modify the sorting logic based on the selected option and sort order
-    const sortedData = mainEvents.slice().sort((a, b) => {
+    const sortedData = (dataResults.length > 0 ? dataResults : mainEvents)
+        .slice()
+        .sort((a, b) => {
         if (sortBy === "event") {
             if (sortOrder === "asc") {
                 return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
@@ -510,7 +569,7 @@ export default function Home() {
 
                     <div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
                         <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
-                            <table className="min-w-full leading-normal">
+                            <table className="min-w-full leading-normal min-h-screen">
                                 {/* Table Header */}
                                 <thead>
                                     <tr className="flex justify-between  border-b-2 border-gray-200 bg-gray-100 dark:bg-[#1D2021] dark:border-[#363B3D]">
@@ -536,164 +595,169 @@ export default function Home() {
                                 </thead>
 
                                 {/* Table Body */}
-                                <tbody>
-                                    {sortedData
-                                        .slice(
-                                            (currentPage - 1) * entriesToShow,
-                                            currentPage * entriesToShow,
-                                        )
-                                        .map((event, index) => (
-                                            <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-                                                <td className="flex-1 py-5 mt-1">
-                                                    <div className="flex items-center">
-                                                        <div className="ml-4">
-                                                            <p className="text-gray-900 dark:text-dark_text">
-                                                                {(currentPage - 1) *
-                                                                    entriesToShow +
-                                                                    index +
-                                                                    1}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="flex-1 py-5">
-                                                    <p className="text-gray-900 -ml-10 dark:text-dark_text w-52">
-                                                        {event.intFEventName}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 py-5 -ml-3">
-                                                    <p className="text-gray-900 -ml-1 dark:text-dark_text">
-                                                        {event.intFEventDescription}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 py-5 ml-12">
-                                                    <p className="text-gray-900 whitespace-nowrap ml-[94px] dark:text-dark_text">
-                                                        {event.intFEventStartDate}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 py-5 ml-12">
-                                                    <div className="flex items-end">
-                                                        <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10 dark:text-orange-200">
-                                                            <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full dark:bg-orange-900"></span>
-                                                            <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-                                                            <span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
-                                                        </span>
-                                                    </div>
-                                                </td>
-
-                                                <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
-                                                                <BsThreeDots />
+                                <tbody className="min-h-screen">
+                                    {searchQuery.length > 0 && dataResults.length === 0 ? (
+                                            <p className="text-lg text-center mt-4">No data available.</p>
+                                        ) : (
+                                        sortedData
+                                            .slice(
+                                                (currentPage - 1) * entriesToShow,
+                                                currentPage * entriesToShow,
+                                            )
+                                            .map((event, index) => (
+                                                <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
+                                                    <td className="flex-1 py-5 mt-1">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-4">
+                                                                <p className="text-gray-900 dark:text-dark_text">
+                                                                    {(currentPage - 1) *
+                                                                        entriesToShow +
+                                                                        index +
+                                                                        1}
+                                                                </p>
                                                             </div>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent className="-mt-1">
-                                                            <DropdownMenuItem
-                                                                className="cursor-pointer"
-                                                                onClick={e => {
-                                                                    e.stopPropagation();
+                                                        </div>
+                                                    </td>
+                                                    <td className="flex-1 py-5">
+                                                        <p className="text-gray-900 -ml-10 dark:text-dark_text w-52">
+                                                            {event.intFEventName}
+                                                        </p>
+                                                    </td>
 
+                                                    <td className="flex-1 py-5 -ml-3">
+                                                        <p className="text-gray-900 -ml-1 dark:text-dark_text">
+                                                            {event.intFEventDescription}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 py-5 ml-12">
+                                                        <p className="text-gray-900 whitespace-nowrap ml-[94px] dark:text-dark_text">
+                                                            {event.intFEventStartDate}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 py-5 ml-12">
+                                                        <div className="flex items-end">
+                                                            <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10 dark:text-orange-200">
+                                                                <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full dark:bg-orange-900"></span>
+                                                                <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+                                                                <span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+
+                                                    <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
+                                                                    <BsThreeDots />
+                                                                </div>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent className="-mt-1">
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
+                                                                    onClick={e => {
+                                                                        e.stopPropagation();
+
+                                                                        const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                                        if (filteredSubEvent) {
+                                                                            openModal(
+                                                                                event.intFID,
+                                                                                event.intFEventName,
+                                                                                event.intFEventDescription,
+                                                                                event.intFEventStartDate,
+                                                                                event.intFEventEndDate,
+                                                                                filteredSubEvent.sub_eventsID,
+                                                                                filteredSubEvent.sub_eventsMainID,
+                                                                                filteredSubEvent.sub_eventsName,
+                                                                                filteredSubEvent.sub_eventsVenue,
+                                                                                filteredSubEvent.sub_eventsStartDate,
+                                                                                filteredSubEvent.sub_eventsEndDate,
+                                                                                filteredSubEvent.sub_eventsStartTime,
+                                                                                filteredSubEvent.sub_eventsEndTime,
+                                                                                filteredSubEvent.sub_eventsMaxSeats,
+                                                                                filteredSubEvent.sub_eventsOrganizer,
+                                                                                filteredSubEvent.sub_eventsFaculty
+                                                                            );
+                                                                        }
+
+                                                                    }}
+                                                                >Sub-Events Details
+                                                                </DropdownMenuItem>
+
+                                                                <DropdownMenuSeparator />
+
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
+                                                                    onClick={e => {
+                                                                        e.stopPropagation()
+                                                                        openAttendanceModal(event.intFID);
+                                                                    }}
+                                                                >Attendance List
+                                                                </DropdownMenuItem>
+
+                                                                <DropdownMenuSeparator />
+
+                                                                <DropdownMenuItem onClick={e => {
+                                                                    e.stopPropagation();
+                                                                    setMainEventForFeedback(event);
+                                                                    openFeedbackModal(event.intFID);
+                                                                }}>Event Feedback
+                                                                </DropdownMenuItem>
+
+                                                                <DropdownMenuSeparator />
+
+                                                                <DropdownMenuItem onClick={e => {
+                                                                    e.stopPropagation();
                                                                     const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
                                                                     if (filteredSubEvent) {
-                                                                        openModal(
-                                                                            event.intFID,
-                                                                            event.intFEventName,
-                                                                            event.intFEventDescription,
-                                                                            event.intFEventStartDate,
-                                                                            event.intFEventEndDate,
-                                                                            filteredSubEvent.sub_eventsID,
-                                                                            filteredSubEvent.sub_eventsMainID,
-                                                                            filteredSubEvent.sub_eventsName,
-                                                                            filteredSubEvent.sub_eventsVenue,
-                                                                            filteredSubEvent.sub_eventsStartDate,
-                                                                            filteredSubEvent.sub_eventsEndDate,
-                                                                            filteredSubEvent.sub_eventsStartTime,
-                                                                            filteredSubEvent.sub_eventsEndTime,
-                                                                            filteredSubEvent.sub_eventsMaxSeats,
-                                                                            filteredSubEvent.sub_eventsOrganizer,
-                                                                            filteredSubEvent.sub_eventsFaculty
-                                                                        );
+                                                                        openQRCodeModal(event.intFID);
                                                                     }
+                                                                }}>Feedback &amp; Attendance Form
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
 
-                                                                }}
-                                                            >Sub-Events Details
-                                                            </DropdownMenuItem>
-
-                                                            <DropdownMenuSeparator />
-
-                                                            <DropdownMenuItem
-                                                                className="cursor-pointer"
-                                                                onClick={e => {
-                                                                    e.stopPropagation()
-                                                                    openAttendanceModal(event.intFID);
-                                                                }}
-                                                            >Attendance List
-                                                            </DropdownMenuItem>
-
-                                                            <DropdownMenuSeparator />
-
-                                                            <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation();
-                                                                setMainEventForFeedback(event);
-                                                                openFeedbackModal(event.intFID);
-                                                            }}>Event Feedback
-                                                            </DropdownMenuItem>
-
-                                                            <DropdownMenuSeparator />
-
-                                                            <DropdownMenuItem onClick={e => {
-                                                                e.stopPropagation();
-                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
-                                                                if (filteredSubEvent) {
-                                                                    openQRCodeModal(event.intFID);
-                                                                }
-                                                            }}>Feedback &amp; Attendance Form
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
+                                        {/* pagination */}
+                                        {Array.from({
+                                            length: entriesToShow - mainEvents?.length,
+                                        }).map((_, index) => (
+                                            <tr className="flex invisible" key={index}>
+                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <div className="flex items-center">
+                                                        <div className="ml-[14px]">
+                                                            <p className="text-gray-900 whitespace-no-wrap"></p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
+                                                </td>
+                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <p className="text-gray-900 whitespace-no-wrap"></p>
+                                                </td>
+                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
+                                                </td>
+                                                <td
+                                                    className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
+                                                    <span
+                                                        className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
+                                                        <span
+                                                            aria-hidden
+                                                            className={`absolute inset-0 opacity-0 rounded-full`}></span>
+                                                        <span className="relative"></span>
+                                                    </span>
                                                 </td>
                                             </tr>
                                         ))}
-
-                                    {/* pagination */}
-                                    {Array.from({
-                                        length: entriesToShow - mainEvents?.length,
-                                    }).map((_, index) => (
-                                        <tr className="flex invisible" key={index}>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <div className="flex items-center">
-                                                    <div className="ml-[14px]">
-                                                        <p className="text-gray-900 whitespace-no-wrap"></p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p className="text-gray-900 whitespace-no-wrap"></p>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
-                                            </td>
-                                            <td
-                                                className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
-                                                <span
-                                                    className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
-                                                    <span
-                                                        aria-hidden
-                                                        className={`absolute inset-0 opacity-0 rounded-full`}></span>
-                                                    <span className="relative"></span>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    
                                 </tbody>
                             </table>
 
@@ -788,30 +852,16 @@ export default function Home() {
                                         </button>
 
                                         {/* Pagination Buttons */}
-                                        <div className="flex">
-                                            {[1, 2, 3, 4, 5].map(pageNumber => (
-                                                <button
-                                                    type="button"
-                                                    className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-                                                        ? "text-slate-100 bg-slate-900"
-                                                        : "text-slate-800 bg-slate-200"
-                                                        }`}
-                                                    key={pageNumber}
-                                                    onClick={() => {
-                                                        if (
-                                                            pageNumber <=
-                                                            Math.ceil(
-                                                                mainEvents.length /
-                                                                entriesToShow,
-                                                            )
-                                                        ) {
-                                                            handlePageClick(pageNumber);
-                                                        }
-                                                    }}>
-                                                    {pageNumber}
-                                                </button>
-                                            ))}
-                                        </div>
+                                        {generatePageNumbers().map((pageNumber, index) => (
+											<button
+												key={index}
+												className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+												}`}
+											    onClick={() => handlePageChange(pageNumber)}
+													>
+												{pageNumber === -1 ? '...' : pageNumber}
+											</button>
+										))}
 
                                         {/* Arrow Next Page Button */}
                                         <button
