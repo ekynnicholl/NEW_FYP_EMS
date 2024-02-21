@@ -31,16 +31,26 @@ const RequestNTF = () => {
             const isEmail = /@/.test(staffEmailID);
             let searchQuery = staffEmailID;
 
-            if (!isEmail) {
-                searchQuery = staffEmailID.startsWith('SS') ? staffEmailID : `SS${staffEmailID}`;
-            }
+            // if (!isEmail) {
+            //     searchQuery = staffEmailID.startsWith('SS') ? staffEmailID : `SS${staffEmailID}`;
+            // }
 
-            const { data, error } = await supabase
+            const { data: externalFormsData, error: externalFormsError } = await supabase
                 .from('external_forms')
                 .select('*')
                 .ilike(isEmail ? 'email' : 'staff_id', `${searchQuery}`);
 
-            if (error) {
+            if (externalFormsError) {
+                toast.error('Technical error. Please contact the developers of the website...');
+                return;
+            }
+
+            const { data: attendanceFormsData, error: attendanceFormsError } = await supabase
+                .from('attendance_forms')
+                .select('*')
+                .ilike(isEmail ? 'attFormsStaffEmail' : 'attFormsStaffID', `${searchQuery}`);
+
+            if (attendanceFormsError) {
                 toast.error('Technical error. Please contact the developers of the website...');
                 return;
             }
@@ -48,11 +58,23 @@ const RequestNTF = () => {
             setSubmissionStatus(true);
             setCaptcha(null);
 
-            if (data && data.length > 0) {
-                const matchingRecord = data[0];
+            if ((externalFormsData && externalFormsData.length > 0) || (attendanceFormsData && attendanceFormsData.length > 0)) {
+                let matchingRecord;
 
-                if (/@/.test(matchingRecord.email)) {
-                    // The matching record has a valid email address
+                // Set the external forms as matching record if it exists,
+                if (externalFormsData && externalFormsData.length > 0) {
+                    matchingRecord = externalFormsData[0];
+                    // Set the attendance forms as matching record if it exists,
+                } else {
+                    matchingRecord = attendanceFormsData[0];
+                }
+
+                // Different naming conventions for columns for different tables,
+                const staffIDColumnName = matchingRecord.staff_id ? 'staff_id' : 'attFormsStaffID';
+                const emailColumnName = matchingRecord.attFormsStaffEmail ? 'attFormsStaffEmail' : 'email';
+
+                if (/@/.test(matchingRecord[emailColumnName])) {
+                    // The matching record has a valid email address,
                     const currentDateTime = new Date();
                     const newTime = new Date(currentDateTime.getTime() + 4 * 60 * 60 * 1000);
 
@@ -60,8 +82,9 @@ const RequestNTF = () => {
                         .from('access_tokens')
                         .insert([
                             {
-                                atUsage: "Nominations/ Travelling Form",
-                                atIdentifier: matchingRecord.email,
+                                atUsage: "View Past Events Attended",
+                                atIdentifier: matchingRecord[emailColumnName],
+                                atIdentifier2: matchingRecord[staffIDColumnName],
                                 atExpiredAt: newTime,
                             },
                         ])
@@ -70,7 +93,7 @@ const RequestNTF = () => {
                     if (insertError) {
                         // console.error('Error inserting into access_tokens:', insertError);
                     } else {
-                        // Successfully inserted, now fetch the inserted row
+                        // Successfully inserted, now fetch the inserted row for updated data before submitting for emailing,
                         const { data: insertedRow, error: fetchError } = await supabase
                             .from('access_tokens')
                             .select('*')

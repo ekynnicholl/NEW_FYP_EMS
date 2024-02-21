@@ -6,8 +6,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface NTFListProps {
     atIdentifier: string | null;
-    atCreatedAt: string | null;
-    atExpiredAt: string | null;
 }
 
 interface Form {
@@ -21,10 +19,9 @@ interface Form {
     formStage: number;
 }
 
-const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredAt }) => {
+const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const supabase = createClientComponentClient();
     const [forms, setForms] = useState<Form[]>([]);
-    const [timeRemaining, setTimeRemaining] = useState<string | null>('Processing...');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,58 +64,11 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atCreatedAt, atExpiredA
         fetchData();
     }, [atIdentifier]);
 
-    useEffect(() => {
-        if (atCreatedAt && atExpiredAt) {
-            const createdAtTime = new Date(atCreatedAt);
-            const expiredAtTime = new Date(atExpiredAt);
-
-            const interval = setInterval(() => {
-                const now = new Date();
-                const remaining = expiredAtTime.getTime() - now.getTime();
-
-                if (remaining > 0) {
-                    const hours = Math.floor(remaining / (60 * 60 * 1000));
-                    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-                    const seconds = Math.floor((remaining % (60 * 1000)) / 1000);
-
-                    setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
-                } else {
-                    clearInterval(interval);
-                    setTimeRemaining("Expired");
-                }
-            }, 1000);
-
-            return () => clearInterval(interval);
-        }
-    }, [atCreatedAt, atExpiredAt]);
-
-    const formattedDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const options: Intl.DateTimeFormatOptions = {
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            timeZoneName: 'short',
-        };
-
-        return date.toLocaleString('en-US', options);
-    };
-
     return (
         <div>
             <div className="text-justify pr-5">
                 <p className="text-[20px] font-bold">Past Nominations/ Travelling Forms - {atIdentifier}</p>
-                <p className="text-sm italic mt-1">Take note that your access tokens have a life span of 4 hours. After 4 hours, you will need to request for a new access token to be able to access this list.</p>
             </div>
-
-            {atCreatedAt && (
-                <p className="text-sm mt-2">
-                    Access token generated at: {formattedDate(atCreatedAt)} (Expires in: {timeRemaining})
-                </p>
-            )}
 
             <div className="mt-5">
                 {forms.length > 0 && (

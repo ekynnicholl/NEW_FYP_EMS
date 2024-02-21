@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ReCAPTCHA from "react-google-recaptcha";
 import NTFList from "@/components/view_ntf/ntf_list";
+import VerifiedAccess from "./verified_view";
 
 interface VerifyAccessProps {
     token: string;
@@ -22,7 +23,6 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
     const [atIdentifier, setAtIdentifier] = useState<string | null>(null);
     const [atCreatedAt, setAtCreatedAt] = useState<string | null>(null);
     const [atExpiredAt, setAtExpiredAt] = useState<string | null>(null);
-    const [expiredClicked, setExpiredClicked] = useState<boolean>(false);
 
     const isValidUUID = (uuid: string | null) => {
         if (!uuid) return false;
@@ -92,28 +92,10 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
         }
     };
 
-    const updateExpiration = async () => {
-        try {
-            await supabase
-                .from('access_tokens')
-                .update({ atExpiredAt: new Date().toISOString() })
-                .eq('atID', token);
-
-            setAtExpiredAt(new Date().toISOString());
-            setExpiredClicked(true);
-            toast.success("Access token has been disabled. You won't be able to use this access token anymore.");
-        } catch (error) {
-            // console.error('Error updating expiration:', error);
-            toast.error('Access token failed to be disabled. Please contact the webmaster.');
-        }
-    };
-
-    const isExpired = atExpiredAt && new Date() > new Date(atExpiredAt);
-
     return (
         <div className="flex items-center justify-center h-screen">
-            <div className="lg:p-8 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-max w-11/12">
-                {!verifyStatus ? (
+            {!verifyStatus ? (
+                <div className="lg:p-8 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-max w-11/12">
                     <div className="p-5">
                         <div className="text-justify pr-5 max-w-md">
                             <p className="text-[20px] font-bold">Attention!</p>
@@ -152,24 +134,19 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
                             </div>
                         </form>
                     </div>
-                ) : (
-                    <div className="p-5">
-                        <NTFList atIdentifier={atIdentifier} atCreatedAt={atCreatedAt} atExpiredAt={atExpiredAt} />
-                        <div className="mt-3 text-right">
-                            {!isExpired && (
-                                <button
-                                    onClick={updateExpiration}
-                                    disabled={expiredClicked}
-                                    className={`${expiredClicked ? 'bg-gray-500 cursor-not-allowed' : 'bg-red-500'
-                                        } text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-sm lg:text-base`}
-                                >
-                                    Disable Access Token
-                                </button>
-                            )}
+                </div>
+            ) : (
+                <div className="p-5">
+                    <div className="lg:w-1/2 w-11/12 space-y-5">
+                        <div className="lg:p-8 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+                            <VerifiedAccess atExpiredAt={atExpiredAt} token={token} atCreatedAt={atCreatedAt} />
+                        </div>
+                        <div className="lg:p-8 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+                            <NTFList atIdentifier={atIdentifier} />
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     )
 };
