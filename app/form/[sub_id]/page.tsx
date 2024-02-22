@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Fragment, useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { GenerateCertificateParticipation } from '@/components/certificates/parti_cert'
 
 import Modal from "@/components/Modal";
 
@@ -205,29 +204,24 @@ export default function AttendanceForm() {
 
 				const { data: newForms, error } = await supabase
 					.from("attendance_forms")
-					.select("attDateSubmitted")
+					.select("attFormsID, attDateSubmitted")
 					.eq("attFormsID", oldForms[0].attFormsID);
 
 				if (error) {
 
 				} else {
 					const participationData = {
-						eventName: eventData.sub_eventsName,
+						sub_eventsName: eventData.sub_eventsName,
+						eventName: eventData.intFEventName,
 						// eventVenue: eventData.sub_eventsVenue,
-						// eventStartDate: formatDate(eventData.sub_eventsStartDate),
+						eventStartDate: formatDate(eventData.sub_eventsStartDate),
 						// eventEndDate: formatDate(eventData.sub_eventsEndDate),
 						attFormsStaffName: info.attFormsStaffName,
 						attFormsStaffID: info.attFormsStaffID,
 						attFormsStaffEmail: info.attFormsStaffEmail,
-						// attDateSubmitted: newForms[0].attDateSubmitted
+						attDateSubmitted: newForms[0].attDateSubmitted,
+						attFormsID: newForms[0].attFormsID
 					};
-
-					// const certificateContent = GenerateCertificateParticipation(info.attFormsStaffName, eventData.sub_eventsName, formatDate(eventData.sub_eventsStartDate), newForms[0].attDateSubmitted, eventData.intFEventName);
-
-					// const combinedData = {
-					// 	...participationData,
-					// 	certificateContent,
-					// };
 
 					sendParticipationCert(participationData);
 				}

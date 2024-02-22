@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
 import puppeteer from 'puppeteer';
-// import pdf from 'html-pdf';
+import { GenerateCertificateParticipation } from "@/components/certificates/parti_cert";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { v4 as uuidv4 } from 'uuid';
 
 const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
@@ -14,18 +16,6 @@ const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
     return pdfBuffer;
 };
 
-// const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
-//     return new Promise<Buffer>((resolve, reject) => {
-//         pdf.create(html).toBuffer((err, buffer) => {
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 resolve(buffer);
-//             }
-//         });
-//     });
-// };
-
 // To handle a GET request to /ap
 export async function GET(request: Request) {
     return NextResponse.json({ request }, { status: 200 });
@@ -34,16 +24,49 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const requestData = await request.json();
+        const supabase = createClientComponentClient();
 
-        console.log('Received request data in route:', requestData);
+        // console.log('Received request data in route:', requestData);
 
         const atEmail = requestData.attFormsStaffEmail;
         const atEventName = requestData.eventName;
+        const atSubEventName = requestData.sub_eventsName;
         const atStaffID = requestData.attFormsStaffID;
+        const atStartDate = requestData.eventStartDate;
+        const atDateSubmitted = requestData.attDateSubmitted;
         const atStaffName = requestData.attFormsStaffName;
-        // const certificateContent = requestData.certificateContent;
+        const atFormsID = requestData.attFormsID;
 
-        // const pdfBuffer = await generatePdfFromHtml(certificateContent);
+        const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atStartDate, atDateSubmitted, atEventName);
+
+        const pdfBuffer = await generatePdfFromHtml(certificateContent);
+
+        let documentPath: string | undefined = "";
+        const uniqueName = uuidv4();
+
+        // Use the pdfBuffer directly for uploading to Supabase storage
+        const { data: storageData, error: storageError } = await supabase
+            .storage
+            .from('attFormsCertofParticipation')
+            .upload(`${atStaffName}_Certificate of Participation_${uniqueName}.pdf`, pdfBuffer, {
+                cacheControl: '3600',
+                upsert: false,
+            });
+
+        documentPath = storageData?.path;
+
+        if (storageError) {
+            throw new Error('Error uploading the document to Supabase storage.');
+        }
+
+        const { data, error } = await supabase
+            .from('attendance_forms')
+            .update({ attFormsCertofParticipation: documentPath })
+            .eq('attFormsID', atFormsID);
+
+        if (error) {
+            throw new Error('Error updating the path for this attendance form.');
+        }
 
         const mailContent = `
             <html>
@@ -101,12 +124,12 @@ export async function POST(request: Request) {
             subject: "Confirmation of Participation",
             text: "Please enable HTML in your email client to view this message.",
             html: mailContent,
-            // attachments: [
-            //     {
-            //         filename: pdfFilename,
-            //         content: pdfBuffer,
-            //     },
-            // ],
+            attachments: [
+                {
+                    filename: pdfFilename,
+                    content: pdfBuffer,
+                },
+            ],
         });
 
         return NextResponse.json({ success: true }, { status: 200 });
