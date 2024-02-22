@@ -5,10 +5,14 @@ import { GenerateCertificateParticipation } from "@/components/certificates/part
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from 'uuid';
 
+const chromiumExecutablePath = require('@sparticuz/chromium').path;
+
 const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        executablePath: chromiumExecutablePath,
+    });
     const page = await browser.newPage();
     await page.setContent(html);
     const pdfBuffer = await page.pdf({ landscape: true, printBackground: true });
