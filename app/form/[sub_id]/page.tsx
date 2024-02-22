@@ -790,7 +790,7 @@ export default function AttendanceForm() {
 							Success!
 						</h3>
 						<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-							Your attendance has been successfully recorded! An email of confirmation will be sent to your email. Please check your junk/ spam folder.
+							Your attendance has been successfully recorded!
 						</p>
 						<div className="text-center ml-4">
 							<button
