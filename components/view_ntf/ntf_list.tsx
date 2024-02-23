@@ -52,8 +52,6 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         return;
                     }
 
-                    console.log(data);
-
                     setForms(data || []);
                 }
             } catch (e) {
@@ -67,7 +65,9 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     return (
         <div>
             <div className="text-justify pr-5">
-                <p className="text-[20px] font-bold">Past Nominations/ Travelling Forms - {atIdentifier}</p>
+                <p className="text-[20px] font-bold">Past Nominations/ Travelling Form(s)</p>
+                <p className="text-[16px] italic">Total Event(s) Attended Count: {forms.length}</p>
+                <p className="text-[16px] italic">Total Hours: 0</p>
             </div>
 
             <div className="mt-5">

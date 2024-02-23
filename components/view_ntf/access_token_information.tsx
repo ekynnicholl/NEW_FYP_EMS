@@ -8,9 +8,10 @@ interface VerifiedAccesProps {
     atExpiredAt: string | null;
     atCreatedAt: string | null;
     token: string;
+    atIdentifier: string | null;
 }
 
-const VerifiedAccess: React.FC<VerifiedAccesProps> = ({ atExpiredAt, atCreatedAt, token }) => {
+const VerifiedAccess: React.FC<VerifiedAccesProps> = ({ atExpiredAt, atCreatedAt, token, atIdentifier }) => {
     const supabase = createClientComponentClient();
     const [timeRemaining, setTimeRemaining] = useState<string | null>('Processing...');
     const [atExpiredAtNew, setAtExpiredAtNew] = useState<string | null>(null);
@@ -77,7 +78,7 @@ const VerifiedAccess: React.FC<VerifiedAccesProps> = ({ atExpiredAt, atCreatedAt
     return (
         <div className="mt-3">
             <div className="text-justify pr-5">
-                <p className="font-bold text-lg">Attention!</p>
+                <p className="font-bold text-lg">Hello, {atIdentifier}!</p>
                 <p className="text-sm italic mt-1">Take note that your access tokens have a life span of 4 hours. After 4 hours, you will need to request for a new access token to be able to access this list.</p>
             </div>
 

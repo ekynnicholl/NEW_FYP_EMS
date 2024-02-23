@@ -406,9 +406,9 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">View Nominations/ Travelling Forms List</p>
 					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">This is where the staff is able to access their past submitted forms.</p>
 					<div className="flex flex-col items-center justify-center">
-						<QRCodeSVG value={`${url}/ntf_view`} />
+						<QRCodeSVG value={`${url}/attended_events`} />
 						<button
-							onClick={() => copyToClipboard(`${url}/ntf_view`)}
+							onClick={() => copyToClipboard(`${url}/attended_events`)}
 							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
 							Copy Link
 						</button>

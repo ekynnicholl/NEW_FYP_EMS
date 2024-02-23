@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         const atAccessToken = requestData[0].atAccessToken;
         const atCreatedAt = requestData[0].atCreatedAt;
 
-        const tempLink = `${url}/ntf_view?tokenid=${atID}&ptoken=${atAccessToken}`;
+        const tempLink = `${url}/attended_events?tokenid=${atID}&ptoken=${atAccessToken}`;
 
         const mailContent = `
             <html>

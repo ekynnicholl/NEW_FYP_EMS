@@ -34,7 +34,7 @@ const BottomLeftPopup = () => {
             <div className="flex flex-col">
                 <div className="p-2 text-justify">
                     <p className="text-lg font-bold">NOTICE</p>
-                    <p className="text-md">Are you looking for a way to view your past submitted forms? Click <span className="text-blue-500"><a href="../../ntf_view">here</a></span>.</p>
+                    <p className="text-md">Are you looking for a way to view your past submitted forms? Click <span className="text-blue-500"><a href="../../attended_events">here</a></span>.</p>
                     <p className="text-xs">Closing in {countdown} seconds...</p>
                 </div>
             </div>

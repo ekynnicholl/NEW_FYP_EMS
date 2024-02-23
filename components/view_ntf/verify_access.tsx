@@ -6,6 +6,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ReCAPTCHA from "react-google-recaptcha";
 import NTFList from "@/components/view_ntf/ntf_list";
 import VerifiedAccess from "@/components/view_ntf/access_token_information";
+import AttendanceList from "@/components/view_ntf/attendance_list"
 
 interface VerifyAccessProps {
     token: string;
@@ -144,13 +145,16 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
                     <div className="p-5">
                         <div className={`lg:w-full space-y-5 mx-auto ${(atIdentifier2 && atIdentifier2.startsWith('SS')) ? 'w-5/12' : 'w-full'}`}>
                             <div className="lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
-                                <VerifiedAccess atExpiredAt={atExpiredAt} token={token} atCreatedAt={atCreatedAt} />
+                                <VerifiedAccess atExpiredAt={atExpiredAt} token={token} atCreatedAt={atCreatedAt} atIdentifier={atIdentifier} />
                             </div>
                             {atIdentifier2 && atIdentifier2.startsWith('SS') && (
                                 <div className="lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
                                     <NTFList atIdentifier={atIdentifier} />
                                 </div>
                             )}
+                            <div className="lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+                                <AttendanceList atIdentifier={atIdentifier} atIdentifier2={atIdentifier2} />
+                            </div>
                         </div>
                     </div>
                 </div>
