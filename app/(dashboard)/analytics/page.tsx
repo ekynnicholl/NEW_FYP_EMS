@@ -1,10 +1,7 @@
 "use client";
 
-import BarChart from "@/components/analytics/BarChart";
-import Histogram from "@/components/analytics/Histogram";
 import ExpenditureGraph from "@/components/analytics/ExpenditureGraph";
 import BarGraphAttendance from "@/components/analytics/BarGraphAttendance";
-import PieChart from "@/components/analytics/PieChart";
 import { SetStateAction, useEffect, useState } from "react";
 
 export default function Home() {
@@ -188,6 +185,9 @@ export default function Home() {
 									<option value="student">Student</option>
 								</select>
 							</div>
+						</div>
+						<div>
+							<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] text-center dark:text-slate-200 italic">Tip: You can change whether you want to view staff, student, or both using the &apos;Category&apos; filter.</p>
 						</div>
 						<div className="">
 							<BarGraphAttendance startDate={startDate} endDate={endDate} category={selectedCategory} />

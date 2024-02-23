@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { format, startOfMonth, endOfMonth, setHours, setMinutes, setSeconds } from "date-fns";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 interface BarChartProps {
     startDate: string | null;
@@ -15,12 +16,9 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chartInstance = useRef<Chart | null>(null);
     const supabase = createClientComponentClient();
+    Chart.register(ChartDataLabels);
 
     const [facultyData, setFacultyData] = useState({});
-
-    useEffect(() => {
-        fetchData();
-    }, []);
 
     useEffect(() => {
         fetchData();
@@ -58,7 +56,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
             .lte("attDateSubmitted", formattedEndDate);
 
         if (category === "student") {
-            query = query.not("attFormsStaffID", "like", "SS%");
+            query = query.not("attFormsStaffID", "like", "SS%").not("attFormsStaffID", "eq", "0");;
         } else if (category === "staff") {
             query = query.like("attFormsStaffID", "SS%");
         }
@@ -89,6 +87,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
             const facultyColors = generateRandomColors(Object.keys(facultyCounts).length);
+            const maxDataValue = Math.max(...data) + 1;
 
             chartInstance.current = new Chart(ctx, {
                 type: "bar",
@@ -104,6 +103,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
                     ],
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -112,7 +112,8 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
                                 display: true,
                                 text: "Unit",
                             },
-                            grid: { display: false }
+                            grid: { display: false },
+                            suggestedMax: maxDataValue,
                         },
                         y: {
                             title: {
@@ -121,14 +122,19 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
                             },
                             beginAtZero: true,
                             grid: { display: false },
-                            ticks: {
-                                stepSize: 1
-                            },
                         },
                     },
                     plugins: {
                         legend: {
                             display: false,
+                        },
+                        datalabels: {
+                            color: '#000000',
+                            align: 'end',
+                            anchor: 'end',
+                            formatter: (value: number) => {
+                                return value.toString();
+                            },
                         },
                     },
                 },
@@ -138,7 +144,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
 
     return (
         <div>
-            <canvas ref={chartRef} width="400" height="400"></canvas>
+            <canvas ref={chartRef} width="400" height="1000"></canvas>
         </div>
     );
 };
