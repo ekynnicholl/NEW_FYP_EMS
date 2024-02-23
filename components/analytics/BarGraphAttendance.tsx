@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
+import Chart, { ChartData } from "chart.js/auto";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { format, startOfMonth, endOfMonth, setHours, setMinutes, setSeconds } from "date-fns";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import AttendanceList from '@/components/analytics/attendance_table';
+import AttendanceView from '@/components/analytics/view_attendance';
 
 interface BarChartProps {
     startDate: string | null;
@@ -17,6 +19,8 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
     const chartInstance = useRef<Chart | null>(null);
     const supabase = createClientComponentClient();
     Chart.register(ChartDataLabels);
+    const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+    const [selectedStaffDetails, setSelectedStaffDetails] = useState<Array<{ staffName: string; staffID: string; dateSubmitted: string }>>([])
 
     const [facultyData, setFacultyData] = useState({});
 
@@ -137,6 +141,23 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
                             },
                         },
                     },
+                    onClick: function (event: any, elements: any[]) {
+                        if (elements.length > 0) {
+                            const clickedIndex = elements[0].index;
+                            const clickedLabel = (this as { data?: ChartData }).data?.labels?.[clickedIndex];
+
+                            const staffDetails = data
+                                .filter((item) => item.attFormsFacultyUnit === clickedLabel)
+                                .map((item) => ({
+                                    staffName: item.attFormsStaffName,
+                                    staffID: item.attFormsStaffID,
+                                    dateSubmitted: item.attDateSubmitted,
+                                }));
+
+                            setSelectedStaffDetails(staffDetails);
+                            setShowAttendanceModal(true);
+                        }
+                    },
                 },
             })
         }
@@ -145,6 +166,15 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
     return (
         <div>
             <canvas ref={chartRef} width="400" height="1000"></canvas>
+
+            {showAttendanceModal && (
+                <AttendanceView
+                    isVisible={showAttendanceModal}
+                    onClose={() => setShowAttendanceModal(false)}
+                >
+                    <AttendanceList staffDetails={selectedStaffDetails} />
+                </AttendanceView>
+            )}
         </div>
     );
 };

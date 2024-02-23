@@ -47,8 +47,6 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                 .gte('created_at', startDate.toISOString())  // Filter for dates greater than or equal to start date
                 .lte('created_at', endDate.toISOString());
 
-            console.log(data);
-
             if (error) {
                 console.error("Error fetching data:", error);
                 return;
@@ -71,7 +69,6 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                     // console.log("Entry Faculty:", entry.faculty.trim().toLowerCase());
                     return entry.faculty.trim().toLowerCase() === item.faculty.trim().toLowerCase();
                 });
-                console.log("test" + facultyIndex)
 
                 if (facultyIndex !== -1 && !isNaN(month)) {
                     monthlyData[facultyIndex].total += item.grand_total_fees;

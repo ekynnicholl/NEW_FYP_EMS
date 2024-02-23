@@ -113,7 +113,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             // Fetch the attendance list for that event,
             fetchAttendanceList(event_id);
 
-            console.log("Attendance forms data lalalala:", attendanceDataWithSubEventNames);
+            // console.log("Attendance forms data lalalala:", attendanceDataWithSubEventNames);
         } catch (error) {
             // const typedError = error as Error;
             // console.error("Error:", typedError.message);
@@ -351,6 +351,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
 
     const filterAttendanceData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
         let filteredData = attendanceData;
+
         if (tab === 'staff') {
             filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
         } else if (tab === 'student') {
@@ -362,7 +363,10 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         // Apply search filter
         if (query) {
             filteredData = filteredData.filter((item) => {
-                return item.attFormsStaffName.toLowerCase().includes(query.toLowerCase());
+                return (
+                    item.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
+                    item.attFormsStaffID.toLowerCase().includes(query.toLowerCase())
+                );
             });
         }
 
