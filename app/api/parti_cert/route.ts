@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 import { GenerateCertificateParticipation } from "@/components/certificates/parti_cert";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from 'uuid';
