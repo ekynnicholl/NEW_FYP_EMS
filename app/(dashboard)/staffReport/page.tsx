@@ -13,8 +13,9 @@ import skipRight from "@/public/images/skip_right.png";
 
 import { FaSortAlphaDown, FaSortNumericDown, FaSortAmountUp } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
+import { MdFilterListAlt } from "react-icons/md";
 
-import { Fragment, useState, useEffect, ChangeEvent } from "react";
+import { Fragment, useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import RightArrow from "@/components/icons/RightArrow";
 import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
@@ -24,19 +25,37 @@ import ExpenditureUser from "@/components/tables/expenditureUser";
 import { Info } from "lucide-react";
 
 type Info = {
-	attFormsStaffID: string;
+	attFormsAttendanceID: string;
 	attFormsStaffName: string;
+	attFormsStaffID: string;
+	attFormsStaffEmail: string;
 	attFormsFacultyUnit: string;
-	attFSubEventID: string;
+};
+
+type mainEvents = {
+    intFID: string;
+    intFEventName: string;
+    intFEventDescription: string;
+    intFEventStartDate: string;
+    intFEventEndDate: string;
+    intFDurationCourse: string;
+    intFTrainerName: string;
+    intFTrainingProvider: string;
 };
 
 type subEvents = {
-	sub_eventsID: string;
-	sub_eventsMainID: string;
-	sub_eventsName: string;
-	sub_eventsStartDate: string;
-	sub_eventsStartTime: string;
-};
+    sub_eventsMainID: string;
+    sub_eventsID: string;
+    sub_eventsName: string;
+    sub_eventsVenue: string;
+    sub_eventsStartDate: string;
+    sub_eventsEndDate: string;
+    sub_eventsStartTime: string;
+    sub_eventsEndTime: string;
+    sub_eventsOrganizer: string;
+    sub_eventsFaculty: string;
+    sub_eventsMaxSeats: string;
+}
 
 export default function Home() {
 	const supabase = createClientComponentClient();
@@ -52,58 +71,79 @@ export default function Home() {
 	const [infos, setInfos] = useState<Info[]>([] as Info[]);
 	const [subEventsAttended, setSubEventsAttended] = useState<subEvents[]>([]);
 	const [mainEventAttended, setMainEventAttended] = useState<{ intFEventName: string[]; }[]>([]);
+	const [allMainEvent, setAllMainEvent] = useState<mainEvents[]>([]);
 
 	const [dataResults, setDataResults] = useState<{
-		staffID: number;
+		staffID: string;
 		staffName: string;
 		staffFaculty: string;
 		totalSubEvents: number;
+		subEventsAttended: string[];
 		eventsAttended: string[];
+		// eventsAttended: { mainEventID: string; subEventID: number }[];
 	}[]>([]);
 
 	const [aggregatedInfo, setAggregatedInfo] = useState<{
-		staffID: number;
+		staffID: string;
 		staffName: string;
 		staffFaculty: string;
 		totalSubEvents: number;
+		subEventsAttended: string[];
 		eventsAttended: string[];
+		// eventsAttended: { mainEventID: string; subEventID: number }[];
 	}[]>([]);
+
+	const fetchInfos = async () => {
+		const { data: staffData, error: attendedEventError } = await supabase
+			.from("attendance_forms")
+			.select("*");
+
+		if (attendedEventError) {
+			console.error("Error fetching staff attendance data:", attendedEventError);
+			return;
+		}
+
+		const { data: subEvents, error: subEventsError } = await supabase
+			.from("sub_events")
+			.select("*");
+
+		if (subEventsError) {
+			console.error("Error fetching sub_events:", subEventsError);
+			return;
+		}
+
+		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
+		const groupedData = staffData.reduce((result, form) => {
+			// const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;
+			const uniqueStaffID = form.attFormsStaffID;
+
+			if (!result[uniqueStaffID]) {
+				result[uniqueStaffID] = {
+					staffID: form.attFormsStaffID,
+					staffName: form.attFormsStaffName,
+					staffFaculty: form.attFormsFacultyUnit,
+					totalSubEvents: 0,
+					subEventsAttended: [],
+					eventsAttended: [],
+				};
+			}
+			result[uniqueStaffID].totalSubEvents++;
+			result[uniqueStaffID].subEventsAttended.push(form.attFSubEventID);
+			result[uniqueStaffID].eventsAttended.push(subEvents
+														.filter(event => event.sub_eventsID === form.attFSubEventID)
+														.map(event => event.sub_eventsMainID));
+			
+			
+			return result;
+
+		}, {});
+
+		// Set the aggregated data in the state
+		setAggregatedInfo(Object.values(groupedData));
+	};
 
 	// Fetch data from database
 	useEffect(() => {
-		const fetchInfos = async () => {
-			const { data: staffData, error: attendedEventError } = await supabase
-				.from("attendance_forms")
-				.select("*");
-
-			if (attendedEventError) {
-				console.error("Error fetching staff attendance data:", attendedEventError);
-				return;
-			}
-
-			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-			const groupedData = staffData.reduce((result, form) => {
-				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;
-
-				if (!result[uniqueStaffID]) {
-					result[uniqueStaffID] = {
-						staffID: form.attFormsStaffID,
-						staffName: form.attFormsStaffName,
-						staffFaculty: form.attFormsFacultyUnit,
-						totalSubEvents: 0,
-						eventsAttended: [],
-					};
-				}
-				result[uniqueStaffID].totalSubEvents++;
-				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
-
-				return result;
-
-			}, {});
-
-			// Set the aggregated data in the state
-			setAggregatedInfo(Object.values(groupedData));
-		};
 		fetchInfos();
 	}, [supabase]);
 
@@ -138,6 +178,24 @@ export default function Home() {
 		setMainEventAttended((mainEvent || []));
 	}
 
+	useEffect (() => {
+		const fetchMainEvent = async() => {
+			const { data: mainEvent, error: mainEventError } = await supabase
+				.from('internal_events')
+				.select('*');
+	
+			if (mainEventError) {
+				console.error("Error fetching main_events:", mainEventError);
+				return;
+			}
+			setAllMainEvent(mainEvent || []);
+		}
+		
+		fetchMainEvent();
+		
+	}, [supabase]);
+	
+
 	//display the sub event attended modal
 	const openModal = async (staff_event_id: string[]) => {
 		fetchSubEventList(staff_event_id);
@@ -146,60 +204,21 @@ export default function Home() {
 
 	// Refresh data from database
 	const refreshData = async () => {
-		const fetchInfos = async () => {
-			const { data: staffData, error: attendedEventError } = await supabase
-				.from("attendance_forms")
-				.select("*")
-
-			if (attendedEventError) {
-				console.error("Error fetching staff attendance data:", attendedEventError);
-				return;
-			}
-
-			// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-			const groupedData = staffData.reduce((result, form) => {
-				const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;
-
-				if (!result[uniqueStaffID]) {
-					result[uniqueStaffID] = {
-						staffID: form.attFormsStaffID,
-						staffName: form.attFormsStaffName,
-						staffFaculty: form.attFormsFacultyUnit,
-						totalSubEvents: 0,
-						eventsAttended: [],
-					};
-				}
-				result[uniqueStaffID].totalSubEvents++;
-				result[uniqueStaffID].eventsAttended.push(form.attFSubEventID);
-
-				return result;
-
-			}, {});
-
-			// Set the aggregated data in the state
-			setAggregatedInfo(Object.values(groupedData));
-
-		};
 		fetchInfos();
 	};
 
-	// Handle search input
+	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
+
 	const handleSearch = (query: string) => {
-		setSearchQuery(query);
+        setSearchQuery(query);
+        filterUserData(activeTab, query);
+    };
+	
 
-		// Clear the data results,
-		setDataResults([]);
+	useEffect(() => {
+        filterUserData(activeTab, searchQuery);
+    }, [activeTab, searchQuery, aggregatedInfo]);
 
-		const filteredData = aggregatedInfo.filter(
-			info =>
-				info.staffName.toLowerCase().includes(query.toLowerCase()) ||
-				info.staffID.toString().includes(query) ||
-				info.staffFaculty.toLowerCase().includes(query.toLowerCase()),
-		);
-
-		setDataResults(filteredData);
-		// setAggregatedInfo(filteredData);
-	};
 
 	type ColumnMapping = {
 		[key: string]: string;
@@ -269,60 +288,6 @@ export default function Home() {
 		setActivePage(pageNumber);
 	};
 
-	// Show Sort Options
-	const handleSortButtonClick = () => {
-		setShowSortOptions(!showSortOptions); // Toggle dropdown visibility
-	};
-
-	// Toggle sort order between 'asc' and 'desc' when ID is selected
-	const handleSortButtonMenuClick = () => {
-		if (sortBy === "staffid" || sortBy == "name" || sortBy == "eventattended") {
-			// If it's already sorted by name, toggle between 'asc' and 'desc'
-			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-		} else {
-			// Set the sorting option to name and default to 'asc'
-			setSortBy("staffid");
-			setSortOrder("asc");
-		}
-		setShowSortOptions(false);
-	};
-
-	// An array of sorting options
-	const sortOptions = [
-		{ label: "Staff Name", value: "name" },
-		{ label: "Staff ID", value: "staffid" },
-		{ label: "Number of Event Attended", value: "eventattended" },
-
-	];
-
-	// Modify the sorting logic based on the selected option and sort order
-	const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
-		.slice()
-		.sort((a, b) => {
-			if (sortBy === "staffid") {
-				// Sort by ID
-				if (sortOrder === "asc") {
-					return a.staffID - b.staffID;
-				} else {
-					return b.staffID - a.staffID;
-				}
-			} else if (sortBy === "name") {
-				if (sortOrder === "asc") {
-					return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
-				} else {
-					return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
-				}
-			}
-			else if (sortBy === "eventattended") {
-				if (sortOrder === "asc") {
-					return b.totalSubEvents - a.totalSubEvents;
-				} else {
-					return a.totalSubEvents - b.totalSubEvents;
-				}
-			}
-			return 0;
-		});
-
 	// Handle page change
 	const handlePageChange = (page: number) => {
 		if (page >= 1 && page <= Math.ceil(aggregatedInfo.length / entriesToShow)) {
@@ -373,6 +338,286 @@ export default function Home() {
 	useEffect(() => {
 		setCurrentPage(1);
 	}, [aggregatedInfo])
+
+	const getTotalHours = (subEventEndTime: string, subEventStartTime: string): number => {
+		const endTime = new Date(subEventEndTime).getTime();
+		const startTime = new Date(subEventStartTime).getTime();
+
+		const differenceInMs = endTime - startTime;
+		// Convert milliseconds to hours
+		const totalHours = differenceInMs / (1000 * 60 * 60);
+		return totalHours;
+	}	
+
+	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
+	const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
+	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
+	const [selectedFacultyUnit, setSelectedFacultyUnit] = useState("");
+	const [selectedCourse, setSelectedCourse] = useState("");
+
+	useEffect(() => {
+		// Function to fetch data from Supabase
+		const fetchFacultyOptions = async () => {
+			try {
+				const { data, error } = await supabase
+					.from('attendance_settings')
+					.select('attsName')
+					.eq('attsType', 1)
+					.order('attsName', { ascending: true });
+
+				if (error) {
+					// console.error('Error fetching faculty options:', error.message);
+					return;
+				}
+
+				// Extracting only the 'attsName' values from the data
+				const facultyNames = data.map((item) => item.attsName);
+
+				setFacultyOptions(facultyNames);
+			} catch (error) {
+				// console.error('Error:', error);
+			}
+		};
+
+		// Fetch the faculty options when the component mounts
+		fetchFacultyOptions();
+	}, [])
+
+	useEffect(() => {
+		const fetchFacultyStudent = async () => {
+			const { data, error } = await supabase
+				.from('attendance_settings')
+				.select('attsName')
+				.eq('attsType', 0)
+				.order('attsName', { ascending: true });
+
+			if (error) {
+				// console.error('Error fetching faculty units:', error);
+				return;
+			}
+
+			const facultyStudents = data.map((item) => item.attsName);
+			setFacultyStudents(facultyStudents);
+		};
+
+		fetchFacultyStudent();
+	}, []);
+
+	// retrieve units according categories
+	useEffect(() => {
+		const fetchFacultyUnits = async () => {
+			const { data, error } = await supabase
+				.from('attendance_settings')
+				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
+				.eq('attsType', 2)
+				.order('attsCategory, attsName');
+			// .order('attsCategory, attsPosition');
+
+			if (error) {
+				// console.error('Error fetching faculty units:', error);
+				return;
+			}
+
+			if (data) {
+
+				// Extract unique categories and subcategories
+				const uniqueCategories = Array.from(new Set(data
+					.filter(unit => unit.attsCategory > 0)));
+
+				const uniqueSubcategories = Array.from(new Set(data
+					.filter(unit => unit.attsSubcategory > 0)));
+
+				// Create categories array with subcategories
+				const categoriesArray = uniqueCategories.map((category) => ({
+					id: category.attsCategory,
+					category: category.attsPosition,
+					name: category.attsName,
+					subcategories: uniqueSubcategories
+						.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
+						.map(subcategory => ({
+							name: subcategory.attsName,
+							facultyUnit: subcategory.attsFacultyUnit
+						}))
+				}));
+
+				setCategories(categoriesArray);
+			}
+		};
+
+		fetchFacultyUnits();
+	}, []);
+
+	const [selectedOption, setSelectedOption] = useState('');
+
+	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+		setSelectedOption(event.target.value);
+	};
+
+	const handleSelectFacultyUnitChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+		const value = event.target.value;
+		setSelectedFacultyUnit(value);
+		console.log(selectedFacultyUnit);
+		filterUserData(activeTab, "");
+	};
+
+	const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
+		const selectedCourse = event.target.value;
+		// Concatenate the faculty/unit and the selected course
+		const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
+	};
+
+	const getSecondSelectOptions = () => {
+		switch (selectedOption) {
+			case 'Faculty of Business, Design and Arts':
+				return (
+					<>
+						<option value="" disabled>Select Course</option>
+						{categories
+							.filter(category => category.category === 1 || category.category === 3)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 1 || subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'Faculty of Engineering, Computing and Science':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 2 || category.category === 3)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 2 || subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			default:
+				return (
+					<option value="" disabled>
+						Select Option
+					</option>
+				);
+		}
+	};
+
+	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
+		setSearchQuery(query);
+	
+		// Clear the data results
+		setDataResults([]);
+	
+		let filteredUserData = [...aggregatedInfo]; 
+	
+		if (tab === 'staff') {
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
+		} else if (tab === 'student') {
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
+		} else if (tab === 'visitor') {
+            filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
+        }
+	
+		if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
+			filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty);
+		}
+	
+		if (query) {
+			filteredUserData = filteredUserData.filter(
+				info => {
+					return (
+						info.staffName.toLowerCase().includes(query.toLowerCase()) ||
+						info.staffID.toString().includes(query) ||
+						info.staffFaculty.toLowerCase().includes(query.toLowerCase())
+					);
+				}
+			);
+		}
+	
+		setDataResults(filteredUserData);
+	};
+	
+	// Show Sort Options
+	const handleSortButtonClick = () => {
+		setShowSortOptions(!showSortOptions); // Toggle dropdown visibility
+	};
+
+	// Toggle sort order between 'asc' and 'desc' when ID is selected
+	const handleSortButtonMenuClick = () => {
+		if (sortBy === "staffid" || sortBy == "name" || sortBy == "eventattended") {
+			// If it's already sorted by name, toggle between 'asc' and 'desc'
+			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+		} else {
+			// Set the sorting option to name and default to 'asc'
+			setSortBy("staffid");
+			setSortOrder("asc");
+		}
+		setShowSortOptions(false);
+	};
+
+	// An array of sorting options
+	const sortOptions = [
+		{ label: "Staff Name", value: "name" },
+		{ label: "Staff ID", value: "staffid" },
+		{ label: "Number of Event Attended", value: "eventattended" },
+
+	];
+
+	// Modify the sorting logic based on the selected option and sort order
+	const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
+		.slice()
+		.sort((a, b) => {
+			if (sortBy === "staffid") {
+				// Sort by ID
+				if (sortOrder === "asc") {
+					return a.staffID.localeCompare(b.staffID, undefined, { sensitivity: 'base' });
+				} else {
+					return b.staffID.localeCompare(a.staffID, undefined, { sensitivity: 'base' });
+				}
+			} else if (sortBy === "name") {
+				if (sortOrder === "asc") {
+					return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
+				} else {
+					return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
+				}
+			}
+			else if (sortBy === "eventattended") {
+				if (sortOrder === "asc") {
+					return b.totalSubEvents - a.totalSubEvents;
+				} else {
+					return a.totalSubEvents - b.totalSubEvents;
+				}
+			}
+			return 0;
+		});
+
+	const [showFilterOptions, setShowFilterOptions] = useState(false);
+
+	// Show Filter Options
+	const handleFilterButtonClick = () => {
+		setShowFilterOptions(!showFilterOptions); // Toggle dropdown visibility
+	};
 
 	return (
 		<div>
@@ -427,6 +672,18 @@ export default function Home() {
 										onClick={refreshData}>
 										<IoMdRefresh className="text-xl text-slate-800" />
 									</button>
+
+									{/* Filter */}
+									{/* <div className="relative">
+										<button
+											type="button"
+											className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
+											onClick={handleFilterButtonClick}>
+											<MdFilterListAlt className="text-xl"/>
+											<span className="ml-2 text-slate-800 dark:text-dark_text">Filters</span>
+										</button>
+									</div>								 */}
+										
 
 									{/* Sort By Button */}
 									<div className="relative">
@@ -501,9 +758,112 @@ export default function Home() {
 								</div>
 							</div>
 
+							<div className="flex flex-row">
+								<button
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+									}`}
+									onClick={() => setActiveTab('all')}
+								>
+									All
+								</button>
+								<button
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+									}`}
+									onClick={() => {setActiveTab('staff')}}
+								>
+									Staff
+								</button>
+								<button
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+										}`}
+									onClick={() => {setActiveTab('student')}}
+								>
+									Student
+								</button>	
+								<button
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+										}`}
+									onClick={() => {setActiveTab('visitor')}}
+								>
+									Visitor
+								</button>										
+							</div>
+
+							{/* {showFilterOptions && (
+								<div className="border-[1px] p-4 w-full">									
+								
+									<div className="flex flex-row">			
+									{(activeTab === "staff" || activeTab === "all") && (
+										<div>
+											<label>Faculty / Unit (Staff)</label>
+											<select
+											name="facultyUnit"
+											id="facultyUnit"
+											defaultValue=""
+											className="px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+											required
+											onChange={event => {handleSelectFacultyUnitChange(event);}}
+											>
+												<option value="" disabled>
+													Select Faculty/ Unit
+												</option>
+												<option value="all">
+													All
+												</option>
+												{facultyOptions.map((faculty, index) => (
+													<option key={index} value={faculty}>
+														{faculty}
+													</option>
+												))}
+											</select>
+										</div>
+									)} 
+									
+									{(activeTab === "student" || activeTab === "all") && (
+										<div>
+											<label>Course</label>
+											<select
+												name="studentFacultyUnit"
+												id="studentFacultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+												required
+												onChange={event => handleSelectChange(event)}
+											>												
+												<option value="" disabled>Select Faculty/ Unit</option>
+												{facultyStudents.map((faculty, index) => (
+													<option key={index} value={faculty}>
+														{faculty}
+													</option>
+												))}
+												<option value="Both">Both</option>
+											</select>
+
+											{selectedOption &&
+												<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+													<div className="ml-1">														
+														<select
+															name="anotherSelect"
+															id="anotherSelect"
+															defaultValue=""
+															className="border-[1px] px-4 py-2 border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+															required
+															onChange={handleAnotherSelectChange}
+														>
+															{getSecondSelectOptions()}
+														</select>
+													</div>
+												</div>
+											}
+										</div>
+									)}
+									</div>
+								</div>
+							)} */}
+
 							<div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
 								<div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
-									<table className="min-w-full leading-normal">
+									<table className="min-w-full leading-normal min-h-[70vh]">
 										{/* Table Header */}
 										<thead>
 											<tr className="flex">
@@ -534,7 +894,9 @@ export default function Home() {
 												)
 												.map((info, index) => (
 													<tr className="flex" key={info.staffID}
-														onClick={() => { openModal(info.eventsAttended); }}>
+														onClick={() => { openModal(info.subEventsAttended); 
+													}}
+													>
 														<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 															<div className="flex items-center">
 																<div className="ml-[14px]">
@@ -546,7 +908,7 @@ export default function Home() {
 														</td>
 														<td className="flex-1 -ml-16 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 															<p className="text-gray-900 whitespace-no-wrap lg:ml-3 dark:text-dark_text">
-																{info.staffName}
+																{info.staffName}																
 															</p>
 														</td>
 														<td className="flex-1 -ml-2 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
@@ -560,16 +922,16 @@ export default function Home() {
 															</p>
 														</td>
 
-														<td className="flex-1 lg:px-5 py-5 border-b border-gray-200 bg-white cursor-pointer hover:bg-slate-200 text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 whitespace-no-wrap ml-1 dark:text-dark_text">
+														<td className="flex-1 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 whitespace-no-wrap -ml-6 lg:ml-1 dark:text-dark_text">
 																{info.totalSubEvents}
+																{allMainEvent
+																	.filter(event => info.eventsAttended.includes(event.intFID))
+																	.map(e => (<p>{e.intFEventName}</p>))}	
 															</p>
-														</td>
-
+														</td>														
 													</tr>
 												))}
-
-
 
 											{/* pagination */}
 											{Array.from({
@@ -605,7 +967,7 @@ export default function Home() {
 											))}
 										</tbody>
 									</table>
-
+											
 									<div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
 										<div className=" items-center text-[14px] text-base hidden lg:flex">
 											<div className="mr-2 ml-3">
@@ -774,7 +1136,9 @@ export default function Home() {
 
 												<tr className="bg-gray-100">
 													<span className="text-sky-800 float-right border bg-slate-200 rounded-full p-2 mt-2">
-														<p onClick={() => { openModal(info.eventsAttended); }}>View</p>
+														<p 
+														onClick={() => { openModal(info.subEventsAttended); }}
+														>View</p>
 													</span>
 												</tr>
 											</table>
