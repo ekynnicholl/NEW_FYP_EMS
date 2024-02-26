@@ -589,7 +589,7 @@ export default function AttendanceForm() {
 							id="name"
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 							required
-							placeholder="e.g., bloh@swinburne.edu.my OR 10274627@students.swinburne.edu.my"
+							placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
 								setInfo({ ...info, attFormsStaffEmail: event.target.value })
