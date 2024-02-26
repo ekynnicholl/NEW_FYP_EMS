@@ -284,6 +284,7 @@ export default function AttendanceForm() {
 			}
 
 			const facultyStudents = data.map((item) => item.attsName);
+
 			setFacultyStudents(facultyStudents);
 		};
 
@@ -366,7 +367,7 @@ export default function AttendanceForm() {
 							.map((category) => (
 								<optgroup key={category.id} label={category.name}>
 									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 1 || subcategory.facultyUnit === 3)
+										.filter(subcategory => subcategory.facultyUnit === 1)
 										.map((subcategory, index) => (
 											<option key={index} value={subcategory.name}>
 												{subcategory.name}
@@ -389,7 +390,53 @@ export default function AttendanceForm() {
 							.map((category) => (
 								<optgroup key={category.id} label={category.name}>
 									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 2 || subcategory.facultyUnit === 3)
+										.filter(subcategory => subcategory.facultyUnit === 2)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'School of Foundation':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 4)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'School of Research':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 5)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 4)
 										.map((subcategory, index) => (
 											<option key={index} value={subcategory.name}>
 												{subcategory.name}
