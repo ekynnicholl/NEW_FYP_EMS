@@ -487,6 +487,10 @@ export default function AttendanceForm() {
 		return emailRegex.test(email);
 	};
 
+
+
+	const [buttonClicked, setButtonClicked] = useState(false);
+
 	return (
 		<div className="flex flex-col items-center min-h-screen bg-slate-100">
 			<form
@@ -794,7 +798,7 @@ export default function AttendanceForm() {
 								Cancel
 							</button>
 						)}
-						{userType === 'visitor' ? (
+						{/* {userType === 'visitor' ? (
 							<button
 								type="submit"
 								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
@@ -816,6 +820,34 @@ export default function AttendanceForm() {
 									}
 								}}
 								disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
+								Submit
+							</button>
+						)} */}
+
+						{userType === 'visitor' ? (
+							<button
+								type="submit"
+								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+								onClick={() => {
+									if (info.attFormsStaffName && !buttonClicked) {
+										handleSubmit;
+										setButtonClicked(true);
+									}
+								}}
+								disabled={!info.attFormsStaffName || buttonClicked}>
+								Submit
+							</button>
+						) : (
+							<button
+								type="submit"
+								className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+								onClick={() => {
+									if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !buttonClicked) {
+										handleSubmit;
+										setButtonClicked(true);
+									}
+								}}
+								disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || buttonClicked}>
 								Submit
 							</button>
 						)}
