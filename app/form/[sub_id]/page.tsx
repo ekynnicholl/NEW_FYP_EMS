@@ -522,7 +522,6 @@ export default function AttendanceForm() {
 
 	const submitAnotherResponse = () => {
 		setFormSubmitted(true);
-		
 	}
 
 
@@ -968,7 +967,7 @@ export default function AttendanceForm() {
 									<div className="pt-4 mt-1 text-xs lg:text-sm">
 										<p>Your response has been recorded.</p>
 										<br />
-										<button onClick={submitAnotherResponse} className="pt-4 text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
+										<button onClick={submitAnotherResponse} className="pt-4 -mt-[2px] text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
 									</div>
 								</div>
 							</div>
