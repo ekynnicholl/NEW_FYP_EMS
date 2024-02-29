@@ -207,7 +207,8 @@ export default function Homepage() {
 		intFEventEndDate: "",
 		intFDurationCourse: "",
 		intFTrainerName: "",
-		intFTrainingProvider: ""
+		intFTrainingProvider: "",
+		intFTotalHours: "",
 	});
 
 	const [editSubEventInfo, setEditSubEventInfo] = useState({
@@ -535,7 +536,7 @@ export default function Homepage() {
 		intFDurationCourse: '',
 		intFTrainerName: '',
 		intFTrainingProvider: '',
-		intFTotalHours:'',
+		intFTotalHours: '',
 	});
 
 	const openModal = async (
@@ -845,6 +846,7 @@ export default function Homepage() {
 				intFDurationCourse: selectedEvent.intFDurationCourse,
 				intFTrainerName: selectedEvent.intFTrainerName,
 				intFTrainingProvider: selectedEvent.intFTrainingProvider,
+				intFTotalHours: selectedEvent.intFTotalHours,
 			});
 		}
 	};
@@ -861,7 +863,8 @@ export default function Homepage() {
 				intFEventEndDate: editEventInfo.intFEventEndDate,
 				intFDurationCourse: editEventInfo.intFDurationCourse,
 				intFTrainerName: editEventInfo.intFTrainerName,
-				intFTrainingProvider: editEventInfo.intFTrainingProvider
+				intFTrainingProvider: editEventInfo.intFTrainingProvider,
+				intFTotalHours: editEventInfo.intFTotalHours,
 			})
 			.eq("intFID", editEventInfo.intFID);
 
@@ -2235,6 +2238,30 @@ export default function Homepage() {
 											})
 										}
 									/>
+
+
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Total Hours:
+										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
+											*
+										</span>
+									</p>
+									<input
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300 mb-0 lg:-mb-[18px]"
+										type="text"
+										placeholder="How long are the total sub-events?"
+										id="total_hours"
+										name="total_hours"
+										value={editEventInfo.intFTotalHours}
+										required
+										onChange={e =>
+											setEditEventInfo({
+												...editEventInfo,
+												intFTotalHours: e.target.value,
+											})
+										}
+									/>
+
 								</div>
 
 								<div className="lg:absolute bottom-0 left-0 right-0 p-4 bg-white flex justify-center gap-[2px] -mb-[80px] lg:mb-0 dark:bg-dark_mode_card">
