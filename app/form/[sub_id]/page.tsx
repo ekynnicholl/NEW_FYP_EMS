@@ -964,7 +964,7 @@ export default function AttendanceForm() {
 									<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
 										Event Attendance
 									</p>
-									<div className="pt-4 text-xs lg:text-sm">
+									<div className="pt-4 -mt-1 text-xs lg:text-sm">
 										<p>Thank you for your response!</p>
 										<br />
 										<button onClick={submitAnotherResponse} className="pt-5 text-xs lg:text-sm"><u>Submit another response</u></button>
