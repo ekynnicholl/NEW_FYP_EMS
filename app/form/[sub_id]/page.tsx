@@ -971,9 +971,10 @@ export default function AttendanceForm() {
 									<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
 										Event Attendance
 									</p>
-									<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
+									<div className="pt-5 text-xs lg:text-sm">
 										<p>Thank you for your response!</p>
 										<br />
+										<a className="pt-5 text-xs lg:text-sm" href="https://www.google.com/"><ul>Submit another response</ul></a>
 									</div>
 								</div>
 							</div>
