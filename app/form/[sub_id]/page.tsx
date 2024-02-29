@@ -245,7 +245,8 @@ export default function AttendanceForm() {
 
 	// Fetch the attendance forms settings,
 	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
-	const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
+	// const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
+	const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
 	const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
 
 	useEffect(() => {
@@ -280,7 +281,8 @@ export default function AttendanceForm() {
 		const fetchFacultyStudent = async () => {
 			const { data, error } = await supabase
 				.from('attendance_settings')
-				.select('attsName')
+				// .select('attsName')
+				.select('attsCategory, attsName')
 				.eq('attsType', 0)
 				.order('attsName', { ascending: true });
 
@@ -289,9 +291,13 @@ export default function AttendanceForm() {
 				return;
 			}
 
-			const facultyStudents = data.map((item) => item.attsName);
+			// const facultyStudents = data.map((item) => item.attsName);
+			const facultyStudentsData = data.map((item: any) => ({
+                facultyName: item.attsName, 
+                facultyCategory: item.attsCategory,
+            }));
 
-			setFacultyStudents(facultyStudents);
+			setFacultyStudents(facultyStudentsData);
 		};
 
 		fetchFacultyStudent();
@@ -362,106 +368,130 @@ export default function AttendanceForm() {
 	};
 
 	const getSecondSelectOptions = () => {
-		switch (selectedOption) {
-			case 'Faculty of Business, Design and Arts':
-				return (
-					<>
-						<option value="" disabled>Select Option</option>
-						{categories
-							.filter(category => category.category === 1 || category.category === 3)
-							.map((category) => (
-								<optgroup key={category.id} label={category.name}>
-									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 1)
-										.map((subcategory, index) => (
-											<option key={index} value={subcategory.name}>
-												{subcategory.name}
-											</option>
-										))}
-								</optgroup>
+		const selectedfacultyunit = facultyStudents.filter(faculty => faculty.facultyName === selectedOption)
+		const facultyUnitCat = selectedfacultyunit.map(unit => unit.facultyCategory);
+		return (
+			<>
+				<option value="" disabled>Select Option</option>
+				{categories
+					.filter(cat => selectedfacultyunit.some(unit => unit.facultyCategory === cat.category || (cat.category === 0 && (facultyUnitCat.includes(1) || facultyUnitCat.includes(2)))))
+					.map((cat) => (
+						<optgroup key={cat.id} label={cat.name}>
+							{cat.subcategories
+								.filter(subcategory => facultyUnitCat.includes(subcategory.facultyUnit) || subcategory.facultyUnit === 3)
+								.map((subcategory, index) => (
+									<option key={index} value={subcategory.name}>
+										{subcategory.name}
+									</option>
 							))}
-
-						<optgroup label="Not Mentioned Above">
-							<option value="Other">Other</option>
 						</optgroup>
-					</>
-				);
-			case 'Faculty of Engineering, Computing and Science':
-				return (
-					<>
-						<option value="" disabled>Select Option</option>
-						{categories
-							.filter(category => category.category === 2 || category.category === 3)
-							.map((category) => (
-								<optgroup key={category.id} label={category.name}>
-									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 2)
-										.map((subcategory, index) => (
-											<option key={index} value={subcategory.name}>
-												{subcategory.name}
-											</option>
-										))}
-								</optgroup>
-							))}
+					))
+				}
+				<optgroup label="Not Mentioned Above">
+					<option value="Other">Other</option>
+				</optgroup>
+			</>
+		);
+		// switch (selectedOption) {
+		// 	case 'Faculty of Business, Design and Arts':
+		// 		return (
+		// 			<>
+		// 				<option value="" disabled>Select Option</option>
+		// 				{categories
+		// 					.filter(category => category.category === 1 || category.category === 3)
+		// 					.map((category) => (
+		// 						<optgroup key={category.id} label={category.name}>
+		// 							{category.subcategories
+		// 								.filter(subcategory => subcategory.facultyUnit === 1)
+		// 								.map((subcategory, index) => (
+		// 									<option key={index} value={subcategory.name}>
+		// 										{subcategory.name}
+		// 									</option>
+		// 								))}
+		// 						</optgroup>
+		// 					))}
 
-						<optgroup label="Not Mentioned Above">
-							<option value="Other">Other</option>
-						</optgroup>
-					</>
-				);
-			case 'School of Foundation':
-				return (
-					<>
-						<option value="" disabled>Select Option</option>
-						{categories
-							.filter(category => category.category === 4)
-							.map((category) => (
-								<optgroup key={category.id} label={category.name}>
-									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 3)
-										.map((subcategory, index) => (
-											<option key={index} value={subcategory.name}>
-												{subcategory.name}
-											</option>
-										))}
-								</optgroup>
-							))}
+		// 				<optgroup label="Not Mentioned Above">
+		// 					<option value="Other">Other</option>
+		// 				</optgroup>
+		// 			</>
+		// 		);
+		// 	case 'Faculty of Engineering, Computing and Science':
+		// 		return (
+		// 			<>
+		// 				<option value="" disabled>Select Option</option>
+		// 				{categories
+		// 					.filter(category => category.category === 2 || category.category === 3)
+		// 					.map((category) => (
+		// 						<optgroup key={category.id} label={category.name}>
+		// 							{category.subcategories
+		// 								.filter(subcategory => subcategory.facultyUnit === 2)
+		// 								.map((subcategory, index) => (
+		// 									<option key={index} value={subcategory.name}>
+		// 										{subcategory.name}
+		// 									</option>
+		// 								))}
+		// 						</optgroup>
+		// 					))}
 
-						<optgroup label="Not Mentioned Above">
-							<option value="Other">Other</option>
-						</optgroup>
-					</>
-				);
-			case 'School of Research':
-				return (
-					<>
-						<option value="" disabled>Select Option</option>
-						{categories
-							.filter(category => category.category === 5)
-							.map((category) => (
-								<optgroup key={category.id} label={category.name}>
-									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 4)
-										.map((subcategory, index) => (
-											<option key={index} value={subcategory.name}>
-												{subcategory.name}
-											</option>
-										))}
-								</optgroup>
-							))}
+		// 				<optgroup label="Not Mentioned Above">
+		// 					<option value="Other">Other</option>
+		// 				</optgroup>
+		// 			</>
+		// 		);
+		// 	case 'School of Foundation':
+		// 		return (
+		// 			<>
+		// 				<option value="" disabled>Select Option</option>
+		// 				{categories
+		// 					.filter(category => category.category === 4)
+		// 					.map((category) => (
+		// 						<optgroup key={category.id} label={category.name}>
+		// 							{category.subcategories
+		// 								.filter(subcategory => subcategory.facultyUnit === 3)
+		// 								.map((subcategory, index) => (
+		// 									<option key={index} value={subcategory.name}>
+		// 										{subcategory.name}
+		// 									</option>
+		// 								))}
+		// 						</optgroup>
+		// 					))}
 
-						<optgroup label="Not Mentioned Above">
-							<option value="Other">Other</option>
-						</optgroup>
-					</>
-				);
-			default:
-				return (
-					<option value="" disabled>
-						Select Option
-					</option>
-				);
-		}
+		// 				<optgroup label="Not Mentioned Above">
+		// 					<option value="Other">Other</option>
+		// 				</optgroup>
+		// 			</>
+		// 		);
+		// 	case 'School of Research':
+		// 		return (
+		// 			<>
+		// 				<option value="" disabled>Select Option</option>
+		// 				{categories
+		// 					.filter(category => category.category === 5)
+		// 					.map((category) => (
+		// 						<optgroup key={category.id} label={category.name}>
+		// 							{category.subcategories
+		// 								.filter(subcategory => subcategory.facultyUnit === 4)
+		// 								.map((subcategory, index) => (
+		// 									<option key={index} value={subcategory.name}>
+		// 										{subcategory.name}
+		// 									</option>
+		// 								))}
+		// 						</optgroup>
+		// 					))}
+
+		// 				<optgroup label="Not Mentioned Above">
+		// 					<option value="Other">Other</option>
+		// 				</optgroup>
+		// 			</>
+		// 		);
+		// 	default:
+		// 		return (
+		// 			<option value="" disabled>
+		// 				Select Option
+		// 			</option>
+		// 		);
+		// }
 	};
 
 	const formatTimeToAMPM = (time: string | undefined) => {
@@ -761,8 +791,8 @@ export default function AttendanceForm() {
 										>
 											<option value="" disabled>Select Faculty/ Unit</option>
 											{facultyStudents.map((faculty, index) => (
-												<option key={index} value={faculty}>
-													{faculty}
+												<option key={index} value={faculty.facultyName}>
+													{faculty.facultyName}
 												</option>
 											))}
 										</select>
