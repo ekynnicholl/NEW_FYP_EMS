@@ -142,9 +142,14 @@ export default function AttendanceForm() {
 		fetchEventData();
 	}, [sub_id, supabase, router]);
 
+
+	const [formSubmitted, setFormSubmitted] = useState(false);
+
 	// Handle data submission
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		setFormSubmitted(true);
 
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
@@ -489,7 +494,6 @@ export default function AttendanceForm() {
 
 
 
-	const [buttonClicked, setButtonClicked] = useState(false);
 
 	return (
 		<div className="flex flex-col items-center min-h-screen bg-slate-100">
@@ -798,16 +802,17 @@ export default function AttendanceForm() {
 								Cancel
 							</button>
 						)}
-						{/* {userType === 'visitor' ? (
+						{userType === 'visitor' ? (
 							<button
 								type="submit"
 								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 								onClick={() => {
-									if (info.attFormsStaffName) {
+									if (info.attFormsStaffName && formSubmitted) {
 										handleSubmit
 									}
+									setFormSubmitted(true);
 								}}
-								disabled={!info.attFormsStaffName}>
+								disabled={!info.attFormsStaffName && !formSubmitted}>
 								Submit
 							</button>
 						) : (
@@ -822,37 +827,32 @@ export default function AttendanceForm() {
 								disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
 								Submit
 							</button>
-						)} */}
-
-						{userType === 'visitor' ? (
-							<button
-								type="submit"
-								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-								onClick={async () => {
-									if (info.attFormsStaffName && !buttonClicked) {
-										setButtonClicked(true);
-									}
-								}}
-								disabled={!info.attFormsStaffName || buttonClicked}>
-								<form onSubmit={handleSubmit}>
-									Submit
-								</form>
-							</button>
-						) : (
-							<button
-								type="submit"
-								className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-								onClick={async () => {
-									if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !buttonClicked) {
-										setButtonClicked(true);
-									}
-								}}
-								disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || buttonClicked}>
-								<form onSubmit={handleSubmit}>
-									Submit
-								</form>
-							</button>
 						)}
+
+
+						{/* <form onSubmit={handleSubmit}>
+							{userType === 'visitor' ? (
+								<button
+									type="submit"
+									className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+									disabled={!info.attFormsStaffName || formSubmitted}>
+									Submit
+								</button>
+							) : (
+								<button
+									type="submit"
+									className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+									disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
+									Submit
+								</button>
+							)}
+						</form> */}
+
+
+
+
+
+
 					</div>
 				</Fragment>
 
