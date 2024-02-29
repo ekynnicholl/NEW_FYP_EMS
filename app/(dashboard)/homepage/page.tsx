@@ -1394,6 +1394,13 @@ export default function Homepage() {
 										}
 									/>
 
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Total Hours
+										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
+											*
+										</span>
+									</p>
+
 								</div>
 
 								{eventDetails.map((detail, index) => (
