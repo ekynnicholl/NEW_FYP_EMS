@@ -959,16 +959,6 @@ export default function AttendanceForm() {
 							onSubmit={handleSubmit}
 							className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
 
-							<div
-								className="mb-4 rounded-md relative hidden lg:block">
-								<img
-									src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
-									alt="Random"
-									className="object-cover rounded-lg h-1/2 w-1/2"
-									style={{ objectPosition: "center top" }}
-								/>
-							</div>
-
 							<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
 								<div className="ml-1 mr-1">
 									<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
