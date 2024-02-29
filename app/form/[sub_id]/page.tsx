@@ -207,7 +207,11 @@ export default function AttendanceForm() {
 			} else {
 				// console.log("Data inserted successfully:", data);
 				setInfo({} as Info);
-				setShowModalSuccess(true);
+				// setShowModalSuccess(true);
+
+				// Redirect to the desired page after form submission
+				router.push('/attendance_confirmation');
+
 
 				const { data: newForms, error } = await supabase
 					.from("attendance_forms")
@@ -829,25 +833,6 @@ export default function AttendanceForm() {
 								Submit
 							</button>
 						)} */}
-
-
-						{/* <form onSubmit={handleSubmit}>
-							{userType === 'visitor' ? (
-								<button
-									type="submit"
-									className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-									disabled={!info.attFormsStaffName || formSubmitted}>
-									Submit
-								</button>
-							) : (
-								<button
-									type="submit"
-									className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-									disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
-									Submit
-								</button>
-							)}
-						</form> */}
 
 
 						<form onSubmit={handleSubmit}>
