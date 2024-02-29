@@ -827,16 +827,16 @@ export default function AttendanceForm() {
 								Cancel
 							</button>
 						)}
-						{userType === 'visitor' ? (
+						{/* {userType === 'visitor' ? (
 							<button
 								type="submit"
 								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 								onClick={() => {
-									if (info.attFormsStaffName && !formSubmitted) {
+									if (info.attFormsStaffName) {
 										handleSubmit
 									}
 								}}
-								disabled={!info.attFormsStaffName && formSubmitted}>
+								disabled={!info.attFormsStaffName}>
 								Submit
 							</button>
 						) : (
@@ -851,10 +851,10 @@ export default function AttendanceForm() {
 								disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
 								Submit
 							</button>
-						)}
+						)} */}
 
 
-						{/* <form onSubmit={handleSubmit}>
+						<form onSubmit={handleSubmit}>
 							{userType === 'visitor' ? (
 								<button
 									type="submit"
@@ -870,7 +870,7 @@ export default function AttendanceForm() {
 									Submit
 								</button>
 							)}
-						</form> */}
+						</form>
 
 					</div>
 				</Fragment>
