@@ -147,10 +147,8 @@ export default function AttendanceForm() {
 
 
 	// Handle data submission
-	const handleSubmit = async () => {
-
-		setFormSubmitted(true);
-
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
 		if (!isValidEmail) {
@@ -204,7 +202,7 @@ export default function AttendanceForm() {
 				// console.error("Error inserting data:", error);
 			} else {
 				// console.log("Data inserted successfully:", data);
-				setInfo({} as Info);
+				// setInfo({} as Info);
 				// setShowModalSuccess(true);
 
 				// Redirect to the desired page after form submission
@@ -231,6 +229,7 @@ export default function AttendanceForm() {
 					};
 
 					sendParticipationCert(participationData);
+					setFormSubmitted(true);
 				}
 			}
 		}
@@ -238,15 +237,15 @@ export default function AttendanceForm() {
 		// setInfo({} as Info);
 	};
 
-	const handleOK = () => {
-		setShowModalSuccess(false);
-		setShowModalFailure(false);
-		window.location.reload();
-	};
+	// const handleOK = () => {
+	// 	setShowModalSuccess(false);
+	// 	setShowModalFailure(false);
+	// 	window.location.reload();
+	// };
 
 	// Fetch the attendance forms settings,
 	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
-	const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
+	const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
 	const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
 
 	useEffect(() => {
@@ -340,7 +339,6 @@ export default function AttendanceForm() {
 						}))
 				}));
 
-
 				setCategories(categoriesArray);
 				console.log(categoriesArray);
 			}
@@ -364,131 +362,106 @@ export default function AttendanceForm() {
 	};
 
 	const getSecondSelectOptions = () => {
-		const selectedfacultyunit = facultyStudents.filter(faculty => faculty.facultyName === selectedOption)
-		const facultyUnitCat = selectedfacultyunit.map(unit => unit.facultyCategory);
-		return (
-			<>
-				<option value="" disabled>Select Option</option>
-				{categories
-					.filter(cat => selectedfacultyunit.some(unit => unit.facultyCategory === cat.category || (cat.category === 0 && (facultyUnitCat.includes(1) || facultyUnitCat.includes(2)))))
-					.map((cat) => (
-						<optgroup key={cat.id} label={cat.name}>
-							{cat.subcategories
-								.filter(subcategory => facultyUnitCat.includes(subcategory.facultyUnit) || subcategory.facultyUnit === 3)
-								.map((subcategory, index) => (
-									<option key={index} value={subcategory.name}>
-										{subcategory.name}
-									</option>
-								))}
+		switch (selectedOption) {
+			case 'Faculty of Business, Design and Arts':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 1 || category.category === 3)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 1)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
 						</optgroup>
-					))
-				}
-				<optgroup label="Not Mentioned Above">
-					<option value="Other">Other</option>
-				</optgroup>
-			</>
-		);
+					</>
+				);
+			case 'Faculty of Engineering, Computing and Science':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 2 || category.category === 3)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 2)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
 
-		// switch (selectedOption) {
-		// 	case 'Faculty of Business, Design and Arts':
-		// 		return (
-		// 			<>
-		// 				<option value="" disabled>Select Option</option>
-		// 				{categories
-		// 					.filter(category => category.category === 1 || category.category === 3)
-		// 					.map((category) => (
-		// 						<optgroup key={category.id} label={category.name}>
-		// 							{category.subcategories
-		// 								.filter(subcategory => subcategory.facultyUnit === 1)
-		// 								.map((subcategory, index) => (
-		// 									<option key={index} value={subcategory.name}>
-		// 										{subcategory.name}
-		// 									</option>
-		// 								))}
-		// 						</optgroup>
-		// 					))}
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'School of Foundation':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 4)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
 
-		// 				<optgroup label="Not Mentioned Above">
-		// 					<option value="Other">Other</option>
-		// 				</optgroup>
-		// 			</>
-		// 		);
-		// 	case 'Faculty of Engineering, Computing and Science':
-		// 		return (
-		// 			<>
-		// 				<option value="" disabled>Select Option</option>
-		// 				{categories
-		// 					.filter(category => category.category === 2 || category.category === 3)
-		// 					.map((category) => (
-		// 						<optgroup key={category.id} label={category.name}>
-		// 							{category.subcategories
-		// 								.filter(subcategory => subcategory.facultyUnit === 2)
-		// 								.map((subcategory, index) => (
-		// 									<option key={index} value={subcategory.name}>
-		// 										{subcategory.name}
-		// 									</option>
-		// 								))}
-		// 						</optgroup>
-		// 					))}
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'School of Research':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 5)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 4)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
 
-		// 				<optgroup label="Not Mentioned Above">
-		// 					<option value="Other">Other</option>
-		// 				</optgroup>
-		// 			</>
-		// 		);
-		// 	case 'School of Foundation':
-		// 		return (
-		// 			<>
-		// 				<option value="" disabled>Select Option</option>
-		// 				{categories
-		// 					.filter(category => category.category === 4)
-		// 					.map((category) => (
-		// 						<optgroup key={category.id} label={category.name}>
-		// 							{category.subcategories
-		// 								.filter(subcategory => subcategory.facultyUnit === 3)
-		// 								.map((subcategory, index) => (
-		// 									<option key={index} value={subcategory.name}>
-		// 										{subcategory.name}
-		// 									</option>
-		// 								))}
-		// 						</optgroup>
-		// 					))}
-
-		// 				<optgroup label="Not Mentioned Above">
-		// 					<option value="Other">Other</option>
-		// 				</optgroup>
-		// 			</>
-		// 		);
-		// 	case 'School of Research':
-		// 		return (
-		// 			<>
-		// 				<option value="" disabled>Select Option</option>
-		// 				{categories
-		// 					.filter(category => category.category === 5)
-		// 					.map((category) => (
-		// 						<optgroup key={category.id} label={category.name}>
-		// 							{category.subcategories
-		// 								.filter(subcategory => subcategory.facultyUnit === 4)
-		// 								.map((subcategory, index) => (
-		// 									<option key={index} value={subcategory.name}>
-		// 										{subcategory.name}
-		// 									</option>
-		// 								))}
-		// 						</optgroup>
-		// 					))}
-
-		// 				<optgroup label="Not Mentioned Above">
-		// 					<option value="Other">Other</option>
-		// 				</optgroup>
-		// 			</>
-		// 		);
-		// 	default:
-		// 		return (
-		// 			<option value="" disabled>
-		// 				Select Option
-		// 			</option>
-		// 		);
-		// }
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			default:
+				return (
+					<option value="" disabled>
+						Select Option
+					</option>
+				);
+		}
 	};
 
 	const formatTimeToAMPM = (time: string | undefined) => {
@@ -521,12 +494,12 @@ export default function AttendanceForm() {
 
 
 	const submitAnotherResponse = () => {
-		setFormSubmitted(true);
+		setFormSubmitted(false);
 	}
 
 
 	return (
-		<>
+		<div>
 			{!formSubmitted ? (
 				<div className="flex flex-col items-center min-h-screen bg-slate-100">
 					<form
@@ -788,8 +761,8 @@ export default function AttendanceForm() {
 										>
 											<option value="" disabled>Select Faculty/ Unit</option>
 											{facultyStudents.map((faculty, index) => (
-												<option key={index} value={faculty.facultyName}>
-													{faculty.facultyName}
+												<option key={index} value={faculty}>
+													{faculty}
 												</option>
 											))}
 										</select>
@@ -861,14 +834,14 @@ export default function AttendanceForm() {
 							)} */}
 
 
-								<form onSubmit={handleSubmit}>
+								<div>
 									{userType === 'visitor' ? (
 										<button
 											type="submit"
 											className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
 												if (info.attFormsStaffName && !formSubmitted) {
-													handleSubmit(); // Call the handleSubmit function
+													handleSubmit
 												}
 											}}
 											disabled={!info.attFormsStaffName || formSubmitted}>
@@ -880,24 +853,18 @@ export default function AttendanceForm() {
 											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
 												if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted) {
-													handleSubmit(); // Call the handleSubmit function
+													handleSubmit
 												}
 											}}
 											disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
 											Submit
 										</button>
 									)}
-								</form>
-
-
-
-
-
-
+								</div>
 							</div>
 						</Fragment>
 
-						<Modal
+						{/* <Modal
 							isVisible={showModalSuccess}
 							onClose={() => setShowModalSuccess(false)}>
 							<div className="p-4">
@@ -949,14 +916,14 @@ export default function AttendanceForm() {
 									</button>
 								</div>
 							</div>
-						</Modal>
+						</Modal> */}
 					</form>
 				</div>
 			) : (
 				<>
 					<div className="flex flex-col items-center min-h-screen bg-slate-100">
 						<form
-							onSubmit={handleSubmit}
+							onSubmit={() => setFormSubmitted(true)}
 							className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
 
 							<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
@@ -967,7 +934,7 @@ export default function AttendanceForm() {
 									<div className="pt-4 mt-1 text-xs lg:text-sm">
 										<p>Your response has been recorded.</p>
 										<br />
-										<button onClick={submitAnotherResponse} className="pt-4 -mt-[2px] text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
+										<button onClick={() => window.location.reload()} className="pt-4 -mt-[2px] text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
 									</div>
 								</div>
 							</div>
@@ -975,6 +942,6 @@ export default function AttendanceForm() {
 					</div>
 				</>
 			)}
-		</>
+		</div>
 	);
 }
