@@ -259,6 +259,35 @@ export default function ExternalForm() {
 	const [group, setGroup] = useState(false);
 	const [useOwnTransport, setUseOwnTransport] = useState(false);
 
+	//state for faculty options
+	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
+	    // Fetch faculty options
+		useEffect(() => {
+			const fetchFacultyOptions = async () => {
+				try {
+					const { data, error } = await supabase
+						.from('attendance_settings') // Adjust this to your actual table name
+						.select('attsName') // And this to your actual column name for faculty names
+						.eq('attsType', 1) // Adjust the filter according to your needs
+						.order('attsName', { ascending: true });
+	
+					if (error) {
+						console.error('Error fetching faculty options:', error.message);
+						return;
+					}
+	
+					// Set the faculty options state
+					const facultyNames = data.map(item => item.attsName);
+					setFacultyOptions(facultyNames);
+				} catch (error) {
+					console.error('Error:', error);
+				}
+			};
+	
+			// Call the fetch function
+			fetchFacultyOptions();
+		}, []);
+
 	return (
 		<div>
 			{formIsSuccess === false ? (
@@ -375,18 +404,35 @@ export default function ExternalForm() {
 													</FormItem>
 												)}
 											/>
-											<FormField
-												control={form.control}
-												name="faculty"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Faculty / School / Unit</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
+											<FormField 
+													control={form.control}
+													name="faculty"
+													render={({ field }) => (
+														<FormItem>
+															<FormLabel>Faculty / School / Unit</FormLabel>
+															<FormControl>
+																<Select
+																	onValueChange={field.onChange}
+																	defaultValue={field.value}
+																>
+																	<SelectTrigger>
+																		<SelectValue placeholder="Please select an option" />
+																	</SelectTrigger>
+																	<SelectContent>
+																		<div className="h-[300px] overflow-y-auto">
+																		<option value="" disabled>Select Faculty/ Unit</option>
+																		{facultyOptions.map((faculty, index) => (
+																			<SelectItem key={index} value={faculty}>
+																				{faculty}
+																			</SelectItem>
+																		))}
+																		</div>
+																	</SelectContent>
+																</Select>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
 											/>
 											<FormField
 												control={form.control}
