@@ -182,18 +182,20 @@ export default function ExternalForm() {
 		// Upload supporting document to bucket and return the path to the bucket
 		let documentPath: string | undefined = "";
 		const uniqueName = uuidv4()
-		let document = values.supporting_documents as FileList
-		if (document[0]) {
-			if (document.length > 0) {
-				const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${document[0].name}`, document[0], {
-					cacheControl: "3600",
-					upsert: false,
-				});
-				documentPath = upload.data?.path
+		let document = values.supporting_documents as FileList | null; 
+		// Check if `document` is not null and has at least one file
+		if (document && document.length > 0) {
+			const file = document[0]; // Assuming you're interested in the first file
 
-				if (upload.error) {
-					console.log(upload.error)
-				}
+			const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
+				cacheControl: "3600",
+				upsert: false,
+			});
+
+			documentPath = upload.data?.path;
+
+			if (upload.error) {
+				console.log(upload.error);
 			}
 		}
 
