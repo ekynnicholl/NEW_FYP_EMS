@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import chatbot_bg from "@/public/images/chatbot_bg3.png";
 import robot_profile from "@/public/images/robot_icon1.png";
@@ -13,6 +13,7 @@ import { useChat, Message } from "ai/react";
 export default function Home() {
 	const supabase = createClientComponentClient();
 	const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat();
+	const [chatMessages, setChatMessages] = useState<Message[]>(messages);
 
 	// const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 	//   if (event.key === 'Enter' && !event.shiftKey) {
@@ -20,9 +21,52 @@ export default function Home() {
 	//   }
 	// };
 
-	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+	const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === "Enter" && !event.shiftKey) {
-			event.preventDefault(); // Prevent default behavior of Enter key
+			event.preventDefault();
+
+			console.log("test1")
+
+			// Parse user input
+			const userInput = input.toLowerCase(); // Convert to lowercase for case-insensitivity
+			const currentDate = new Date();
+			const currentMonth = currentDate.getMonth() + 1; // Months are 0-indexed in JavaScript
+
+			// Check if user input contains keywords related to events
+			if (userInput.includes("events") && userInput.includes("this month")) {
+				// Construct Supabase query to retrieve events for the current month
+				const { data, error } = await supabase
+					.from("internal_events")
+					.select("intFEventName, intFEventStartDate");
+
+				if (error) {
+					console.error("Error fetching events:", error.message);
+				} else {
+					console.log("test data", data);
+					// Filter events for the current month
+					const filteredEvents = data.filter((event) => {
+						const eventDate = new Date(event.intFEventStartDate);
+						return eventDate.getMonth() + 1 === currentMonth;
+					});
+
+					// Display events in the chat interface
+					const eventMessages = filteredEvents.map((event) => {
+						return `${event.intFEventName} on ${event.intFEventStartDate}`;
+					});
+
+					// Update the local chat state with event information
+					setChatMessages((prevMessages) => [
+						...prevMessages,
+						{
+							id: String(prevMessages.length + 1),
+							role: "assistant",
+							content: eventMessages.join("\n"),
+						},
+					]);
+				}
+			} else {
+				// Handle other types of queries or provide a default response
+			}
 		}
 	};
 

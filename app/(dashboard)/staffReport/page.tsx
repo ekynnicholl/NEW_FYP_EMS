@@ -33,28 +33,28 @@ type Info = {
 };
 
 type mainEvents = {
-    intFID: string;
-    intFEventName: string;
-    intFEventDescription: string;
-    intFEventStartDate: string;
-    intFEventEndDate: string;
-    intFDurationCourse: string;
-    intFTrainerName: string;
-    intFTrainingProvider: string;
+	intFID: string;
+	intFEventName: string;
+	intFEventDescription: string;
+	intFEventStartDate: string;
+	intFEventEndDate: string;
+	intFDurationCourse: string;
+	intFTrainerName: string;
+	intFTrainingProvider: string;
 };
 
 type subEvents = {
-    sub_eventsMainID: string;
-    sub_eventsID: string;
-    sub_eventsName: string;
-    sub_eventsVenue: string;
-    sub_eventsStartDate: string;
-    sub_eventsEndDate: string;
-    sub_eventsStartTime: string;
-    sub_eventsEndTime: string;
-    sub_eventsOrganizer: string;
-    sub_eventsFaculty: string;
-    sub_eventsMaxSeats: string;
+	sub_eventsMainID: string;
+	sub_eventsID: string;
+	sub_eventsName: string;
+	sub_eventsVenue: string;
+	sub_eventsStartDate: string;
+	sub_eventsEndDate: string;
+	sub_eventsStartTime: string;
+	sub_eventsEndTime: string;
+	sub_eventsOrganizer: string;
+	sub_eventsFaculty: string;
+	sub_eventsMaxSeats: string;
 }
 
 export default function Home() {
@@ -130,10 +130,10 @@ export default function Home() {
 			result[uniqueStaffID].totalSubEvents++;
 			result[uniqueStaffID].subEventsAttended.push(form.attFSubEventID);
 			result[uniqueStaffID].eventsAttended.push(subEvents
-														.filter(event => event.sub_eventsID === form.attFSubEventID)
-														.map(event => event.sub_eventsMainID));
-			
-			
+				.filter(event => event.sub_eventsID === form.attFSubEventID)
+				.map(event => event.sub_eventsMainID));
+
+
 			return result;
 
 		}, {});
@@ -178,23 +178,23 @@ export default function Home() {
 		setMainEventAttended((mainEvent || []));
 	}
 
-	useEffect (() => {
-		const fetchMainEvent = async() => {
+	useEffect(() => {
+		const fetchMainEvent = async () => {
 			const { data: mainEvent, error: mainEventError } = await supabase
 				.from('internal_events')
 				.select('*');
-	
+
 			if (mainEventError) {
 				console.error("Error fetching main_events:", mainEventError);
 				return;
 			}
 			setAllMainEvent(mainEvent || []);
 		}
-		
+
 		fetchMainEvent();
-		
+
 	}, [supabase]);
-	
+
 
 	//display the sub event attended modal
 	const openModal = async (staff_event_id: string[]) => {
@@ -210,14 +210,14 @@ export default function Home() {
 	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
 
 	const handleSearch = (query: string) => {
-        setSearchQuery(query);
-        filterUserData(activeTab, query);
-    };
-	
+		setSearchQuery(query);
+		filterUserData(activeTab, query);
+	};
+
 
 	useEffect(() => {
-        filterUserData(activeTab, searchQuery);
-    }, [activeTab, searchQuery, aggregatedInfo]);
+		filterUserData(activeTab, searchQuery);
+	}, [activeTab, searchQuery, aggregatedInfo]);
 
 
 	type ColumnMapping = {
@@ -347,7 +347,7 @@ export default function Home() {
 		// Convert milliseconds to hours
 		const totalHours = differenceInMs / (1000 * 60 * 60);
 		return totalHours;
-	}	
+	}
 
 	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
 	const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
@@ -525,24 +525,24 @@ export default function Home() {
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
 		setSearchQuery(query);
-	
+
 		// Clear the data results
 		setDataResults([]);
-	
-		let filteredUserData = [...aggregatedInfo]; 
-	
+
+		let filteredUserData = [...aggregatedInfo];
+
 		if (tab === 'staff') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
 		} else if (tab === 'student') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
 		} else if (tab === 'visitor') {
-            filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
-        }
-	
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
+		}
+
 		if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
 			filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty);
 		}
-	
+
 		if (query) {
 			filteredUserData = filteredUserData.filter(
 				info => {
@@ -554,10 +554,10 @@ export default function Home() {
 				}
 			);
 		}
-	
+
 		setDataResults(filteredUserData);
 	};
-	
+
 	// Show Sort Options
 	const handleSortButtonClick = () => {
 		setShowSortOptions(!showSortOptions); // Toggle dropdown visibility
@@ -683,7 +683,7 @@ export default function Home() {
 											<span className="ml-2 text-slate-800 dark:text-dark_text">Filters</span>
 										</button>
 									</div>								 */}
-										
+
 
 									{/* Sort By Button */}
 									<div className="relative">
@@ -761,32 +761,32 @@ export default function Home() {
 							<div className="flex flex-row">
 								<button
 									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
-									}`}
+										}`}
 									onClick={() => setActiveTab('all')}
 								>
 									All
 								</button>
 								<button
 									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
-									}`}
-									onClick={() => {setActiveTab('staff')}}
+										}`}
+									onClick={() => { setActiveTab('staff') }}
 								>
 									Staff
 								</button>
 								<button
 									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 										}`}
-									onClick={() => {setActiveTab('student')}}
+									onClick={() => { setActiveTab('student') }}
 								>
 									Student
-								</button>	
+								</button>
 								<button
 									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
 										}`}
-									onClick={() => {setActiveTab('visitor')}}
+									onClick={() => { setActiveTab('visitor') }}
 								>
 									Visitor
-								</button>										
+								</button>
 							</div>
 
 							{/* {showFilterOptions && (
@@ -894,8 +894,9 @@ export default function Home() {
 												)
 												.map((info, index) => (
 													<tr className="flex" key={info.staffID}
-														onClick={() => { openModal(info.subEventsAttended); 
-													}}
+														onClick={() => {
+															openModal(info.subEventsAttended);
+														}}
 													>
 														<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 															<div className="flex items-center">
@@ -908,7 +909,7 @@ export default function Home() {
 														</td>
 														<td className="flex-1 -ml-16 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
 															<p className="text-gray-900 whitespace-no-wrap lg:ml-3 dark:text-dark_text">
-																{info.staffName}																
+																{info.staffName}
 															</p>
 														</td>
 														<td className="flex-1 -ml-2 lg:ml-0 lg:px-5 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
@@ -927,9 +928,9 @@ export default function Home() {
 																{info.totalSubEvents}
 																{allMainEvent
 																	.filter(event => info.eventsAttended.includes(event.intFID))
-																	.map(e => (<p>{e.intFEventName}</p>))}	
+																	.map((e, index) => (<p key={index}>{e.intFEventName}</p>))}
 															</p>
-														</td>														
+														</td>
 													</tr>
 												))}
 
@@ -967,7 +968,7 @@ export default function Home() {
 											))}
 										</tbody>
 									</table>
-											
+
 									<div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
 										<div className=" items-center text-[14px] text-base hidden lg:flex">
 											<div className="mr-2 ml-3">
@@ -1136,8 +1137,8 @@ export default function Home() {
 
 												<tr className="bg-gray-100">
 													<span className="text-sky-800 float-right border bg-slate-200 rounded-full p-2 mt-2">
-														<p 
-														onClick={() => { openModal(info.subEventsAttended); }}
+														<p
+															onClick={() => { openModal(info.subEventsAttended); }}
 														>View</p>
 													</span>
 												</tr>

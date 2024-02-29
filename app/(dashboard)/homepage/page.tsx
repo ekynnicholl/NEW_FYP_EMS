@@ -2683,7 +2683,8 @@ export default function Homepage() {
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[0].intFEventName}
+													{latestEvent[0].intFEventName.substring(0, 38)}
+													{latestEvent[0].intFEventName.length > 38 && " ... "}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -2711,8 +2712,14 @@ export default function Homepage() {
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[0].intFEventDescription}
+												{latestEvent[0].intFEventDescription.substring(0, 50)}
+												{latestEvent[0].intFEventDescription.length > 50 && " ... "}
 											</p>
+											{latestEvent[0].intFEventDescription.length > 50 && (
+												<p className="text-blue-500 cursor-pointer -mt-3">Read more...</p>
+											)}
+
+
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
@@ -2957,7 +2964,8 @@ export default function Homepage() {
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[1].intFEventName}
+													{latestEvent[1].intFEventName.substring(0, 38)}
+													{latestEvent[1].intFEventName.length > 38 && " ... "}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -2985,8 +2993,13 @@ export default function Homepage() {
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[1].intFEventDescription}
+												{latestEvent[1].intFEventDescription.substring(0, 50)}
+												{latestEvent[1].intFEventDescription.length > 50 && " ... "}
 											</p>
+											{latestEvent[1].intFEventDescription.length > 50 && (
+												<p className="text-blue-500 cursor-pointer -mt-3">Read more...</p>
+											)}
+
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
@@ -3231,7 +3244,8 @@ export default function Homepage() {
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[2].intFEventName}
+													{latestEvent[2].intFEventName.substring(0, 38)}
+													{latestEvent[2].intFEventName.length > 38 && " ... "}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -3259,8 +3273,13 @@ export default function Homepage() {
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[2].intFEventDescription}
+												{latestEvent[2].intFEventDescription.substring(0, 50)}
+												{latestEvent[2].intFEventDescription.length > 50 && " ... "}
 											</p>
+											{latestEvent[2].intFEventDescription.length > 50 && (
+												<p className="text-blue-500 cursor-pointer -mt-3">Read more...</p>
+											)}
+
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
@@ -3505,7 +3524,8 @@ export default function Homepage() {
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[3].intFEventName}
+													{latestEvent[3].intFEventName.substring(0, 38)}
+													{latestEvent[3].intFEventName.length > 38 && " ... "}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -3533,8 +3553,12 @@ export default function Homepage() {
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[3].intFEventDescription}
+												{latestEvent[3].intFEventDescription.substring(0, 50)}
+												{latestEvent[3].intFEventDescription.length > 50 && " ... "}
 											</p>
+											{latestEvent[3].intFEventDescription.length > 50 && (
+												<p className="text-blue-500 cursor-pointer -mt-3">Read more...</p>
+											)}
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
@@ -3779,7 +3803,8 @@ export default function Homepage() {
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[4].intFEventName}
+													{latestEvent[4].intFEventName.substring(0, 38)}
+													{latestEvent[4].intFEventName.length > 38 && " ... "}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -3807,8 +3832,12 @@ export default function Homepage() {
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[4].intFEventDescription}
+												{latestEvent[4].intFEventDescription.substring(0, 50)}
+												{latestEvent[4].intFEventDescription.length > 50 && " ... "}
 											</p>
+											{latestEvent[4].intFEventDescription.length > 50 && (
+												<p className="text-blue-500 cursor-pointer -mt-3">Read more...</p>
+											)}
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
@@ -4053,7 +4082,8 @@ export default function Homepage() {
 											{/* <h2 className="text-2xl font-semibold mb-2 text-slate-800">Event Title</h2> */}
 											<div className="flex justify-between items-center">
 												<h2 className="text-[26px] font-semibold mb-2 text-slate-800 dark:text-dark_text">
-													{latestEvent[5].intFEventName}
+													{latestEvent[5].intFEventName.substring(0, 38)}
+													{latestEvent[5].intFEventName.length > 38 && " ... "}
 												</h2>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
@@ -4081,8 +4111,12 @@ export default function Homepage() {
 												</DropdownMenu>
 											</div>
 											<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[18px]">
-												{latestEvent[5].intFEventDescription}
+												{latestEvent[5].intFEventDescription.substring(0, 50)}
+												{latestEvent[5].intFEventDescription.length > 50 && " ... "}
 											</p>
+											{latestEvent[5].intFEventDescription.length > 50 && (
+												<p className="text-blue-500 cursor-pointer -mt-3">Read more...</p>
+											)}
 											{/* <div className="flex items-center mt-4">
 												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 												<p className="text-slate-600 text-sm dark:text-dark_text">
@@ -5726,8 +5760,6 @@ export default function Homepage() {
 
 					</div>
 
-
-
 				) : (
 					<div className={`w-full bg-slate-100 flex pb-28 ${(todayEvents.length === 0 && tomorrowEvents.length === 0 && upcomingEvents.length === 0) ? 'h-screen' : ''} dark:bg-dark_mode_bg`}>
 						<div className="w-full pr-6 bg-slate-100 dark:bg-dark_mode_bg">
@@ -5799,7 +5831,15 @@ export default function Homepage() {
 													</DropdownMenu>
 												</div>
 												<div className="border-t border-gray-300 my-4"></div>
-												<p className="text-gray-500 dark:text-dark_text">{event.intFEventDescription}</p>
+
+												<p className="text-gray-500 dark:text-dark_text">
+													{event.intFEventDescription.substring(0, 50)}
+													{event.intFEventDescription.length > 50 && ' ...'}
+													{event.intFEventDescription.length > 50 && (
+														<span className="text-blue-500 cursor-pointer"> Read more</span>
+													)}
+												</p>
+
 												<div className="flex items-center mt-4">
 													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 													<p className="text-slate-600 text-sm dark:text-dark_text">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
@@ -5893,7 +5933,15 @@ export default function Homepage() {
 													</DropdownMenu>
 												</div>
 												<div className="border-t border-gray-300 my-4"></div>
-												<p className="text-gray-500 dark:text-dark_text">{event.intFEventDescription}</p>
+
+												<p className="text-gray-500 dark:text-dark_text">
+													{event.intFEventDescription.substring(0, 50)}
+													{event.intFEventDescription.length > 50 && ' ...'}
+													{event.intFEventDescription.length > 50 && (
+														<span className="text-blue-500 cursor-pointer"> Read more</span>
+													)}
+												</p>
+
 												<div className="flex items-center mt-4">
 													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 													<p className="text-slate-600 text-sm dark:text-dark_text">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>
@@ -5986,7 +6034,15 @@ export default function Homepage() {
 													</DropdownMenu>
 												</div>
 												<div className="border-t border-gray-300 my-4"></div>
-												<p className="text-gray-500 dark:text-dark_text">{event.intFEventDescription}</p>
+
+												<p className="text-gray-500 dark:text-dark_text">
+													{event.intFEventDescription.substring(0, 50)}
+													{event.intFEventDescription.length > 50 && ' ...'}
+													{event.intFEventDescription.length > 50 && (
+														<span className="text-blue-500 cursor-pointer"> Read more</span>
+													)}
+												</p>
+
 												<div className="flex items-center mt-4">
 													<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
 													<p className="text-slate-600 text-sm dark:text-dark_text">{formatDate(event.intFEventStartDate)} - {formatDate(event.intFEventEndDate)}</p>

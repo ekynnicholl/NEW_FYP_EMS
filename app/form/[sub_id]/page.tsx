@@ -142,9 +142,14 @@ export default function AttendanceForm() {
 		fetchEventData();
 	}, [sub_id, supabase, router]);
 
+
+	const [formSubmitted, setFormSubmitted] = useState(false);
+
 	// Handle data submission
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		setFormSubmitted(true);
 
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
@@ -284,6 +289,7 @@ export default function AttendanceForm() {
 			}
 
 			const facultyStudents = data.map((item) => item.attsName);
+
 			setFacultyStudents(facultyStudents);
 		};
 
@@ -366,7 +372,7 @@ export default function AttendanceForm() {
 							.map((category) => (
 								<optgroup key={category.id} label={category.name}>
 									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 1 || subcategory.facultyUnit === 3)
+										.filter(subcategory => subcategory.facultyUnit === 1)
 										.map((subcategory, index) => (
 											<option key={index} value={subcategory.name}>
 												{subcategory.name}
@@ -389,7 +395,53 @@ export default function AttendanceForm() {
 							.map((category) => (
 								<optgroup key={category.id} label={category.name}>
 									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 2 || subcategory.facultyUnit === 3)
+										.filter(subcategory => subcategory.facultyUnit === 2)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'School of Foundation':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 4)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 3)
+										.map((subcategory, index) => (
+											<option key={index} value={subcategory.name}>
+												{subcategory.name}
+											</option>
+										))}
+								</optgroup>
+							))}
+
+						<optgroup label="Not Mentioned Above">
+							<option value="Other">Other</option>
+						</optgroup>
+					</>
+				);
+			case 'School of Research':
+				return (
+					<>
+						<option value="" disabled>Select Option</option>
+						{categories
+							.filter(category => category.category === 5)
+							.map((category) => (
+								<optgroup key={category.id} label={category.name}>
+									{category.subcategories
+										.filter(subcategory => subcategory.facultyUnit === 4)
 										.map((subcategory, index) => (
 											<option key={index} value={subcategory.name}>
 												{subcategory.name}
@@ -439,6 +491,9 @@ export default function AttendanceForm() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return emailRegex.test(email);
 	};
+
+
+
 
 	return (
 		<div className="flex flex-col items-center min-h-screen bg-slate-100">
@@ -589,7 +644,7 @@ export default function AttendanceForm() {
 							id="name"
 							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 							required
-							placeholder="e.g., bloh@swinburne.edu.my OR 10274627@students.swinburne.edu.my"
+							placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
 							style={{ paddingLeft: "5px" }}
 							onChange={event =>
 								setInfo({ ...info, attFormsStaffEmail: event.target.value })
@@ -605,7 +660,7 @@ export default function AttendanceForm() {
 								<label
 									htmlFor="name"
 									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Staff ID (e.g., SS207 OR 207)
+									Staff ID
 									<span className="text-red-500"> *</span>
 								</label>
 								<input
@@ -614,7 +669,7 @@ export default function AttendanceForm() {
 									id="name"
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 									required
-									placeholder="Your answer"
+									placeholder="e.g., SS207 OR 207"
 									style={{ paddingLeft: "5px" }}
 									onChange={event =>
 										setInfo({ ...info, attFormsStaffID: event.target.value })
@@ -671,7 +726,7 @@ export default function AttendanceForm() {
 									id="name"
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 									required
-									placeholder="e.g., 107462748"
+									placeholder="e.g., 12345678"
 									style={{ paddingLeft: "5px" }}
 									onChange={event =>
 										setInfo({ ...info, attFormsStaffID: event.target.value })
@@ -752,11 +807,11 @@ export default function AttendanceForm() {
 								type="submit"
 								className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 								onClick={() => {
-									if (info.attFormsStaffName) {
+									if (info.attFormsStaffName && !formSubmitted) {
 										handleSubmit
 									}
 								}}
-								disabled={!info.attFormsStaffName}>
+								disabled={!info.attFormsStaffName && formSubmitted}>
 								Submit
 							</button>
 						) : (
@@ -772,6 +827,31 @@ export default function AttendanceForm() {
 								Submit
 							</button>
 						)}
+
+
+						{/* <form onSubmit={handleSubmit}>
+							{userType === 'visitor' ? (
+								<button
+									type="submit"
+									className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+									disabled={!info.attFormsStaffName || formSubmitted}>
+									Submit
+								</button>
+							) : (
+								<button
+									type="submit"
+									className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+									disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
+									Submit
+								</button>
+							)}
+						</form> */}
+
+
+
+
+
+
 					</div>
 				</Fragment>
 
