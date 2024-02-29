@@ -1683,7 +1683,7 @@ export default function Homepage() {
 									About This Event
 								</h3>
 								<p className="text-[11px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
-									{selectedEvent.intFEventDescription} ({selectedEvent.intFDurationCourse} days)
+									{selectedEvent.intFEventDescription} ({selectedEvent.intFDurationCourse} days, {selectedEvent.intFTotalHours} hours)
 								</p>
 
 								<div className="flex ml-[1px] mt-2 lg:mt-0">
