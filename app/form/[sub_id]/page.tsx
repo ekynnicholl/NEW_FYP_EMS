@@ -656,7 +656,7 @@ export default function AttendanceForm() {
 								<label
 									htmlFor="name"
 									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Staff ID (e.g., SS207 OR 207)
+									Staff ID
 									<span className="text-red-500"> *</span>
 								</label>
 								<input
@@ -665,7 +665,7 @@ export default function AttendanceForm() {
 									id="name"
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 									required
-									placeholder="Your answer"
+									placeholder="e.g., SS207 OR 207"
 									style={{ paddingLeft: "5px" }}
 									onChange={event =>
 										setInfo({ ...info, attFormsStaffID: event.target.value })
@@ -722,7 +722,7 @@ export default function AttendanceForm() {
 									id="name"
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 									required
-									placeholder="e.g., 107462748"
+									placeholder="e.g., 12345678"
 									style={{ paddingLeft: "5px" }}
 									onChange={event =>
 										setInfo({ ...info, attFormsStaffID: event.target.value })
