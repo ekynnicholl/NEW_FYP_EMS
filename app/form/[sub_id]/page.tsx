@@ -145,9 +145,11 @@ export default function AttendanceForm() {
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
+	// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	// 	e.preventDefault();
+
 	// Handle data submission
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const handleSubmit = async () => {
 
 		setFormSubmitted(true);
 
@@ -854,7 +856,7 @@ export default function AttendanceForm() {
 						)} */}
 
 
-						<form onSubmit={handleSubmit}>
+						{/* <form onSubmit={handleSubmit}>
 							{userType === 'visitor' ? (
 								<button
 									type="submit"
@@ -870,7 +872,41 @@ export default function AttendanceForm() {
 									Submit
 								</button>
 							)}
+						</form> */}
+
+
+						<form onSubmit={handleSubmit}>
+							{userType === 'visitor' ? (
+								<button
+									type="submit"
+									className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+									onClick={() => {
+										if (info.attFormsStaffName && !formSubmitted) {
+											handleSubmit(); // Call the handleSubmit function
+										}
+									}}
+									disabled={!info.attFormsStaffName || formSubmitted}>
+									Submit
+								</button>
+							) : (
+								<button
+									type="submit"
+									className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+									onClick={() => {
+										if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted) {
+											handleSubmit(); // Call the handleSubmit function
+										}
+									}}
+									disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
+									Submit
+								</button>
+							)}
 						</form>
+
+
+
+
+
 
 					</div>
 				</Fragment>
