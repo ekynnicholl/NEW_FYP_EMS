@@ -967,7 +967,7 @@ export default function AttendanceForm() {
 									<div className="pt-4 -mt-1 text-xs lg:text-sm">
 										<p>Thank you for your response!</p>
 										<br />
-										<button onClick={submitAnotherResponse} className="pt-5 text-xs lg:text-sm"><u>Submit another response</u></button>
+										<button onClick={submitAnotherResponse} className="pt-5 text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
 									</div>
 								</div>
 							</div>
