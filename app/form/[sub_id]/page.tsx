@@ -955,15 +955,6 @@ export default function AttendanceForm() {
 						<form
 							onSubmit={handleSubmit}
 							className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
-							<div
-								className="mb-4 rounded-md relative block lg:hidden">
-								<img
-									src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
-									alt="Random"
-									className="object-cover rounded-lg h-full w-full"
-									style={{ objectPosition: "center top" }}
-								/>
-							</div>
 
 							<div
 								className="mb-4 rounded-md relative hidden lg:block">
@@ -981,36 +972,8 @@ export default function AttendanceForm() {
 										Event Attendance
 									</p>
 									<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
-										<p>Please ensure you are attending the correct event,</p>
+										<p>Thank you for your response!</p>
 										<br />
-										{eventData && (
-											<div>
-												<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
-												<p>
-													Date:{" "}
-													<span className="font-bold">
-														{formatDate(eventData.sub_eventsStartDate)} -{" "}
-														{formatDate(eventData.sub_eventsEndDate)}
-													</span>
-												</p>
-												<p>Time:{" "}
-													<span className="font-bold">
-														{formatTimeToAMPM(eventData.sub_eventsStartTime)} -{" "}
-														{formatTimeToAMPM(eventData.sub_eventsEndTime)}
-													</span>
-												</p>
-												<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
-											</div>
-										)}
-										<br />
-										<p>
-											Encountered a technical error? Contact us @{" "}
-											<span className="underline text-blue-700">
-												<a href="mailto:fypemsmaster369@gmail.com">fypemsmaster369@gmail.com</a>
-											</span>
-											.
-										</p>
-										<p className="pt-3 text-red-500 font-medium">* Required</p>
 									</div>
 								</div>
 							</div>
