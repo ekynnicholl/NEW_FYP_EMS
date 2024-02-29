@@ -13,17 +13,12 @@ import { FaSortAlphaUp, FaCalendarAlt } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
-import { Chart, registerables } from 'chart.js/auto';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { LiaQrcodeSolid } from "react-icons/lia";
-import PencilNoteIcon from "@/components/icons/PencilNoteIcon";
 import ViewAttendance_Modal from "@/components/ViewAttendance_Modal";
-import useViewModeStore from '@/components/zustand/viewModeStorage';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import AttendanceTable from "@/components/tables/attendanceTable";
 import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import LeftArrow from "@/components/icons/LeftArrow";
@@ -641,7 +636,9 @@ export default function Home() {
                                                             <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10 dark:text-orange-200">
                                                                 <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full dark:bg-orange-900"></span>
                                                                 <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-                                                                <span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
+                                                                <span className="relative mt-[1px] leading-3 tracking-wider">
+                                                                    Upcoming
+                                                                </span>
                                                             </span>
                                                         </div>
                                                     </td>
