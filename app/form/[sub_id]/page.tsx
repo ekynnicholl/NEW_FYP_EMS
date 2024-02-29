@@ -149,6 +149,8 @@ export default function AttendanceForm() {
 	// Handle data submission
 	const handleSubmit = async () => {
 
+		setFormSubmitted(true);
+
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
 		if (!isValidEmail) {
@@ -234,8 +236,6 @@ export default function AttendanceForm() {
 		}
 
 		// setInfo({} as Info);
-
-		setFormSubmitted(true);
 	};
 
 	const handleOK = () => {
@@ -966,7 +966,7 @@ export default function AttendanceForm() {
 										Event Attendance
 									</p>
 									<div className="pt-4 mt-1 text-xs lg:text-sm">
-										<p>Thank you for your response!</p>
+										<p>Your response has been recorded.</p>
 										<br />
 										<button onClick={submitAnotherResponse} className="pt-4 text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
 									</div>
