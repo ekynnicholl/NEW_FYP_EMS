@@ -90,19 +90,6 @@ const formatTime = (timeString: string): string => {
 	return formattedTime.replace(" ", "").toLowerCase();
 };
 
-// type Info = {
-// 	intFID: string;
-// 	intFEventName: string;
-// 	intFDescription: string;
-// 	intFVenue: string;
-// 	intFMaximumSeats: string;
-// 	intFStartDate: string;
-// 	intFStartTime: string;
-// 	intFEndTime: string;
-// 	intFOrganizer: string;
-// 	intFFaculty: string;
-// };
-
 type mainEvent = {
 	intFID: string;
 	intFEventName: string;
@@ -112,6 +99,7 @@ type mainEvent = {
 	intFDurationCourse: string;
 	intFTrainerName: string;
 	intFTrainingProvider: string;
+	intFTotalHours: string;
 };
 
 type AttendanceDataType = {
@@ -198,6 +186,7 @@ export default function Homepage() {
 		intFDurationCourse: "",
 		intFTrainerName: "",
 		intFTrainingProvider: "",
+		intFTotalHours: "",
 		sub_eventsID: "",
 		sub_eventsMainID: "",
 		sub_eventsName: "",
@@ -545,7 +534,8 @@ export default function Homepage() {
 		intFEventEndDate: '',
 		intFDurationCourse: '',
 		intFTrainerName: '',
-		intFTrainingProvider: ''
+		intFTrainingProvider: '',
+		intFTotalHours:'',
 	});
 
 	const openModal = async (
@@ -558,6 +548,7 @@ export default function Homepage() {
 		event_duration_course: string,
 		event_trainer_name: string,
 		event_training_provider: string,
+		event_total_hours: string,
 		sub_event_id: string,
 		sub_eventMain_id: string,
 		sub_event_name: string,
@@ -580,6 +571,7 @@ export default function Homepage() {
 			intFDurationCourse: event_duration_course,
 			intFTrainerName: event_trainer_name,
 			intFTrainingProvider: event_training_provider,
+			intFTotalHours: event_total_hours,
 			sub_eventsID: sub_event_id,
 			sub_eventsMainID: sub_eventMain_id,
 			sub_eventsName: sub_event_name,
@@ -684,7 +676,8 @@ export default function Homepage() {
 				intFEventEndDate: mainEvent.intFEventEndDate,
 				intFDurationCourse: calculateDays(),
 				intFTrainerName: mainEvent.intFTrainerName,
-				intFTrainingProvider: mainEvent.intFTrainingProvider
+				intFTrainingProvider: mainEvent.intFTrainingProvider,
+				intFTotalHours: mainEvent.intFTotalHours,
 			})
 			.select();
 
@@ -728,7 +721,8 @@ export default function Homepage() {
 				intFEventEndDate: mainEvent.intFEventEndDate,
 				intFDurationCourse: mainEvent.intFDurationCourse,
 				intFTrainerName: mainEvent.intFTrainerName,
-				intFTrainingProvider: mainEvent.intFTrainingProvider
+				intFTrainingProvider: mainEvent.intFTrainingProvider,
+				intFTotalHours: mainEvent.intFTotalHours,
 			},
 		]);
 
@@ -1400,6 +1394,21 @@ export default function Homepage() {
 											*
 										</span>
 									</p>
+									<input
+										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
+										type="number"
+										placeholder="How long are the total sub-events?"
+										id="total_hours"
+										name="total_hours"
+										required
+										onChange={e =>
+											setMainEvent({
+												...mainEvent,
+												intFTotalHours: e.target.value,
+											})
+										}
+									/>
+
 
 								</div>
 
