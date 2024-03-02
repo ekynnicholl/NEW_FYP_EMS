@@ -18,6 +18,7 @@ import Success_EditEventModal from "@/components/Modal";
 import Success_EditSubEventModal from "@/components/Modal";
 import Success_DeleteSubEventModal from "@/components/Modal";
 import Delete_Event_Confirmation_Modal from "@/components/Modal";
+import Delete_SubEvent_Confirmation_Modal from "@/components/Modal";
 import { Chart, registerables } from 'chart.js/auto';
 
 import Image from "next/image";
@@ -241,6 +242,7 @@ export default function Homepage() {
 	const [showModalEditSubEventSuccess, setShowModalEditSubEventSuccess] = useState(false);
 	const [showModalDeleteSubEventSuccess, setShowModalDeleteSubEventSuccess] = useState(false);
 	const [showModalConfirmation, setShowModalConfirmation] = useState(false);
+	const [showModalConfirmationSubEvent, setShowModalConfirmationSubEvent] = useState(false);
 
 	const viewMode = useViewModeStore((state) => state.viewMode);
 
@@ -984,6 +986,7 @@ export default function Homepage() {
 
 	const handleCancel = () => {
 		setShowModalConfirmation(false);
+		setShowModalConfirmationSubEvent(false);
 	};
 
 	const handleDeleteEvent = async (intFID: string) => {
@@ -1747,8 +1750,6 @@ export default function Homepage() {
 									</p>
 								</div>
 
-
-
 								{subEvents
 									.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID && subEvent.sub_eventsIsHidden !== 1)
 									.map((subEvent, index) => (
@@ -1771,6 +1772,7 @@ export default function Homepage() {
 												<button
 													type="button"
 													onClick={() => handleArchiveSubEvent(subEvent.sub_eventsID)}
+													// onClick={() => setShowModalConfirmationSubEvent(true)}
 													className="text-sm lg:text-base ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[13.5px]"
 												>
 													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px] text-[13px] lg:text-base dark:text-dark_text2" />
@@ -2651,6 +2653,41 @@ export default function Homepage() {
 							</div>
 						</div>
 					</Delete_Event_Confirmation_Modal>
+
+					{/* <Delete_SubEvent_Confirmation_Modal
+						isVisible={showModalConfirmationSubEvent}
+						onClose={() => setShowModalConfirmationSubEvent(false)}>
+						<div className="p-4">
+							<Image
+								src="/images/cross_mark.png"
+								alt="cross_mark"
+								width={210}
+								height={250}
+								className="ml-[17px] -mt-[45px] lg:-mt-[45px] lg:ml-[115px]"
+							/>
+							<h3 className="text-2xl lg:text-3xl font-medium text-slate-700 mb-3 text-center -mt-8">
+								Are you sure?
+							</h3>
+							<p className="text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-slate-400 text-center">
+								Do you really want to cancel this sub-event? This process
+								cannot be undone.
+							</p>
+							<div className="text-center mx-auto">
+								<button
+									className="text-slate-800 border border-slate-800 hover:bg-slate-100 font-medium text-sm rounded-lg px-[18px] lg:px-5 py-[9px] lg:py-2.5 text-center mr-5 ml-4 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									onClick={handleCancel}>
+									Cancel
+								</button>
+								<button
+									className="text-slate-100 bg-slate-800 hover:bg-slate-900 font-medium text-sm rounded-lg px-[22px] lg:px-6 py-[10px] lg:py-[11px] text-center mr-5 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+									onClick={() =>
+										handleArchiveSubEvent(subEvent.sub_eventsID)
+									}>
+									Delete
+								</button>
+							</div>
+						</div>
+					</Delete_SubEvent_Confirmation_Modal> */}
 				</div>
 
 				{/* Mobile View */}
