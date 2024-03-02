@@ -1092,6 +1092,57 @@ export default function Homepage() {
 		// Refresh the page or update the state as needed
 	};
 
+
+	const handleArchiveEvent = async (intFID: string) => {
+		// Step 1: Update sub-events to set intFisHidden column to 1
+		const { error: updateSubEventsError } = await supabase
+			.from("sub_events")
+			.update({ sub_eventsIsHidden: 1 })
+			.eq("sub_eventsMainID", intFID);
+
+		if (updateSubEventsError) {
+			console.error("Error archiving sub-events:", updateSubEventsError);
+			return;
+		}
+
+		// Step 2: Update main event to set intFisHidden column to 1
+		const { error: updateMainEventError } = await supabase
+			.from("internal_events")
+			.update({ intFIsHidden: 1 })
+			.eq("intFID", intFID);
+
+		if (updateMainEventError) {
+			console.error("Error archiving main event:", updateMainEventError);
+			return;
+		}
+
+		console.log("Event and associated sub-events archived successfully.");
+
+		window.location.reload(); // Refresh the page
+	};
+
+	const handleArchiveSubEvent = async (subEventID: string) => {
+		// Update the intFisHidden column to 1 to indicate that the sub-event is archived
+		const { data, error } = await supabase
+			.from("sub_events")
+			.update({ sub_eventsIsHidden: 1 })
+			.eq("sub_eventsID", subEventID);
+
+		if (error) {
+			console.error("Error archiving sub-event:", error);
+			return;
+		}
+
+		console.log("Sub-event archived successfully:", data);
+
+		// Show success message or update the state as needed
+		// setShowModalArchiveSubEventSuccess(true);
+
+		// Refresh the page or update the state as needed
+		window.location.reload(); // Refresh the page
+	};
+
+
 	// For QR codes,
 	const [showQRCodesAttendance, setShowQRCodesAttendance] = useState(false);
 	const [showQRCodesFeedback, setShowQRCodesFeedback] = useState(false);
@@ -1696,10 +1747,10 @@ export default function Homepage() {
 									</p>
 								</div>
 
-								
+
 
 								{subEvents
-									.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+									.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID && subEvent.sub_eventsIsHidden !== 1)
 									.map((subEvent, index) => (
 										<div key={index}>
 
@@ -1719,7 +1770,7 @@ export default function Homepage() {
 												</button>
 												<button
 													type="button"
-													onClick={() => handleDeleteSubEvent(subEvent.sub_eventsID)}
+													onClick={() => handleArchiveSubEvent(subEvent.sub_eventsID)}
 													className="text-sm lg:text-base ml-[10px] mt-[19px] lg:ml-[3px] lg:mt-[13.5px]"
 												>
 													<BsFillTrash3Fill className="text-slate-700 hover:scale-105 hover:text-red-500 mt-[3px] lg:mt-[1px] text-[13px] lg:text-base dark:text-dark_text2" />
@@ -2593,7 +2644,7 @@ export default function Homepage() {
 								<button
 									className="text-slate-100 bg-slate-800 hover:bg-slate-900 font-medium text-sm rounded-lg px-[22px] lg:px-6 py-[10px] lg:py-[11px] text-center mr-5 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
 									onClick={() =>
-										handleDeleteEvent(selectedEvent.intFID)
+										handleArchiveEvent(selectedEvent.intFID)
 									}>
 									Delete
 								</button>
