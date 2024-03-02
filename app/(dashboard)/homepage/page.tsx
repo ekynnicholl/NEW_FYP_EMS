@@ -124,6 +124,7 @@ type subEvents = {
 	sub_eventsEndTime: string;
 	sub_eventsOrganizer: string;
 	sub_eventsMaxSeats: string;
+	sub_eventsIsHidden?: number | 0;
 	sub_eventsCurrentAttendees?: string;
 }
 
@@ -461,7 +462,7 @@ export default function Homepage() {
 			const { data: mainEventData, error: internalError } = await supabase
 				.from('internal_events')
 				.select(
-					'intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate'
+					'intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFTotalHours, intFDurationCourse, intFTrainingProvider'
 				)
 				.order('intFEventStartDate', { ascending: true })
 				.eq("intFIsHidden", 0);
@@ -1433,7 +1434,7 @@ export default function Homepage() {
 									<input
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="text"
-										placeholder="Who's is your training provider?"
+										placeholder="Who is the Training Provider?"
 										id="training_provider"
 										name="training_provider"
 										required
@@ -1446,7 +1447,7 @@ export default function Homepage() {
 									/>
 
 									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
-										Total Hours
+										Total Hours (Please only use decimals i.e., 1 hour 30 minutes as <span className="font-bold">1.5</span>)
 										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
 											*
 										</span>
@@ -1454,7 +1455,7 @@ export default function Homepage() {
 									<input
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
 										type="number"
-										placeholder="How long are the total sub-events?"
+										placeholder="How many hour(s) will this event be?"
 										id="total_hours"
 										name="total_hours"
 										required
@@ -2243,7 +2244,7 @@ export default function Homepage() {
 									<input
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300 mb-0 lg:-mb-[18px]"
 										type="text"
-										placeholder="Whos is your training provider?"
+										placeholder="Who is the Training Provider?"
 										id="training_provider"
 										name="training_provider"
 										value={editEventInfo.intFTrainingProvider}
@@ -2258,7 +2259,7 @@ export default function Homepage() {
 
 
 									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
-										Total Hours:
+										Total Hours (Please only use decimals i.e., 1 hour 30 minutes as <span className="font-bold">1.5</span>)
 										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
 											*
 										</span>
@@ -2266,7 +2267,7 @@ export default function Homepage() {
 									<input
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300 mb-0 lg:-mb-[18px]"
 										type="text"
-										placeholder="How long are the total sub-events?"
+										placeholder="How many hour(s) will this event be?"
 										id="total_hours"
 										name="total_hours"
 										value={editEventInfo.intFTotalHours}
