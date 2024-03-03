@@ -50,19 +50,19 @@ const Suggestion = () => {
                                     placeholder="Name"
                                     value={suggBy}
                                     onChange={(e) => setSuggBy(e.target.value)}
-                                    className="w-full border-[1px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-black-500"
+                                    className="w-full border-[1px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-slate-100 dark:border-[#736B5E] dark:bg-dark_mode_card"
                                     required
                                 />
                             </div>
                             <div className="mt-5">
-                                <label htmlFor="suggDesc" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 dark:text-dark_text">Your Suggestion:</label>
+                                <label htmlFor="suggDesc" className="block text-gray-700 text-sm lg:text-base font-medium mb-2 dark:text-dark_text dark:bg-dark_mode_card">Your Suggestion:</label>
                                 <textarea
                                     id="suggDesc"
                                     name="suggDesc"
                                     value={suggDesc}
                                     placeholder="I suggest for a feature that can..."
                                     onChange={(e) => setSuggDesc(e.target.value)}
-                                    className="w-full border-[2px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-black-500"
+                                    className="w-full border-[2px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-slate-100 dark:border-[#736B5E] dark:bg-dark_mode_card"
                                     required
                                 />
                             </div>
@@ -70,7 +70,7 @@ const Suggestion = () => {
                                 <button
                                     type="submit"
                                     disabled={!suggBy && !suggDesc}
-                                    className={`${(suggBy && suggDesc) ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`} >
+                                    className={`${(suggBy && suggDesc) ? 'bg-[#494F52]' : 'bg-[#494F52]'} text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`} >
                                     Submit
                                 </button>
                             </div>

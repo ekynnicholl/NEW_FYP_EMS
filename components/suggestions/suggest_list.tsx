@@ -57,10 +57,10 @@ const SuggestList = () => {
                 <table className="w-full">
                     <thead>
                         <tr>
-                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
                                 Name
                             </th>
-                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
+                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4 dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
                                 Suggestion
                             </th>
                         </tr>
@@ -68,10 +68,10 @@ const SuggestList = () => {
                     <tbody>
                         {suggestions.map((suggestion, index) => (
                             <tr key={index}>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                     {suggestion.suggBy} {/* <br /> {formatDate(suggestion.suggCreated).date} */}
                                 </td>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                     {suggestion.suggDesc}
                                 </td>
                             </tr>
