@@ -378,20 +378,20 @@ const AttendanceSettings = () => {
                 <div className="overflow-y-auto max-h-fit">
                     <div className="overflow-y-auto max-h-[500px]">
                         <div>
-                            <p>Change the options for the drop-down menu for students and staff in the attendance forms.</p>
+                            <p className="text-slate-900 dark:text-dark_text">Change the options for the drop-down menu for students and staff in the attendance forms.</p>
                         </div>
                         <div>
                             <Tab.Group>
                                 <Tab.List className="mt-3 ml-2">
                                     <Tab
-                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
-                                        ${activeTab === 'Staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'}`}
+                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
+                                        ${activeTab === 'Staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
                                         onClick={() => setActiveTab('Staff')}>
                                         Staff
                                     </Tab>
                                     <Tab
-                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
-                                        ${activeTab === 'Student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'}`}
+                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
+                                        ${activeTab === 'Student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
                                         onClick={() => setActiveTab('Student')}>
                                         Student
                                     </Tab>
@@ -403,15 +403,15 @@ const AttendanceSettings = () => {
                                         <table className="w-1/2 float-left">
                                             <thead>
                                                 <tr>
-                                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
                                                         No
                                                     </th>
 
-                                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
                                                         <p className="-ml-56">Faculty / Unit</p>
                                                     </th>
 
-                                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
                                                         Action
                                                     </th>
                                                 </tr>
@@ -420,7 +420,7 @@ const AttendanceSettings = () => {
                                                 {facultyUnits.map((faculty, index) => (
                                                     faculty.attsID === editOption && updateOption && !cancelOptionUpdate ? (
                                                         <tr key={index} className="">
-                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
+                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
                                                                 {index + 1}
                                                             </td>
 
@@ -461,15 +461,15 @@ const AttendanceSettings = () => {
                                                         </tr>
                                                     ) : (
                                                         <tr key={index}>
-                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4">
+                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                                                 {index + 1}
                                                             </td>
 
-                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2">
+                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                                                 <p className="ml-4">{faculty.attsName}</p>
                                                             </td>
 
-                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4">
+                                                            <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                                                 <div className="flex ml-12">
                                                                     <button onClick={() => {
                                                                         handleEditOption(faculty.attsID);
@@ -477,10 +477,10 @@ const AttendanceSettings = () => {
                                                                         setCancelOptionUpdate(false);
                                                                         setEditedFacultyName(faculty.attsName);
                                                                     }}>
-                                                                        <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
+                                                                        <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
                                                                     </button>
                                                                     <button onClick={() => openDeleteModal(faculty.attsID, faculty.attsName)}>
-                                                                        <BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
+                                                                        <BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -490,17 +490,17 @@ const AttendanceSettings = () => {
                                             </tbody>
                                         </table>
 
-                                        <div className=" border-2 p-7 w-1/4 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right">
-                                            <p className="font-bold text-md">Add New Faculty / Unit</p>
+                                        <div className=" border-2 p-7 w-1/4 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right dark:border-[#363B3D]">
+                                            <p className="font-bold text-md dark:text-dark_text">Add New Faculty / Unit</p>
                                             <input type="text"
                                                 placeholder="e.g., Academic Office"
                                                 value={newFacultyName}
-                                                className="mt-7 border-[1px] border-slate-200 rounded-sm w-[360px] px-2 py-1"
+                                                className="mt-7 border-[1px] border-slate-200 rounded-sm w-[360px] px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
                                                 onChange={e => setNewFacultyName(e.target.value)}
                                             /><br />
 
                                             <button
-                                                className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right dark:bg-slate-800 mt-16 mr-3 float-right ${!newFacultyName ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+                                                className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right mt-16 mr-3 float-right dark:bg-[#18212F] dark:text-dark_text dark:border-[#736B5E] ${!newFacultyName ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
                                                 onClick={() => { createNewFacultyUnit(newFacultyName); }}
                                                 disabled={!newFacultyName}
                                             >Add</button>
