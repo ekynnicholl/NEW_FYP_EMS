@@ -728,7 +728,7 @@ const AttendanceSettings = () => {
                 </div>
             ) : (
                 <div>
-                    <p>Change the options for the drop-down menu for students and staff in the attendance forms.</p>
+                    <p className="text-slate-900 dark:text-dark_text">Change the options for the drop-down menu for students and staff in the attendance forms.</p>
                 </div>
             )}
         </div>

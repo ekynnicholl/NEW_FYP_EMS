@@ -26,11 +26,11 @@ const CreateAdminAccount = () => {
             <div className="border-t border-gray-300 my-2"></div>
             {isExpanded ? (
                 <div className="overflow-y-auto max-h-80">
-                    <p>Placeholder</p>
+                    <p className="text-slate-900 dark:text-dark_text">Placeholder</p>
                 </div>
             ) : (
                 <div>
-                    <p>Register an account for new administrator with their own email and password.</p>
+                    <p className="text-slate-900 dark:text-dark_text">Register an account for new administrator with their own email and password.</p>
                 </div>
             )}
         </div>
