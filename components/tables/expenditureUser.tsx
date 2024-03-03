@@ -158,16 +158,16 @@ const ExpenditureUser = () => {
                                 <table className="lg:w-full w-auto">
                                     <thead>
                                         <tr>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-center">
                                                 Staff Name (Staff ID)
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-center text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Faculty
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-center text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Grand Total (RM)
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-center text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Program Name(s) - Total (RM)
                                             </th>
                                         </tr>
@@ -175,16 +175,16 @@ const ExpenditureUser = () => {
                                     <tbody>
                                         {currentData.map((expenditureItem) => (
                                             <tr key={expenditureItem.id}>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-center text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.full_name} ({expenditureItem.staff_id})
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-center text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.faculty}
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-center text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.grand_total_fees}
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-center text-gray-900 dark:text-dark_text">
                                                     {groupedData[expenditureItem.staff_id]?.map((programItem) => (
                                                         <div key={programItem.id}>
                                                             {programItem.program_title} - {Number(programItem.grand_total_fees).toFixed(2)}
@@ -201,7 +201,7 @@ const ExpenditureUser = () => {
 
                     <div className="flex justify-between items-center">
                         <div className="flex items-center">
-                            <label htmlFor="itemsPerPageSelect" className="mr-2">
+                            <label htmlFor="itemsPerPageSelect" className="mr-2 text-slate-800 dark:text-dark_text">
                                 Show entries:
                             </label>
                             <select
@@ -209,7 +209,7 @@ const ExpenditureUser = () => {
                                 name="itemsPerPage"
                                 value={itemsPerPage}
                                 onChange={handleItemsPerPageChange}
-                                className="h-full rounded-l border bg-white border-gray-400 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base"
+                                className="h-full rounded-l border bg-white border-gray-400 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-dark_mode_card dark:border-[#484E51] dark:text-dark_text"
                             >
                                 <option value="5">5</option>
                                 <option value="10">10</option>
