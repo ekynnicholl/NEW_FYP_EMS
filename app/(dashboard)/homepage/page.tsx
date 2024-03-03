@@ -5887,13 +5887,13 @@ export default function Homepage() {
 								<div className="ml-1 font-bold text-lg dark:text-dark_text">
 									Today&rsquo;s Event(s)
 								</div>
-								<div className="border-t border-gray-300 my-4 ml-1"></div>
+								<div className="border-t border-gray-300 dark:border-[#3B4043] my-4 ml-1"></div>
 								{todayEvents.length === 0 ? (
 									<p className="font-bold ml-5 mb-5 dark:text-dark_text">No events today...</p>
 								) : (
 									todayEvents.map((event) => (
 										<div key={event.intFID}
-											className="bg-white border dark:bg-dark_mode_bg border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
+											className="bg-white border dark:bg-dark_mode_card border-slate-200 dark:border-[#3B4043] ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
@@ -5929,8 +5929,8 @@ export default function Homepage() {
 													</h2>
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-																<ThreeDotIcon />
+															<div className="rounded-full bg-[#F4F7FA] dark:bg-[#1D1F1F] p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
+																<BiDotsVerticalRounded className="text-[20px] text-slate-800 dark:text-dark_text" />
 															</div>
 														</DropdownMenuTrigger>
 														<DropdownMenuContent>
@@ -5951,7 +5951,7 @@ export default function Homepage() {
 														</DropdownMenuContent>
 													</DropdownMenu>
 												</div>
-												<div className="border-t border-gray-300 my-4"></div>
+												<div className="border-t border-gray-300 dark:border-[#3B4043] my-4"></div>
 
 												<p className="text-gray-500 dark:text-dark_text">
 													{event.intFEventDescription.substring(0, 50)}
@@ -5988,14 +5988,14 @@ export default function Homepage() {
 								<div className="ml-1 font-bold text-lg dark:text-dark_text">
 									Tomorrow&rsquo;s Event(s)
 								</div>
-								<div className="border-t border-gray-300 my-4 ml-1"></div>
+								<div className="border-t border-gray-300 dark:border-[#3B4043] my-4 ml-1"></div>
 								{tomorrowEvents.length === 0 ? (
 									<p className="font-bold ml-5 mb-5 dark:text-dark_text">No events tomorrow...</p>
 								) : (
 									tomorrowEvents.map((event) => (
 										<div
 											key={event.intFID}
-											className="bg-white border dark:bg-dark_mode_bg border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
+											className="bg-white border dark:bg-dark_mode_card border-slate-200 dark:border-[#27374C] ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 												console.log(filteredSubEvent);
@@ -6032,8 +6032,8 @@ export default function Homepage() {
 													</h2>
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-																<ThreeDotIcon />
+															<div className="rounded-full bg-[#F4F7FA] dark:bg-[#1D1F1F] p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
+																<BiDotsVerticalRounded className="text-[20px] text-slate-800 dark:text-dark_text" />
 															</div>
 														</DropdownMenuTrigger>
 														<DropdownMenuContent>
@@ -6054,7 +6054,7 @@ export default function Homepage() {
 														</DropdownMenuContent>
 													</DropdownMenu>
 												</div>
-												<div className="border-t border-gray-300 my-4"></div>
+												<div className="border-t border-gray-300 dark:border-[#3B4043] my-4"></div>
 
 												<p className="text-gray-500 dark:text-dark_text">
 													{event.intFEventDescription.substring(0, 50)}
@@ -6077,8 +6077,8 @@ export default function Homepage() {
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
 													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
-													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-yellow-200 opacity-50 rounded-full"></span>
+													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 dark:text-[#ffbe63] text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-yellow-200 dark:bg-[#3A350E] opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
 														<span className="relative mt-[1px] leading-3 tracking-wider">Tomorrow</span>
 													</span>
@@ -6091,14 +6091,14 @@ export default function Homepage() {
 								<div className="ml-1 font-bold text-lg dark:text-dark_text">
 									Upcoming Event(s)
 								</div>
-								<div className="border-t border-gray-300 my-4 ml-1"></div>
+								<div className="border-t border-gray-300 dark:border-[#3B4043] my-4 ml-1"></div>
 								{upcomingEvents.length === 0 ? (
 									<p className="font-bold ml-5 mb-5 dark:text-dark_text">No upcoming events...</p>
 								) : (
 									upcomingEvents.map((event) => (
 										<div
 											key={event.intFID}
-											className="bg-white border dark:bg-dark_mode_bg border-slate-200 ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
+											className="bg-white border dark:bg-dark_mode_card border-slate-200 dark:border-[#27374C] ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
@@ -6134,8 +6134,8 @@ export default function Homepage() {
 													</h2>
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
-																<ThreeDotIcon />
+															<div className="rounded-full bg-[#F4F7FA] dark:bg-[#1D1F1F] p-2 opacity-80 hover:opacity-90 mt-[3px] cursor-pointer">
+																<BiDotsVerticalRounded className="text-[20px] text-slate-800 dark:text-dark_text" />
 															</div>
 														</DropdownMenuTrigger>
 														<DropdownMenuContent>
@@ -6156,7 +6156,7 @@ export default function Homepage() {
 														</DropdownMenuContent>
 													</DropdownMenu>
 												</div>
-												<div className="border-t border-gray-300 my-4"></div>
+												<div className="border-t border-gray-300 dark:border-[#3B4043] my-4"></div>
 
 												<p className="text-gray-500 dark:text-dark_text">
 													{event.intFEventDescription.substring(0, 50)}
@@ -6179,8 +6179,8 @@ export default function Homepage() {
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
 													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
-													<span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
+													<span className="relative px-3 py-[5px] font-semibold text-orange-900 dark:text-red-200 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-orange-200 dark:bg-red-900 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
 														<span className="relative mt-[1px] leading-3 tracking-wider">Upcoming</span>
 													</span>
