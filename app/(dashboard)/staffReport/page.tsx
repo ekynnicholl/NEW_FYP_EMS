@@ -1092,42 +1092,42 @@ export default function Home() {
 							<div className="grid grid-cols-1 gap-4 mb-12 lg:hidden">
 								{sortedData
 									.map((info, index) => (
-										<div key={info.staffID} className="bg-slate-100 p-4 rounded-lg shadow">
+										<div key={info.staffID} className="bg-slate-100 p-4 rounded-lg shadow dark:bg-[#1D2021]">
 											<table className="w-full">
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
+													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-dark_text">
 														No.
 													</th>
 													<td className="float-right flex text-xs mt-3 px-4">
 														{(currentPage - 1) * 3 + index + 1}
 													</td>
 												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
+													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
 														Name
 													</th>
 													<td className="float-right text-xs mt-3 px-4">
 														{info.staffName}
 													</td>
 												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
+													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
 														Staff / Student ID
 													</th>
 													<td className="float-right text-xs mt-3 px-4">
 														{info.staffID}
 													</td>
 												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
+													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
 														Faculty / Unit
 													</th>
 													<td className="float-right text-xs mt-3 px-4">
 														{info.staffFaculty}
 													</td>
 												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
+													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
 														Event Attended
 													</th>
 													<td className="float-right text-xs py-1 mr-4">
@@ -1135,10 +1135,11 @@ export default function Home() {
 													</td>
 												</tr>
 
-												<tr className="bg-gray-100">
-													<span className="text-sky-800 float-right border bg-slate-200 rounded-full p-2 mt-2">
+												<tr className="bg-gray-100 dark:text-sky-300 dark:bg-[#1D2021]">
+													<span className="float-right border dark:border-[#363B3D] bg-slate-200 rounded-full p-2 mt-2 dark:bg-[#242729]">
 														<p
 															onClick={() => { openModal(info.subEventsAttended); }}
+															style={{ cursor: 'pointer' }}
 														>View</p>
 													</span>
 												</tr>
@@ -1212,20 +1213,20 @@ export default function Home() {
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Attended</p>
-						<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto">
-							<table className="leading-normal w-[1090px] ml-4 hidden lg:table">
+						<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
+							<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
 								<thead>
 									<tr className="flex">
-										<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+										<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
 											NO.
 										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
 											Main Event
 										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
 											Sub-Event Session
 										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
 											Start Date
 										</th>
 									</tr>
@@ -1311,6 +1312,7 @@ export default function Home() {
 									))}
 							</div>
 						</div>
+
 					</EventModal>
 				</div>
 			</div>
