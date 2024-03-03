@@ -5893,7 +5893,7 @@ export default function Homepage() {
 								) : (
 									todayEvents.map((event) => (
 										<div key={event.intFID}
-											className="bg-white border dark:bg-dark_mode_card border-slate-200 dark:border-[#3B4043] ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
+											className="bg-white border dark:bg-dark_mode_card border-slate-200 dark:border-[#27374C] ml-5 rounded-lg overflow-hidden p-6 h-[240px] mb-5 w-7/8 relative flex flex-col shadow-sm hover:shadow-md dark:text-dark_text"
 											onClick={() => {
 												const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
@@ -5974,8 +5974,8 @@ export default function Homepage() {
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
 													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
-													<span className="relative px-3 py-[5px] font-semibold text-green-900 text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+													<span className="relative px-3 py-[5px] font-semibold text-green-900 dark:text-green-200 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-green-200 dark:bg-green-900 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
 														<span className="relative mt-[1px] leading-3 tracking-wider">Today</span>
 													</span>
@@ -6077,8 +6077,8 @@ export default function Homepage() {
 										</div> */}
 												<div className="flex justify-between items-end mt-5">
 													{/* <div className="cursor-pointer text-slate-500 hover:font-medium text-[14.5px] ml-[1px]" onClick={e => { e.stopPropagation(); openAttendanceModal(event.intFID); }}>Attendance List</div> */}
-													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 dark:text-[#ffbe63] text-xs flex items-center">
-														<span aria-hidden className="absolute inset-0 bg-yellow-200 dark:bg-[#3A350E] opacity-50 rounded-full"></span>
+													<span className="relative px-3 py-[5px] font-semibold text-yellow-900 dark:text-yellow-200 text-xs flex items-center">
+														<span aria-hidden className="absolute inset-0 bg-yellow-200 dark:bg-yellow-900 opacity-50 rounded-full"></span>
 														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
 														<span className="relative mt-[1px] leading-3 tracking-wider">Tomorrow</span>
 													</span>
