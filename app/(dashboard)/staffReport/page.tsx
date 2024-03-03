@@ -1212,22 +1212,22 @@ export default function Home() {
 					</div>
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
-						<p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Attended</p>
+						<p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p>
 						<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
 							<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
 								<thead>
 									<tr className="flex">
-										<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
+										<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 											NO.
 										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
+										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 											Main Event
 										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
+										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 											Sub-Event Session
 										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021]">
-											Start Date
+										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+											Start Date 
 										</th>
 									</tr>
 								</thead>
@@ -1241,26 +1241,26 @@ export default function Home() {
 												<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
 													<div>
 														<div className="ml-[2px]">
-															<p className="text-gray-900">
+															<p className="text-gray-900 dark:text-dark_text">
 																{index + 1}
 															</p>
 														</div>
 													</div>
 												</td>
 												<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
-													<p className="text-gray-900">
+													<p className="text-gray-900 dark:text-dark_text">
 														{mainEventAttended[index]?.intFEventName || "N/A"}
 													</p>
 												</td>
 
 												<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
-													<p className="text-gray-900 ml-1">
+													<p className="text-gray-900 ml-1 dark:text-dark_text">
 														{subEvent.sub_eventsName}
 													</p>
 												</td>
 
 												<td className="flex-1 px-3 py-5 text-xs lg:text-md">
-													<p className="text-gray-900 -ml-2">
+													<p className="text-gray-900 -ml-2 dark:text-dark_text">
 														{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
 													</p>
 												</td>
