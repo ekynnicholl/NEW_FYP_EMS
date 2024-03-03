@@ -760,28 +760,28 @@ export default function Home() {
 
 							<div className="flex flex-row">
 								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 										}`}
 									onClick={() => setActiveTab('all')}
 								>
 									All
 								</button>
 								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 										}`}
 									onClick={() => { setActiveTab('staff') }}
 								>
 									Staff
 								</button>
 								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 										}`}
 									onClick={() => { setActiveTab('student') }}
 								>
 									Student
 								</button>
 								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 										}`}
 									onClick={() => { setActiveTab('visitor') }}
 								>
@@ -867,19 +867,19 @@ export default function Home() {
 										{/* Table Header */}
 										<thead>
 											<tr className="flex">
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:bg-[#1D2021] dark:text-[#B0AA9F]">
 													NO.
 												</th>
-												<th className="flex-1 px-[21px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
+												<th className="flex-1 px-[21px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:bg-[#1D2021] dark:text-[#B0AA9F]">
 													<span className="ml-1">Name</span>
 												</th>
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:bg-[#1D2021] dark:text-[#B0AA9F]">
 													<span className="-ml-[1px]">Staff / Student ID</span>
 												</th>
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:bg-[#1D2021] dark:text-[#B0AA9F]">
 													<span className="-ml-[1px]">Faculty / Unit</span>
 												</th>
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:bg-[#1D2021] dark:text-[#B0AA9F]">
 													<span className="-ml-[3px]">Event Attended</span>
 												</th>
 											</tr>
