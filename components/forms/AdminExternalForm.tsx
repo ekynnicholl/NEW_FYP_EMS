@@ -568,9 +568,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [group, setGroup] = useState(true);
 	console.log(authToken);
 
-	const Document = ({ name }: { name: string }) => {
-		const { data } = supabase.storage.from("supporting_documents").getPublicUrl(name);
-
+	const Document = ({ name }: { name?: string }) => {
+		const { data } = supabase.storage.from("supporting_documents").getPublicUrl(name || '');
+	
+		if (!name) {
+			return null; // or return a placeholder component/message indicating that the name is not available
+		}
+	
 		return (
 			<Link href={data.publicUrl} target="_blank" className="flex gap-2 p-2 items-start">
 				<BsFiletypePdf className="w-6 h-6 text-red-500" />

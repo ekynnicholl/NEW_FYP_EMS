@@ -87,14 +87,19 @@ export default function Home({ id }: { id: string }) {
         window.print();
     }
 
-    const capitalizeFirstLetter = (str: string) => {
-        return str
-        .split(" ")
-        .map((word) => {
-            return word[0].toUpperCase() + word.substring(1);
-        })
-        .join(" ");     
+    const capitalizeFirstLetter = (str: string): string => {
+        return str.trim() // Trim the string first to remove leading/trailing spaces
+            .split(" ")
+            .map((word: string): string => { // Explicitly declare 'word' as a string
+                if (word.length > 0) {
+                    return word[0].toUpperCase() + word.substring(1);
+                }
+                return "";
+            })
+            .join(" ");
     };
+    
+    
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
