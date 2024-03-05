@@ -933,13 +933,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Course Fee</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -952,13 +962,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Airfare Fee</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -971,13 +991,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Accommodation Fee</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -990,13 +1020,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Per Diem Fee</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1009,13 +1049,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Transportation Fee</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1028,13 +1078,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Travel Insurance Fee</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1047,12 +1107,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Other Fee</FormLabel>
 													<FormControl>
-														<Input
-															{...field}
-															onChange={e => {
-																field.onChange(Number(e.target.value));
-															}}
-														/>
+													<Input
+													type="text" // Use "text" for flexible user input
+													// Convert number to string for display, handle zero and non-zero values appropriately
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={(e) => {
+														const value = e.target.value;
+														// Check if the input value is numeric or empty and update accordingly
+														if (/^\d*$/.test(value)) {
+														// Convert the string to a number when not empty, otherwise default to zero
+														field.onChange(value === "" ? 0 : Number(value));
+														}
+													}}
+													onBlur={() => {
+														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+														field.onChange(field.value || 0);
+													}}
+													/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
