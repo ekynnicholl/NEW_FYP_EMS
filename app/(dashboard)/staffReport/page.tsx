@@ -15,7 +15,7 @@ import { FaSortAlphaDown, FaSortNumericDown, FaSortAmountUp } from "react-icons/
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { MdFilterListAlt } from "react-icons/md";
 
-import { Fragment, useState, useEffect, SetStateAction } from "react";
+import { Fragment, useState, useEffect, SetStateAction, useRef } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import RightArrow from "@/components/icons/RightArrow";
 import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
@@ -38,9 +38,11 @@ type mainEvents = {
 	intFEventDescription: string;
 	intFEventStartDate: string;
 	intFEventEndDate: string;
-	intFDurationCourse: string;
 	intFTrainerName: string;
 	intFTrainingProvider: string;
+	intFDurationCourse: number;
+	intFlsHidden: number;
+	intFTotalHours: number;
 };
 
 type subEvents = {
@@ -57,6 +59,61 @@ type subEvents = {
 	sub_eventsMaxSeats: string;
 }
 
+type Form = {
+    formID: string;
+    email: string;
+    full_name: string;
+    staff_id: string;
+    course: string;
+    faculty: string;
+    transport: string;
+    travelling: string;
+    other_members: string[];
+    program_title: string;
+    program_description: string;
+    commencement_date: string;
+    completion_date: string;
+    organiser: string;
+    venue: string;
+    hrdf_claimable: string;
+    flight_number: string;
+    flight_date: string;
+    flight_time: string;
+    destination_from: string;
+    destination_to: string;
+    hotel_name: string;
+    check_in_date: string;
+    check_out_date: string;
+    course_fee: string;
+    airfare_fee: string;
+    accommodation_fee: string;
+    per_diem_fee: string;
+    transportation_fee: string;
+    travel_insurance_fee: string;
+    others_fee: string;
+    grand_total_fees: string;
+    staff_development_fund: string;
+    consolidated_pool_fund: string;
+    research_fund: string;
+    travel_fund: string;
+    student_council_fund: string;
+    other_funds: string;
+    expenditure_cap: string;
+    expenditure_cap_amount: string;
+    applicant_declaration_name: string;
+    applicant_declaration_position_title: string;
+    applicant_declaration_date: string;
+    applicant_declaration_signature: string;
+    verification_name: string;
+    verification_position_title: string;
+    verification_date: string;
+    verification_signature: string;
+    approval_name: string;
+    approval_position_title: string;
+    approval_date: string;
+    approval_signature: string;
+};
+
 export default function Home() {
 	const supabase = createClientComponentClient();
 	const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
@@ -72,6 +129,7 @@ export default function Home() {
 	const [subEventsAttended, setSubEventsAttended] = useState<subEvents[]>([]);
 	const [mainEventAttended, setMainEventAttended] = useState<{ intFEventName: string[]; }[]>([]);
 	const [allMainEvent, setAllMainEvent] = useState<mainEvents[]>([]);
+	const [externalformDetails, setExternalFormDetails] = useState<Form[]>([]);
 
 	const [dataResults, setDataResults] = useState<{
 		staffID: string;
@@ -79,7 +137,7 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
-        eventsAttended: string[];
+        eventsAttended: {mainEventID: string; hours: number;}[];
         totalHours: string;
 	}[]>([]);
 
@@ -89,7 +147,7 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
-        eventsAttended: string[];
+        eventsAttended: {mainEventID: string; hours: number;}[];
         totalHours: string;
 	}[]>([]);
 
@@ -105,10 +163,22 @@ export default function Home() {
         // Calculate the difference in milliseconds between endTime and startTime
         const differenceInMs = endTime.getTime() - startTime.getTime();
 
-        // Convert milliseconds to hours and round to two decimal places
         const totalHours = differenceInMs / (1000 * 60 * 60);
         return Math.round(totalHours * 100) / 100;
     }
+
+	const fetchExternalFormInfos = async (staff_id: string) => {
+		const { data: external, error: externalError } = await supabase
+			.from("external_forms")
+			.select("*")
+			.eq("staff_id", staff_id);
+
+		if (externalError) {
+			console.error("Error fetching staff external form data:", externalError);
+			return;
+		}
+		setExternalFormDetails(external || []);
+	};
 
 	const fetchInfos = async () => {
 		const { data: staffData, error: attendedEventError } = await supabase
@@ -145,21 +215,21 @@ export default function Home() {
                     totalHours: 0,
                 };
             }
-            // result[uniqueStaffID].totalSubEvents++;
-
-            // result[uniqueStaffID].subEventsAttended.push(
-            //  ...subEvents
-            //      .filter(event => event.sub_eventsID === form.attFSubEventID)
-            // );
-
-            result[uniqueStaffID].eventsAttended.push(
-                ...subEvents
-                    .filter(event => event.sub_eventsID === form.attFSubEventID)
-                    .map(event => event.sub_eventsMainID)
-            );              
 
             if (!result[uniqueStaffID].subEventsAttended.some((event: subEvents) => event.sub_eventsID === form.attFSubEventID)) {
                 result[uniqueStaffID].totalSubEvents++;
+
+				result[uniqueStaffID].eventsAttended.push(
+					...subEvents
+						.filter(event => event.sub_eventsID === form.attFSubEventID)
+						.map(event => ({
+							mainEventID: event.sub_eventsMainID,
+							hour: allMainEvent
+								.filter(e => e.intFID === event.sub_eventsMainID)
+								.map(e => e.intFTotalHours)
+						}))
+				);     
+
                 result[uniqueStaffID].subEventsAttended.push(
                     ...subEvents.filter(event => event.sub_eventsID === form.attFSubEventID)
                 );
@@ -169,18 +239,29 @@ export default function Home() {
 
 		}, {});
 
+		interface EventInfo {
+			mainEventID: string;
+			hour: string; }
+
 		for (const staffID in groupedData) {
             if (Object.prototype.hasOwnProperty.call(groupedData, staffID)) {
                 const staffInfo = groupedData[staffID];
-                staffInfo.totalHours = staffInfo.subEventsAttended.reduce((totalHours: number, subEvent: subEvents) => {
-                    return totalHours + getTotalHours(subEvent.sub_eventsEndTime, subEvent.sub_eventsStartTime);
-                }, 0).toFixed(2);
+				// staffInfo.totalHours = staffInfo.subEventsAttended.reduce((totalHours: number, subEvent: subEvents) => {
+                //     return totalHours + getTotalHours(subEvent.sub_eventsEndTime, subEvent.sub_eventsStartTime);
+                // }, 0).toFixed(2);
+
+				let totalHours = 0;
+				staffInfo.eventsAttended.forEach((event: EventInfo) => {
+					totalHours += Number(event.hour);
+				});
+
+				staffInfo.totalHours = totalHours.toFixed(2);
             }
         }
+	
 
         // Set the aggregated data in the state
         setAggregatedInfo(Object.values(groupedData));
-
 	};
 
 	// Fetch data from database
@@ -254,12 +335,6 @@ export default function Home() {
 		setSearchQuery(query);
 		filterUserData(activeTab, query);
 	};
-
-
-	useEffect(() => {
-		filterUserData(activeTab, searchQuery);
-	}, [activeTab, searchQuery, aggregatedInfo]);
-
 
 	type ColumnMapping = {
 		[key: string]: string;
@@ -381,10 +456,10 @@ export default function Home() {
 	}, [aggregatedInfo])
 
 	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
-	const [facultyStudents, setFacultyStudents] = useState<string[]>([]);
 	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
 	const [selectedFacultyUnit, setSelectedFacultyUnit] = useState("");
 	const [selectedCourse, setSelectedCourse] = useState("");
+	const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
 
 	useEffect(() => {
 		// Function to fetch data from Supabase
@@ -418,7 +493,8 @@ export default function Home() {
 		const fetchFacultyStudent = async () => {
 			const { data, error } = await supabase
 				.from('attendance_settings')
-				.select('attsName')
+				// .select('attsName')
+				.select('attsCategory, attsName')
 				.eq('attsType', 0)
 				.order('attsName', { ascending: true });
 
@@ -427,8 +503,13 @@ export default function Home() {
 				return;
 			}
 
-			const facultyStudents = data.map((item) => item.attsName);
-			setFacultyStudents(facultyStudents);
+			// const facultyStudents = data.map((item) => item.attsName);
+			const facultyStudentsData = data.map((item: any) => ({
+                facultyName: item.attsName, 
+                facultyCategory: item.attsCategory,
+            }));
+
+			setFacultyStudents(facultyStudentsData);
 		};
 
 		fetchFacultyStudent();
@@ -450,7 +531,6 @@ export default function Home() {
 			}
 
 			if (data) {
-
 				// Extract unique categories and subcategories
 				const uniqueCategories = Array.from(new Set(data
 					.filter(unit => unit.attsCategory > 0)));
@@ -472,89 +552,75 @@ export default function Home() {
 				}));
 
 				setCategories(categoriesArray);
+				console.log(categoriesArray);
 			}
 		};
 
 		fetchFacultyUnits();
 	}, []);
 
+
 	const [selectedOption, setSelectedOption] = useState('');
+	
 
 	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
 		setSelectedOption(event.target.value);
+		setSelectedFacultyUnit(selectedOption);
+		filterUserData("student", "");
 	};
 
 	const handleSelectFacultyUnitChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-		const value = event.target.value;
-		setSelectedFacultyUnit(value);
-		console.log(selectedFacultyUnit);
-		filterUserData(activeTab, "");
+		setSelectedFacultyUnit(event.target.value);
+		filterUserData("student", "");
 	};
 
 	const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
 		const selectedCourse = event.target.value;
-		// Concatenate the faculty/unit and the selected course
 		const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
+		setSelectedFacultyUnit(updatedSelectedOption);
+		filterUserData("student", "");
 	};
 
 	const getSecondSelectOptions = () => {
-		switch (selectedOption) {
-			case 'Faculty of Business, Design and Arts':
-				return (
-					<>
-						<option value="" disabled>Select Course</option>
-						{categories
-							.filter(category => category.category === 1 || category.category === 3)
-							.map((category) => (
-								<optgroup key={category.id} label={category.name}>
-									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 1 || subcategory.facultyUnit === 3)
-										.map((subcategory, index) => (
-											<option key={index} value={subcategory.name}>
-												{subcategory.name}
-											</option>
-										))}
-								</optgroup>
+		const selectedfacultyunit = facultyStudents.filter(faculty => faculty.facultyName === selectedOption)
+		const facultyUnitCat = selectedfacultyunit.map(unit => unit.facultyCategory);
+		return (
+			<>
+				<option value="" disabled>Select Course</option>
+				{categories
+					.filter(cat => selectedfacultyunit.some(unit => unit.facultyCategory === cat.category || (cat.category === 0 && (facultyUnitCat.includes(1) || facultyUnitCat.includes(2)))))
+					.map((cat) => (
+						<optgroup key={cat.id} label={cat.name}>
+							{cat.subcategories
+								.filter(subcategory => facultyUnitCat.includes(subcategory.facultyUnit) || subcategory.facultyUnit === 3)
+								.map((subcategory, index) => (
+									<option key={index} value={subcategory.name}>
+										{subcategory.name}
+									</option>
 							))}
-
-						<optgroup label="Not Mentioned Above">
-							<option value="Other">Other</option>
 						</optgroup>
-					</>
-				);
-			case 'Faculty of Engineering, Computing and Science':
-				return (
-					<>
-						<option value="" disabled>Select Option</option>
-						{categories
-							.filter(category => category.category === 2 || category.category === 3)
-							.map((category) => (
-								<optgroup key={category.id} label={category.name}>
-									{category.subcategories
-										.filter(subcategory => subcategory.facultyUnit === 2 || subcategory.facultyUnit === 3)
-										.map((subcategory, index) => (
-											<option key={index} value={subcategory.name}>
-												{subcategory.name}
-											</option>
-										))}
-								</optgroup>
-							))}
-
-						<optgroup label="Not Mentioned Above">
-							<option value="Other">Other</option>
-						</optgroup>
-					</>
-				);
-			default:
-				return (
-					<option value="" disabled>
-						Select Option
-					</option>
-				);
-		}
+					))
+				}
+			</>
+		);
 	};
 
+	useEffect(() => {
+		filterUserData(activeTab, searchQuery);
+	}, [activeTab, searchQuery, selectedFacultyUnit, aggregatedInfo]);
+
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
+		
+		let prevTab = "";
+		console.log("prev tab:", prevTab);
+		console.log("tab:", tab);
+
+		const filterFacultyUnit = () => {
+			if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
+				filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty);
+			}
+		}
+		
 		setSearchQuery(query);
 
 		// Clear the data results
@@ -562,17 +628,19 @@ export default function Home() {
 
 		let filteredUserData = [...aggregatedInfo];
 
-		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
-		} else if (tab === 'student') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
-		} else if (tab === 'visitor') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
+		if(prevTab != tab){
+			setSelectedFacultyUnit('');
 		}
 
-		if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
-			filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty);
-		}
+		if (tab === 'staff') {
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
+			filterFacultyUnit();
+		} else if (tab === 'student') {
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
+			filterFacultyUnit();
+		} else if (tab === 'visitor') {
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
+		}		
 
 		if (query) {
 			filteredUserData = filteredUserData.filter(
@@ -585,6 +653,8 @@ export default function Home() {
 				}
 			);
 		}
+
+		prevTab = tab;
 
 		setDataResults(filteredUserData);
 	};
@@ -646,9 +716,6 @@ export default function Home() {
 	const [showFilterOptions, setShowFilterOptions] = useState(false);
 
 	// Show Filter Options
-	const handleFilterButtonClick = () => {
-		setShowFilterOptions(!showFilterOptions); // Toggle dropdown visibility
-	};
 
 	return (
 		<div>
@@ -703,18 +770,6 @@ export default function Home() {
 										onClick={refreshData}>
 										<IoMdRefresh className="text-xl text-slate-800" />
 									</button>
-
-									{/* Filter */}
-									{/* <div className="relative">
-										<button
-											type="button"
-											className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
-											onClick={handleFilterButtonClick}>
-											<MdFilterListAlt className="text-xl"/>
-											<span className="ml-2 text-slate-800 dark:text-dark_text">Filters</span>
-										</button>
-									</div>								 */}
-
 
 									{/* Sort By Button */}
 									<div className="relative">
@@ -789,45 +844,41 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="flex flex-row">
-								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
-										}`}
-									onClick={() => setActiveTab('all')}
-								>
-									All
-								</button>
-								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
-										}`}
-									onClick={() => { setActiveTab('staff') }}
-								>
-									Staff
-								</button>
-								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
-										}`}
-									onClick={() => { setActiveTab('student') }}
-								>
-									Student
-								</button>
-								<button
-									className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
-										}`}
-									onClick={() => { setActiveTab('visitor') }}
-								>
-									Visitor
-								</button>
-							</div>
-
-							{/* {showFilterOptions && (
-								<div className="border-[1px] p-4 w-full">									
+							<div className="flex flex-row justify-between">
+								<div>
+									<button
+										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
+											}`}
+										onClick={() => setActiveTab('all')}
+									>
+										All
+									</button>
+									<button
+										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
+											}`}
+										onClick={() => { setActiveTab('staff') }}
+									>
+										Staff
+									</button>
+									<button
+										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
+											}`}
+										onClick={() => { setActiveTab('student') }}
+									>
+										Student
+									</button>
+									<button
+										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
+											}`}
+										onClick={() => { setActiveTab('visitor') }}
+									>
+										Visitor
+									</button>
+								</div>
 								
-									<div className="flex flex-row">			
-									{(activeTab === "staff" || activeTab === "all") && (
-										<div>
-											<label>Faculty / Unit (Staff)</label>
-											<select
+								{/* {activeTab === "staff" && (
+									<div className="">
+										<select
 											name="facultyUnit"
 											id="facultyUnit"
 											defaultValue=""
@@ -836,7 +887,7 @@ export default function Home() {
 											onChange={event => {handleSelectFacultyUnitChange(event);}}
 											>
 												<option value="" disabled>
-													Select Faculty/ Unit
+													Select Faculty/ Unit (Staff)
 												</option>
 												<option value="all">
 													All
@@ -846,51 +897,50 @@ export default function Home() {
 														{faculty}
 													</option>
 												))}
-											</select>
-										</div>
-									)} 
-									
-									{(activeTab === "student" || activeTab === "all") && (
-										<div>
-											<label>Course</label>
-											<select
-												name="studentFacultyUnit"
-												id="studentFacultyUnit"
-												defaultValue=""
-												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-												required
-												onChange={event => handleSelectChange(event)}
-											>												
-												<option value="" disabled>Select Faculty/ Unit</option>
-												{facultyStudents.map((faculty, index) => (
-													<option key={index} value={faculty}>
-														{faculty}
-													</option>
-												))}
-												<option value="Both">Both</option>
-											</select>
-
-											{selectedOption &&
-												<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-													<div className="ml-1">														
-														<select
-															name="anotherSelect"
-															id="anotherSelect"
-															defaultValue=""
-															className="border-[1px] px-4 py-2 border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-															required
-															onChange={handleAnotherSelectChange}
-														>
-															{getSecondSelectOptions()}
-														</select>
-													</div>
-												</div>
-											}
-										</div>
-									)}
+										</select>
 									</div>
-								</div>
-							)} */}
+								)}
+
+								{activeTab === "student" && (
+									<div className="flex flex-row">
+										<select
+											name="studentFacultyUnit"
+											id="studentFacultyUnit"
+											defaultValue=""
+											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+											required
+											onChange={event => handleSelectChange(event)}
+										>												
+											<option value="" disabled>Select Faculty/ Unit (Student)</option>
+											<option value="all">
+													All
+											</option>
+											{facultyStudents.map((faculty, index) => (
+												<option key={index} value={faculty.facultyName}>
+													{faculty.facultyName}
+												</option>
+											))}
+										</select>
+
+										{selectedOption &&
+											<div className="p-2 pr-[50px] py-1 pl-5 bg-white rounded-lg">
+												<div className="ml-2">														
+													<select
+														name="anotherSelect"
+														id="anotherSelect"
+														defaultValue=""
+														className="border-[1px] px-1 py-2 border-gray-300 focus:outline-none mt-3 text-xs lg:text-base max-w-sm"
+														required
+														onChange={handleAnotherSelectChange}
+													>
+														{getSecondSelectOptions()}
+													</select>
+												</div>
+											</div>
+										}
+									</div>
+								)} */}
+							</div>
 
 							<div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
 								<div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
@@ -922,7 +972,10 @@ export default function Home() {
 
                                         {/* Table Body */}
                                         <tbody>
-                                            {sortedData
+										{searchQuery.length > 0 && dataResults.length === 0 ? (
+                                        	<p className="text-lg text-center mt-4">No data available.</p>
+                                    	) : (
+                                            sortedData
                                                 .slice(
                                                     (currentPage - 1) * entriesToShow,
                                                     currentPage * entriesToShow,
@@ -961,10 +1014,10 @@ export default function Home() {
                                                         <td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
                                                             <p className="text-gray-900 whitespace-no-wrap lg:ml-[18px] dark:text-dark_text">
                                                                 {allMainEvent
-                                                                    .filter(event => info.eventsAttended.includes(event.intFID))
+                                                                    .filter(event => info.eventsAttended.find(e => e.mainEventID.includes(event.intFID)))
                                                                     .map((event, index) => (
                                                                         <p key={index}>
-                                                                            {event.intFEventName} - {getTotalHours(info.subEventsAttended[index].sub_eventsEndTime, info.subEventsAttended[index].sub_eventsStartTime).toFixed(2)}
+                                                                            {event.intFEventName} - {event.intFTotalHours}
                                                                         </p>
                                                                 ))}
                                                             </p>
@@ -976,8 +1029,8 @@ export default function Home() {
                                                             </p>
                                                         </td>
                                                     </tr>
-                                                ))}
-
+                                                ))
+											)}
 
 											{/* pagination */}
 											{Array.from({
