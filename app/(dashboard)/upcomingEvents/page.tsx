@@ -249,7 +249,7 @@ export default function Home() {
 
         //Clear the data results
         setDataResults([]);
-        
+
         const filteredData = mainEvents.filter(
             event =>
                 event.intFEventName.toLowerCase().includes(query.toLowerCase()) ||
@@ -259,56 +259,56 @@ export default function Home() {
         setDataResults(filteredData);
     };
 
-     // Handle page change
-	const handlePageChange = (page: number) => {
-		if (page >= 1 && page <= Math.ceil(mainEvents.length / entriesToShow)) {
-			setCurrentPage(page);
-		}
-	};
+    // Handle page change
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= Math.ceil(mainEvents.length / entriesToShow)) {
+            setCurrentPage(page);
+        }
+    };
 
     useEffect(() => {
-		setCurrentPage(1);
-	}, [entriesToShow]);
+        setCurrentPage(1);
+    }, [entriesToShow]);
 
     const pageCount = Math.ceil(mainEvents.length / entriesToShow);
 
     const generatePageNumbers = (): number[] => {
-		const displayedPages = 5;
-		const halfDisplayed = Math.floor(displayedPages / 2);
+        const displayedPages = 5;
+        const halfDisplayed = Math.floor(displayedPages / 2);
 
-		if (pageCount <= displayedPages) {
-			return Array.from({ length: pageCount }, (_, index) => index + 1);
-		}
+        if (pageCount <= displayedPages) {
+            return Array.from({ length: pageCount }, (_, index) => index + 1);
+        }
 
-		const start = Math.max(currentPage - halfDisplayed, 1);
-		const end = Math.min(start + displayedPages - 1, pageCount);
+        const start = Math.max(currentPage - halfDisplayed, 1);
+        const end = Math.min(start + displayedPages - 1, pageCount);
 
-		const pages: number[] = [];
+        const pages: number[] = [];
 
-		if (start > 1) {
-			pages.push(1);
-			if (start > 2) {
-				pages.push(-1);
-			}
-		}
+        if (start > 1) {
+            pages.push(1);
+            if (start > 2) {
+                pages.push(-1);
+            }
+        }
 
-		for (let i = start; i <= end; i++) {
-			pages.push(i);
-		}
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
 
-		if (end < pageCount) {
-			if (end < pageCount - 1) {
-				pages.push(-1);
-			}
-			pages.push(pageCount);
-		}
+        if (end < pageCount) {
+            if (end < pageCount - 1) {
+                pages.push(-1);
+            }
+            pages.push(pageCount);
+        }
 
-		return pages.slice(0, displayedPages);
-	};
+        return pages.slice(0, displayedPages);
+    };
 
-	useEffect(() => {
-		setCurrentPage(1);
-	}, [mainEvents])
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [mainEvents])
 
     const handleArrowLeftClick = () => {
         if (currentPage > 1) {
@@ -391,22 +391,22 @@ export default function Home() {
     const sortedData = (dataResults.length > 0 ? dataResults : mainEvents)
         .slice()
         .sort((a, b) => {
-        if (sortBy === "event") {
-            if (sortOrder === "asc") {
-                return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
-            } else {
-                return a.intFEventName.localeCompare(b.intFEventName, undefined, { sensitivity: 'base' });
-            }
-        } else if (sortBy === "date") {
-            const dateA = new Date(a.intFEventStartDate);
-            const dateB = new Date(b.intFEventStartDate);
+            if (sortBy === "event") {
+                if (sortOrder === "asc") {
+                    return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
+                } else {
+                    return a.intFEventName.localeCompare(b.intFEventName, undefined, { sensitivity: 'base' });
+                }
+            } else if (sortBy === "date") {
+                const dateA = new Date(a.intFEventStartDate);
+                const dateB = new Date(b.intFEventStartDate);
 
-            const compareResult = dateA.getTime() - dateB.getTime(); // Cast the result to number
-            return sortOrder === "asc" ? compareResult : -compareResult;
-        } else {
-            return 0;
-        }
-    });
+                const compareResult = dateA.getTime() - dateB.getTime(); // Cast the result to number
+                return sortOrder === "asc" ? compareResult : -compareResult;
+            } else {
+                return 0;
+            }
+        });
 
     // This is needed for the feedback data to show,
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -592,8 +592,8 @@ export default function Home() {
                                 {/* Table Body */}
                                 <tbody className="min-h-screen">
                                     {searchQuery.length > 0 && dataResults.length === 0 ? (
-                                            <p className="text-lg text-center mt-4">No data available.</p>
-                                        ) : (
+                                        <p className="text-lg text-center mt-4">No data available.</p>
+                                    ) : (
                                         sortedData
                                             .slice(
                                                 (currentPage - 1) * entriesToShow,
@@ -719,42 +719,42 @@ export default function Home() {
                                                     </td>
                                                 </tr>
                                             ))
-                                        )}
+                                    )}
 
-                                        {/* pagination */}
-                                        {Array.from({
-                                            length: entriesToShow - mainEvents?.length,
-                                        }).map((_, index) => (
-                                            <tr className="flex invisible" key={index}>
-                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                    <div className="flex items-center">
-                                                        <div className="ml-[14px]">
-                                                            <p className="text-gray-900 whitespace-no-wrap"></p>
-                                                        </div>
+                                    {/* pagination */}
+                                    {Array.from({
+                                        length: entriesToShow - mainEvents?.length,
+                                    }).map((_, index) => (
+                                        <tr className="flex invisible" key={index}>
+                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <div className="flex items-center">
+                                                    <div className="ml-[14px]">
+                                                        <p className="text-gray-900 whitespace-no-wrap"></p>
                                                     </div>
-                                                </td>
-                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
-                                                </td>
-                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap"></p>
-                                                </td>
-                                                <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
-                                                </td>
-                                                <td
-                                                    className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
+                                                </div>
+                                            </td>
+                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
+                                            </td>
+                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap"></p>
+                                            </td>
+                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
+                                            </td>
+                                            <td
+                                                className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
+                                                <span
+                                                    className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
                                                     <span
-                                                        className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
-                                                        <span
-                                                            aria-hidden
-                                                            className={`absolute inset-0 opacity-0 rounded-full`}></span>
-                                                        <span className="relative"></span>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    
+                                                        aria-hidden
+                                                        className={`absolute inset-0 opacity-0 rounded-full`}></span>
+                                                    <span className="relative"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+
                                 </tbody>
                             </table>
 
@@ -850,15 +850,15 @@ export default function Home() {
 
                                         {/* Pagination Buttons */}
                                         {generatePageNumbers().map((pageNumber, index) => (
-											<button
-												key={index}
-												className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-												}`}
-											    onClick={() => handlePageChange(pageNumber)}
-													>
-												{pageNumber === -1 ? '...' : pageNumber}
-											</button>
-										))}
+                                            <button
+                                                key={index}
+                                                className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+                                                    }`}
+                                                onClick={() => handlePageChange(pageNumber)}
+                                            >
+                                                {pageNumber === -1 ? '...' : pageNumber}
+                                            </button>
+                                        ))}
 
                                         {/* Arrow Next Page Button */}
                                         <button
@@ -1128,6 +1128,7 @@ export default function Home() {
                             </h3>
                             <div className="flex flex-col items-center justify-center">
                                 <QRCodeSVG
+                                    className="bg-white p-1"
                                     value={`${url}/form/${selectedSubEventID}`}
                                 />
                                 <button
@@ -1151,6 +1152,7 @@ export default function Home() {
                             </h3>
                             <div className="flex flex-col items-center justify-center">
                                 <QRCodeSVG
+                                    className="bg-white p-1"
                                     value={`${url}/form/feedback/${selectedSubEventID}`}
                                 />
                                 <button

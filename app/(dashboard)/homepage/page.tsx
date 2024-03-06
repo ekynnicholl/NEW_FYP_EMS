@@ -1687,6 +1687,7 @@ export default function Homepage() {
 							</h3>
 							<div className="flex flex-col items-center justify-center">
 								<QRCodeSVG
+									className="bg-white p-1"
 									value={`${url}/form/${selectedSubEventID}`}
 								/>
 								<button
@@ -1710,6 +1711,7 @@ export default function Homepage() {
 							</h3>
 							<div className="flex flex-col items-center justify-center">
 								<QRCodeSVG
+									className="bg-white p-1"
 									value={`${url}/form/feedback/${selectedSubEventID}`}
 								/>
 								<button

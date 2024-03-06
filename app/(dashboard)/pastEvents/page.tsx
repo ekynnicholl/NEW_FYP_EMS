@@ -257,7 +257,7 @@ export default function Home() {
 
         //Clear the data results
         setDataResults([]);
-        
+
         const filteredData = mainEvents.filter(
             event =>
                 event.intFEventName.toLowerCase().includes(query.toLowerCase()) ||
@@ -268,55 +268,55 @@ export default function Home() {
     };
 
     // Handle page change
-	const handlePageChange = (page: number) => {
-		if (page >= 1 && page <= Math.ceil(mainEvents.length / entriesToShow)) {
-			setCurrentPage(page);
-		}
-	};
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= Math.ceil(mainEvents.length / entriesToShow)) {
+            setCurrentPage(page);
+        }
+    };
 
     useEffect(() => {
-		setCurrentPage(1);
-	}, [entriesToShow]);
+        setCurrentPage(1);
+    }, [entriesToShow]);
 
     const pageCount = Math.ceil(mainEvents.length / entriesToShow);
 
     const generatePageNumbers = (): number[] => {
-		const displayedPages = 5;
-		const halfDisplayed = Math.floor(displayedPages / 2);
+        const displayedPages = 5;
+        const halfDisplayed = Math.floor(displayedPages / 2);
 
-		if (pageCount <= displayedPages) {
-			return Array.from({ length: pageCount }, (_, index) => index + 1);
-		}
+        if (pageCount <= displayedPages) {
+            return Array.from({ length: pageCount }, (_, index) => index + 1);
+        }
 
-		const start = Math.max(currentPage - halfDisplayed, 1);
-		const end = Math.min(start + displayedPages - 1, pageCount);
+        const start = Math.max(currentPage - halfDisplayed, 1);
+        const end = Math.min(start + displayedPages - 1, pageCount);
 
-		const pages: number[] = [];
+        const pages: number[] = [];
 
-		if (start > 1) {
-			pages.push(1);
-			if (start > 2) {
-				pages.push(-1);
-			}
-		}
+        if (start > 1) {
+            pages.push(1);
+            if (start > 2) {
+                pages.push(-1);
+            }
+        }
 
-		for (let i = start; i <= end; i++) {
-			pages.push(i);
-		}
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
 
-		if (end < pageCount) {
-			if (end < pageCount - 1) {
-				pages.push(-1);
-			}
-			pages.push(pageCount);
-		}
+        if (end < pageCount) {
+            if (end < pageCount - 1) {
+                pages.push(-1);
+            }
+            pages.push(pageCount);
+        }
 
-		return pages.slice(0, displayedPages);
-	};
+        return pages.slice(0, displayedPages);
+    };
 
-	useEffect(() => {
-		setCurrentPage(1);
-	}, [mainEvents]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [mainEvents]);
 
 
     const handleArrowLeftClick = () => {
@@ -400,22 +400,22 @@ export default function Home() {
     const sortedData = (dataResults.length > 0 ? dataResults : mainEvents)
         .slice()
         .sort((a, b) => {
-        if (sortBy === "event") {
-            if (sortOrder === "asc") {
-                return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
-            } else {
-                return a.intFEventName.localeCompare(b.intFEventName, undefined, { sensitivity: 'base' });
-            }
-        } else if (sortBy === "date") {
-            const dateA = new Date(a.intFEventStartDate);
-            const dateB = new Date(b.intFEventStartDate);
+            if (sortBy === "event") {
+                if (sortOrder === "asc") {
+                    return b.intFEventName.localeCompare(a.intFEventName, undefined, { sensitivity: 'base' });
+                } else {
+                    return a.intFEventName.localeCompare(b.intFEventName, undefined, { sensitivity: 'base' });
+                }
+            } else if (sortBy === "date") {
+                const dateA = new Date(a.intFEventStartDate);
+                const dateB = new Date(b.intFEventStartDate);
 
-            const compareResult = dateA.getTime() - dateB.getTime(); // Cast the result to number
-            return sortOrder === "asc" ? compareResult : -compareResult;
-        } else {
-            return 0;
-        }
-    });
+                const compareResult = dateA.getTime() - dateB.getTime(); // Cast the result to number
+                return sortOrder === "asc" ? compareResult : -compareResult;
+            } else {
+                return 0;
+            }
+        });
 
     // This is needed for the feedback data to show,
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -608,7 +608,7 @@ export default function Home() {
                                                 currentPage * entriesToShow,
                                             )
                                             .map((event, index) => (
-                                                
+
                                                 <tr className="flex border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
                                                     <td className="flex-1 py-5 mt-1">
                                                         <div className="flex items-center">
@@ -627,19 +627,19 @@ export default function Home() {
                                                             {event.intFEventName}
                                                         </p>
                                                     </td>
-    
+
                                                     <td className="flex-1 py-5 -ml-3">
                                                         <p className="text-gray-900 -ml-1 dark:text-dark_text">
                                                             {event.intFEventDescription}
                                                         </p>
                                                     </td>
-    
+
                                                     <td className="flex-1 py-5 ml-12">
                                                         <p className="text-gray-900 whitespace-nowrap ml-[94px] dark:text-dark_text">
                                                             {event.intFEventStartDate}
                                                         </p>
                                                     </td>
-    
+
                                                     <td className="flex-1 py-5 ml-12">
                                                         <div className="flex items-end">
                                                             <span className="relative px-3 py-[5px] font-semibold text-slate-800 text-xs flex items-center ml-10">
@@ -649,7 +649,7 @@ export default function Home() {
                                                             </span>
                                                         </div>
                                                     </td>
-    
+
                                                     <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
@@ -662,9 +662,9 @@ export default function Home() {
                                                                     className="cursor-pointer"
                                                                     onClick={e => {
                                                                         e.stopPropagation();
-    
+
                                                                         const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-    
+
                                                                         if (filteredSubEvent) {
                                                                             openModal(
                                                                                 event.intFID,
@@ -685,7 +685,7 @@ export default function Home() {
                                                                                 filteredSubEvent.sub_eventsFaculty
                                                                             );
                                                                         }
-    
+
                                                                     }}
                                                                 >Sub-Events Details</DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
@@ -707,11 +707,11 @@ export default function Home() {
                                                                 }}>Event Feedback
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
-    
+
                                                                 <DropdownMenuItem onClick={e => {
                                                                     e.stopPropagation();
                                                                     const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-    
+
                                                                     if (filteredSubEvent) {
                                                                         openQRCodeModal(event.intFID);
                                                                     }
@@ -723,7 +723,7 @@ export default function Home() {
                                                 </tr>
                                             ))
                                     )}
-                                    
+
 
                                     {/* pagination */}
                                     {Array.from({
@@ -853,15 +853,15 @@ export default function Home() {
 
                                         {/* Pagination Buttons */}
                                         {generatePageNumbers().map((pageNumber, index) => (
-											<button
-												key={index}
-												className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-												}`}
-											    onClick={() => handlePageChange(pageNumber)}
-													>
-												{pageNumber === -1 ? '...' : pageNumber}
-											</button>
-										))}
+                                            <button
+                                                key={index}
+                                                className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+                                                    }`}
+                                                onClick={() => handlePageChange(pageNumber)}
+                                            >
+                                                {pageNumber === -1 ? '...' : pageNumber}
+                                            </button>
+                                        ))}
 
                                         {/* Arrow Next Page Button */}
                                         <button
@@ -1079,8 +1079,8 @@ export default function Home() {
                         <AttendanceList event_id={attendanceID} />
                     </ViewAttendance_Modal>
 
-                    <QRCodeModal 
-                        isVisible={showQRCodeModal} 
+                    <QRCodeModal
+                        isVisible={showQRCodeModal}
                         onClose={() => setShowQRCodeModal(false)}>
                         <div className="p-5">
                             {subEvents
@@ -1110,8 +1110,8 @@ export default function Home() {
                         </div>
                     </QRCodeModal>
 
-                    <Modal 
-                        isVisible={showQRCodesFeedback} 
+                    <Modal
+                        isVisible={showQRCodesFeedback}
                         onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false); }}>
                         <div className="ml-2 p-5 z-[999]">
                             <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
@@ -1119,6 +1119,7 @@ export default function Home() {
                             </h3>
                             <div className="flex flex-col items-center justify-center">
                                 <QRCodeSVG
+                                    className="bg-white p-1"
                                     value={`${url}/form/feedback/${selectedSubEventID}`}
                                 />
                                 <button
