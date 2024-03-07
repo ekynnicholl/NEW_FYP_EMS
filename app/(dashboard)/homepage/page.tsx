@@ -13,6 +13,7 @@ import Modal from "@/components/QR_Codes_Modal";
 import { QRCodeSVG } from "qrcode.react";
 import Success_AddSubEventModal from "@/components/Modal";
 import QRCodeIcon from '@/components/icons/QRCodeIcon';
+import swinburneLogo from '@/public/images/swinburne_logo.png';
 
 import Success_EditEventModal from "@/components/Modal";
 import Success_EditSubEventModal from "@/components/Modal";
@@ -2743,7 +2744,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
+												swinburneLogo.src,
 												latestEvent[0]?.intFID,
 												latestEvent[0]?.intFEventName,
 												latestEvent[0]?.intFEventDescription,
@@ -2766,7 +2767,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?social",
+												swinburneLogo.src,
 												latestEvent[0]?.intFID,
 												latestEvent[0]?.intFEventName,
 												latestEvent[0]?.intFEventDescription,
@@ -2792,7 +2793,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?social"
+												src="/swinburne_logo.png"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3026,7 +3027,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?birthday",
+												swinburneLogo.src,
 												latestEvent[1]?.intFID,
 												latestEvent[1]?.intFEventName,
 												latestEvent[1]?.intFEventDescription,
@@ -3049,7 +3050,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?birthday",
+												swinburneLogo.src,
 												latestEvent[1]?.intFID,
 												latestEvent[1]?.intFEventName,
 												latestEvent[1]?.intFEventDescription,
@@ -3075,7 +3076,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?birthday"
+												src="/swinburne_logo.png"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3308,7 +3309,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												swinburneLogo.src,
 												latestEvent[2]?.intFID,
 												latestEvent[2]?.intFEventName,
 												latestEvent[2]?.intFEventDescription,
@@ -3331,7 +3332,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?new+year",
+												swinburneLogo.src,
 												latestEvent[2]?.intFID,
 												latestEvent[2]?.intFEventName,
 												latestEvent[2]?.intFEventDescription,
@@ -3357,7 +3358,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?new+year"
+												src="/swinburne_logo.png"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3590,7 +3591,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?events",
+												swinburneLogo.src,
 												latestEvent[3]?.intFID,
 												latestEvent[3]?.intFEventName,
 												latestEvent[3]?.intFEventDescription,
@@ -3613,7 +3614,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?events",
+												swinburneLogo.src,
 												latestEvent[3]?.intFID,
 												latestEvent[3]?.intFEventName,
 												latestEvent[3]?.intFEventDescription,
@@ -3639,7 +3640,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?events"
+												src="/swinburne_logo.png"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
@@ -3871,7 +3872,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?balloon",
+												swinburneLogo.src,
 												latestEvent[4]?.intFID,
 												latestEvent[4]?.intFEventName,
 												latestEvent[4]?.intFEventDescription,
@@ -3894,7 +3895,7 @@ export default function Homepage() {
 											);
 										} else {
 											openModal(
-												"https://source.unsplash.com/600x300?balloon",
+												swinburneLogo.src,
 												latestEvent[4]?.intFID,
 												latestEvent[4]?.intFEventName,
 												latestEvent[4]?.intFEventDescription,
@@ -3920,7 +3921,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?balloon"
+												src="/swinburne_logo.png"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
