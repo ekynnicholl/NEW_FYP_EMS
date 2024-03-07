@@ -23,6 +23,7 @@ import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 import LeftArrow from "@/components/icons/LeftArrow";
 import ExpenditureUser from "@/components/tables/expenditureUser";
 import { Info } from "lucide-react";
+import { Tab } from '@headlessui/react';
 
 type Info = {
 	attFormsAttendanceID: string;
@@ -137,7 +138,7 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
-        eventsAttended: {mainEventID: string; hours: number;}[];
+        eventsAttended: string[];
         totalHours: string;
 	}[]>([]);
 
@@ -147,25 +148,42 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
-        eventsAttended: {mainEventID: string; hours: number;}[];
+        eventsAttended: string[];
         totalHours: string;
 	}[]>([]);
 
-	const getTotalHours = (subEventEndTime: string, subEventStartTime: string): number => {
-        const endTimeParts = subEventEndTime.split(':').map(part => parseInt(part, 10));
-        const startTimeParts = subEventStartTime.split(':').map(part => parseInt(part, 10));
+	// const getTotalHours = (subEventEndTime: string, subEventStartTime: string): number => {
+    //     const endTimeParts = subEventEndTime.split(':').map(part => parseInt(part, 10));
+    //     const startTimeParts = subEventStartTime.split(':').map(part => parseInt(part, 10));
 
-        const endTime = new Date();
-        endTime.setHours(endTimeParts[0], endTimeParts[1], endTimeParts[2]);
-        const startTime = new Date();
-        startTime.setHours(startTimeParts[0], startTimeParts[1], startTimeParts[2]);
+    //     const endTime = new Date();
+    //     endTime.setHours(endTimeParts[0], endTimeParts[1], endTimeParts[2]);
+    //     const startTime = new Date();
+    //     startTime.setHours(startTimeParts[0], startTimeParts[1], startTimeParts[2]);
 
-        // Calculate the difference in milliseconds between endTime and startTime
-        const differenceInMs = endTime.getTime() - startTime.getTime();
+    //     // Calculate the difference in milliseconds between endTime and startTime
+    //     const differenceInMs = endTime.getTime() - startTime.getTime();
 
-        const totalHours = differenceInMs / (1000 * 60 * 60);
-        return Math.round(totalHours * 100) / 100;
-    }
+    //     const totalHours = differenceInMs / (1000 * 60 * 60);
+    //     return Math.round(totalHours * 100) / 100;
+    // }
+
+	useEffect(() => {
+		const fetchMainEvent = async () => {
+			const { data: mainEvent, error: mainEventError } = await supabase
+				.from('internal_events')
+				.select('*');
+
+			if (mainEventError) {
+				console.error("Error fetching main_events:", mainEventError);
+				return;
+			}
+			setAllMainEvent(mainEvent || []);
+		}
+
+		fetchMainEvent();
+
+	}, [supabase]);
 
 	const fetchExternalFormInfos = async (staff_id: string) => {
 		const { data: external, error: externalError } = await supabase
@@ -199,9 +217,18 @@ export default function Home() {
 			return;
 		}
 
+		const { data: mainEvents, error: mainEventsError } = await supabase
+			.from("internal_events")
+			.select("*");
+
+		if (mainEventsError) {
+			console.error("Error fetching sub_events:", subEventsError);
+			return;
+		}
+
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
         const groupedData = staffData.reduce((result, form) => {
-            // const uniqueStaffID = `${form.attFormsStaffID} - ${form.attFormsStaffName}`;
+
             const uniqueStaffID = form.attFormsStaffID;
 
             if (!result[uniqueStaffID]) {
@@ -222,12 +249,7 @@ export default function Home() {
 				result[uniqueStaffID].eventsAttended.push(
 					...subEvents
 						.filter(event => event.sub_eventsID === form.attFSubEventID)
-						.map(event => ({
-							mainEventID: event.sub_eventsMainID,
-							hour: allMainEvent
-								.filter(e => e.intFID === event.sub_eventsMainID)
-								.map(e => e.intFTotalHours)
-						}))
+						.map(event => event.sub_eventsMainID)
 				);     
 
                 result[uniqueStaffID].subEventsAttended.push(
@@ -239,26 +261,21 @@ export default function Home() {
 
 		}, {});
 
-		interface EventInfo {
-			mainEventID: string;
-			hour: string; }
-
 		for (const staffID in groupedData) {
-            if (Object.prototype.hasOwnProperty.call(groupedData, staffID)) {
-                const staffInfo = groupedData[staffID];
-				// staffInfo.totalHours = staffInfo.subEventsAttended.reduce((totalHours: number, subEvent: subEvents) => {
-                //     return totalHours + getTotalHours(subEvent.sub_eventsEndTime, subEvent.sub_eventsStartTime);
-                // }, 0).toFixed(2);
-
+			if (Object.prototype.hasOwnProperty.call(groupedData, staffID)) {
+				const staffInfo = groupedData[staffID];
 				let totalHours = 0;
-				staffInfo.eventsAttended.forEach((event: EventInfo) => {
-					totalHours += Number(event.hour);
+			
+				staffInfo.eventsAttended.forEach((mainEventID: string) => {
+					const event = mainEvents.find(e => e.intFID === mainEventID);
+					if (event) {
+						totalHours += Number(event.intFTotalHours);
+					}
 				});
-
-				staffInfo.totalHours = totalHours.toFixed(2);
-            }
-        }
-	
+			
+				staffInfo.totalHours = totalHours;
+			}
+		}
 
         // Set the aggregated data in the state
         setAggregatedInfo(Object.values(groupedData));
@@ -300,22 +317,7 @@ export default function Home() {
 		setMainEventAttended((mainEvent || []));
 	}
 
-	useEffect(() => {
-		const fetchMainEvent = async () => {
-			const { data: mainEvent, error: mainEventError } = await supabase
-				.from('internal_events')
-				.select('*');
-
-			if (mainEventError) {
-				console.error("Error fetching main_events:", mainEventError);
-				return;
-			}
-			setAllMainEvent(mainEvent || []);
-		}
-
-		fetchMainEvent();
-
-	}, [supabase]);
+	
 
 
 	//display the sub event attended modal
@@ -552,7 +554,6 @@ export default function Home() {
 				}));
 
 				setCategories(categoriesArray);
-				console.log(categoriesArray);
 			}
 		};
 
@@ -611,16 +612,6 @@ export default function Home() {
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
 		
-		let prevTab = "";
-		console.log("prev tab:", prevTab);
-		console.log("tab:", tab);
-
-		const filterFacultyUnit = () => {
-			if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
-				filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty);
-			}
-		}
-		
 		setSearchQuery(query);
 
 		// Clear the data results
@@ -628,16 +619,20 @@ export default function Home() {
 
 		let filteredUserData = [...aggregatedInfo];
 
-		if(prevTab != tab){
-			setSelectedFacultyUnit('');
-		}
-
 		if (tab === 'staff') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
-			filterFacultyUnit();
+			
+			if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
+				filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty && item.staffID.startsWith('SS'));
+			}
+
 		} else if (tab === 'student') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
-			filterFacultyUnit();
+
+			if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
+				filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty && item.staffID !== '0' && !item.staffID.startsWith('SS'));
+			}
+
 		} else if (tab === 'visitor') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
 		}		
@@ -653,9 +648,6 @@ export default function Home() {
 				}
 			);
 		}
-
-		prevTab = tab;
-
 		setDataResults(filteredUserData);
 	};
 
@@ -899,9 +891,9 @@ export default function Home() {
 												))}
 										</select>
 									</div>
-								)}
+								)} */}
 
-								{activeTab === "student" && (
+								{/* {activeTab === "student" && (
 									<div className="flex flex-row">
 										<select
 											name="studentFacultyUnit"
@@ -1014,7 +1006,7 @@ export default function Home() {
                                                         <td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
                                                             <p className="text-gray-900 whitespace-no-wrap lg:ml-[18px] dark:text-dark_text">
                                                                 {allMainEvent
-                                                                    .filter(event => info.eventsAttended.find(e => e.mainEventID.includes(event.intFID)))
+                                                                    .filter(event => info.eventsAttended.includes(event.intFID))
                                                                     .map((event, index) => (
                                                                         <p key={index}>
                                                                             {event.intFEventName} - {event.intFTotalHours}
@@ -1310,62 +1302,141 @@ export default function Home() {
 					</div>
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
-						<p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p>
-						<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
-							<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
-								<thead>
-									<tr className="flex">
-										<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-											NO.
-										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-											Main Event
-										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-											Sub-Event Session
-										</th>
-										<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-											Start Date 
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{subEventsAttended
-										.map((subEvent, index) => (
-											<tr className="flex"
-												key={index}
-												onClick={() => setShowModal(true)}>
+						<div>
+						<Tab.Group>
+                            <Tab.List className="mt-3 ml-2">
+                                <Tab>
+                                    Sub-Events Attended
+                                </Tab>
+                                {/* <Tab>
+                                    Nomination / Traveling Form
+                                </Tab> */}
+                            </Tab.List>
+                            <Tab.Panels>
+                                <Tab.Panel>                                    
+									<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
+										<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
+											<thead>
+												<tr className="flex">
+													<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														NO.
+													</th>
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Main Event
+													</th>
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Sub-Event Session
+													</th>
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Start Date 
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{subEventsAttended
+													.map((subEvent, index) => (
+														<tr className="flex"
+															key={index}
+															onClick={() => setShowModal(true)}>
 
-												<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
-													<div>
-														<div className="ml-[2px]">
-															<p className="text-gray-900 dark:text-dark_text">
-																{index + 1}
-															</p>
-														</div>
-													</div>
-												</td>
-												<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
-													<p className="text-gray-900 dark:text-dark_text">
-														{mainEventAttended[index]?.intFEventName || "N/A"}
-													</p>
-												</td>
+															<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
+																<div>
+																	<div className="ml-[2px]">
+																		<p className="text-gray-900 dark:text-dark_text">
+																			{index + 1}
+																		</p>
+																	</div>
+																</div>
+															</td>
+															<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
+																<p className="text-gray-900 dark:text-dark_text">
+																	{mainEventAttended[index]?.intFEventName || "N/A"}
+																</p>
+															</td>
 
-												<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
-													<p className="text-gray-900 ml-1 dark:text-dark_text">
-														{subEvent.sub_eventsName}
-													</p>
-												</td>
+															<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
+																<p className="text-gray-900 ml-1 dark:text-dark_text">
+																	{subEvent.sub_eventsName}
+																</p>
+															</td>
 
-												<td className="flex-1 px-3 py-5 text-xs lg:text-md">
-													<p className="text-gray-900 -ml-2 dark:text-dark_text">
-														{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-													</p>
-												</td>
-											</tr>
-										))}
-								</tbody>
-							</table>
+															<td className="flex-1 px-3 py-5 text-xs lg:text-md">
+																<p className="text-gray-900 -ml-2 dark:text-dark_text">
+																	{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+																</p>
+															</td>
+														</tr>
+													))}
+											</tbody>
+										</table>
+									</div>
+                                </Tab.Panel>
+								{/* <Tab.Panel>
+								<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
+										<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
+											<thead>
+												<tr className="flex">
+													<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														NO.
+													</th>
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Program Title
+													</th>
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Form Status
+													</th>
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Submitted At
+													</th>
+
+													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Action
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{subEventsAttended
+													.map((subEvent, index) => (
+														<tr className="flex"
+															key={index}
+															onClick={() => setShowModal(true)}>
+
+															<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
+																<div>
+																	<div className="ml-[2px]">
+																		<p className="text-gray-900 dark:text-dark_text">
+																			{index + 1}
+																		</p>
+																	</div>
+																</div>
+															</td>
+															<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
+																<p className="text-gray-900 dark:text-dark_text">
+																	{mainEventAttended[index]?.intFEventName || "N/A"}
+																</p>
+															</td>
+
+															<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
+																<p className="text-gray-900 ml-1 dark:text-dark_text">
+																	{subEvent.sub_eventsName}
+																</p>
+															</td>
+
+															<td className="flex-1 px-3 py-5 text-xs lg:text-md">
+																<p className="text-gray-900 -ml-2 dark:text-dark_text">
+																	{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+																</p>
+															</td>
+														</tr>
+													))}
+											</tbody>
+										</table>
+									</div>
+                                </Tab.Panel> */}
+							</Tab.Panels>
+						</Tab.Group>
+						{/* <p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p> */}
+						
 
 							{/* mobile view */}
 							<div className="grid grid-cols-1 gap-4 lg:hidden">
