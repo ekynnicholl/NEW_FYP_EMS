@@ -1454,7 +1454,7 @@ export default function Homepage() {
 									</p>
 									<input
 										className="w-full pr-[10px] lg:pr-[11px] py-[6px] lg:py-2 pl-2 lg:pl-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left dark:bg-dark_textbox dark:border-dark_textbox_line dark:placeholder-dark_placeholder_text dark:text-slate-300"
-										type="number"
+										type="text"
 										placeholder="How many hour(s) will this event be?"
 										id="total_hours"
 										name="total_hours"
