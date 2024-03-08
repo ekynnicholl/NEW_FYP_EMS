@@ -150,7 +150,7 @@ export default function Home() {
                 .from("internal_events")
                 .select("*")
                 .lt('intFEventEndDate', currentDate)
-                .order("intFEventStartDate", { ascending: true })
+                .order("intFEventStartDate", { ascending: false })
                 .eq("intFIsHidden", 0);
 
             if (internalError) {
