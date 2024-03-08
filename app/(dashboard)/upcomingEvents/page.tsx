@@ -14,6 +14,7 @@ import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { MdFilterListAlt, MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -813,7 +814,7 @@ export default function Home() {
                                         {/* Skip To First Page Button */}
                                         <button
                                             type="button"
-                                            className="py-2 px-1 ml-8"
+                                            className="px-1 ml-8"
                                             onClick={handleSkipToFirstPage}
                                             disabled={currentPage === 1}
                                             style={{
@@ -823,29 +824,19 @@ export default function Home() {
                                                         : "pointer",
                                                 opacity: currentPage === 1 ? 0.5 : 1,
                                             }}>
-                                            <img
-                                                src={skipLeft.src}
-                                                alt=""
-                                                width={20}
-                                                className="lg:w-[22px]"
-                                            />
+                                                <MdKeyboardDoubleArrowLeft className="text-3xl"/>
                                         </button>
 
                                         {/* Arrow Previous Page Button */}
                                         <button
                                             type="button"
-                                            className="py-2 px-1 ml-5"
+                                            className="px-1 ml-1"
                                             onClick={handleArrowLeftClick}
                                             disabled={currentPage === 1}
                                             style={{
                                                 opacity: currentPage === 1 ? 0.5 : 1,
                                             }}>
-                                            <img
-                                                src={arrowLeft.src}
-                                                alt=""
-                                                width={12}
-                                                className="lg:w-[13px]"
-                                            />
+                                            <MdKeyboardArrowLeft className="text-3xl"/>
                                         </button>
 
                                         {/* Pagination Buttons */}
@@ -863,7 +854,7 @@ export default function Home() {
                                         {/* Arrow Next Page Button */}
                                         <button
                                             type="button"
-                                            className="py-2 px-1 ml-5"
+                                            className="px-1 ml-5"
                                             onClick={handleArrowRightClick}
                                             disabled={
                                                 currentPage ===
@@ -878,29 +869,19 @@ export default function Home() {
                                                         ? 0.5
                                                         : 1,
                                             }}>
-                                            <img
-                                                src={arrowRight.src}
-                                                alt=""
-                                                width={12}
-                                                className="lg:w-[13px]"
-                                            />
+                                            <MdKeyboardArrowRight className="text-3xl"/>
                                         </button>
 
                                         {/* Skip To Last Page Button */}
                                         <button
                                             type="button"
-                                            className={`py-2 px-1 ml-5 ${currentPage ===
+                                            className={`px-1 ml-1 ${currentPage ===
                                                 Math.ceil(mainEvents?.length / entriesToShow)
                                                 ? "pointer-events-none opacity-50"
                                                 : ""
                                                 }`}
                                             onClick={handleSkipToLastPage}>
-                                            <img
-                                                src={skipRight.src}
-                                                alt=""
-                                                width={17}
-                                                className="lg:w-[18px]"
-                                            />
+                                            <MdKeyboardDoubleArrowRight className="text-3xl"/>
                                         </button>
                                     </div>
                                 </div>
