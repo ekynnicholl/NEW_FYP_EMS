@@ -4,6 +4,8 @@ import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
 import exportCSV from "@/public/images/export_csv.png";
+import { BsFillTrash3Fill } from 'react-icons/bs';
+import { HiPencilAlt } from 'react-icons/hi';
 
 type AttendanceDataType = {
     attFormsID: string;
@@ -155,7 +157,17 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [attendanceData])
+    }, [attendanceData]);
+
+    const handleEdit = (attendanceItem: AttendanceDataType) => {
+        // Implement your logic for editing
+        console.log("Edit clicked for:", attendanceItem);
+    };
+
+    const handleDelete = (attendanceItem: AttendanceDataType) => {
+        // Implement your logic for deleting
+        console.log("Delete clicked for:", attendanceItem);
+    };
 
     return (
         <div>
@@ -196,6 +208,9 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Date Submitted
                                     </th>
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -219,6 +234,14 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             {formatDate(attendanceItem.attDateSubmitted).date}
                                             <br />
                                             {formatDate(attendanceItem.attDateSubmitted).time}
+                                        </td>
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            <button onClick={() => handleEdit(attendanceItem)}>
+                                                <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[24px] lg:text-base dark:text-dark_text2" />
+                                            </button>
+                                            <button onClick={() => handleDelete(attendanceItem)}>
+                                                <BsFillTrash3Fill className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] lg:ml-4 ml-0 text-[24px] lg:text-base dark:text-dark_text2" />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
