@@ -49,13 +49,15 @@ const Chatbot = () => {
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         }
     };
 
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+        if (openChat) {
+            scrollToBottom();
+        }
+    }, [messages, openChat]);
 
     const handleSendMessage = async (message: string) => {
         if (inputValue.trim() === "") return;
@@ -79,16 +81,40 @@ const Chatbot = () => {
         if (timeRange === "today") {
             startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
             endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+        } else if (timeRange === "yesterday") {
+            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        } else if (timeRange === "tomorrow") {
+            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2);
         } else if (timeRange === "week") {
             const currentDay = today.getDay();
             startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - currentDay);
             endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - currentDay) + 1);
+        } else if (timeRange === "next week") {
+            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
+        } else if (timeRange === "last week") {
+            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         } else if (timeRange === "month") {
             startDate = new Date(today.getFullYear(), today.getMonth(), 1);
             endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        } else if (timeRange === "next month") {
+            startDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            endDate = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+        } else if (timeRange === "last month") {
+            startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            endDate = new Date(today.getFullYear(), today.getMonth(), 0);
         } else if (timeRange === "year") {
             startDate = new Date(today.getFullYear(), 0, 1);
             endDate = new Date(today.getFullYear() + 1, 0, 0);
+        } else if (timeRange === "next year") {
+            startDate = new Date(today.getFullYear() + 1, 0, 1);
+            endDate = new Date(today.getFullYear() + 2, 0, 0);
+        } else if (timeRange === "last year") {
+            startDate = new Date(today.getFullYear() - 1, 0, 1);
+            endDate = new Date(today.getFullYear(), 0, 0);
         } else {
             // Handle other cases or default behavior
             return "Sorry, I don't understand that time range.";
@@ -119,27 +145,73 @@ const Chatbot = () => {
         if (timeRange === "today") {
             const formattedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
             timeRangeText = `today, ${formattedDate}`;
+        } else if (timeRange === "yesterday") {
+            const formattedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
+            timeRangeText = `yesterday, ${formattedDate}`;
+        } else if (timeRange === "tomorrow") {
+            const formattedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
+            timeRangeText = `tomorrow, ${formattedDate}`;
         } else if (timeRange === "week") {
             const formattedStartDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
             const formattedEndDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(endDate);
             timeRangeText = `this week, from ${formattedStartDate} to ${formattedEndDate}`;
+        } else if (timeRange === "next week") {
+            const formattedStartDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
+            const formattedEndDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(endDate);
+            timeRangeText = `next week, from ${formattedStartDate} to ${formattedEndDate}`;
+        } else if (timeRange === "last week") {
+            const formattedStartDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
+            const formattedEndDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(endDate);
+            timeRangeText = `last week, from ${formattedStartDate} to ${formattedEndDate}`;
         } else if (timeRange === "month") {
             const formattedStartMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(startDate);
             timeRangeText = `the month of ${formattedStartMonth}`;
+        } else if (timeRange === "next month") {
+            const formattedStartMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(startDate);
+            timeRangeText = `next month, ${formattedStartMonth}`;
+        } else if (timeRange === "last month") {
+            const formattedStartMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(startDate);
+            timeRangeText = `last month, ${formattedStartMonth}`;
         } else if (timeRange === "year") {
             const formattedStartYear = new Intl.DateTimeFormat('en-US', { year: 'numeric' }).format(startDate);
             timeRangeText = `the year ${formattedStartYear}`;
+        } else if (timeRange === "next year") {
+            const formattedStartYear = new Intl.DateTimeFormat('en-US', { year: 'numeric' }).format(startDate);
+            timeRangeText = `next year, ${formattedStartYear}`;
+        } else if (timeRange === "last year") {
+            const formattedStartYear = new Intl.DateTimeFormat('en-US', { year: 'numeric' }).format(startDate);
+            timeRangeText = `last year, ${formattedStartYear}`;
         }
 
         if (eventCount === 0) {
-            return `There are no events for ${timeRangeText}.`;
+            return `There are no event(s) ${timeRangeText}.`;
         }
 
-        const formattedString = `There are a total of ${eventCount} events with ${passedEvents.length} completed and ${upcomingEvents.length} upcoming events for ${timeRangeText}.
+        // This is to show the upcoming events only,
+        if (passedEvents.length === 0) {
+            const passedEventsMessage = `There are a total of ${upcomingEvents.length} upcoming event(s) for ${timeRangeText}.
 
-        Past Events: ${passedEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName}`).join("")}
+                Upcoming Event(s): ${upcomingEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName} (${new Date(event.intFEventStartDate).toLocaleDateString()})`).join("")}
+            `;
 
-        Upcoming Events: ${upcomingEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName}`).join("")}
+            return passedEventsMessage;
+        }
+
+        // This is to show the past events only,
+        if (upcomingEvents.length === 0) {
+            const upcomingEventsMessage = `There are a total of ${passedEvents.length} past event(s) for ${timeRangeText}.
+
+                Past Event(s): ${passedEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName} (${new Date(event.intFEventStartDate).toLocaleDateString()})`).join("")}
+            `;
+
+            return upcomingEventsMessage;
+        }
+
+        const formattedString = `There are a total of ${eventCount} event(s) with ${passedEvents.length} completed and ${upcomingEvents.length} upcoming event(s) for ${timeRangeText}.
+
+        Past Event(s): ${passedEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName} (${new Date(event.intFEventStartDate).toLocaleDateString()})`).join("")}
+
+        Upcoming Event(s): ${upcomingEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName} (${new Date(event.intFEventStartDate).toLocaleDateString()})`).join("")}
         `;
 
         return formattedString;
@@ -154,7 +226,7 @@ const Chatbot = () => {
     };
 
     const getTimeRangeKeyword = (mostSimilarKeywords: string[]) => {
-        const timeRangeKeywords = ["today", "week", "year", "month"];
+        const timeRangeKeywords = ["today", "week", "year", "month", "tomorrow", "yesterday", "next week", "next month", "last week", "last month", "last year", "next year"];
         const threshold = 0.15;
 
         const timeRange = findMostSimilarKeywords(mostSimilarKeywords, timeRangeKeywords, threshold)
@@ -164,7 +236,7 @@ const Chatbot = () => {
     };
 
     const getChatbotResponse = async (question: string) => {
-        const keywords = ["events", "month", "year", "today", "week", "products", "offer"];
+        const keywords = ["events", "products", "offer"];
         const userWords = compromise(question.toLowerCase()).out("array");
 
         const mostSimilarKeywords = findMostSimilarKeywords(userWords, keywords, 0.15);
