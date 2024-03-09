@@ -114,7 +114,35 @@ const Chatbot = () => {
         const upcomingEvents = data.filter((event) => new Date(event.intFEventStartDate) >= currentDate);
 
         const eventCount = data.length || 0;
-        return `There are a total of ${eventCount} events with ${passedEvents.length} completed and ${upcomingEvents.length} upcoming events for ${timeRange}.`;
+
+        let timeRangeText = "";
+        if (timeRange === "today") {
+            const formattedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
+            timeRangeText = `today, ${formattedDate}`;
+        } else if (timeRange === "week") {
+            const formattedStartDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(startDate);
+            const formattedEndDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(endDate);
+            timeRangeText = `this week, from ${formattedStartDate} to ${formattedEndDate}`;
+        } else if (timeRange === "month") {
+            const formattedStartMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(startDate);
+            timeRangeText = `the month of ${formattedStartMonth}`;
+        } else if (timeRange === "year") {
+            const formattedStartYear = new Intl.DateTimeFormat('en-US', { year: 'numeric' }).format(startDate);
+            timeRangeText = `the year ${formattedStartYear}`;
+        }
+
+        if (eventCount === 0) {
+            return `There are no events for ${timeRangeText}.`;
+        }
+
+        const formattedString = `There are a total of ${eventCount} events with ${passedEvents.length} completed and ${upcomingEvents.length} upcoming events for ${timeRangeText}.
+
+        Past Events: ${passedEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName}`).join("")}
+
+        Upcoming Events: ${upcomingEvents.map((event, index) => `\n${index + 1}. ${event.intFEventName}`).join("")}
+        `;
+
+        return formattedString;
     };
 
     const findMostSimilarKeywords = (userWords: string[], targetKeywords: string[], threshold: number) => {
@@ -191,7 +219,7 @@ const Chatbot = () => {
                                     ) : (
                                         <div className="flex items-center px-1">
                                             <FaUserCircle className="inline-block mr-2 text-slate-700 h-6 w-6" />
-                                            <div className="bg-slate-200 rounded-md p-2 w-11/12">
+                                            <div className="bg-slate-200 rounded-md p-2 w-11/12 whitespace-pre-line">
                                                 {msg.replace("bee:", "")}
                                             </div>
                                         </div>
