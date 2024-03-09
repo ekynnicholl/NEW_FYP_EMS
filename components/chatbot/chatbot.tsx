@@ -9,11 +9,27 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const Chatbot = () => {
     const [openChat, setOpenChat] = useState<boolean>(false);
-    const [messages, setMessages] = useState<string[]>(["bee: Hi there! How can I help?"]);
+    const [messages, setMessages] = useState<string[]>([]);
     const [inputValue, setInputValue] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [isInitialMessage, setIsInitialMessage] = useState<boolean>(true);
     const supabase = createClientComponentClient();
+
+    useEffect(() => {
+        const sendInitialMessage = async () => {
+            if (openChat && isInitialMessage) {
+                setLoading(true);
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                setLoading(false);
+                setMessages((prevMessages) => [...prevMessages, `bee: Hi there! How can I help?`]);
+                setIsInitialMessage(false);
+            }
+        };
+
+        sendInitialMessage();
+    }, [openChat, isInitialMessage]);
 
     const openai = new OpenAI({
         apiKey: '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',
@@ -186,8 +202,9 @@ const Chatbot = () => {
                             <input
                                 type="text"
                                 placeholder="Say something..."
-                                className="w-full focus:outline-none ml-2 mr-2 text-sm"
+                                className={`w-full focus:outline-none ml-2 mr-2 text-sm ${loading ? 'cursor-not-allowed' : 'cursor-text'}`}
                                 value={inputValue}
+                                disabled={loading}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyPress={async (e) => {
                                     if (e.key === "Enter") {
