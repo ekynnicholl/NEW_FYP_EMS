@@ -9,6 +9,7 @@ import darkLightStorage from '@/components/zustand/darkLightStorage';
 import cookie from 'js-cookie';
 import loadingGIF from "@/public/loading.gif";
 import { useRouter } from "next/navigation";
+import Chatbot from "@/components/chatbot/chatbot";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const setViewMode = useViewModeStore((state) => state.setViewMode);
@@ -68,6 +69,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                         {isAuthenticated && children}
                     </div>
+                    <Chatbot />
                 </div>
             )}
         </>
