@@ -16,7 +16,7 @@ import Link from "next/link";
 
 export default function MobileTopBar() {
 	const [isOpen, setIsOpen] = useState(false);
-	
+
 	useEffect(() => {
 		console.log("isOpen", isOpen);
 	}, [isOpen]);
@@ -42,8 +42,14 @@ export default function MobileTopBar() {
 						<Link href="/external">External Event</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem className="h-12 border-b-2 border-gray-200" asChild>
-						<Link href="/chatbot">Chatbot</Link>
+						<Link href="/suggestions">Suggestions</Link>
 					</DropdownMenuItem>
+					<DropdownMenuItem className="h-12 border-b-2 border-gray-200" asChild>
+						<Link href="/settings">Settings</Link>
+					</DropdownMenuItem>
+					{/* <DropdownMenuItem className="h-12 border-b-2 border-gray-200" asChild>
+						<Link href="/chatbot">Chatbot</Link>
+					</DropdownMenuItem> */}
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

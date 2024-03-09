@@ -17,10 +17,21 @@ const Chatbot = () => {
     const supabase = createClientComponentClient();
 
     useEffect(() => {
+        const storedMessages = localStorage.getItem('chatMessages');
+        if (storedMessages) {
+            setMessages(JSON.parse(storedMessages));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('chatMessages', JSON.stringify(messages));
+    }, [messages]);
+
+    useEffect(() => {
         const sendInitialMessage = async () => {
             if (openChat && isInitialMessage) {
                 setLoading(true);
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                await new Promise(resolve => setTimeout(resolve, 2000));
 
                 setLoading(false);
                 setMessages((prevMessages) => [...prevMessages, `bee: Hi there! How can I help?`]);
@@ -52,7 +63,7 @@ const Chatbot = () => {
         setLoading(true);
         setMessages((prevMessages) => [...prevMessages, `user: ${inputValue.trim()}`]);
 
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         const response = await getChatbotResponse(message);
 
