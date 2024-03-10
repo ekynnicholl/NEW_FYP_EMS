@@ -150,8 +150,11 @@ const AttendanceSettings = () => {
     const [selectedOption, setSelectedOption] = useState('');
 
 
-    const handleEditOption = (optionID: string) => {
+    const handleEditOption = (optionID: string, attsName: string) => {
         setEditOption(optionID);
+        setUpdateOption(true);
+        setCancelOptionUpdate(false);
+        setEditedFacultyName(attsName);
     }
 
     const handleUpdateFacultyName = async (facultyID: string, facultyName: string) => {
@@ -472,10 +475,7 @@ const AttendanceSettings = () => {
                                                             <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                                                 <div className="flex ml-12">
                                                                     <button onClick={() => {
-                                                                        handleEditOption(faculty.attsID);
-                                                                        setUpdateOption(true);
-                                                                        setCancelOptionUpdate(false);
-                                                                        setEditedFacultyName(faculty.attsName);
+                                                                        handleEditOption(faculty.attsID, faculty.attsName);
                                                                     }}>
                                                                         <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
                                                                     </button>
@@ -646,10 +646,7 @@ const AttendanceSettings = () => {
                                                                                             <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 tracking-wider text-center w-3/4">
                                                                                                 <div className="flex ml-40">
                                                                                                     <button onClick={() => {
-                                                                                                        handleEditOption(subcategory.id);
-                                                                                                        setUpdateOption(true);
-                                                                                                        setCancelOptionUpdate(false);
-                                                                                                        setEditedFacultyName(subcategory.name);
+                                                                                                        handleEditOption(subcategory.id, subcategory.name);
                                                                                                     }}>
                                                                                                         <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text2" />
                                                                                                     </button>
