@@ -6,6 +6,10 @@ import LeftArrow from '@/components/icons/LeftArrow';
 import exportCSV from "@/public/images/export_csv.png";
 import { BsFillTrash3Fill } from 'react-icons/bs';
 import { HiPencilAlt } from 'react-icons/hi';
+import { IoIosCloseCircleOutline} from "react-icons/io";
+import { tr } from 'date-fns/locale';
+import DeleteModal from "@/components/EditEvent_Modal";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type AttendanceDataType = {
     attFormsID: string;
@@ -15,6 +19,16 @@ type AttendanceDataType = {
     attFormsFacultyUnit: string;
     attDateSubmitted: string;
     sub_eventName: string;
+};
+
+type FacultyUnit = {
+    attsID: string;
+    attsName: string;
+    attsCategory: number;
+    attsSubcategory: number;
+    attsType: number;
+    attsPosition: number;
+    attsFacultyUnit: number;
 };
 
 interface Props {
@@ -93,6 +107,8 @@ const downloadCSV = (data: AttendanceDataType[]) => {
 };
 
 const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive }) => {
+    const supabase = createClientComponentClient();
+    
     const [currentPage, setCurrentPage] = useState(1);
 
     // Calculate the start and end indices for the current page
@@ -159,16 +175,189 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         setCurrentPage(1);
     }, [attendanceData]);
 
-    const handleEdit = (attendanceItem: AttendanceDataType) => {
-        // Implement your logic for editing
-        console.log("Edit clicked for:", attendanceItem);
+    const [editOption, setEditOption] = useState("");
+    const [cancelOptionUpdate, setCancelOptionUpdate] = useState(false);
+    const [updateOption, setUpdateOption] = useState(false);
+    const [editedStaffName, setEditedStaffName] = useState("");
+    const [editedStaffID, setEditedStaffID] = useState("");
+    const [editedFacultyUnit, setEditedFacultyUnit] = useState("");
+    const [deletingAttendance, setDeletingAttendance] = useState({attFormsID: "", attFormsStaffName: ""});
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [attendanceInfo, setAttendanceInfo] = useState<AttendanceDataType[]>([]);
+    const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
+	const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
+	const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
+
+	useEffect(() => {
+		// Function to fetch data from Supabase
+		const fetchFacultyOptions = async () => {
+			try {
+				const { data, error } = await supabase
+					.from('attendance_settings')
+					.select('attsName')
+					.eq('attsType', 1)
+					.order('attsName', { ascending: true });
+
+				if (error) {
+					// console.error('Error fetching faculty options:', error.message);
+					return;
+				}
+
+				// Extracting only the 'attsName' values from the data
+				const facultyNames = data.map((item) => item.attsName);
+
+				setFacultyOptions(facultyNames);
+			} catch (error) {
+				// console.error('Error:', error);
+			}
+		};
+
+		// Fetch the faculty options when the component mounts
+		fetchFacultyOptions();
+	}, [])
+
+	useEffect(() => {
+		const fetchFacultyStudent = async () => {
+			const { data, error } = await supabase
+				.from('attendance_settings')
+				// .select('attsName')
+				.select('attsCategory, attsName')
+				.eq('attsType', 0)
+				.order('attsName', { ascending: true });
+
+			if (error) {
+				// console.error('Error fetching faculty units:', error);
+				return;
+			}
+
+			// const facultyStudents = data.map((item) => item.attsName);
+			const facultyStudentsData = data.map((item: any) => ({
+                facultyName: item.attsName, 
+                facultyCategory: item.attsCategory,
+            }));
+
+			setFacultyStudents(facultyStudentsData);
+		};
+
+		fetchFacultyStudent();
+	}, []);
+
+
+	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
+
+	// retrieve units according categories
+	useEffect(() => {
+		const fetchFacultyUnits = async () => {
+			const { data, error } = await supabase
+				.from('attendance_settings')
+				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
+				.eq('attsType', 2)
+				.order('attsCategory, attsName');
+			// .order('attsCategory, attsPosition');
+
+			if (error) {
+				// console.error('Error fetching faculty units:', error);
+				return;
+			}
+
+			if (data) {
+				setFacultyUnits(data);
+				// console.log(data);
+
+				// Extract unique categories and subcategories
+				const uniqueCategories = Array.from(new Set(data
+					.filter(unit => unit.attsCategory > 0)));
+
+				const uniqueSubcategories = Array.from(new Set(data
+					.filter(unit => unit.attsSubcategory > 0)));
+
+				// Create categories array with subcategories
+				const categoriesArray = uniqueCategories.map((category) => ({
+					id: category.attsCategory,
+					category: category.attsPosition,
+					name: category.attsName,
+					subcategories: uniqueSubcategories
+						.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
+						.map(subcategory => ({
+							name: subcategory.attsName,
+							facultyUnit: subcategory.attsFacultyUnit
+						}))
+				}));
+
+				setCategories(categoriesArray);
+			}
+		};
+
+		fetchFacultyUnits();
+	}, []);
+
+
+    const handleEdit = (attFormsID: string, attFormsStaffID: string, attFormsStaffName: string, attFormsFacultyUnit: string) => {
+        setEditOption(attFormsID);
+        setUpdateOption(true);
+        setCancelOptionUpdate(false);
+        setEditedStaffID(attFormsStaffID);
+        setEditedStaffName(attFormsStaffName);
+        setEditedFacultyUnit(attFormsFacultyUnit);
+        // console.log("Edit clicked for:", attendanceItem);
     };
 
-    const handleDelete = (attendanceItem: AttendanceDataType) => {
-        // Implement your logic for deleting
-        console.log("Delete clicked for:", attendanceItem);
+    const handleUpdateAttendanceData = async (formsID: string, staffID: string, staffName: string, facultyUnit: string) => {
+        try{
+            const { error } = await supabase
+                .from('attendance_forms')
+                .update({attFormsStaffName: staffName, attFormsStaffID: staffID, attFormsFacultyUnit: facultyUnit})
+                .eq('attFormsID', formsID)
+
+            if (error) {
+                return;
+            }
+
+            setEditedStaffID('');
+            setEditedStaffName('');
+            setEditedFacultyUnit('');
+            setUpdateOption(false);
+            
+        }catch(error){
+
+        }
+
+        
+    }
+
+    const openDeleteModal = (attFormID: string, attFormsStaffName: string) => {
+        setDeletingAttendance({attFormsID: attFormID, attFormsStaffName: attFormsStaffName});
+        setShowDeleteModal(true);
+    }
+
+    const handleDelete = (attFormID: string, attFormsStaffName: string) => {
+        openDeleteModal(attFormID, attFormsStaffName);
+        // console.log("Delete clicked for:", attendanceItem);
     };
 
+    //Delete attendance data selected
+    const handleDeleteAttendanceData = async (attFormsID: string) => {
+        try {
+            const { error } = await supabase
+                .from('attendance_forms')
+                .delete()
+                .eq('attFormsID', attFormsID);
+
+            if (error) {
+                // console.error('Errror deleting faculty name: ', error);
+                return;
+            }
+
+            // Remove the deleted faculty member from facultyUnits
+            setAttendanceInfo(prevAttendanceData => prevAttendanceData.filter(data => data.attFormsID !== attFormsID));
+
+            setShowDeleteModal(false);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
     return (
         <div>
             {attendanceData.length > 0 ? (
@@ -215,36 +404,117 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                             </thead>
                             <tbody>
                                 {currentData.map((attendanceItem) => (
-                                    <tr key={attendanceItem.attFormsID}>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {attendanceItem.attFormsStaffID}
-                                        </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {attendanceItem.attFormsStaffName}
-                                        </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {attendanceItem.attFormsFacultyUnit}
-                                        </td>
-                                        {isAllTabActive && (
+                                    attendanceItem.attFormsID === editOption && updateOption && !cancelOptionUpdate ? (
+                                        <tr key={attendanceItem.attFormsID}>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                {attendanceItem.sub_eventName}
+                                                <input type="text"
+                                                    placeholder="Enter Staff / Student ID..."
+                                                    className="border-2 ml-3 px-2 py-1 text-base w-28"
+                                                    value={editedStaffID}
+                                                    onChange={e => setEditedStaffID(e.target.value)} />
                                             </td>
-                                        )}
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            {formatDate(attendanceItem.attDateSubmitted).date}
-                                            <br />
-                                            {formatDate(attendanceItem.attDateSubmitted).time}
-                                        </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            <button onClick={() => handleEdit(attendanceItem)}>
-                                                <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[24px] lg:text-base dark:text-dark_text2" />
-                                            </button>
-                                            <button onClick={() => handleDelete(attendanceItem)}>
-                                                <BsFillTrash3Fill className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] lg:ml-4 ml-0 text-[24px] lg:text-base dark:text-dark_text2" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <input type="text"
+                                                    placeholder="Enter Staff / Student Name..."
+                                                    className="border-2 ml-3 px-2 py-1 text-base w-28"
+                                                    value={editedStaffName}
+                                                    onChange={e => setEditedStaffName(e.target.value)} />
+                                            </td>
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <select
+                                                    name="facultyUnit"
+                                                    id="facultyUnit"
+                                                    defaultValue={editedFacultyUnit}
+                                                    className="w-28 px-4 py-2 border border-gray-300 focus:outline-none mt-1 text-xs lg:text-base"
+                                                    required
+                                                    onChange={event =>
+                                                        {setEditedFacultyUnit(event.target.value); console.log(event.target.value);}
+                                                    }
+
+                                                >
+                                                    <option value="" disabled>
+                                                        Select Faculty/ Unit
+                                                    </option>
+                                                    {facultyOptions.map((faculty, index) => (
+                                                        <option key={index} value={faculty}>
+                                                            {faculty}
+                                                        </option>
+                                                    ))}
+                                                   {facultyStudents.map((faculty) => (
+                                                        categories
+                                                            .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+                                                            .map((cat) => (
+                                                                cat.subcategories
+                                                                    .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+                                                                    .map((subcategory, index) => (
+                                                                        <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+                                                                            {faculty.facultyName} - {subcategory.name}
+                                                                        </option>
+                                                                    ))))
+                                                            
+                                                    ))}                                                    
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </td>
+                                            {isAllTabActive && (
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {attendanceItem.sub_eventName}
+                                                </td>
+                                            )}
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                {formatDate(attendanceItem.attDateSubmitted).date}
+                                                <br />
+                                                {formatDate(attendanceItem.attDateSubmitted).time}
+                                            </td>
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <button
+                                                    className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
+                                                    onClick={() => {
+                                                        handleUpdateAttendanceData(attendanceItem.attFormsID, editedStaffID, editedStaffName, editedFacultyUnit)
+                                                    }}
+                                                >
+                                                    Update
+                                                </button>
+                                                <button
+                                                    className="border-[0.5px] rounded-md bg-slate-100 mt-2 px-3 py-2 hover:bg-slate-200 duration-300 ease-in-out"
+                                                    onClick={() => { setCancelOptionUpdate(true); }}
+                                                >
+                                                     Cancel
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ):(
+                                        <tr key={attendanceItem.attFormsID}>
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                {attendanceItem.attFormsStaffID}
+                                            </td>
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                {attendanceItem.attFormsStaffName}
+                                            </td>
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                {attendanceItem.attFormsFacultyUnit}
+                                            </td>
+                                            {isAllTabActive && (
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {attendanceItem.sub_eventName}
+                                                </td>
+                                            )}
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                {formatDate(attendanceItem.attDateSubmitted).date}
+                                                <br />
+                                                {formatDate(attendanceItem.attDateSubmitted).time}
+                                            </td>
+                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                <button 
+                                                    onClick={() => handleEdit(attendanceItem.attFormsID, attendanceItem.attFormsStaffID, attendanceItem.attFormsStaffName, attendanceItem.attFormsFacultyUnit)}>
+                                                    <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[24px] lg:text-base dark:text-dark_text2" />
+                                                </button>
+                                                <button onClick={() => handleDelete(attendanceItem.attFormsID, attendanceItem.attFormsStaffName)}>
+                                                    <BsFillTrash3Fill className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] lg:ml-4 ml-0 text-[24px] lg:text-base dark:text-dark_text2" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                )))}
                             </tbody>
                         </table>
                     </div>
@@ -342,6 +612,25 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                     <p>No data available.</p>
                 </div>
             )}
+
+            <DeleteModal
+                isVisible={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}>
+                <div className="p-4 text-lg text-center">
+                    <IoIosCloseCircleOutline className="m-auto text-8xl text-red-600" />
+                    <p className="mt-6">Are you sure to delete the attendance record of <span className="font-bold">{deletingAttendance.attFormsStaffName}</span>? This action cannot be undone.</p>
+
+                    <div className="mt-12">
+                        <button
+                            className="border-[0.5px] rounded-md bg-white px-6 py-2 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
+                            onClick={() => setShowDeleteModal(false)}>Cancel</button>
+
+                            <button
+                                className="border-2 rounded-md bg-red-600 ml-2 text-white px-6 py-2 font-semibold hover:bg-red-700 duration-300 ease-in-out"
+                                onClick={() => handleDeleteAttendanceData(deletingAttendance.attFormsID)}>Delete</button>
+                        </div>
+                    </div>
+            </DeleteModal>
         </div>
     );
 };
