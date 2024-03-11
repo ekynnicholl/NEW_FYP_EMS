@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import SuccessIMG from "@/public/images/success_image.jpg";
@@ -39,6 +39,22 @@ import {
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 
+const showSuccessToast = (message: string) => {
+	toast.success(message, {
+		duration: 3500,
+		style: {
+			border: "1px solid #86DC3D",
+			padding: "16px",
+			color: "#000000",
+			textAlign: "justify",
+		},
+		iconTheme: {
+			primary: "#86DC3D",
+			secondary: "#FFFAEE",
+		},
+	});
+};
+
 export default function ExternalForm() {
 	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 	const supabase = createClientComponentClient();
@@ -48,10 +64,9 @@ export default function ExternalForm() {
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState("");
 
-	// Can be removed,
-	// const [externalForm, setExternalForm] = useState<any>({
-	// 	id: "",
-	// });
+	const [group, setGroup] = useState(false);
+	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(null);
+	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -59,22 +74,6 @@ export default function ExternalForm() {
 	const save = () => {
 		//@ts-ignore
 		setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
-	};
-
-	const showSuccessToast = (message: string) => {
-		toast.success(message, {
-			duration: 3500,
-			style: {
-				border: "1px solid #86DC3D",
-				padding: "16px",
-				color: "#000000",
-				textAlign: "justify",
-			},
-			iconTheme: {
-				primary: "#86DC3D",
-				secondary: "#FFFAEE",
-			},
-		});
 	};
 
 	const form = useForm<z.infer<typeof externalFormSchema>>({
@@ -92,19 +91,24 @@ export default function ExternalForm() {
 
 			program_title: "",
 			program_description: "",
-			commencement_date: undefined,
-			completion_date: undefined,
+			commencement_date: null,
+			completion_date: null,
 			organiser: "",
 			venue: "",
 			hrdf_claimable: "",
 
-			flight_date: undefined,
-			flight_time: undefined,
+			flight_date: null,
+			flight_time: "",
 			flight_number: "",
 			destination_from: "",
 			destination_to: "",
-			check_in_date: undefined,
-			check_out_date: undefined,
+			transit_flight_date: null,
+			transit_flight_time: "",
+			transit_flight_number: "",
+			transit_destination_from: "",
+			transit_destination_to: "",
+			check_in_date: null,
+			check_out_date: null,
 			hotel_name: "",
 
 			course_fee: 0,
@@ -133,13 +137,22 @@ export default function ExternalForm() {
 		},
 	});
 
-	// Can be removed,
-	// useEffect(() => {
-	// 	if (externalForm.id != "" || externalForm.id != null) {
-	// 		console.log("Email has been sent out!");
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.id]);
+	// Load form content from session storage
+	useEffect(() => {
+		const savedForm = sessionStorage.getItem("form");
+		if (savedForm) {
+			const parsedForm = JSON.parse(savedForm);
+			form.reset(parsedForm);
+			form.setValue("commencement_date", parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null);
+			form.setValue("completion_date", parsedForm.completion_date ? new Date(parsedForm.completion_date) : null);
+			form.setValue("flight_date", parsedForm.flight_date ? new Date(parsedForm.flight_date) : null);
+			form.setValue("transit_flight_date", parsedForm.transit_flight_date ? new Date(parsedForm.transit_flight_date) : null);
+			form.setValue("check_in_date", parsedForm.check_in_date ? new Date(parsedForm.check_in_date) : null);
+			form.setValue("check_out_date", parsedForm.check_out_date ? new Date(parsedForm.check_out_date) : null);
+			form.setValue("applicant_declaration_date", new Date(parsedForm.applicant_declaration_date));
+			setUseOwnTransport(parsedForm.transport === "own transport" || parsedForm.transport === "company vehicle");
+		}
+	}, []);
 
 	const checkFormStatus = () => {
 		setOpen(false);
@@ -154,22 +167,87 @@ export default function ExternalForm() {
 		}
 	};
 
-	// Debugging purpose only
-	useEffect(() => {
-		var files = form.getValues("supporting_documents") as FileList;
-		if (files) {
-			if (files.length > 0) {
-				console.log(files[0]);
-			}
-		}
-	}, [form.getValues("supporting_documents")]);
+	const formReset = () => {
+		form.reset({
+			formStage: 2,
+			full_name: "",
+			email: "",
+			staff_id: "",
+			course: "",
+			faculty: "",
+			transport: "",
+			travelling: "",
+			other_members: "",
 
-	const [commencementDate, setCommencementDate] = useState<Date>();
-	const [checkInDate, setCheckInDate] = useState<Date>();
+			program_title: "",
+			program_description: "",
+			commencement_date: null,
+			completion_date: null,
+			organiser: "",
+			venue: "",
+			hrdf_claimable: "",
+
+			flight_date: null,
+			flight_time: null,
+			flight_number: "",
+			destination_from: "",
+			destination_to: "",
+			transit_flight_date: null,
+			transit_flight_time: null,
+			transit_flight_number: "",
+			transit_destination_from: "",
+			transit_destination_to: "",
+			check_in_date: null,
+			check_out_date: null,
+			hotel_name: "",
+
+			course_fee: 0,
+			airfare_fee: 0,
+			accommodation_fee: 0,
+			per_diem_fee: 0,
+			transportation_fee: 0,
+			travel_insurance_fee: 0,
+			other_fees: 0,
+			grand_total_fees: 0,
+			staff_development_fund: "",
+			consolidated_pool_fund: "",
+			research_fund: "",
+			travel_fund: "",
+			student_council_fund: "",
+			other_funds: "",
+			expenditure_cap: "No",
+			expenditure_cap_amount: 0,
+
+			supporting_documents: null,
+
+			applicant_declaration_signature: "",
+			applicant_declaration_name: "",
+			applicant_declaration_position_title: "",
+			applicant_declaration_date: new Date(),
+		});
+		setImageURL("");
+		sessionStorage.removeItem("form");
+		router.refresh();
+	};
+
+	// Debugging purpose only
+	// useEffect(() => {
+	// 	var files = form.getValues("supporting_documents") as FileList;
+	// 	if (files) {
+	// 		if (files.length > 0) {
+	// 			console.log(files);
+	// 		}
+	// 	}
+	// }, [form.getValues("supporting_documents")]);
+
+	useEffect(() => {
+		if (form.formState.isDirty) {
+			sessionStorage.setItem("form", JSON.stringify(form.getValues()));
+		}
+	}, [form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
-		console.log(values);
 
 		if (values.commencement_date.getHours() < 8) {
 			new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8));
@@ -181,11 +259,12 @@ export default function ExternalForm() {
 
 		// Upload supporting document to bucket and return the path to the bucket
 		let documentPath: string | undefined = "";
-		const uniqueName = uuidv4()
-		let document = values.supporting_documents as FileList | null; 
+		const uniqueName = uuidv4();
+		let document = values.supporting_documents as FileList | null;
+
 		// Check if `document` is not null and has at least one file
 		if (document && document.length > 0) {
-			const file = document[0]; // Assuming you're interested in the first file
+			const file = document[0];
 
 			const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
 				cacheControl: "3600",
@@ -205,7 +284,7 @@ export default function ExternalForm() {
 				{
 					...values,
 					formStage: 2,
-					supporting_documents: documentPath
+					supporting_documents: documentPath,
 				},
 			])
 			.select();
@@ -214,33 +293,25 @@ export default function ExternalForm() {
 			console.log(error);
 			toast.error("Error submitting form");
 		} else {
-			// console.log(data);
-			// setExternalForm({ ...values, id: data[0].id });
-
-			const { data: fetchedForms, error: fetchedError } = await supabase
-				.from("external_forms")
-				.select("*")
-				.eq("id", data[0].id)
+			formReset();
+			const { data: fetchedForms, error: fetchedError } = await supabase.from("external_forms").select("*").eq("id", data[0].id);
 
 			console.log(`Fetched forms ${fetchedForms}`);
 
 			if (fetchedError) {
 				// console.log(fetchedError);
 			} else {
-				// Create notifications,
-				const notifDesc = `A Nominations/ Travelling Form has been submitted by ${data[0].full_name} (${data[0].staff_id}).`;
-				const notifType = "Nominations/ Travelling Form";
-				const notifLink = `${url}/form/external_review/${data[0].id}`;
+				const notificationDescription = `A Nominations/ Travelling Form has been submitted by ${data[0].full_name} (${data[0].staff_id}).`;
+				const notificationType = "Nominations/ Travelling Form";
+				const notificationLink = `${url}/form/external_review/${data[0].id}`;
 
-				const { data: notificationData, error: notificationError } = await supabase
-					.from("notifications")
-					.insert([
-						{
-							notifDesc,
-							notifType,
-							notifLink,
-						},
-					]);
+				const { data: notificationData, error: notificationError } = await supabase.from("notifications").insert([
+					{
+						notifDesc: notificationDescription,
+						notifType: notificationType,
+						notifLink: notificationLink,
+					},
+				]);
 
 				if (notificationError) {
 					// console.error(notificationError);
@@ -248,7 +319,7 @@ export default function ExternalForm() {
 					// console.log("Notification inserted successfully:", notificationData);
 				}
 
-				// Send email,
+				// Send email
 				sendContactForm(fetchedForms);
 				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 				setFormIsSuccess(true);
@@ -258,42 +329,36 @@ export default function ExternalForm() {
 		}
 	}
 
-	const [group, setGroup] = useState(false);
-	const [useOwnTransport, setUseOwnTransport] = useState(false);
+	useEffect(() => {
+		const fetchFacultyOptions = async () => {
+			const { data, error } = await supabase
+				.from("attendance_settings")
+				.select("attsName")
+				.eq("attsType", 1)
+				.order("attsName", { ascending: true });
 
-	//state for faculty options
-	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
-	    // Fetch faculty options
-		useEffect(() => {
-			const fetchFacultyOptions = async () => {
-				try {
-					const { data, error } = await supabase
-						.from('attendance_settings') // Adjust this to your actual table name
-						.select('attsName') // And this to your actual column name for faculty names
-						.eq('attsType', 1) // Adjust the filter according to your needs
-						.order('attsName', { ascending: true });
-	
-					if (error) {
-						console.error('Error fetching faculty options:', error.message);
-						return;
-					}
-	
-					// Set the faculty options state
-					const facultyNames = data.map(item => item.attsName);
-					setFacultyOptions(facultyNames);
-				} catch (error) {
-					console.error('Error:', error);
-				}
-			};
-	
-			// Call the fetch function
-			fetchFacultyOptions();
-		}, []);
+			if (error) {
+				console.error("Error fetching faculty options:", error.message);
+				return;
+			}
+
+			const facultyNames = data.map(item => item.attsName);
+			setFacultyOptions(facultyNames);
+
+			const savedForm = sessionStorage.getItem("form");
+			if (savedForm) {
+				const parsedForm = JSON.parse(savedForm);
+				form.setValue("faculty", parsedForm.faculty);
+			}
+		};
+
+		fetchFacultyOptions();
+	}, []);
 
 	return (
 		<div>
 			{formIsSuccess === false ? (
-				<div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
+				<div className="mx-auto max-w-6xl px-8 mt-6 mb-[200px]">
 					<div className="ml-10">
 						<div className="flex ml-[13px]">
 							<div>
@@ -327,8 +392,8 @@ export default function ExternalForm() {
 					</div>
 
 					<hr className="mt-8" />
-					<div className="grid grid-cols-[240px_auto] gap-8 items-start">
-						<div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
+					<div className="grid gap-8 place-items-center">
+						{/* <div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
 							<a className="block" href="#Personal Details">
 								Personal Details
 							</a>
@@ -347,9 +412,9 @@ export default function ExternalForm() {
 							<a className="block" href="#Applicant Declaration">
 								Applicant Declaration
 							</a>
-						</div>
+						</div> */}
 						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 w-full">
+							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
 								<section className="section-1" id="Personal Details">
 									<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 									<div className="grid gap-8">
@@ -406,35 +471,29 @@ export default function ExternalForm() {
 													</FormItem>
 												)}
 											/>
-											<FormField 
-													control={form.control}
-													name="faculty"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel>Faculty / School / Unit</FormLabel>
-															<FormControl>
-																<Select
-																	onValueChange={field.onChange}
-																	defaultValue={field.value}
-																>
-																	<SelectTrigger>
-																		<SelectValue placeholder="Please select an option" />
-																	</SelectTrigger>
-																	<SelectContent>
-																		<div className="h-[300px] overflow-y-auto">
-																		<option value="" disabled>Select Faculty/ Unit</option>
-																		{facultyOptions.map((faculty, index) => (
-																			<SelectItem key={index} value={faculty}>
-																				{faculty}
-																			</SelectItem>
-																		))}
-																		</div>
-																	</SelectContent>
-																</Select>
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
+											<FormField
+												control={form.control}
+												name="faculty"
+												render={({ field }) => (
+													<FormItem>
+														<FormLabel>Faculty / School / Unit</FormLabel>
+														<FormControl>
+															<Select onValueChange={field.onChange} value={field.value}>
+																<SelectTrigger>
+																	<SelectValue placeholder="Please select an option" />
+																</SelectTrigger>
+																<SelectContent className="h-[300px] overflow-y-auto">
+																	{facultyOptions.map((faculty, index) => (
+																		<SelectItem key={index} value={faculty}>
+																			{faculty}
+																		</SelectItem>
+																	))}
+																</SelectContent>
+															</Select>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
 											/>
 											<FormField
 												control={form.control}
@@ -451,7 +510,7 @@ export default function ExternalForm() {
 																	setUseOwnTransport(false);
 																}
 															}}
-															defaultValue={field.value}>
+															value={field.value}>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Please select an option" />
@@ -482,7 +541,7 @@ export default function ExternalForm() {
 																	setGroup(false);
 																}
 															}}
-															defaultValue={field.value}>
+															value={field.value}>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Please select an option" />
@@ -569,13 +628,12 @@ export default function ExternalForm() {
 														<PopoverContent className="w-auto p-0" align="start">
 															<Calendar
 																mode="single"
-																selected={field.value}
+																selected={new Date(field.value)}
 																onSelect={date => {
 																	if (date !== undefined) {
 																		date.setHours(8, 0, 0, 0);
 																		field.onChange(date);
 																		field.value = new Date(date);
-																		console.log("Commencement date: " + form.getValues("commencement_date"));
 																	}
 																}}
 																disabled={date => {
@@ -606,7 +664,7 @@ export default function ExternalForm() {
 																		"w-full pl-3 text-left font-normal",
 																		!field.value && "text-muted-foreground",
 																	)}>
-																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+																	{field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
 														</PopoverTrigger>
@@ -619,7 +677,6 @@ export default function ExternalForm() {
 																		date.setHours(date.getHours() + 8);
 																		field.onChange(date);
 																		field.value = new Date(date);
-																		console.log("Completion date: " + field.value);
 																	}
 																}}
 																disabled={date => {
@@ -672,7 +729,7 @@ export default function ExternalForm() {
 											render={({ field }) => (
 												<FormItem>
 													<FormLabel>HDRF Claimable</FormLabel>
-													<Select onValueChange={field.onChange} defaultValue={field.value}>
+													<Select onValueChange={field.onChange} value={field.value}>
 														<FormControl>
 															<SelectTrigger>
 																<SelectValue placeholder="Please select an option" />
@@ -698,7 +755,7 @@ export default function ExternalForm() {
 								<section className="section-3" id="Logistic Arrangement">
 									<h2 className="text-2xl font-bold mb-4">3. Logistic Arrangement</h2>
 									<div className="grid gap-8">
-										{!useOwnTransport && (
+										{useOwnTransport !== null && useOwnTransport === false && (
 											<>
 												<div className="grid grid-auto-fit-lg gap-8">
 													<FormField
@@ -711,7 +768,6 @@ export default function ExternalForm() {
 																	<PopoverTrigger asChild>
 																		<FormControl>
 																			<Button
-																				disabled={useOwnTransport}
 																				variant={"outline"}
 																				className={cn(
 																					"w-full pl-3 text-left font-normal",
@@ -731,7 +787,6 @@ export default function ExternalForm() {
 																					field.onChange(date);
 																					field.value = new Date(date);
 																				}
-																				console.log("Flight date: " + field.value);
 																			}}
 																			disabled={date => {
 																				const today = new Date();
@@ -753,7 +808,7 @@ export default function ExternalForm() {
 															<FormItem>
 																<FormLabel>Flight Time</FormLabel>
 																<FormControl>
-																	<Input disabled={useOwnTransport} type="time" {...field} />
+																	<Input type="time" {...field} />
 																</FormControl>
 																<FormMessage />
 															</FormItem>
@@ -768,7 +823,7 @@ export default function ExternalForm() {
 														<FormItem>
 															<FormLabel>Flight Number</FormLabel>
 															<FormControl>
-																<Input disabled={useOwnTransport} {...field} />
+																<Input {...field} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -776,7 +831,6 @@ export default function ExternalForm() {
 												/>
 
 												<div>
-													<h2 className="font-medium mb-3">Destination</h2>
 													<div className="grid grid-auto-fit-lg gap-8 ">
 														<FormField
 															control={form.control}
@@ -785,7 +839,7 @@ export default function ExternalForm() {
 																<FormItem>
 																	<FormLabel>From</FormLabel>
 																	<FormControl>
-																		<Input disabled={useOwnTransport} placeholder="Sarawak" {...field} />
+																		<Input placeholder="Sarawak" {...field} />
 																	</FormControl>
 																	<FormMessage />
 																</FormItem>
@@ -798,7 +852,7 @@ export default function ExternalForm() {
 																<FormItem>
 																	<FormLabel>To</FormLabel>
 																	<FormControl>
-																		<Input disabled={useOwnTransport} placeholder="Singapore" {...field} />
+																		<Input placeholder="Singapore" {...field} />
 																	</FormControl>
 																	<FormMessage />
 																</FormItem>
@@ -806,8 +860,131 @@ export default function ExternalForm() {
 														/>
 													</div>
 												</div>
+
+												<div>
+													<h2 className="font-medium mb-3">Transit (if any)</h2>
+													<div className="grid gap-8">
+														<div className="grid grid-auto-fit-lg gap-8">
+															<FormField
+																control={form.control}
+																name="transit_flight_date"
+																render={({ field }) => (
+																	<FormItem>
+																		<FormLabel>Transit Flight Date</FormLabel>
+																		<Popover>
+																			<PopoverTrigger asChild>
+																				<FormControl>
+																					<Button
+																						variant={"outline"}
+																						className={cn(
+																							"w-full pl-3 text-left font-normal",
+																							!field.value && "text-muted-foreground",
+																						)}>
+																						{field.value ? (
+																							format(new Date(field.value), "PPP")
+																						) : (
+																							<span>Pick a date</span>
+																						)}
+																					</Button>
+																				</FormControl>
+																			</PopoverTrigger>
+																			<PopoverContent className="w-auto p-0" align="start">
+																				<Calendar
+																					mode="single"
+																					selected={field.value!}
+																					onSelect={date => {
+																						if (date !== undefined) {
+																							date.setHours(date.getHours() + 8);
+																							field.onChange(date);
+																							field.value = new Date(date);
+																						}
+																					}}
+																					disabled={date => {
+																						const today = new Date();
+																						today.setHours(0, 0, 0, 0);
+																						return date < today;
+																					}}
+																					initialFocus
+																				/>
+																			</PopoverContent>
+																		</Popover>
+																		<FormMessage />
+																	</FormItem>
+																)}
+															/>
+															<FormField
+																control={form.control}
+																name="transit_flight_time"
+																render={({ field }) => (
+																	<FormItem>
+																		<FormLabel>Transit Flight Time</FormLabel>
+																		<FormControl>
+																			<Input type="time" {...field} />
+																		</FormControl>
+																		<FormMessage />
+																	</FormItem>
+																)}
+															/>
+														</div>
+														<FormField
+															control={form.control}
+															name="transit_flight_number"
+															render={({ field }) => (
+																<FormItem>
+																	<FormLabel>Transit Flight Number</FormLabel>
+																	<FormControl>
+																		<Input {...field} />
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+														<div className="grid grid-auto-fit-lg gap-8 ">
+															<FormField
+																control={form.control}
+																name="transit_destination_from"
+																render={({ field }) => (
+																	<FormItem>
+																		<FormLabel>Transit From</FormLabel>
+																		<FormControl>
+																			<Input placeholder="Singapore" {...field} />
+																		</FormControl>
+																		<FormMessage />
+																	</FormItem>
+																)}
+															/>
+															<FormField
+																control={form.control}
+																name="transit_destination_to"
+																render={({ field }) => (
+																	<FormItem>
+																		<FormLabel>Transit To</FormLabel>
+																		<FormControl>
+																			<Input placeholder="Melbourne" {...field} />
+																		</FormControl>
+																		<FormMessage />
+																	</FormItem>
+																)}
+															/>
+														</div>
+													</div>
+												</div>
 											</>
 										)}
+
+										<FormField
+											control={form.control}
+											name="hotel_name"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Hotel Name</FormLabel>
+													<FormControl>
+														<Input {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
 
 										<div className="grid grid-auto-fit-lg gap-8 ">
 											<FormField
@@ -815,7 +992,7 @@ export default function ExternalForm() {
 												name="check_in_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Check In</FormLabel>
+														<FormLabel>Hotel Check In</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -825,7 +1002,11 @@ export default function ExternalForm() {
 																			"w-full pl-3 text-left font-normal",
 																			!field.value && "text-muted-foreground",
 																		)}>
-																		{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+																		{field.value ? (
+																			format(new Date(field.value), "PPP")
+																		) : (
+																			<span>Pick a date</span>
+																		)}
 																	</Button>
 																</FormControl>
 															</PopoverTrigger>
@@ -839,7 +1020,6 @@ export default function ExternalForm() {
 																			field.onChange(date);
 																			field.value = new Date(date);
 																		}
-																		console.log("Check in: " + field.value);
 																	}}
 																	disabled={date => {
 																		const today = new Date();
@@ -859,7 +1039,7 @@ export default function ExternalForm() {
 												name="check_out_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Check Out</FormLabel>
+														<FormLabel>Hotel Check Out</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -869,7 +1049,11 @@ export default function ExternalForm() {
 																			"w-full pl-3 text-left font-normal",
 																			!field.value && "text-muted-foreground",
 																		)}>
-																		{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+																		{field.value ? (
+																			format(new Date(field.value), "PPP")
+																		) : (
+																			<span>Pick a date</span>
+																		)}
 																	</Button>
 																</FormControl>
 															</PopoverTrigger>
@@ -883,7 +1067,6 @@ export default function ExternalForm() {
 																			field.onChange(date);
 																			field.value = new Date(date);
 																		}
-																		console.log("Check out: " + field.value);
 																	}}
 																	disabled={date => {
 																		let today = form.getValues("check_in_date");
@@ -904,20 +1087,6 @@ export default function ExternalForm() {
 												)}
 											/>
 										</div>
-
-										<FormField
-											control={form.control}
-											name="hotel_name"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Hotel</FormLabel>
-													<FormControl>
-														<Input {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
 									</div>
 								</section>
 
@@ -933,23 +1102,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Course Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -962,23 +1131,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Airfare Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -991,23 +1160,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Accommodation Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1020,23 +1189,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Per Diem Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1049,23 +1218,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Transportation Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1078,23 +1247,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Travel Insurance Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1107,23 +1276,23 @@ export default function ExternalForm() {
 												<FormItem>
 													<FormLabel>Other Fee</FormLabel>
 													<FormControl>
-													<Input
-													type="text" // Use "text" for flexible user input
-													// Convert number to string for display, handle zero and non-zero values appropriately
-													value={field.value === 0 ? "" : field.value.toString()}
-													onChange={(e) => {
-														const value = e.target.value;
-														// Check if the input value is numeric or empty and update accordingly
-														if (/^\d*$/.test(value)) {
-														// Convert the string to a number when not empty, otherwise default to zero
-														field.onChange(value === "" ? 0 : Number(value));
-														}
-													}}
-													onBlur={() => {
-														// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
-														field.onChange(field.value || 0);
-													}}
-													/>
+														<Input
+															type="text" // Use "text" for flexible user input
+															// Convert number to string for display, handle zero and non-zero values appropriately
+															value={field.value === 0 ? "" : field.value.toString()}
+															onChange={e => {
+																const value = e.target.value;
+																// Check if the input value is numeric or empty and update accordingly
+																if (/^\d*$/.test(value)) {
+																	// Convert the string to a number when not empty, otherwise default to zero
+																	field.onChange(value === "" ? 0 : Number(value));
+																}
+															}}
+															onBlur={() => {
+																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
+																field.onChange(field.value || 0);
+															}}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1318,7 +1487,7 @@ export default function ExternalForm() {
 										name="supporting_documents"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+												<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
 													<div className="flex flex-col items-center justify-center pt-5 pb-6">
 														<svg
 															className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
@@ -1335,25 +1504,25 @@ export default function ExternalForm() {
 															/>
 														</svg>
 														<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
-															<span className="font-semibold">Click to upload</span> or drag and drop
+															<span className="font-semibold">Click or drag to upload</span>
 														</p>
 														<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
 														{field?.value?.length! > 0 && (
 															<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
 														)}
 													</div>
+													<FormControl className="absolute">
+														<Input
+															multiple
+															className="absolute w-full h-full opacity-0 cursor-pointer"
+															type="file"
+															accept=".pdf"
+															{...form.register("supporting_documents", {
+																required: false,
+															})}
+														/>
+													</FormControl>
 												</FormLabel>
-												<FormControl>
-													<Input
-														multiple
-														type="file"
-														className="hidden"
-														accept=".pdf"
-														{...form.register("supporting_documents", {
-															required: false,
-														})}
-													/>
-												</FormControl>
 												<FormMessage />
 												<div className="flex flex-col gap-2 mt-2 items-start">
 													{form.getValues("supporting_documents") &&
@@ -1448,7 +1617,6 @@ export default function ExternalForm() {
 																		field.onChange(date);
 																		field.value = date;
 																	}
-																	console.log("Declaration date: " + field.value);
 																}}
 																disabled={date => {
 																	const today = new Date();
@@ -1510,7 +1678,6 @@ export default function ExternalForm() {
 																				// @ts-ignore
 																				.getTrimmedCanvas()
 																				.toDataURL("image/png");
-																			console.log("Field Value: " + field.value);
 																		}}>
 																		Save
 																	</Button>
@@ -1548,6 +1715,10 @@ export default function ExternalForm() {
 										</DialogFooter>
 									</DialogContent>
 								</Dialog>
+
+								<Button type="reset" className="ml-4" onClick={formReset}>
+									Reset
+								</Button>
 							</form>
 						</Form>
 					</div>
