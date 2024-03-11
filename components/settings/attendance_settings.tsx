@@ -41,7 +41,6 @@ const AttendanceSettings = () => {
     const [facultyUnitsStudents, setFacultyUnitsStudents] = useState<FacultyUnit[]>([]);
 
     useEffect(() => {
-        // Function to fetch data from Supabase
         const fetchFacultyOptions = async () => {
             try {
                 const { data, error } = await supabase
@@ -165,7 +164,7 @@ const AttendanceSettings = () => {
                 .eq('attsID', facultyID);
 
             if (error) {
-                console.error('Error updating faculty name: ', error);
+                // console.error('Error updating faculty name: ', error);
                 return;
             }
 
@@ -184,7 +183,7 @@ const AttendanceSettings = () => {
             setEditedFacultyName('');
 
         } catch (error) {
-            console.error('Error updating faculty name:', error);
+            // console.error('Error updating faculty name:', error);
         }
     }
 
