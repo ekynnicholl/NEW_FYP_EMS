@@ -249,8 +249,10 @@ export default function ExternalForm() {
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
 
-		if (values.commencement_date.getHours() < 8) {
-			new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8));
+		if (values.commencement_date !== null) {
+			if (values.commencement_date.getHours() < 8) {
+				new Date(values.commencement_date.setHours(values.commencement_date.getHours() + 8));
+			}
 		}
 
 		if (values.check_in_date?.getHours()! < 8) {
@@ -283,6 +285,7 @@ export default function ExternalForm() {
 			.insert([
 				{
 					...values,
+					last_updated: new Date(),
 					formStage: 2,
 					supporting_documents: documentPath,
 				},
@@ -628,7 +631,7 @@ export default function ExternalForm() {
 														<PopoverContent className="w-auto p-0" align="start">
 															<Calendar
 																mode="single"
-																selected={new Date(field.value)}
+																selected={field.value!}
 																onSelect={date => {
 																	if (date !== undefined) {
 																		date.setHours(8, 0, 0, 0);
@@ -671,7 +674,7 @@ export default function ExternalForm() {
 														<PopoverContent className="w-auto p-0" align="start">
 															<Calendar
 																mode="single"
-																selected={field.value}
+																selected={field.value!}
 																onSelect={date => {
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
@@ -685,9 +688,9 @@ export default function ExternalForm() {
 																		today = new Date();
 																		today.setHours(0, 0, 0, 0);
 																	} else {
-																		today.setHours(0, 0, 0, 0);
+																		today?.setHours(0, 0, 0, 0);
 																	}
-																	return date < today;
+																	return date < today!;
 																}}
 																initialFocus
 															/>

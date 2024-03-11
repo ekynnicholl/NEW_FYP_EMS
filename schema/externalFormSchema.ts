@@ -44,12 +44,12 @@ const externalFormSchema = z
 
 		// Section 3
 		flight_date: z.date().optional().nullable(),
-		flight_time: z.string().optional(),
+		flight_time: z.string().optional().nullable(),
 		flight_number: z.string().optional(),
 		destination_from: z.string().optional(),
 		destination_to: z.string().optional(),
 		transit_flight_date: z.date().optional().nullable(),
-		transit_flight_time: z.string().optional(),
+		transit_flight_time: z.string().optional().nullable(),
 		transit_flight_number: z.string().optional(),
 		transit_destination_from: z.string().optional(),
 		transit_destination_to: z.string().optional(),
