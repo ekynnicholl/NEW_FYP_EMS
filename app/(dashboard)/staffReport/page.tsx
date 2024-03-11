@@ -6,16 +6,11 @@ import EventModal from "@/components/Event_List_Modal";
 
 import filterBar from "@/public/images/filter_bar_black.png";
 import exportCSV from "@/public/images/export_csv.png";
-import arrowLeft from "@/public/images/arrow_left.png";
-import arrowRight from "@/public/images/arrow_right.png";
-import skipLeft from "@/public/images/skip_left.png";
-import skipRight from "@/public/images/skip_right.png";
 
 import { FaSortAlphaDown, FaSortNumericDown, FaSortAmountUp } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
-import { MdFilterListAlt } from "react-icons/md";
-
-import { Fragment, useState, useEffect, SetStateAction, useRef } from "react";
+import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import RightArrow from "@/components/icons/RightArrow";
 import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
@@ -60,61 +55,6 @@ type subEvents = {
 	sub_eventsMaxSeats: string;
 }
 
-type Form = {
-    formID: string;
-    email: string;
-    full_name: string;
-    staff_id: string;
-    course: string;
-    faculty: string;
-    transport: string;
-    travelling: string;
-    other_members: string[];
-    program_title: string;
-    program_description: string;
-    commencement_date: string;
-    completion_date: string;
-    organiser: string;
-    venue: string;
-    hrdf_claimable: string;
-    flight_number: string;
-    flight_date: string;
-    flight_time: string;
-    destination_from: string;
-    destination_to: string;
-    hotel_name: string;
-    check_in_date: string;
-    check_out_date: string;
-    course_fee: string;
-    airfare_fee: string;
-    accommodation_fee: string;
-    per_diem_fee: string;
-    transportation_fee: string;
-    travel_insurance_fee: string;
-    others_fee: string;
-    grand_total_fees: string;
-    staff_development_fund: string;
-    consolidated_pool_fund: string;
-    research_fund: string;
-    travel_fund: string;
-    student_council_fund: string;
-    other_funds: string;
-    expenditure_cap: string;
-    expenditure_cap_amount: string;
-    applicant_declaration_name: string;
-    applicant_declaration_position_title: string;
-    applicant_declaration_date: string;
-    applicant_declaration_signature: string;
-    verification_name: string;
-    verification_position_title: string;
-    verification_date: string;
-    verification_signature: string;
-    approval_name: string;
-    approval_position_title: string;
-    approval_date: string;
-    approval_signature: string;
-};
-
 export default function Home() {
 	const supabase = createClientComponentClient();
 	const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
@@ -130,7 +70,6 @@ export default function Home() {
 	const [subEventsAttended, setSubEventsAttended] = useState<subEvents[]>([]);
 	const [mainEventAttended, setMainEventAttended] = useState<{ intFEventName: string[]; }[]>([]);
 	const [allMainEvent, setAllMainEvent] = useState<mainEvents[]>([]);
-	const [externalformDetails, setExternalFormDetails] = useState<Form[]>([]);
 
 	const [dataResults, setDataResults] = useState<{
 		staffID: string;
@@ -139,6 +78,7 @@ export default function Home() {
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
         eventsAttended: string[];
+		externalEventsAttended: {programName: string; totalHours: number;}[];
         totalHours: string;
 	}[]>([]);
 
@@ -149,24 +89,9 @@ export default function Home() {
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
         eventsAttended: string[];
+		externalEventsAttended: {programName: string; totalHours: number;}[];
         totalHours: string;
 	}[]>([]);
-
-	// const getTotalHours = (subEventEndTime: string, subEventStartTime: string): number => {
-    //     const endTimeParts = subEventEndTime.split(':').map(part => parseInt(part, 10));
-    //     const startTimeParts = subEventStartTime.split(':').map(part => parseInt(part, 10));
-
-    //     const endTime = new Date();
-    //     endTime.setHours(endTimeParts[0], endTimeParts[1], endTimeParts[2]);
-    //     const startTime = new Date();
-    //     startTime.setHours(startTimeParts[0], startTimeParts[1], startTimeParts[2]);
-
-    //     // Calculate the difference in milliseconds between endTime and startTime
-    //     const differenceInMs = endTime.getTime() - startTime.getTime();
-
-    //     const totalHours = differenceInMs / (1000 * 60 * 60);
-    //     return Math.round(totalHours * 100) / 100;
-    // }
 
 	useEffect(() => {
 		const fetchMainEvent = async () => {
@@ -175,7 +100,7 @@ export default function Home() {
 				.select('*');
 
 			if (mainEventError) {
-				console.error("Error fetching main_events:", mainEventError);
+				// console.error("Error fetching main_events:", mainEventError);
 				return;
 			}
 			setAllMainEvent(mainEvent || []);
@@ -185,26 +110,13 @@ export default function Home() {
 
 	}, [supabase]);
 
-	const fetchExternalFormInfos = async (staff_id: string) => {
-		const { data: external, error: externalError } = await supabase
-			.from("external_forms")
-			.select("*")
-			.eq("staff_id", staff_id);
-
-		if (externalError) {
-			console.error("Error fetching staff external form data:", externalError);
-			return;
-		}
-		setExternalFormDetails(external || []);
-	};
-
 	const fetchInfos = async () => {
 		const { data: staffData, error: attendedEventError } = await supabase
 			.from("attendance_forms")
 			.select("*");
 
 		if (attendedEventError) {
-			console.error("Error fetching staff attendance data:", attendedEventError);
+			// console.error("Error fetching staff attendance data:", attendedEventError);
 			return;
 		}
 
@@ -213,7 +125,7 @@ export default function Home() {
 			.select("*");
 
 		if (subEventsError) {
-			console.error("Error fetching sub_events:", subEventsError);
+			// console.error("Error fetching sub_events:", subEventsError);
 			return;
 		}
 
@@ -222,7 +134,16 @@ export default function Home() {
 			.select("*");
 
 		if (mainEventsError) {
-			console.error("Error fetching sub_events:", subEventsError);
+			// console.error("Error fetching sub_events:", subEventsError);
+			return;
+		}
+
+		const { data: externalEvents, error: externalEventsError } = await supabase
+			.from("external_forms")
+			.select("*");
+
+		if (externalEventsError) {
+			// console.error("Error fetching sub_events:", subEventsError);
 			return;
 		}
 
@@ -239,8 +160,18 @@ export default function Home() {
                     totalSubEvents: 0,
                     subEventsAttended:[],
                     eventsAttended: [],
+					externalEventsAttended: [],
                     totalHours: 0,
                 };
+
+				result[uniqueStaffID].externalEventsAttended.push(
+					...externalEvents
+						.filter(event => event.staff_id === uniqueStaffID)
+						.map(event => ({
+							programName: event.program_title,
+							totalHours: event.grand_total_fees
+						}))
+				);		
             }
 
             if (!result[uniqueStaffID].subEventsAttended.some((event: subEvents) => event.sub_eventsID === form.attFSubEventID)) {
@@ -255,9 +186,15 @@ export default function Home() {
                 result[uniqueStaffID].subEventsAttended.push(
                     ...subEvents.filter(event => event.sub_eventsID === form.attFSubEventID)
                 );
-            }
-            return result;
 
+				result[uniqueStaffID].eventsAttended.push(
+					...subEvents
+						.filter(event => event.sub_eventsID === form.attFSubEventID)
+						.map(event => event.sub_eventsMainID)
+				);				
+            }			
+
+            return result;
 
 		}, {});
 
@@ -295,7 +232,7 @@ export default function Home() {
 			.order("sub_eventsStartDate");
 
 		if (subEventsError) {
-			console.error("Error fetching sub_events:", subEventsError);
+			// console.error("Error fetching sub_events:", subEventsError);
 			return;
 		}
 
@@ -311,14 +248,11 @@ export default function Home() {
 			.order("intFEventStartDate");
 
 		if (mainEventError) {
-			console.error("Error fetching sub_events:", mainEventError);
+			// console.error("Error fetching sub_events:", mainEventError);
 			return;
 		}
 		setMainEventAttended((mainEvent || []));
 	}
-
-	
-
 
 	//display the sub event attended modal
 	const openModal = async (staff_event_id: string[]) => {
@@ -417,7 +351,7 @@ export default function Home() {
 		setCurrentPage(1);
 	}, [entriesToShow]);
 
-	const pageCount = Math.ceil(aggregatedInfo.length / entriesToShow);
+	const pageCount = Math.ceil(dataResults.length / entriesToShow);
 
 	const generatePageNumbers = (): number[] => {
 		const displayedPages = 5;
@@ -460,7 +394,8 @@ export default function Home() {
 	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
 	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
 	const [selectedFacultyUnit, setSelectedFacultyUnit] = useState("");
-	const [selectedCourse, setSelectedCourse] = useState("");
+	const [selectedFilterStaff, setSelectedFilterStaff] = useState("");
+	const [selectedFilterStudent, setSelectedFilterStudent] = useState("");
 	const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
 
 	useEffect(() => {
@@ -495,7 +430,6 @@ export default function Home() {
 		const fetchFacultyStudent = async () => {
 			const { data, error } = await supabase
 				.from('attendance_settings')
-				// .select('attsName')
 				.select('attsCategory, attsName')
 				.eq('attsType', 0)
 				.order('attsName', { ascending: true });
@@ -560,56 +494,6 @@ export default function Home() {
 		fetchFacultyUnits();
 	}, []);
 
-
-	const [selectedOption, setSelectedOption] = useState('');
-	
-
-	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-		setSelectedOption(event.target.value);
-		setSelectedFacultyUnit(selectedOption);
-		filterUserData("student", "");
-	};
-
-	const handleSelectFacultyUnitChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-		setSelectedFacultyUnit(event.target.value);
-		filterUserData("student", "");
-	};
-
-	const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
-		const selectedCourse = event.target.value;
-		const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
-		setSelectedFacultyUnit(updatedSelectedOption);
-		filterUserData("student", "");
-	};
-
-	const getSecondSelectOptions = () => {
-		const selectedfacultyunit = facultyStudents.filter(faculty => faculty.facultyName === selectedOption)
-		const facultyUnitCat = selectedfacultyunit.map(unit => unit.facultyCategory);
-		return (
-			<>
-				<option value="" disabled>Select Course</option>
-				{categories
-					.filter(cat => selectedfacultyunit.some(unit => unit.facultyCategory === cat.category || (cat.category === 0 && (facultyUnitCat.includes(1) || facultyUnitCat.includes(2)))))
-					.map((cat) => (
-						<optgroup key={cat.id} label={cat.name}>
-							{cat.subcategories
-								.filter(subcategory => facultyUnitCat.includes(subcategory.facultyUnit) || subcategory.facultyUnit === 3)
-								.map((subcategory, index) => (
-									<option key={index} value={subcategory.name}>
-										{subcategory.name}
-									</option>
-							))}
-						</optgroup>
-					))
-				}
-			</>
-		);
-	};
-
-	useEffect(() => {
-		filterUserData(activeTab, searchQuery);
-	}, [activeTab, searchQuery, selectedFacultyUnit, aggregatedInfo]);
-
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
 		
 		setSearchQuery(query);
@@ -617,39 +501,58 @@ export default function Home() {
 		// Clear the data results
 		setDataResults([]);
 
+		const filterByFacultyUnit = (facultyUnit: string) => {
+			filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
+		} 
+
 		let filteredUserData = [...aggregatedInfo];
 
 		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
-			
-			if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
-				filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty && item.staffID.startsWith('SS'));
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));			
+			if (selectedFilterStaff.length > 0) {
+				filterByFacultyUnit(selectedFilterStaff);
 			}
+			setSelectedFacultyUnit('');
+			setSelectedFilterStudent('');
 
 		} else if (tab === 'student') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
-
-			if (selectedFacultyUnit.length > 0 && selectedFacultyUnit !== 'all') {
-				filteredUserData = aggregatedInfo.filter((item) => selectedFacultyUnit === item.staffFaculty && item.staffID !== '0' && !item.staffID.startsWith('SS'));
+			if (selectedFilterStudent.length > 0) {
+				filterByFacultyUnit(selectedFilterStudent);
 			}
+			setSelectedFacultyUnit('');
+			setSelectedFilterStaff('');
 
 		} else if (tab === 'visitor') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
-		}		
+
+		} else if (tab === 'all') {
+			filteredUserData = [...aggregatedInfo];
+			if (selectedFacultyUnit.length > 0) {
+				filterByFacultyUnit(selectedFacultyUnit);
+			}
+			setSelectedFilterStaff('');
+			setSelectedFilterStudent('');
+		}
 
 		if (query) {
 			filteredUserData = filteredUserData.filter(
 				info => {
 					return (
 						info.staffName.toLowerCase().includes(query.toLowerCase()) ||
-						info.staffID.toString().includes(query) ||
+						info.staffID.toLowerCase().toString().includes(query.toLowerCase()) ||
 						info.staffFaculty.toLowerCase().includes(query.toLowerCase())
 					);
 				}
 			);
 		}
+
 		setDataResults(filteredUserData);
 	};
+
+	useEffect(() => {
+		filterUserData(activeTab, searchQuery);
+	}, [activeTab, searchQuery, selectedFacultyUnit, selectedFilterStudent, selectedFilterStaff, aggregatedInfo]);
 
 	// Show Sort Options
 	const handleSortButtonClick = () => {
@@ -704,10 +607,6 @@ export default function Home() {
 			}
 			return 0;
 		});
-
-	const [showFilterOptions, setShowFilterOptions] = useState(false);
-
-	// Show Filter Options
 
 	return (
 		<div>
@@ -867,16 +766,54 @@ export default function Home() {
 										Visitor
 									</button>
 								</div>
-								
-								{/* {activeTab === "staff" && (
-									<div className="">
+
+								{activeTab === "all" && (
+									<div>
 										<select
 											name="facultyUnit"
 											id="facultyUnit"
 											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+											className="px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-xs lg:text-base w-96"
 											required
-											onChange={event => {handleSelectFacultyUnitChange(event);}}
+											onChange={event => setSelectedFacultyUnit(event.target.value)}
+											>
+												<option value="" disabled>
+													Select Faculty/ Unit
+												</option>
+												<option value="all">
+													All
+												</option>
+												{facultyOptions.map((faculty, index) => (
+													<option key={index} value={faculty}>
+														{faculty}
+													</option>
+												))}
+												{facultyStudents.map((faculty) => (
+													categories
+														.filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+														.map((cat) => (
+															cat.subcategories
+																.filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+																.map((subcategory, index) => (
+																	<option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+																		{subcategory.name}
+																	</option>
+																))))
+																
+												))}       
+										</select>
+									</div>
+								)}
+								
+								{activeTab === "staff" && (
+									<div>
+										<select
+											name="facultyUnit"
+											id="facultyUnit"
+											defaultValue=""
+											className="px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-xs lg:text-base w-96"
+											required
+											onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit (Staff)
@@ -888,50 +825,41 @@ export default function Home() {
 													<option key={index} value={faculty}>
 														{faculty}
 													</option>
-												))}
+												))}												
 										</select>
 									</div>
-								)} */}
+								)}
 
-								{/* {activeTab === "student" && (
+								{activeTab === "student" && (
 									<div className="flex flex-row">
 										<select
 											name="studentFacultyUnit"
 											id="studentFacultyUnit"
 											defaultValue=""
-											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base w-96"
 											required
-											onChange={event => handleSelectChange(event)}
-										>												
+											onChange={event => setSelectedFilterStudent(event.target.value)}
+										>					
 											<option value="" disabled>Select Faculty/ Unit (Student)</option>
 											<option value="all">
 													All
 											</option>
-											{facultyStudents.map((faculty, index) => (
-												<option key={index} value={faculty.facultyName}>
-													{faculty.facultyName}
-												</option>
-											))}
+											{facultyStudents.map((faculty) => (
+                                                categories
+                                                    .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+                                                    .map((cat) => (
+                                                        cat.subcategories
+                                                            .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+                                                            .map((subcategory, index) => (
+                                                                <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+                                                                    {subcategory.name}
+                                                                </option>
+                                                            ))))
+                                                            
+                                            ))}       
 										</select>
-
-										{selectedOption &&
-											<div className="p-2 pr-[50px] py-1 pl-5 bg-white rounded-lg">
-												<div className="ml-2">														
-													<select
-														name="anotherSelect"
-														id="anotherSelect"
-														defaultValue=""
-														className="border-[1px] px-1 py-2 border-gray-300 focus:outline-none mt-3 text-xs lg:text-base max-w-sm"
-														required
-														onChange={handleAnotherSelectChange}
-													>
-														{getSecondSelectOptions()}
-													</select>
-												</div>
-											</div>
-										}
 									</div>
-								)} */}
+								)}
 							</div>
 
 							<div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
@@ -982,7 +910,7 @@ export default function Home() {
                                                             <div className="flex items-center">
                                                                 <div className="ml-[34px]">
                                                                     <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-center">
-                                                                        {(currentPage - 1) * entriesToShow + index + 1}
+                                                                        {(currentPage - 1) * entriesToShow + index + 1} 
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -1012,6 +940,11 @@ export default function Home() {
                                                                             {event.intFEventName} - {event.intFTotalHours}
                                                                         </p>
                                                                 ))}
+																{info.externalEventsAttended.map((event, index) => (
+																	<p key={index}>
+																		{event.programName} - 0
+																	</p>
+																))}
                                                             </p>
                                                         </td>
 
@@ -1107,33 +1040,23 @@ export default function Home() {
 										</div>
 										<div className="ems-center hidden lg:flex">
 											<span className="text-sm mt-6 lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
-												1-{entriesToShow} of {aggregatedInfo?.length} entries
+												1-{entriesToShow} of {dataResults?.length} entries
 											</span>
 
 											<div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
 												<button
-													className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(1)}
 													disabled={currentPage === 1}
-												>
-													<img
-														src={skipLeft.src}
-														alt=""
-														width={20}
-														className="lg:w-[22px]"
-													/>
+												>													
+													<MdKeyboardDoubleArrowLeft className="text-3xl"/>
 												</button>
 												<button
 													onClick={() => handlePageChange(currentPage - 1)}
 													disabled={currentPage === 1}
-													className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<img
-														src={arrowLeft.src}
-														alt=""
-														width={12}
-														className="lg:w-[13px]"
-													/>
+													<MdKeyboardArrowLeft className="text-3xl"/>
 												</button>
 
 												{/* Pagination Buttons */}
@@ -1151,26 +1074,16 @@ export default function Home() {
 												<button
 													onClick={() => handlePageChange(currentPage + 1)}
 													disabled={currentPage === pageCount}
-													className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<img
-														src={arrowRight.src}
-														alt=""
-														width={12}
-														className="lg:w-[13px]"
-													/>
+													<MdKeyboardArrowRight className="text-3xl"/>
 												</button>
 												<button
-													className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(pageCount)}
 													disabled={currentPage === pageCount}
 												>
-													<img
-														src={skipRight.src}
-														alt=""
-														width={17}
-														className="lg:w-[18px]"
-													/>
+													<MdKeyboardDoubleArrowRight className="text-3xl"/>
 												</button>
 											</div>
 										</div>
