@@ -259,24 +259,24 @@ export default function ExternalForm() {
 			new Date(values.check_in_date?.setHours(values.check_in_date?.getHours() + 8)!);
 		}
 
-		// Upload supporting document to bucket and return the path to the bucket
-		let documentPath: string | undefined = "";
+		// Upload supporting documents to the bucket and return an array of paths
+		let documentPaths: string[] = [];
 		const uniqueName = uuidv4();
-		let document = values.supporting_documents as FileList | null;
 
-		// Check if `document` is not null and has at least one file
-		if (document && document.length > 0) {
-			const file = document[0];
+		if (values.supporting_documents && values.supporting_documents.length > 0) {
+			for (const file of values.supporting_documents) {
+				const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
+					cacheControl: "3600",
+					upsert: false,
+				});
 
-			const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
-				cacheControl: "3600",
-				upsert: false,
-			});
+				if (upload.data?.path) {
+					documentPaths.push(upload.data.path);
+				}
 
-			documentPath = upload.data?.path;
-
-			if (upload.error) {
-				console.log(upload.error);
+				if (upload.error) {
+					console.log(upload.error);
+				}
 			}
 		}
 
@@ -287,7 +287,7 @@ export default function ExternalForm() {
 					...values,
 					last_updated: new Date(),
 					formStage: 2,
-					supporting_documents: documentPath,
+					supporting_documents: documentPaths,
 				},
 			])
 			.select();
@@ -811,7 +811,7 @@ export default function ExternalForm() {
 															<FormItem>
 																<FormLabel>Flight Time</FormLabel>
 																<FormControl>
-																	<Input type="time" {...field} />
+																	<Input type="time" {...field} value={field.value || ""} />
 																</FormControl>
 																<FormMessage />
 															</FormItem>
@@ -922,7 +922,7 @@ export default function ExternalForm() {
 																	<FormItem>
 																		<FormLabel>Transit Flight Time</FormLabel>
 																		<FormControl>
-																			<Input type="time" {...field} />
+																			<Input type="time" {...field} value={field.value || ""} />
 																		</FormControl>
 																		<FormMessage />
 																	</FormItem>
