@@ -426,6 +426,8 @@ export default function Homepage() {
 	const [tomorrowEvents, setTomorrowEvents] = useState<any[]>([]);
 	const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
 	const [displayedEvents, setDisplayedEvents] = useState<any[]>([]);
+	const [eventDates, setEventDates] = useState<any[]>([]);
+
 
 	// Function to compare dates (ignores time)
 	function isSameDate(date1: string, date2: string) { //
@@ -495,12 +497,26 @@ export default function Homepage() {
 					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime()
 			);
 
-			const displayedEvents = upcomingEvents.slice(0, 3);
+			const displayedEvents = upcomingEvents.slice(0,4);
+			
 			// Set the categorized events
 			setTodayEvents(todayEvents);
 			setTomorrowEvents(tomorrowEvents);
 			setUpcomingEvents(upcomingEvents);
 			setDisplayedEvents(displayedEvents);
+			let uniqueEventDates = new Set<string>();
+			mainEventData.forEach(event => {
+				const eventStartDate = new Date(event.intFEventStartDate).toISOString().substring(0, 10);
+				const eventEndDate = new Date(event.intFEventEndDate).toISOString().substring(0, 10);
+				
+				// Check if the event's start or end date is in the future
+				if (eventStartDate >= today || eventEndDate >= today) {
+				  uniqueEventDates.add(eventStartDate);
+				  uniqueEventDates.add(eventEndDate);
+				  // Optionally, add intermediate dates between start and end if necessary
+				}
+			});
+			setEventDates(Array.from(uniqueEventDates));
 		};
 		fetchGridView();
 	}, []);
@@ -5861,45 +5877,44 @@ export default function Homepage() {
 
 
 						<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
-							<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
-							<Calendar onDateChange={handleDateChange} />
-							<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
-							{displayedEvents.length === 0 && (
-								<li key="noEvents" className="text-center text-m">No upcoming events found</li>
-							)}
-							{displayedEvents.length > 0 && (
-								<div className="mt-4">
-									<ul className="space-y-2">
-										{displayedEvents.map((event) => {
-											const startDate = new Date(event.intFEventStartDate);
-											const endDate = new Date(event.intFEventEndDate);
-											const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
-											const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
-											const a = new Date(event.intFEventStartDate).toISOString();
-											const b = new Date(event.intFEventEndDate).toISOString();
-											if (isSameDate(a, b)) {
-												return (
-													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-														<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
-														<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
-													</li>
-												);
-											} else {
-												return (
-													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-														<span className="font-semibold text-l ml-6 mb-3">{event.intFEventName}</span>
-														<span className="text-m mr-6 mb-3">
-															{startDateFormatted} - {endDateFormatted}
-														</span>
-													</li>
-												);
-											}
-										})}
-									</ul>
-								</div>
-
-							)}
-						</div>
+						<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
+						<Calendar onDateChange={handleDateChange} eventDates={eventDates}/>
+						<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
+						<div className="mt-4 overflow-auto max-h-[400px]"> 
+						<ul className="space-y-2">
+								{displayedEvents.length === 0 && (
+									<li key="noEvents" className="text-center text-m">No upcoming events found</li>
+								)}
+								{displayedEvents.length > 0 && (
+									displayedEvents.map((event) => {
+										const startDate = new Date(event.intFEventStartDate);
+										const endDate = new Date(event.intFEventEndDate);
+										const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
+										const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
+										const a = new Date(event.intFEventStartDate).toISOString();
+										const b = new Date(event.intFEventEndDate).toISOString();
+										if (isSameDate(a, b)) {
+											return (
+												<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+													<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
+													<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
+												</li>
+											);
+										} else {
+											return(
+												<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+													<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
+													<span className="text-m mr-6 mb-3">
+														{startDateFormatted} - {endDateFormatted}
+													</span>
+												</li>
+											);
+										}
+									})
+								)}
+							</ul>
+						</div> 
+					</div>
 
 					</div>
 
