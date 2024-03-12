@@ -3,6 +3,7 @@ import DoubleRightArrow from '@/components/icons/DoubleRightArrow';
 import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
+import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import exportCSV from "@/public/images/export_csv.png";
 import arrowLeft from "@/public/images/arrow_left.png";
 import arrowRight from "@/public/images/arrow_right.png";
@@ -220,28 +221,18 @@ const ExpenditureUser = () => {
                         {/* Pagination */}
                         <div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
                             <button
-                                className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                                className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                                 onClick={() => handlePageChange(1)}
                                 disabled={currentPage === 1}
                             >
-                                <img
-                                    src={skipLeft.src}
-                                    alt=""
-                                    width={20}
-                                    className="lg:w-[22px]"
-                                />
+                                <MdKeyboardDoubleArrowLeft className="text-3xl"/>
                             </button>
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className={`py-2 px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                                className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                             >
-                                <img
-                                    src={arrowLeft.src}
-                                    alt=""
-                                    width={12}
-                                    className="lg:w-[13px]"
-                                />
+                                <MdKeyboardArrowLeft className="text-3xl"/>
                             </button>
 
                             {generatePageNumbers().map((pageNumber, index) => (
@@ -258,26 +249,16 @@ const ExpenditureUser = () => {
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === pageCount}
-                                className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                                className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                             >
-                                <img
-                                    src={arrowRight.src}
-                                    alt=""
-                                    width={12}
-                                    className="lg:w-[13px]"
-                                />
+                                <MdKeyboardArrowRight className="text-3xl"/>
                             </button>
                             <button
-                                className={`py-2 px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                                className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                                 onClick={() => handlePageChange(pageCount)}
                                 disabled={currentPage === pageCount}
                             >
-                                <img
-                                    src={skipRight.src}
-                                    alt=""
-                                    width={17}
-                                    className="lg:w-[18px]"
-                                />
+                                <MdKeyboardDoubleArrowRight className="text-3xl"/>
                             </button>
                         </div>
                     </div>
