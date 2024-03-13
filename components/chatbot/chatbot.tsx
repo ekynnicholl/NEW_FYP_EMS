@@ -128,8 +128,6 @@ const Chatbot = () => {
                     ${JSON.stringify(events)}
                 `;
 
-                console.log(eventQuestion);
-
                 return await getOpenAIResponse(eventQuestion);
             } else {
                 await fetchEvents();
