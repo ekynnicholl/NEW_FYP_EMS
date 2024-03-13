@@ -15,6 +15,7 @@ const Chatbot = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [isInitialMessage, setIsInitialMessage] = useState<boolean>(true);
     const supabase = createClientComponentClient();
+    const [isAskingEvents, setIsAskingEvents] = useState<boolean>(false);
 
     useEffect(() => {
         const storedMessages = localStorage.getItem('chatMessages');
@@ -73,51 +74,84 @@ const Chatbot = () => {
         setMessages((prevMessages) => [...prevMessages, `bee: ${response}`]);
     };
 
+    const formatDateToDDMMYYYY = (dateString: string): string => {
+        // Split the date string into day, month, and year parts
+        const [dayStr, monthStr, yearStr] = dateString.split(' ');
+
+        // Extract numerical day and year
+        const day = parseInt(dayStr, 10);
+        const year = parseInt(yearStr, 10);
+
+        // Extract numerical month from month name
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = monthNames.findIndex(name => name.toLowerCase() === monthStr.toLowerCase()) + 1;
+
+        // Construct the formatted date string in DD/MM/YYYY format
+        const formattedDate = `${month}/${day}/${year}`;
+
+        console.log('lalalala', formattedDate);
+
+        return formattedDate;
+    };
+
     const getEventsForTimeRange = async (timeRange: string) => {
         const today = new Date();
         let startDate;
         let endDate;
 
+        const dateRegex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+
         if (timeRange === "today") {
-            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+            const currentUTCDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+            startDate = currentUTCDate;
+            endDate = new Date(currentUTCDate.getTime() + (24 * 60 * 60 * 1000)); // Add 1 day in milliseconds
         } else if (timeRange === "yesterday") {
-            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
-            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const yesterdayUTCDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 1));
+            startDate = yesterdayUTCDate;
+            endDate = new Date(yesterdayUTCDate.getTime() + (24 * 60 * 60 * 1000)); // Add 1 day in milliseconds
         } else if (timeRange === "tomorrow") {
-            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2);
+            const tomorrowUTCDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + 1));
+            startDate = tomorrowUTCDate;
+            endDate = new Date(tomorrowUTCDate.getTime() + (24 * 60 * 60 * 1000)); // Add 1 day in milliseconds
         } else if (timeRange === "week") {
-            const currentDay = today.getDay();
-            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - currentDay);
-            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - currentDay) + 1);
+            const currentDayOfWeek = today.getUTCDay();
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - currentDayOfWeek));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - currentDayOfWeek + 7));
         } else if (timeRange === "next week") {
-            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
-            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 7));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 14));
         } else if (timeRange === "last week") {
-            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-            endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - 7));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
         } else if (timeRange === "month") {
-            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-            endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + 1, 0));
         } else if (timeRange === "next month") {
-            startDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-            endDate = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + 1, 1));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + 2, 0));
         } else if (timeRange === "last month") {
-            startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-            endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - 1, 1));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 0));
         } else if (timeRange === "year") {
-            startDate = new Date(today.getFullYear(), 0, 1);
-            endDate = new Date(today.getFullYear() + 1, 0, 0);
+            startDate = new Date(Date.UTC(today.getUTCFullYear(), 0, 1));
+            endDate = new Date(Date.UTC(today.getUTCFullYear() + 1, 0, 0));
         } else if (timeRange === "next year") {
-            startDate = new Date(today.getFullYear() + 1, 0, 1);
-            endDate = new Date(today.getFullYear() + 2, 0, 0);
+            startDate = new Date(Date.UTC(today.getUTCFullYear() + 1, 0, 1));
+            endDate = new Date(Date.UTC(today.getUTCFullYear() + 2, 0, 0));
         } else if (timeRange === "last year") {
-            startDate = new Date(today.getFullYear() - 1, 0, 1);
-            endDate = new Date(today.getFullYear(), 0, 0);
+            startDate = new Date(Date.UTC(today.getUTCFullYear() - 1, 0, 1));
+            endDate = new Date(Date.UTC(today.getUTCFullYear(), 0, 0));
+        } else if (dateRegex.test(timeRange)) {
+            const [monthStr, dayStr, yearStr] = timeRange.split('/').map(Number);
+            const month = monthStr - 1;
+            const day = dayStr;
+            const year = yearStr;
+
+            startDate = new Date(Date.UTC(year, month, day));
+            endDate = new Date(Date.UTC(year, month, day + 1));
         } else {
-            // Handle other cases or default behavior
-            return "Sorry, I don't understand that time range.";
+            const response = await getOpenAIResponse(`events ${timeRange}`);
+            return response;
         }
 
         console.log(startDate, endDate);
@@ -181,6 +215,10 @@ const Chatbot = () => {
         } else if (timeRange === "last year") {
             const formattedStartYear = new Intl.DateTimeFormat('en-US', { year: 'numeric' }).format(startDate);
             timeRangeText = `last year, ${formattedStartYear}`;
+        } else if (dateRegex.test(timeRange)) {
+            const parsedDate = new Date(timeRange);
+            const formattedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(parsedDate);
+            timeRangeText = `on ${formattedDate}`;
         }
 
         if (eventCount === 0) {
@@ -235,6 +273,18 @@ const Chatbot = () => {
         return timeRange || "this month";
     };
 
+    const extractDatesFromQuestion = (question: string): string[] => {
+        const terms = compromise(question.toLowerCase()).terms();
+
+        // Define regular expression to match dates in the format "DD Month YYYY"
+        const dateRegex = /(\d{1,2}(?:st|nd|rd|th)?\s(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s\d{4})/gi;
+
+        // Extract date terms using the regular expression
+        const dateMatches = question.match(dateRegex) || [];
+
+        return dateMatches.map(dateMatch => dateMatch.trim());
+    };
+
     const getChatbotResponse = async (question: string) => {
         const keywords = ["events", "products", "offer"];
         const userWords = compromise(question.toLowerCase()).out("array");
@@ -244,9 +294,19 @@ const Chatbot = () => {
         const hasEventsKeyword = mostSimilarKeywords.includes("events");
         const hasProductsKeyword = mostSimilarKeywords.includes("products") || mostSimilarKeywords.includes("offer");
 
-        if (hasEventsKeyword) {
-            const timeRange = getTimeRangeKeyword(userWords);
-            return await getEventsForTimeRange(timeRange);
+        if (hasEventsKeyword || isAskingEvents) {
+            setIsAskingEvents(true);
+            const extractedDates = extractDatesFromQuestion(question);
+            console.log(extractedDates);
+
+            if (extractedDates.length > 0) {
+                const eventsPromises = extractedDates.map(date => getEventsForTimeRange(formatDateToDDMMYYYY(date)));
+                const eventsResults = await Promise.all(eventsPromises);
+                return eventsResults.join("\n\n");
+            } else {
+                const timeRange = getTimeRangeKeyword(userWords);
+                return await getEventsForTimeRange(timeRange);
+            }
         } else if (hasProductsKeyword) {
             return "We offer a wide range of products including electronics, clothing, and accessories.";
         }
