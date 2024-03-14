@@ -578,7 +578,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		return (
 			<Link href={data.publicUrl} target="_blank" className="flex gap-2 p-2 items-start">
 				<BsFiletypePdf className="w-6 h-6 text-red-500" />
-				{name.split("_").slice(1).join("_")}
+				{name[0].split("_").slice(1).join("_")}
 			</Link>
 		);
 	};
