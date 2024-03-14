@@ -32,7 +32,7 @@ const Chatbot = () => {
         const sendInitialMessage = async () => {
             if (openChat && isInitialMessage) {
                 setLoading(true);
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise(resolve => setTimeout(resolve, 1000));
 
                 setLoading(false);
                 setMessages((prevMessages) => [...prevMessages, `bee: Hi there! How can I help?`]);
@@ -102,55 +102,49 @@ const Chatbot = () => {
     };
 
     const getChatbotResponse = async (question: string) => {
-        const keywords = ["events", "products", "offer"];
+        const keywords = ["events", "clear messages history"];
         const userWords = compromise(question.toLowerCase()).out("array");
 
         const mostSimilarKeywords = findMostSimilarKeywords(userWords, keywords, 0.15);
 
         const hasEventsKeyword = mostSimilarKeywords.includes("events");
-        const hasProductsKeyword = mostSimilarKeywords.includes("products") || mostSimilarKeywords.includes("offer");
+        const hasClearMessage = mostSimilarKeywords.includes("clear") || mostSimilarKeywords.includes("messages") || mostSimilarKeywords.includes("history");
 
         if (hasEventsKeyword) {
             const currentDate = new Date().toLocaleDateString();
+            const eventQuestion = `
+                Okay ChatGPT, so here is the user input: ${question},
+
+                I need you to display all the relevant information based on what the user asks "if there are any".
+                Please do not share this entire table as a response, only respond with the relevant ones. You can have a short response at the beginning like you usually do.
+                Please list all the results in this format,
+
+                1. intFEventName (intFEventStartDate) by intFTrainerName
+
+                The number should increase everytime. Please list all relevant results. 
+                If the user input has something to do with today, please use ${currentDate} to get the results. If it's tomorrow or yesterday, -1 or +1 to the current date accordingly.
+                If the user specifies a specific date and there's no matching results, just say that there are no events on the said day.
+
+                Here is the events table in JSON format as of ${currentDate}. Please remember this table so that you can use it for the upcoming queries:
+                ${JSON.stringify(events)}
+            `;
+
             if (events.length > 0) {
-                const eventQuestion = `
-                    Okay ChatGPT, so here is the user input: ${question},
-
-                    I need you to display all the relevant information based on what the user asks "if there are any".
-                    Please do not share this entire table as a response, only respond with the relevant ones. You can have a short response at the beginning like you usually do.
-                    Please list all the results in this format,
-
-                    1. intFEventName (intFEventStartDate) by intFTrainerName
-
-                    The number should increase everytime. Please list all relevant results. 
-
-                    Here is the events table in JSON format as of ${currentDate}. Please remember this table so that you can use it for the upcoming queries:
-                    ${JSON.stringify(events)}
-                `;
 
                 return await getOpenAIResponse(eventQuestion);
             } else {
                 await fetchEvents();
 
-                const eventQuestion = `
-                    Okay ChatGPT, so here is the user input: ${question},
-
-                    I need you to display all the relevant information based on what the user asks "if there are any".
-                    Please do not share this entire table as a response, only respond with the relevant ones. You can have a short response at the beginning like you usually do.
-                    Please list all the results in this format,
-
-                    1. intFEventName (intFEventStartDate) - intFTrainerName
-
-                    The number should increase everytime. Please list all relevant results.
-
-                    Here is the events table in JSON format as of ${currentDate}. Please remember this table so that you can use it for the upcoming queries:
-                    ${JSON.stringify(events)}
-                `;
-
                 return await getOpenAIResponse(eventQuestion);
             }
-        } else if (hasProductsKeyword) {
-            return "We offer a wide range of products including electronics, clothing, and accessories.";
+        } else if (!hasClearMessage) {
+            // localStorage.removeItem('chatMessages');
+            // setMessages([]);
+            // setIsInitialMessage(true);
+
+            // console.log("clear message");
+
+            // return null;
         }
 
         const response = await getOpenAIResponse(question);
@@ -167,14 +161,13 @@ const Chatbot = () => {
     };
 
     return (
-        <div className="fixed bottom-0 right-5 z-[999] border-t-2 border-l-2 border-r-2 border-black rounded-t-md">
+        <div className="z-[999]">
             {!openChat ? (
-                <div className="px-4 cursor-pointer flex flex-row items-center justify-center p-2 bg-red-500 rounded-t-md w-[300px]" onClick={() => setOpenChat(true)}>
-                    <IoChatbubbleEllipsesOutline className="text-white mt-[5px] mr-2" />
-                    <p className="text-white text-[18px]">EMAT Bot</p>
+                <div className="fixed bottom-5 right-5 w-[60px] h-[60px] cursor-pointer flex items-center justify-center bg-red-500 rounded-full" onClick={() => setOpenChat(true)}>
+                    <IoChatbubbleEllipsesOutline className="text-white text-3xl" />
                 </div>
             ) : (
-                <div className="w-[300px] h-[400px]">
+                <div className="fixed w-[300px] h-[400px] bottom-0 right-5">
                     <div className="flex flex-col h-full">
                         <div className="bg-red-500 h-[40px] rounded-t-md p-2 flex flex-row cursor-pointer items-center justify-center" onClick={() => setOpenChat(false)}>
                             <IoChatbubbleEllipsesOutline className="text-white mt-[5px] mr-2" />

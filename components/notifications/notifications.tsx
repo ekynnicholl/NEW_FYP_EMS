@@ -31,6 +31,56 @@ const NotificationsPage = () => {
     const [hoveredNotification, setHoveredNotification] = useState<string | null>(null);
     const [selectedTab, setSelectedTab] = useState<'all' | 'unread'>('all');
 
+    const handleMarkAllAsRead = async () => {
+        if (!hasUnreadNotifications) {
+            toast.error('You have no unread notification(s).');
+            return;
+        }
+
+        const { data, error } = await supabase
+            .from('notifications')
+            .update({ notifIsRead: 1 })
+            .eq('notifIsRead', 0);
+
+        if (error) {
+            // console.error('Error marking all notifications as read:', error);
+        } else {
+            // console.log('All notifications marked as read:', data);
+            toast.success('All notification(s) has been successfully marked as read.');
+            fetchNotifications();
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+    }, [selectedTab]);
+
+    const [hasUnreadNotifications, setHasUnreadNotifications] = useState<boolean>();
+
+    useEffect(() => {
+        // Check if there are unread notifications
+        setHasUnreadNotifications(notifications.some(notification => notification.notifIsRead === 0));
+    }, [notifications]);
+
+    const fetchNotifications = async () => {
+        let query = supabase
+            .from('notifications')
+            .select('*')
+            .order('notifCreatedAt', { ascending: false });
+
+        if (selectedTab === 'unread') {
+            query = query.eq('notifIsRead', 0);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            // console.error('Error fetching notifications:', error);
+        } else {
+            setNotifications(data || []);
+        }
+    };
+
     useEffect(() => {
         const fetchNotifications = async () => {
             let query = supabase
@@ -81,7 +131,9 @@ const NotificationsPage = () => {
         }
 
         interval = Math.floor(seconds / 3600);
-        if (interval > 1) {
+        if (interval === 1) {
+            return `${interval} hour ago`;
+        } else if (interval > 1) {
             return `${interval} hours ago`;
         }
 
@@ -156,6 +208,12 @@ const NotificationsPage = () => {
                                     onClick={() => setSelectedTab('unread')}
                                 >
                                     Unread
+                                </button>
+                                <button
+                                    className="ml-auto py-2 px-4 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 hover:text-white bg-gray-200"
+                                    onClick={handleMarkAllAsRead}
+                                >
+                                    Mark All as Read
                                 </button>
                             </div>
                         </div>

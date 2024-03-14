@@ -48,9 +48,6 @@ const NavigationBarDesktop = () => {
 	const [isHovered, setIsHovered] = useState(false);
 	// const [isHamburgerClicked, setIsHamburgerClicked] = useState(false);
 
-	// USE THIS TO GET THE DARK/ LIGHT MODE STATE,
-	const isDarkMode = darkLightStorage((state) => state.isDarkMode);
-
 	const pathname = usePathname();
 
 	const activeNavBar = useMemo(
@@ -61,9 +58,7 @@ const NavigationBarDesktop = () => {
 	// Put fixed if want the navigation bar to scroll together but if I put fixed, the side elements will not change size when navigation bar is open.
 	const wrapper = classNames(
 		"h-full p-5 dark:bg-dark_mode_card bg-white border-r dark:border-[#2D3133]", {
-		/* Display the whole navigation IF it is NOT CLOSED OR IT IS HOVERED, */
 		["w-72"]: !closeNav || isHovered,
-
 		["w-21"]: closeNav,
 	});
 
@@ -73,16 +68,6 @@ const NavigationBarDesktop = () => {
 			// "rotate-180": !closeNav,
 		},
 	);
-
-	// const OnMouseEnter = () => {
-	//     // setIsToggleable(true);
-	//     setIsHovered(true);
-	// };
-
-	// const OnMouseLeave = () => {
-	//     // setIsToggleable(true);
-	//     setIsHovered(false);
-	// };
 
 	// Change hover states,
 	const handleHoverEnter = () => {
@@ -109,7 +94,6 @@ const NavigationBarDesktop = () => {
 			},
 		);
 	};
-
 
 	return (
 		<div

@@ -56,7 +56,9 @@ const Notification = () => {
         }
 
         interval = Math.floor(seconds / 3600);
-        if (interval > 1) {
+        if (interval === 1) {
+            return `${interval} hour ago`;
+        } else if (interval > 1) {
             return `${interval} hours ago`;
         }
 
@@ -164,6 +166,7 @@ const Notification = () => {
                                             className="flex flex-1"
                                             href={notification.notifLink}
                                             target="_blank"
+                                            onClick={() => handleNotificationAction('read', notification.notifID)}
                                         >
                                             <div className="flex items-center pl-2.5 cursor-pointer flex-1"
                                             >
