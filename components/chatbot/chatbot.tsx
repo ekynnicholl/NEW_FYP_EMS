@@ -6,6 +6,8 @@ import stringSimilarity from "string-similarity";
 import compromise from "compromise";
 import OpenAI from "openai";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { FaTrash } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Chatbot = () => {
     const [openChat, setOpenChat] = useState<boolean>(false);
@@ -96,9 +98,16 @@ const Chatbot = () => {
     const findMostSimilarKeywords = (userWords: string[], targetKeywords: string[], threshold: number) => {
         return userWords.map((word: string) => {
             const matches = stringSimilarity.findBestMatch(word, targetKeywords);
-            console.log(matches.bestMatch.rating);
+            // console.log(matches.bestMatch.rating);
             return matches.bestMatch.rating >= threshold ? matches.bestMatch.target : null;
         });
+    };
+
+    const deleteChatMessages = () => {
+        toast.success("You have cleared your chat history messages!")
+        localStorage.removeItem('chatMessages');
+        setMessages([]);
+        setIsInitialMessage(true);
     };
 
     const getChatbotResponse = async (question: string) => {
@@ -156,7 +165,7 @@ const Chatbot = () => {
             messages: [{ role: "user", content: input }],
             model: "gpt-3.5-turbo",
         });
-        console.log(completion);
+        // console.log(completion);
         return completion.choices[0].message.content;
     };
 
@@ -225,6 +234,10 @@ const Chatbot = () => {
                                     setInputValue("");
                                     await handleSendMessage(inputValue.trim());
                                 }}
+                            />
+                            <FaTrash
+                                className="mr-2"
+                                onClick={deleteChatMessages}
                             />
                         </div>
                     </div>
