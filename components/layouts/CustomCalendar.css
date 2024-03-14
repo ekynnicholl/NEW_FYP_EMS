@@ -14,6 +14,7 @@
 .event-day.react-calendar__tile--active:hover {
   background-color: #add8e6 !important; /* This should be your event day color */
   color: #333 !important;
+
 }
 
 
@@ -22,6 +23,7 @@
   .event-day {
     background-color: #375a7f !important; /* Darker blue for event days */
     color: #fff !important; /* White text for readability */
+    border-radius:4px;
   }
 }
 

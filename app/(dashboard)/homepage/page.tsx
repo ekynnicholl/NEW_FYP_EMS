@@ -497,7 +497,7 @@ export default function Homepage() {
 					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime()
 			);
 
-			const displayedEvents = upcomingEvents.slice(0,4);
+			const displayedEvents = upcomingEvents.slice(0,55);
 			
 			// Set the categorized events
 			setTodayEvents(todayEvents);
@@ -5880,7 +5880,7 @@ export default function Homepage() {
 						<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
 						<Calendar onDateChange={handleDateChange} eventDates={eventDates}/>
 						<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
-						<div className="mt-4 overflow-auto max-h-[400px]"> 
+						<div className="mt-4 overflow-auto max-h-[300px]"> 
 						<ul className="space-y-2">
 								{displayedEvents.length === 0 && (
 									<li key="noEvents" className="text-center text-m">No upcoming events found</li>
@@ -5913,9 +5913,8 @@ export default function Homepage() {
 									})
 								)}
 							</ul>
+							</div>
 						</div> 
-					</div>
-
 					</div>
 
 				) : (
