@@ -5880,7 +5880,7 @@ export default function Homepage() {
 						<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
 						<Calendar onDateChange={handleDateChange} eventDates={eventDates}/>
 						<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
-						<div className="mt-4 overflow-auto max-h-[300px]"> 
+						<div className="mt-4 overflow-auto max-h-[200px]"> 
 						<ul className="space-y-2">
 								{displayedEvents.length === 0 && (
 									<li key="noEvents" className="text-center text-m">No upcoming events found</li>
