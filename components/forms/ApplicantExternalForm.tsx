@@ -98,12 +98,12 @@ export default function ExternalForm() {
 			hrdf_claimable: "",
 
 			flight_date: null,
-			flight_time: "",
+			flight_time: null,
 			flight_number: "",
 			destination_from: "",
 			destination_to: "",
 			transit_flight_date: null,
-			transit_flight_time: "",
+			transit_flight_time: null,
 			transit_flight_number: "",
 			transit_destination_from: "",
 			transit_destination_to: "",
@@ -156,13 +156,13 @@ export default function ExternalForm() {
 
 	const checkFormStatus = () => {
 		setOpen(false);
-	
+
 		// Extracting dates from form values
 		const checkOutDate = form.getValues("check_out_date");
 		const checkInDate = form.getValues("check_in_date");
 		const completionDate = form.getValues("completion_date");
 		const commencementDate = form.getValues("commencement_date");
-	
+
 		// Performing null checks and comparisons
 		if (checkOutDate && checkInDate && checkOutDate < checkInDate) {
 			toast.error("Check out date cannot be earlier than check in date");
@@ -238,16 +238,6 @@ export default function ExternalForm() {
 		router.refresh();
 	};
 
-	// Debugging purpose only
-	// useEffect(() => {
-	// 	var files = form.getValues("supporting_documents") as FileList;
-	// 	if (files) {
-	// 		if (files.length > 0) {
-	// 			console.log(files);
-	// 		}
-	// 	}
-	// }, [form.getValues("supporting_documents")]);
-
 	useEffect(() => {
 		if (form.formState.isDirty) {
 			sessionStorage.setItem("form", JSON.stringify(form.getValues()));
@@ -305,7 +295,10 @@ export default function ExternalForm() {
 			toast.error("Error submitting form");
 		} else {
 			formReset();
-			const { data: fetchedForms, error: fetchedError } = await supabase.from("external_forms").select("*").eq("id", data[0].id);
+			const { data: fetchedForms, error: fetchedError } = await supabase
+				.from("external_forms")
+				.select("*")
+				.eq("id", data[0].id);
 
 			console.log(`Fetched forms ${fetchedForms}`);
 
@@ -521,7 +514,8 @@ export default function ExternalForm() {
 																	setUseOwnTransport(false);
 																}
 															}}
-															value={field.value}>
+															value={field.value}
+														>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Please select an option" />
@@ -552,7 +546,8 @@ export default function ExternalForm() {
 																	setGroup(false);
 																}
 															}}
-															value={field.value}>
+															value={field.value}
+														>
 															<FormControl>
 																<SelectTrigger>
 																	<SelectValue placeholder="Please select an option" />
@@ -631,7 +626,8 @@ export default function ExternalForm() {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value && "text-muted-foreground",
-																	)}>
+																	)}
+																>
 																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
@@ -674,7 +670,8 @@ export default function ExternalForm() {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value && "text-muted-foreground",
-																	)}>
+																	)}
+																>
 																	{field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
@@ -783,7 +780,8 @@ export default function ExternalForm() {
 																				className={cn(
 																					"w-full pl-3 text-left font-normal",
 																					!field.value && "text-muted-foreground",
-																				)}>
+																				)}
+																			>
 																				{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																			</Button>
 																		</FormControl>
@@ -890,7 +888,8 @@ export default function ExternalForm() {
 																						className={cn(
 																							"w-full pl-3 text-left font-normal",
 																							!field.value && "text-muted-foreground",
-																						)}>
+																						)}
+																					>
 																						{field.value ? (
 																							format(new Date(field.value), "PPP")
 																						) : (
@@ -1012,7 +1011,8 @@ export default function ExternalForm() {
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value && "text-muted-foreground",
-																		)}>
+																		)}
+																	>
 																		{field.value ? (
 																			format(new Date(field.value), "PPP")
 																		) : (
@@ -1059,7 +1059,8 @@ export default function ExternalForm() {
 																		className={cn(
 																			"w-full pl-3 text-left font-normal",
 																			!field.value && "text-muted-foreground",
-																		)}>
+																		)}
+																	>
 																		{field.value ? (
 																			format(new Date(field.value), "PPP")
 																		) : (
@@ -1505,7 +1506,8 @@ export default function ExternalForm() {
 															aria-hidden="true"
 															xmlns="http://www.w3.org/2000/svg"
 															fill="none"
-															viewBox="0 0 20 16">
+															viewBox="0 0 20 16"
+														>
 															<path
 																stroke="currentColor"
 																strokeLinecap="round"
@@ -1539,20 +1541,18 @@ export default function ExternalForm() {
 													{form.getValues("supporting_documents") &&
 														Array.from(form.getValues("supporting_documents")!).map((file: any) => (
 															<div key={file.name}>
-																{
-																	// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
-																	file.name.slice(file.name.lastIndexOf(".") + 1) === "pdf" ? (
-																		<div className="flex gap-2 p-2 items-start">
-																			<BsFiletypePdf className="w-6 h-6 text-red-500" />
-																			{file.name}
-																		</div>
-																	) : (
-																		<div className="flex gap-2 p-2 items-start">
-																			<SiMicrosoftword className="w-6 h-6 text-blue-500" />
-																			{file.name}
-																		</div>
-																	)
-																}
+																{// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
+																file.name.slice(file.name.lastIndexOf(".") + 1) === "pdf" ? (
+																	<div className="flex gap-2 p-2 items-start">
+																		<BsFiletypePdf className="w-6 h-6 text-red-500" />
+																		{file.name}
+																	</div>
+																) : (
+																	<div className="flex gap-2 p-2 items-start">
+																		<SiMicrosoftword className="w-6 h-6 text-blue-500" />
+																		{file.name}
+																	</div>
+																)}
 															</div>
 														))}
 												</div>
@@ -1613,7 +1613,8 @@ export default function ExternalForm() {
 																	className={cn(
 																		"w-full pl-3 text-left font-normal",
 																		!field.value && "text-muted-foreground",
-																	)}>
+																	)}
+																>
 																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 																</Button>
 															</FormControl>
@@ -1689,7 +1690,8 @@ export default function ExternalForm() {
 																				// @ts-ignore
 																				.getTrimmedCanvas()
 																				.toDataURL("image/png");
-																		}}>
+																		}}
+																	>
 																		Save
 																	</Button>
 																</DialogClose>

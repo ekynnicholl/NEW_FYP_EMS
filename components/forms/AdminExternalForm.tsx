@@ -568,18 +568,30 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [group, setGroup] = useState(true);
 	console.log(authToken);
 
-	const Document = ({ name }: { name?: string }) => {
-		const { data } = supabase.storage.from("supporting_documents").getPublicUrl(name || '');
-	
-		if (!name) {
-			return null; // or return a placeholder component/message indicating that the name is not available
+	const Document = ({ documents }: { documents?: string[] }) => {	
+		console.log(documents)
+		if (!documents) {
+			return null;
 		}
 	
 		return (
-			<Link href={data.publicUrl} target="_blank" className="flex gap-2 p-2 items-start">
+			<>
+			<Link href={documents[0]} target="_blank" className="flex gap-2 p-2 items-start">
 				<BsFiletypePdf className="w-6 h-6 text-red-500" />
-				{name.split("_").slice(1).join("_")}
+				{documents[0].split("_").slice(1).join("_")}
 			</Link>
+			{documents.map((data: string) => {
+				<>
+				<h1>Stupid stuff</h1>
+				<Link href={data} target="_blank" className="flex gap-2 p-2 items-start">
+					<BsFiletypePdf className="w-6 h-6 text-red-500" />
+					{data.split("_").slice(1).join("_")}
+				</Link>
+				</>
+				
+				}
+			)}
+			</>
 		);
 	};
 
@@ -1616,7 +1628,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										name="supporting_documents"
 										render={({ field }) => (
 											<FormItem>
-												<Document name={field.value} />
+												<Document documents={field.value} />
 												<FormMessage />
 											</FormItem>
 										)}
