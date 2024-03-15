@@ -394,29 +394,8 @@ export default function ExternalForm() {
 							</p>
 						</div>
 					</div>
-
 					<hr className="mt-8" />
 					<div className="grid gap-8 place-items-center">
-						{/* <div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
-							<a className="block" href="#Personal Details">
-								Personal Details
-							</a>
-							<a className="block" href="#Travel Details">
-								Travel Details
-							</a>
-							<a className="block" href="#Logistic Arrangement">
-								Logistic Arrangement
-							</a>
-							<a className="block" href="#Funding">
-								Funding
-							</a>
-							<a className="block" href="#Supporting Documents">
-								Supporting Documents
-							</a>
-							<a className="block" href="#Applicant Declaration">
-								Applicant Declaration
-							</a>
-						</div> */}
 						<Form {...form}>
 							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
 								<section className="section-1" id="Personal Details">
@@ -427,7 +406,9 @@ export default function ExternalForm() {
 											name="email"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Email</FormLabel>
+													<FormLabel>
+														Email <span className="text-red-500"> *</span>
+													</FormLabel>
 													<FormControl>
 														<Input type="email" placeholder="Email" {...field} />
 													</FormControl>
@@ -441,7 +422,9 @@ export default function ExternalForm() {
 												name="full_name"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Full Name (Same as I.C / Passport)</FormLabel>
+														<FormLabel>
+															Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Input placeholder="Name" {...field} />
 														</FormControl>
@@ -454,7 +437,9 @@ export default function ExternalForm() {
 												name="staff_id"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Staff ID / Student No.</FormLabel>
+														<FormLabel>
+															Staff ID / Student No. <span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Input placeholder="" {...field} />
 														</FormControl>
@@ -467,7 +452,9 @@ export default function ExternalForm() {
 												name="course"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Designation / Course</FormLabel>
+														<FormLabel>
+															Designation / Course <span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Input placeholder="" {...field} />
 														</FormControl>
@@ -480,7 +467,9 @@ export default function ExternalForm() {
 												name="faculty"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Faculty / School / Unit</FormLabel>
+														<FormLabel>
+															Faculty / School / Unit <span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Select onValueChange={field.onChange} value={field.value}>
 																<SelectTrigger>
@@ -504,7 +493,9 @@ export default function ExternalForm() {
 												name="transport"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Type of Transportation</FormLabel>
+														<FormLabel>
+															Type of Transportation <span className="text-red-500"> *</span>
+														</FormLabel>
 														<Select
 															onValueChange={e => {
 																field.onChange(e);
@@ -536,7 +527,9 @@ export default function ExternalForm() {
 												name="travelling"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Traveling in</FormLabel>
+														<FormLabel>
+															Traveling in <span className="text-red-500"> *</span>
+														</FormLabel>
 														<Select
 															onValueChange={e => {
 																field.onChange(e);
@@ -569,7 +562,10 @@ export default function ExternalForm() {
 												name="other_members"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Name of other staff / student traveling together in group</FormLabel>
+														<FormLabel>
+															Name of other staff / student traveling together in group{" "}
+															<span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Input {...field} />
 														</FormControl>
@@ -591,7 +587,9 @@ export default function ExternalForm() {
 											name="program_title"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Program title / Event</FormLabel>
+													<FormLabel>
+														Program title / Event <span className="text-red-500"> *</span>
+													</FormLabel>
 													<FormControl>
 														<Input placeholder="" {...field} />
 													</FormControl>
@@ -604,7 +602,9 @@ export default function ExternalForm() {
 											name="program_description"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Description</FormLabel>
+													<FormLabel>
+														Description <span className="text-red-500"> *</span>
+													</FormLabel>
 													<FormControl>
 														<Input placeholder="" {...field} />
 													</FormControl>
@@ -617,7 +617,9 @@ export default function ExternalForm() {
 											name="commencement_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Commencement Date</FormLabel>
+													<FormLabel>
+														Commencement Date <span className="text-red-500"> *</span>
+													</FormLabel>
 													<Popover>
 														<PopoverTrigger asChild>
 															<FormControl>
@@ -661,7 +663,9 @@ export default function ExternalForm() {
 											name="completion_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Completion Date</FormLabel>
+													<FormLabel>
+														Completion Date <span className="text-red-500"> *</span>
+													</FormLabel>
 													<Popover>
 														<PopoverTrigger asChild>
 															<FormControl>
@@ -710,7 +714,9 @@ export default function ExternalForm() {
 											name="organiser"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Organiser</FormLabel>
+													<FormLabel>
+														Organiser <span className="text-red-500"> *</span>
+													</FormLabel>
 													<FormControl>
 														<Input placeholder="" {...field} />
 													</FormControl>
@@ -723,7 +729,9 @@ export default function ExternalForm() {
 											name="venue"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Venue</FormLabel>
+													<FormLabel>
+														Venue <span className="text-red-500"> *</span>
+													</FormLabel>
 													<FormControl>
 														<Input placeholder="" {...field} />
 													</FormControl>
@@ -736,7 +744,9 @@ export default function ExternalForm() {
 											name="hrdf_claimable"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>HDRF Claimable</FormLabel>
+													<FormLabel>
+														HDRF Claimable <span className="text-red-500"> *</span>
+													</FormLabel>
 													<Select onValueChange={field.onChange} value={field.value}>
 														<FormControl>
 															<SelectTrigger>
@@ -771,7 +781,9 @@ export default function ExternalForm() {
 														name="flight_date"
 														render={({ field }) => (
 															<FormItem>
-																<FormLabel>Flight Date</FormLabel>
+																<FormLabel>
+																	Flight Date <span className="text-red-500"> *</span>
+																</FormLabel>
 																<Popover>
 																	<PopoverTrigger asChild>
 																		<FormControl>
@@ -815,7 +827,9 @@ export default function ExternalForm() {
 														name="flight_time"
 														render={({ field }) => (
 															<FormItem>
-																<FormLabel>Flight Time</FormLabel>
+																<FormLabel>
+																	Flight Time <span className="text-red-500"> *</span>
+																</FormLabel>
 																<FormControl>
 																	<Input type="time" {...field} value={field.value || ""} />
 																</FormControl>
@@ -830,7 +844,9 @@ export default function ExternalForm() {
 													name="flight_number"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Flight Number</FormLabel>
+															<FormLabel>
+																Flight Number <span className="text-red-500"> *</span>
+															</FormLabel>
 															<FormControl>
 																<Input {...field} />
 															</FormControl>
@@ -846,7 +862,9 @@ export default function ExternalForm() {
 															name="destination_from"
 															render={({ field }) => (
 																<FormItem>
-																	<FormLabel>From</FormLabel>
+																	<FormLabel>
+																		From <span className="text-red-500"> *</span>
+																	</FormLabel>
 																	<FormControl>
 																		<Input placeholder="Sarawak" {...field} />
 																	</FormControl>
@@ -859,7 +877,9 @@ export default function ExternalForm() {
 															name="destination_to"
 															render={({ field }) => (
 																<FormItem>
-																	<FormLabel>To</FormLabel>
+																	<FormLabel>
+																		To <span className="text-red-500"> *</span>
+																	</FormLabel>
 																	<FormControl>
 																		<Input placeholder="Singapore" {...field} />
 																	</FormControl>
@@ -987,7 +1007,9 @@ export default function ExternalForm() {
 											name="hotel_name"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Hotel Name</FormLabel>
+													<FormLabel>
+														Hotel Name <span className="text-red-500"> *</span>
+													</FormLabel>
 													<FormControl>
 														<Input {...field} />
 													</FormControl>
@@ -1002,7 +1024,9 @@ export default function ExternalForm() {
 												name="check_in_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Hotel Check In</FormLabel>
+														<FormLabel>
+															Hotel Check In <span className="text-red-500"> *</span>
+														</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -1050,7 +1074,9 @@ export default function ExternalForm() {
 												name="check_out_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Hotel Check Out</FormLabel>
+														<FormLabel>
+															Hotel Check Out <span className="text-red-500"> *</span>
+														</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -1424,76 +1450,14 @@ export default function ExternalForm() {
 											/>
 										</div>
 									</div>
-
-									{/* <div className="mt-8 space-y-4">
-										<FormField
-											control={form.control}
-											name="expenditure_cap"
-											render={({ field }) => (
-												<FormItem className="space-y-3">
-													<FormLabel>
-														Any expenditure cap? If yes, please specify
-														below
-													</FormLabel>
-													<FormControl>
-														<RadioGroup
-															onValueChange={field.onChange}
-															defaultValue={field.value}
-															className="flex space-x-1">
-															<FormItem className="flex items-center space-x-3 space-y-0">
-																<FormControl>
-																	<RadioGroupItem value="Yes" />
-																</FormControl>
-																<FormLabel className="font-normal">
-																	Yes
-																</FormLabel>
-															</FormItem>
-															<FormItem className="flex items-center space-x-3 space-y-0">
-																<FormControl>
-																	<RadioGroupItem value="No" />
-																</FormControl>
-																<FormLabel className="font-normal">
-																	No
-																</FormLabel>
-															</FormItem>
-														</RadioGroup>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="expenditure_cap_amount"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Expenditure Cap Amount</FormLabel>
-													<FormControl>
-														<Input
-															disabled={
-																form.getValues("expenditure_cap") !==
-																"Yes"
-															}
-															type="number"
-															{...field}
-															onChange={e => {
-																field.onChange(
-																	Number(e.target.value),
-																);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div> */}
 								</section>
 
 								<Separator className="my-8" />
 
 								<section className="section-5" id="Supporting Documents">
-									<h1 className="text-2xl font-bold mb-4">5. Supporting Documents</h1>
+									<h1 className="text-2xl font-bold mb-4">
+										5. Supporting Documents <span className="text-red-500"> *</span>
+									</h1>
 									<FormField
 										control={form.control}
 										name="supporting_documents"
@@ -1576,7 +1540,9 @@ export default function ExternalForm() {
 												name="applicant_declaration_name"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Name</FormLabel>
+														<FormLabel>
+															Name <span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Input placeholder="" {...field} />
 														</FormControl>
@@ -1589,7 +1555,9 @@ export default function ExternalForm() {
 												name="applicant_declaration_position_title"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Position title</FormLabel>
+														<FormLabel>
+															Position title <span className="text-red-500"> *</span>
+														</FormLabel>
 														<FormControl>
 															<Input placeholder="" {...field} />
 														</FormControl>
@@ -1604,7 +1572,9 @@ export default function ExternalForm() {
 											name="applicant_declaration_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Declaration Date</FormLabel>
+													<FormLabel>
+														Declaration Date <span className="text-red-500"> *</span>
+													</FormLabel>
 													<Popover>
 														<PopoverTrigger asChild>
 															<FormControl>
@@ -1648,7 +1618,9 @@ export default function ExternalForm() {
 											name="applicant_declaration_signature"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Signature</FormLabel>
+													<FormLabel>
+														Signature <span className="text-red-500"> *</span>
+													</FormLabel>
 													<Dialog>
 														<FormControl>
 															<DialogTrigger asChild>
@@ -1705,33 +1677,35 @@ export default function ExternalForm() {
 									</div>
 								</section>
 
-								<Dialog open={open} onOpenChange={setOpen}>
-									<DialogTrigger asChild>
-										<Button type="button">Submit for Review</Button>
-									</DialogTrigger>
-									<DialogContent>
-										<DialogHeader>
-											<DialogTitle>Please re-confirm your details!</DialogTitle>
-											<DialogDescription>
-												Please confirm your email is correct: {form.getValues("email")}. <br />
-												Wrong email will result in you not receiving any updates of your form status.
-											</DialogDescription>
-										</DialogHeader>
-										<DialogFooter>
-											<DialogClose asChild>
-												<Button variant="outline">Cancel</Button>
-											</DialogClose>
-											<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
-												{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
-												Submit
-											</Button>
-										</DialogFooter>
-									</DialogContent>
-								</Dialog>
+								<div className="flex justify-end items-end gap-4">
+									<Button type="reset" onClick={formReset}>
+										Reset
+									</Button>
 
-								<Button type="reset" className="ml-4" onClick={formReset}>
-									Reset
-								</Button>
+									<Dialog open={open} onOpenChange={setOpen}>
+										<DialogTrigger asChild>
+											<Button type="button">Submit for Review</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Please re-confirm your details!</DialogTitle>
+												<DialogDescription>
+													Please confirm your email is correct: {form.getValues("email")}. <br />
+													Wrong email will result in you not receiving any updates of your form status.
+												</DialogDescription>
+											</DialogHeader>
+											<DialogFooter>
+												<DialogClose asChild>
+													<Button variant="outline">Cancel</Button>
+												</DialogClose>
+												<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
+													{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
+													Submit
+												</Button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
+								</div>
 							</form>
 						</Form>
 					</div>

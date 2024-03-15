@@ -568,29 +568,22 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [group, setGroup] = useState(true);
 	console.log(authToken);
 
-	const Document = ({ documents }: { documents?: string[] }) => {	
+	const Document = ({ documents }: { documents?: string[] }) => {
 		console.log(documents)
-		if (!documents) {
+		
+		if (documents?.length === 0 || !documents) {
+			console.log("No documents");
 			return null;
 		}
 	
 		return (
 			<>
-			<Link href={documents[0]} target="_blank" className="flex gap-2 p-2 items-start">
-				<BsFiletypePdf className="w-6 h-6 text-red-500" />
-				{documents[0].split("_").slice(1).join("_")}
-			</Link>
-			{documents.map((data: string) => {
-				<>
-				<h1>Stupid stuff</h1>
-				<Link href={data} target="_blank" className="flex gap-2 p-2 items-start">
-					<BsFiletypePdf className="w-6 h-6 text-red-500" />
-					{data.split("_").slice(1).join("_")}
-				</Link>
-				</>
-				
-				}
-			)}
+				{documents.map((data: string) => (
+					<Link href={data} target="_blank" className="flex gap-2 p-2 items-start" key={data}>
+						<BsFiletypePdf className="w-6 h-6 text-red-500" />
+						{data.split("_").slice(1).join("_")}
+					</Link>
+				))}
 			</>
 		);
 	};
@@ -633,35 +626,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						</div>
 					</div>
 					<hr className="mt-8" />
-					<div className="grid grid-cols-[240px_auto] gap-8 items-start">
-						<div className="sticky space-y-8 h-[100dvh] top-0 px-8 py-8">
-							<a className="block" href="#Personal Details">
-								Personal Details
-							</a>
-							<a className="block" href="#Travel Details">
-								Travel Details
-							</a>
-							<a className="block" href="#Logistic Arrangement">
-								Logistic Arrangement
-							</a>
-							<a className="block" href="#Funding">
-								Funding
-							</a>
-							<a className="block" href="#Supporting Documents">
-								Supporting Documents
-							</a>
-							<a className="block" href="#Applicant Declaration">
-								Applicant Declaration
-							</a>
-							<a className="block" href="#Verification">
-								Verification
-							</a>
-							<a className="block" href="#Approval">
-								Approval
-							</a>
-						</div>
+					<div className="grid gap-8 place-items-center">
 						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 w-full">
+							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
 								<section className="section-1" id="Personal Details">
 									<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 									<div className="grid gap-8">

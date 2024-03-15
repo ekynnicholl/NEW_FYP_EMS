@@ -19,7 +19,10 @@ const adminExternalFormSchema = z
 			.min(1, {
 				message: "Email is required",
 			}),
-		full_name: z.string().min(1, { message: "Name is required" }).toUpperCase(),
+		full_name: z
+			.string()
+			.min(1, { message: "Name is required" })
+			.toUpperCase(),
 		staff_id: z.string().min(1, { message: "Staff ID / Student No. is required" }),
 		course: z.string().min(1, { message: "Designation / Course is required" }),
 		faculty: z.string().min(1, { message: "Faculty is required" }),
@@ -28,9 +31,7 @@ const adminExternalFormSchema = z
 		other_members: z.string().optional(),
 
 		// Section 2
-		program_title: z
-			.string()
-			.min(1, { message: "Program / Event title is required" }),
+		program_title: z.string().min(1, { message: "Program / Event title is required" }),
 		program_description: z.string().optional(),
 		commencement_date: z
 			.date({
@@ -43,18 +44,39 @@ const adminExternalFormSchema = z
 		}),
 		organiser: z.string().min(1, { message: "Organiser is required" }),
 		venue: z.string().min(1, { message: "Venue is required" }),
-		hrdf_claimable: z
-			.string()
-			.min(1, { message: "Please select one of the option." }),
+		hrdf_claimable: z.string().min(1, { message: "Please select one of the option." }),
 
 		// Section 3
-		flight_date: z.date().optional().nullable(),
-		flight_time: z.string().optional(),
+		flight_date: z
+			.date()
+			.optional()
+			.nullable(),
+		flight_time: z
+			.string()
+			.optional()
+			.nullable(),
 		flight_number: z.string().optional(),
 		destination_from: z.string().optional(),
 		destination_to: z.string().optional(),
-		check_in_date: z.date().optional().nullable(),
-		check_out_date: z.date().optional().nullable(),
+		transit_flight_date: z
+			.date()
+			.optional()
+			.nullable(),
+		transit_flight_time: z
+			.string()
+			.optional()
+			.nullable(),
+		transit_flight_number: z.string().optional(),
+		transit_destination_from: z.string().optional(),
+		transit_destination_to: z.string().optional(),
+		check_in_date: z
+			.date()
+			.optional()
+			.nullable(),
+		check_out_date: z
+			.date()
+			.optional()
+			.nullable(),
 		hotel_name: z.string().optional(),
 
 		// // Section 4
@@ -116,8 +138,7 @@ const adminExternalFormSchema = z
 			.optional(),
 
 		// Section 5
-		supporting_documents: z
-			.any(),
+		supporting_documents: z.any(),
 		// .optional()
 		// .refine(
 		// 	fileList => {
@@ -136,12 +157,8 @@ const adminExternalFormSchema = z
 		// ),
 
 		// Section 6
-		applicant_declaration_name: z
-			.string()
-			.min(1, { message: "Applicant name is required" }),
-		applicant_declaration_position_title: z
-			.string()
-			.min(1, { message: "Position title is required" }),
+		applicant_declaration_name: z.string().min(1, { message: "Applicant name is required" }),
+		applicant_declaration_position_title: z.string().min(1, { message: "Position title is required" }),
 		applicant_declaration_date: z.date({
 			required_error: "Declaration date is required.",
 			invalid_type_error: "Oops that's not a date!",
