@@ -170,6 +170,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		},
 		{
 			accessorKey: "created_at",
+			sortingFn: "datetime",
 			header: ({ column }) => {
 				return (
 					<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
