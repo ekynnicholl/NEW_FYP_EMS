@@ -7,8 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import SignaturePad from "react-signature-canvas";
+
 import Image from "next/image";
 import SuccessIMG from "@/public/images/success_image.jpg";
 
@@ -55,7 +56,7 @@ const showSuccessToast = (message: string) => {
 	});
 };
 
-export default function ExternalForm() {
+export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 	const supabase = createClientComponentClient();
 	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
@@ -66,7 +67,6 @@ export default function ExternalForm() {
 
 	const [group, setGroup] = useState(false);
 	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(null);
-	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -151,8 +151,10 @@ export default function ExternalForm() {
 			form.setValue("check_out_date", parsedForm.check_out_date ? new Date(parsedForm.check_out_date) : null);
 			form.setValue("applicant_declaration_date", new Date(parsedForm.applicant_declaration_date));
 			setUseOwnTransport(parsedForm.transport === "own transport" || parsedForm.transport === "company vehicle");
+
+			toast.success("Form content loaded from previous session");
 		}
-	}, []);
+	}, [form]);
 
 	const checkFormStatus = () => {
 		setOpen(false);
@@ -242,7 +244,7 @@ export default function ExternalForm() {
 		if (form.formState.isDirty) {
 			sessionStorage.setItem("form", JSON.stringify(form.getValues()));
 		}
-	}, [form.formState]);
+	}, [form, form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		console.log("Form sent");
@@ -332,32 +334,6 @@ export default function ExternalForm() {
 			// window.location.reload();
 		}
 	}
-
-	useEffect(() => {
-		const fetchFacultyOptions = async () => {
-			const { data, error } = await supabase
-				.from("attendance_settings")
-				.select("attsName")
-				.eq("attsType", 1)
-				.order("attsName", { ascending: true });
-
-			if (error) {
-				console.error("Error fetching faculty options:", error.message);
-				return;
-			}
-
-			const facultyNames = data.map(item => item.attsName);
-			setFacultyOptions(facultyNames);
-
-			const savedForm = sessionStorage.getItem("form");
-			if (savedForm) {
-				const parsedForm = JSON.parse(savedForm);
-				form.setValue("faculty", parsedForm.faculty);
-			}
-		};
-
-		fetchFacultyOptions();
-	}, []);
 
 	return (
 		<div>
@@ -476,7 +452,7 @@ export default function ExternalForm() {
 																	<SelectValue placeholder="Please select an option" />
 																</SelectTrigger>
 																<SelectContent className="h-[300px] overflow-y-auto">
-																	{facultyOptions.map((faculty, index) => (
+																	{faculties.map((faculty, index) => (
 																		<SelectItem key={index} value={faculty}>
 																			{faculty}
 																		</SelectItem>
@@ -1505,18 +1481,12 @@ export default function ExternalForm() {
 													{form.getValues("supporting_documents") &&
 														Array.from(form.getValues("supporting_documents")!).map((file: any) => (
 															<div key={file.name}>
-																{// extract the extension of the document "process.pdf", remember the last index of the dot and add 1 to get the extension
-																file.name.slice(file.name.lastIndexOf(".") + 1) === "pdf" ? (
+																{
 																	<div className="flex gap-2 p-2 items-start">
 																		<BsFiletypePdf className="w-6 h-6 text-red-500" />
 																		{file.name}
 																	</div>
-																) : (
-																	<div className="flex gap-2 p-2 items-start">
-																		<SiMicrosoftword className="w-6 h-6 text-blue-500" />
-																		{file.name}
-																	</div>
-																)}
+																}
 															</div>
 														))}
 												</div>

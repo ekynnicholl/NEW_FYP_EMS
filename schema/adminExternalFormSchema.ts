@@ -33,15 +33,12 @@ const adminExternalFormSchema = z
 		// Section 2
 		program_title: z.string().min(1, { message: "Program / Event title is required" }),
 		program_description: z.string().optional(),
-		commencement_date: z
-			.date({
-				required_error: "Please select a date.",
-				invalid_type_error: "Oops that's not a date!",
-			})
-			.min(today, { message: "Date must be today or in the future." }),
-		completion_date: z.date().refine(val => val >= today, {
-			message: "Date must be today or in the future.",
+		commencement_date: z.date({
+			required_error: "Please select a date.",
+			invalid_type_error: "Oops that's not a date!",
 		}),
+		// .min(today, { message: "Date must be today or in the future." }),
+		completion_date: z.date(),
 		organiser: z.string().min(1, { message: "Organiser is required" }),
 		venue: z.string().min(1, { message: "Venue is required" }),
 		hrdf_claimable: z.string().min(1, { message: "Please select one of the option." }),

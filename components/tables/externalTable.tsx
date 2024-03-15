@@ -207,14 +207,16 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									const formId = row.original.id;
 									const newTab = window.open(`${url}/form/external_review/${formId}`, "_blank");
 									newTab?.focus();
-								}}>
+								}}
+							>
 								View
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									setOpen(true);
 									setSelectedRow(row.original);
-								}}>
+								}}
+							>
 								Undo Action
 							</DropdownMenuItem>
 							<DropdownMenuSub>
@@ -293,7 +295,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729] mr-5"
 					onClick={() => {
 						setShowQRCodesNTF(true);
-					}}>
+					}}
+				>
 					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
 						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
 						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
@@ -306,7 +309,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
 					onClick={() => {
 						setShowQRCodesNTFList(true);
-					}}>
+					}}
+				>
 					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
 						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
 						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
@@ -316,7 +320,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				</button>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="outline" className="ml-auto dark:text-dark_text border dark:border-[#363B3D]">
+						<Button variant="outline" className="ml-auto dark:text-dark_text">
 							Columns <ChevronDown className="ml-2 h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
@@ -330,7 +334,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 										key={column.id}
 										className="capitalize"
 										checked={column.getIsVisible()}
-										onCheckedChange={value => column.toggleVisibility(!!value)}>
+										onCheckedChange={value => column.toggleVisibility(!!value)}
+									>
 										{column.id
 											.split("_")
 											.map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -341,14 +346,14 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
-			<div className="rounded-md border border-[#323638]">
+			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map(header => {
 									return (
-										<TableHead key={header.id} className="text-center bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1] border border-[#323638]">
+										<TableHead key={header.id} className="text-center bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1]">
 											{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
 										</TableHead>
 									);
@@ -359,7 +364,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map(row => (
-								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="text-center dark:bg-dark_mode_card dark:text-dark_text border border-[#323638]">
+								<TableRow
+									key={row.id}
+									data-state={row.getIsSelected() && "selected"}
+									className="text-center dark:bg-dark_mode_card dark:text-dark_text"
+								>
 									{row.getVisibleCells().map(cell => (
 										<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
 									))}
@@ -388,13 +397,18 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 			<Modal isVisible={showQRCodesNTF} onClose={() => setShowQRCodesNTF(false)}>
 				<div className="ml-2 p-5 z-[999]">
-					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">Nominations/ Travelling Forms</p>
-					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">This is where the staff can access to submit their forms.</p>
+					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+						Nominations/ Travelling Forms
+					</p>
+					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
+						This is where the staff can access to submit their forms.
+					</p>
 					<div className="flex flex-col items-center justify-center">
 						<QRCodeSVG className="bg-white p-1" value={`${url}/form/external`} />
 						<button
 							onClick={() => copyToClipboard(`${url}/form/external`)}
-							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
+							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+						>
 							Copy Link
 						</button>
 					</div>
@@ -403,13 +417,18 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 			<Modal isVisible={showQRCodesNTFList} onClose={() => setShowQRCodesNTFList(false)}>
 				<div className="ml-2 p-5 z-[999]">
-					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">View Nominations/ Travelling Forms List</p>
-					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">This is where the staff is able to access their past submitted forms.</p>
+					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+						View Nominations/ Travelling Forms List
+					</p>
+					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
+						This is where the staff is able to access their past submitted forms.
+					</p>
 					<div className="flex flex-col items-center justify-center">
 						<QRCodeSVG className="bg-white p-1" value={`${url}/attended_events`} />
 						<button
 							onClick={() => copyToClipboard(`${url}/attended_events`)}
-							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
+							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+						>
 							Copy Link
 						</button>
 					</div>
@@ -437,7 +456,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 												field.onChange(e);
 												field.value = e;
 												console.log("field value: ", field.value);
-											}}>
+											}}
+										>
 											<FormControl>
 												<SelectTrigger>
 													<SelectValue placeholder="Choose an option" />
@@ -477,9 +497,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									<Button variant="outline">Cancel</Button>
 								</DialogClose>
 								<DialogClose asChild>
-									<Button
-										type="submit"
-										disabled={form.getValues("undoOption") === "" ? true : false}>
+									<Button type="submit" disabled={form.getValues("undoOption") === "" ? true : false}>
 										Confirm Undo
 									</Button>
 								</DialogClose>

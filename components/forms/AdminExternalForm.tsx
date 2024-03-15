@@ -45,6 +45,39 @@ import { sendContactForm } from "@/lib/api";
 import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
 
+const showSuccessToast = (message: string) => {
+	toast.success(message, {
+		duration: 3500,
+		style: {
+			border: "1px solid #86DC3D",
+			padding: "16px",
+			color: "#000000",
+			textAlign: "justify",
+		},
+		iconTheme: {
+			primary: "#86DC3D",
+			secondary: "#FFFAEE",
+		},
+	});
+};
+
+const Document = ({ documents }: { documents?: string[] }) => {		
+	if (documents?.length === 0 || !documents) {
+		return null;
+	}
+
+	return (
+		<>
+			{documents.map((data: string) => (
+				<Link href={data} target="_blank" className="flex gap-2 p-2 items-start" key={data}>
+					<BsFiletypePdf className="w-6 h-6 text-red-500" />
+					{data.split("_").slice(1).join("_")}
+				</Link>
+			))}
+		</>
+	);
+};
+
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 	const supabase = createClientComponentClient();
@@ -75,15 +108,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	// Real-time security key validation,
 	const [securityKeyError, setSecurityKeyError] = useState(false);
 
-	// // Fetch the current stage of the form to capture whether the stage has changed to submit email,
+	// Fetch the current stage of the form to capture whether the stage has changed to submit email,
 	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
-
-	// useEffect(() => {
-	// 	if (externalForm.formStage != fetchedFormStage) {
-	// 		console.log(externalForm);
-	// 		sendContactForm(externalForm);
-	// 	}
-	// }, [externalForm.formStage]);
 
 	const applicantSigCanvas = useRef({});
 	const applicantSigClear = (field: FieldValues) => {
@@ -110,22 +136,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		setApprovalImageURL(null);
 		field.onChange("");
 		field.value = "";
-	};
-
-	const showSuccessToast = (message: string) => {
-		toast.success(message, {
-			duration: 3500,
-			style: {
-				border: "1px solid #86DC3D",
-				padding: "16px",
-				color: "#000000",
-				textAlign: "justify",
-			},
-			iconTheme: {
-				primary: "#86DC3D",
-				secondary: "#FFFAEE",
-			},
-		});
 	};
 
 	const [verificationDate, setVerificationDate] = useState<Date | null>(
@@ -184,13 +194,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			venue: externalForm.venue!,
 			hrdf_claimable: externalForm.hrdf_claimable!,
 
-			flight_date: externalForm.flight_date ? new Date(externalForm.flight_date) : undefined,
-			flight_time: externalForm.flight_time ?? undefined,
+			flight_date: externalForm.flight_date ? new Date(externalForm.flight_date) : null,
+			flight_time: externalForm.flight_time ?? null,
 			flight_number: externalForm.flight_number!,
 			destination_from: externalForm.destination_from!,
 			destination_to: externalForm.destination_to!,
-			check_in_date: externalForm.check_in_date ? new Date(externalForm.check_in_date) : undefined,
-			check_out_date: externalForm.check_out_date ? new Date(externalForm.check_out_date) : undefined,
+			check_in_date: externalForm.check_in_date ? new Date(externalForm.check_in_date) : null,
+			check_out_date: externalForm.check_out_date ? new Date(externalForm.check_out_date) : null,
 			hotel_name: externalForm.hotel_name!,
 
 			course_fee: externalForm.course_fee!,
@@ -210,7 +220,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			expenditure_cap: externalForm.expenditure_cap!,
 			expenditure_cap_amount: externalForm.expenditure_cap_amount!,
 
-			supporting_documents: externalForm.supporting_documents ?? undefined,
+			supporting_documents: externalForm.supporting_documents ?? null,
 
 			applicant_declaration_signature: externalForm.applicant_declaration_signature!,
 			applicant_declaration_name: externalForm.applicant_declaration_name!,
@@ -568,26 +578,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [group, setGroup] = useState(true);
 	console.log(authToken);
 
-	const Document = ({ documents }: { documents?: string[] }) => {
-		console.log(documents)
-		
-		if (documents?.length === 0 || !documents) {
-			console.log("No documents");
-			return null;
-		}
-	
-		return (
-			<>
-				{documents.map((data: string) => (
-					<Link href={data} target="_blank" className="flex gap-2 p-2 items-start" key={data}>
-						<BsFiletypePdf className="w-6 h-6 text-red-500" />
-						{data.split("_").slice(1).join("_")}
-					</Link>
-				))}
-			</>
-		);
-	};
-
 	return (
 		<div>
 			{/* TO-DO: ADD 3 MORE ADDITIONAL FIELDS. I DON'T THINK THIS EXIST IN THE DATABASE YET. */}
@@ -637,7 +627,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="email"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Email</FormLabel>
+													<FormLabel>Email <span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
 														<Input
 															disabled={externalForm.formStage != 1}
@@ -655,7 +645,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="full_name"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Full Name (Same as I.C / Passport)</FormLabel>
+														<FormLabel>Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -672,7 +662,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="staff_id"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Staff ID / Student No.</FormLabel>
+														<FormLabel>Staff ID / Student No. <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -689,7 +679,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="course"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Designation / Course</FormLabel>
+														<FormLabel>Designation / Course <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -706,7 +696,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="faculty"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Faculty / School / Unit</FormLabel>
+														<FormLabel>Faculty / School / Unit <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -723,7 +713,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="transport"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Type of Transportation</FormLabel>
+														<FormLabel>Type of Transportation <span className="text-red-500"> *</span></FormLabel>
 														<Select
 															disabled={externalForm.formStage != 1}
 															onValueChange={field.onChange}
@@ -748,7 +738,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="travelling"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Traveling in</FormLabel>
+														<FormLabel>Traveling in <span className="text-red-500"> *</span></FormLabel>
 														<Select
 															disabled={externalForm.formStage != 1}
 															onValueChange={e => {
@@ -781,7 +771,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="other_members"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Name of other staff / student traveling together in group</FormLabel>
+														<FormLabel>Name of other staff / student traveling together in group <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input className="disabled:text-black-500 disabled:opacity-100" {...field} />
 														</FormControl>
@@ -803,7 +793,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="program_title"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Program title / Event</FormLabel>
+													<FormLabel>Program title / Event <span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
 														<Input
 															disabled={externalForm.formStage != 1}
@@ -820,7 +810,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="program_description"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Description</FormLabel>
+													<FormLabel>Description <span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
 														<Input
 															disabled={externalForm.formStage != 1}
@@ -837,7 +827,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="commencement_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Commencement Date</FormLabel>
+													<FormLabel>Commencement Date <span className="text-red-500"> *</span></FormLabel>
 													<Popover>
 														<PopoverTrigger asChild>
 															<FormControl>
@@ -882,7 +872,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="completion_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Completion Date</FormLabel>
+													<FormLabel>Completion Date <span className="text-red-500"> *</span></FormLabel>
 													<Popover>
 														<PopoverTrigger asChild>
 															<FormControl>
@@ -926,7 +916,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="organiser"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Organiser</FormLabel>
+													<FormLabel>Organiser <span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
 														<Input
 															disabled={externalForm.formStage != 1}
@@ -943,7 +933,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="venue"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Venue</FormLabel>
+													<FormLabel>Venue <span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
 														<Input
 															disabled={externalForm.formStage != 1}
@@ -960,7 +950,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="hrdf_claimable"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>HDRF Claimable</FormLabel>
+													<FormLabel>HDRF Claimable <span className="text-red-500"> *</span></FormLabel>
 													<Select
 														disabled={externalForm.formStage != 1}
 														onValueChange={field.onChange}
@@ -998,7 +988,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														name="flight_date"
 														render={({ field }) => (
 															<FormItem>
-																<FormLabel>Flight Date</FormLabel>
+																<FormLabel>Flight Date <span className="text-red-500"> *</span></FormLabel>
 																<FormControl>
 																	<Popover>
 																		<PopoverTrigger asChild>
@@ -1048,12 +1038,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														name="flight_time"
 														render={({ field }) => (
 															<FormItem>
-																<FormLabel>Flight Time</FormLabel>
+																<FormLabel>Flight Time <span className="text-red-500"> *</span></FormLabel>
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
 																		className="disabled:text-black-500 disabled:opacity-100"
 																		{...field}
+																		value={field.value || ""}
 																	/>
 																</FormControl>
 																<FormMessage />
@@ -1067,7 +1058,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													name="flight_number"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Flight Number</FormLabel>
+															<FormLabel>Flight Number <span className="text-red-500"> *</span></FormLabel>
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
@@ -1088,7 +1079,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															name="destination_from"
 															render={({ field }) => (
 																<FormItem>
-																	<FormLabel>From</FormLabel>
+																	<FormLabel>From <span className="text-red-500"> *</span></FormLabel>
 																	<FormControl>
 																		<Input
 																			disabled={externalForm.formStage != 1}
@@ -1105,7 +1096,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															name="destination_to"
 															render={({ field }) => (
 																<FormItem>
-																	<FormLabel>To</FormLabel>
+																	<FormLabel>To <span className="text-red-500"> *</span></FormLabel>
 																	<FormControl>
 																		<Input
 																			disabled={externalForm.formStage != 1}
@@ -1128,7 +1119,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="check_in_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Check In</FormLabel>
+														<FormLabel>Check In <span className="text-red-500"> *</span></FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -1172,7 +1163,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="check_out_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Check Out</FormLabel>
+														<FormLabel>Check Out <span className="text-red-500"> *</span></FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -1218,7 +1209,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="hotel_name"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Hotel</FormLabel>
+													<FormLabel>Hotel Name<span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
 														<Input
 															disabled={externalForm.formStage != 1}
@@ -1589,7 +1580,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 								<Separator className="my-8" />
 
 								<section className="section-5" id="Supporting Documents">
-									<h1 className="text-2xl font-bold mb-4">5. Supporting Documents</h1>
+									<h1 className="text-2xl font-bold mb-4">5. Supporting Documents <span className="text-red-500"> *</span></h1>
 									<FormField
 										control={form.control}
 										name="supporting_documents"
@@ -1617,7 +1608,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="applicant_declaration_name"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Name</FormLabel>
+														<FormLabel>Name <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -1634,7 +1625,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="applicant_declaration_position_title"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Position Title</FormLabel>
+														<FormLabel>Position Title <span className="text-red-500"> *</span></FormLabel>
 														<FormControl>
 															<Input
 																disabled={externalForm.formStage != 1}
@@ -1653,7 +1644,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="applicant_declaration_date"
 											render={({ field }) => (
 												<FormItem className="flex flex-col">
-													<FormLabel>Declaration Date</FormLabel>
+													<FormLabel>Declaration Date <span className="text-red-500"> *</span></FormLabel>
 													<Popover>
 														<PopoverTrigger asChild>
 															<FormControl>
@@ -1697,7 +1688,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											name="applicant_declaration_signature"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Signature</FormLabel>
+													<FormLabel>Signature <span className="text-red-500"> *</span></FormLabel>
 													<Dialog>
 														{externalForm.formStage !== 1 ? (
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
@@ -2210,7 +2201,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Verification Email</FormLabel>
-															<Select disabled={!authToken} onValueChange={field.onChange} defaultValue={field.value}>
+															<Select onValueChange={field.onChange} defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2234,7 +2225,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Approval Email</FormLabel>
-															<Select disabled={!authToken} onValueChange={field.onChange} defaultValue={field.value}>
+															<Select onValueChange={field.onChange} defaultValue={field.value}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2258,7 +2249,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										<Dialog open={revertOpen} onOpenChange={setRevertOpen}>
 											<DialogTrigger asChild>
 												<Button
-													disabled={!authToken}
 													type="button"
 													className="mr-5"
 													onClick={() => {
@@ -2304,7 +2294,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 										<Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
 											<DialogTrigger asChild>
-												<Button disabled={!authToken} type="button">
+												<Button type="button">
 													Submit for Review
 												</Button>
 											</DialogTrigger>

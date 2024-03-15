@@ -1,21 +1,16 @@
 import AdminExternalForm from "@/components/forms/AdminExternalForm";
-import Image from "next/image";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { createClient } from "@supabase/supabase-js";
 
-export default async function ExternalFormPage({ params }: { params: { ext_id: string } }) {
+export default async function ExternalFormPage({ params }: { params: { id: string } }) {
 	const cookieStore = cookies();
 	const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-	const id = params.ext_id;
-	// const supabase = createServerComponentClient({ cookies });
+	const id = params.id;
 	const { data } = await supabase
 		.from("external_forms")
 		.select("*")
 		.eq("id", id);
-
-	console.log(data);
 
 	return (
 		<div>
