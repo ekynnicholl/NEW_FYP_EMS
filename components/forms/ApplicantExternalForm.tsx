@@ -626,6 +626,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																	today.setHours(0, 0, 0, 0);
 																	return date < today;
 																}}
+																fromYear={1960}
+																toYear={2030}
 																initialFocus
 															/>
 														</PopoverContent>
