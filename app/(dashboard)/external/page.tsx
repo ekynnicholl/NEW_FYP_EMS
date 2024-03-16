@@ -10,6 +10,20 @@ export default async function ExternalPage() {
 	const { data, error } = await supabase.from("external_forms").select("*").order("created_at", { ascending: false });
 	// const { data, error } = await supabase.from("external_forms").select("*");
 
+	// const modifiedData = data?.map((form: any) => {
+	// 	// convert created_at to 2024-04-12 format, DD-MM-YYYY
+	// 	const date = new Date(form.created_at);
+	// 	const day = date.getDate();
+	// 	const month = date.getMonth() + 1;
+	// 	const year = date.getFullYear();
+	// 	const formattedDate = `${day}-${month}-${year}`;
+
+	// 	return {
+	// 		...form,
+	// 		created_at: formattedDate,
+	// 	};
+	// });
+
 	if (error) {
 		console.error(error);
 	}

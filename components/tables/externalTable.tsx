@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import Modal from "@/components/QR_Codes_Modal";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -24,6 +24,11 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+
+import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
 	Dialog,
 	DialogContent,
@@ -127,10 +132,35 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		},
 	});
 
+	const isWithinRange = (row, columnId, value) => {
+		console.log("row: ", row.getValue(columnId));
+		console.log("columnId: ", columnId);
+		console.log("value: ", value);
+
+		const date = new Date(row.getValue(columnId));
+		const [start, end] = [new Date(2024, 0, 1), new Date(2025, 0, 1)]; // value => two date input values
+
+		//If one filter defined and date is null filter it
+		if ((start || end) && !date) return false;
+		if (start && !end) {
+			return date.getTime() >= start.getTime();
+		} else if (!start && end) {
+			return date.getTime() <= end.getTime();
+		} else if (start && end) {
+			return date.getTime() >= start.getTime() && date.getTime() <= end.getTime();
+		} else return true;
+	};
+
 	const columns: ColumnDef<ExternalForm>[] = [
 		{
 			accessorKey: "full_name",
-			header: "Name (Staff ID)",
+			sortingFn: "text",
+			header: ({ column }) => (
+				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					Name (Staff ID)
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			),
 			cell: ({ row }) => {
 				const staffID = row.original.staff_id;
 				const fullName = row.original.full_name;
@@ -141,14 +171,25 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		},
 		{
 			accessorKey: "program_title",
-			header: "Program Title",
+			sortingFn: "text",
+			header: ({ column }) => (
+				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					Program Title
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			),
 			cell: ({ row }) => <div className="capitalize">{row.getValue("program_title")}</div>,
 		},
 		{
-			accessorKey: "form_status",
-			header: "Form Status",
+			accessorKey: "formStage",
+			sortingFn: "auto",
+			header: ({ column }) => (
+				<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					Form Status
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			),
 			cell: ({ row }) => {
-				// let status = row.getValue("review_status");
 				const formStage = row.original.formStage;
 
 				if (formStage === 1) {
@@ -171,6 +212,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		{
 			accessorKey: "created_at",
 			sortingFn: "datetime",
+			filterFn: isWithinRange,
 			header: ({ column }) => {
 				return (
 					<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -256,10 +298,10 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		navigator.clipboard
 			.writeText(text)
 			.then(() => {
-				alert("Link copied to clipboard!");
+				toast.success("Link copied to clipboard!");
 			})
 			.catch(error => {
-				console.error("Copy failed:", error);
+				toast.error("Copy failed:", error);
 			});
 	};
 
@@ -285,12 +327,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 	return (
 		<div className="w-full">
 			<div className="flex items-center py-4">
-				<Input
-					placeholder="Filter names..."
-					value={(table.getColumn("full_name")?.getFilterValue() as string) ?? ""}
-					onChange={event => table.getColumn("full_name")?.setFilterValue(event.target.value)}
-					className="max-w-sm mr-5"
-				/>
 				<button
 					type="button"
 					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729] mr-5"
@@ -319,6 +355,35 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						</span>
 					</span>
 				</button>
+			</div>
+			<div className="flex items-center py-2">
+				<Input
+					placeholder="Filter names..."
+					value={(table.getColumn("created_at")?.getFilterValue() as string) ?? ""}
+					onChange={event => table.getColumn("created_at")?.setFilterValue(event.target.value)}
+					className="max-w-sm mr-5"
+				/>
+
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal text-muted-foreground")}>
+							<CalendarIcon className="mr-2 h-4 w-4" />
+							<span>Select a year range</span>
+							{/* {date ? format(date, "PPP") : } */}
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent className="flex">
+						<div>
+							<DropdownMenuLabel>Start Date</DropdownMenuLabel>
+							<Input type="date" />
+						</div>
+						<div>
+							<DropdownMenuLabel>End Date</DropdownMenuLabel>
+							<Input type="date" />
+						</div>
+					</PopoverContent>
+				</Popover>
+
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="outline" className="ml-auto dark:text-dark_text">
