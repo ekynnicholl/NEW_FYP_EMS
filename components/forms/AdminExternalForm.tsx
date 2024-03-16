@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar-year";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -417,7 +417,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		try {
 			const notifDesc = message;
 			const notifType = "Nominations/ Travelling Form";
-			const notifLink = `${url}/form/external_review/${formId}`;
+			const notifLink = `/form/external/${formId}`;
 
 			const { data: notificationData, error: notificationError } = await supabase
 				.from("notifications")

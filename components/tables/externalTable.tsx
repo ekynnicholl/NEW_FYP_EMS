@@ -25,9 +25,10 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
 import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
+import { DateRange } from "react-day-picker";
 
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar-year";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -306,7 +307,13 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			});
 	};
 
-	const [date, setDate] = useState<Date>();
+	const [date, setDate] = useState<DateRange | undefined>({
+		from: new Date(2022, 0, 20),
+		to: addDays(new Date(2022, 0, 20), 20),
+	});
+	useEffect(() => {
+		console.log(date);
+	}, [date]);
 
 	const table = useReactTable({
 		data,
@@ -362,48 +369,28 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			<div className="flex items-center py-2">
 				<Input
 					placeholder="Filter names..."
-					value={(table.getColumn("created_at")?.getFilterValue() as string) ?? ""}
-					onChange={event => table.getColumn("created_at")?.setFilterValue(event.target.value)}
+					value={(table.getColumn("full_name")?.getFilterValue() as string) ?? ""}
+					onChange={event => table.getColumn("full_name")?.setFilterValue(event.target.value)}
 					className="max-w-sm mr-5"
 				/>
 
 				<Popover>
 					<PopoverTrigger asChild>
-						<Button variant={"outline"} className={cn("w-[200px] justify-start text-left font-normal text-muted-foreground")}>
+						<Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal text-muted-foreground")}>
 							<CalendarIcon className="mr-2 h-4 w-4" />
 							<span>Select a year range</span>
 							{/* {date ? format(date, "PPP") : } */}
 						</Button>
 					</PopoverTrigger>
-					<PopoverContent className="flex">
-						<div>
-							<DropdownMenuLabel>Start Date</DropdownMenuLabel>
-							<Popover>
-								<PopoverTrigger asChild>
-									<Button
-										variant={"outline"}
-										className={cn("w-[240px] justify-start text-left font-normal", !date && "text-muted-foreground")}
-									>
-										<CalendarIcon className="mr-2 h-4 w-4" />
-										{date ? format(date, "PPP") : <span>Pick a date</span>}
-									</Button>
-								</PopoverTrigger>
-								<PopoverContent align="start" className=" w-auto p-0">
-									<Calendar
-										mode="single"
-										captionLayout="dropdown-buttons"
-										selected={date}
-										onSelect={setDate}
-										fromYear={1960}
-										toYear={2030}
-									/>
-								</PopoverContent>
-							</Popover>
-						</div>
-						<div>
-							<DropdownMenuLabel>End Date</DropdownMenuLabel>
-							<Input type="date" />
-						</div>
+					<PopoverContent className="w-auto p-0">
+						<Calendar
+							mode="range"
+							captionLayout="dropdown-buttons"
+							selected={date}
+							onSelect={setDate}
+							fromYear={1960}
+							toYear={new Date().getFullYear()}
+						/>
 					</PopoverContent>
 				</Popover>
 
