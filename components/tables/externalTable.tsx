@@ -134,7 +134,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		},
 	});
 
-	const isWithinRange = (row, columnId, value) => {
+	const isWithinRange = (row: { getValue: (arg0: any) => string | number | Date; }, columnId: any, value: any) => {
 		console.log("row: ", row.getValue(columnId));
 		console.log("columnId: ", columnId);
 		console.log("value: ", value);
