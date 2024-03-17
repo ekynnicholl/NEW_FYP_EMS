@@ -265,7 +265,7 @@ const AttendanceSettings = () => {
                 </div>
             ) : (
                 <div>
-                    <p className="text-slate-900 dark:text-dark_text">Change the email options for HOS/ MGR/ ADCR/ HMU/ Dean in Nominations/ Travelling Form's (NTF) for verification and approval.</p>
+                    <p className="text-slate-900 dark:text-dark_text">Change the email options for HOS/ MGR/ ADCR/ HMU/ Dean in Nominations/ Travelling Form&apos;s (NTF) for verification and approval.</p>
                 </div>
             )}
         </div>
