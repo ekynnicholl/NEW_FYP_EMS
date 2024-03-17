@@ -59,6 +59,11 @@ type Form = {
     approval_position_title: string;
     approval_date: string;
     approval_signature: string;
+    transit_flight_date: string;
+    transit_flight_time: string;
+    transit_flight_number: string;
+    transit_destination_from: string;
+    transit_destination_to: string;
 };
 
 export default function Home({ id }: { id: string }) {
@@ -209,11 +214,11 @@ export default function Home({ id }: { id: string }) {
                                         <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.flight_number.toUpperCase()}</p>
                                         <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{capitalizeFirstLetter(details.destination_from)}</p>
                                         <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{capitalizeFirstLetter(details.destination_to)}</p>
-                                        <p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
-                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
-                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
-                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
-                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{""}</p>
+                                        <p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">{details.transit_flight_date}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.transit_flight_time}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">{details.transit_flight_number}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{capitalizeFirstLetter(details.transit_destination_from)}</p>
+                                        <p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">{capitalizeFirstLetter(details.transit_destination_to)}</p>
                                     </div>
                                     <div className="col-span-1 row-span-4 grid grid-cols-4 grid-rows-5">
                                         <label className="col-span-2 row-span-1  flex items-center justify-center border-b border-r border-slate-950">Date</label>
@@ -275,28 +280,28 @@ export default function Home({ id }: { id: string }) {
                                         <span className="ml-2 flex items-center">Research Fund</span>
                                     </label>
 
-                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.research_fund === "0" ? details.research_fund : ""}</p>
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.research_fund > "0" ? details.research_fund : ""}</p>
 
                                     <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1"><input type="checkbox" checked={details && details.travel_fund > "0" ? true : false} /></span>
                                         <span className="ml-2">Travel / Accommodation Fund</span>
                                     </label>
 
-                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.travel_fund === "0" ? details.travel_fund : ""}</p>
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.travel_fund > "0" ? details.travel_fund : ""}</p>
 
                                     <label className="relative inline-flex col-span-2 whitespace-nowrap border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[4.5px] px-1 pt-1"><input type="checkbox" checked={details && details.student_council_fund > "0" ? true : false} /></span>
                                         <span className="ml-2 flex items-center">Student Council / Student Welfare Fund</span>
                                     </label>
 
-                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.student_council_fund === "0" ? details.student_council_fund : ""}</p>
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.student_council_fund > "0" ? details.student_council_fund : ""}</p>
 
                                     <label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
                                         <span className="border-r border-slate-950 pb-[8.5px] pt-1 px-1"><input type="checkbox" checked={details && details.other_funds > "0" ? true : false} /></span>
                                         <span className="ml-2 flex items-center">Others<sup>3</sup></span>
                                     </label>
 
-                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.other_funds === "0" ? details.other_funds : ""}</p>
+                                    <p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">{details && details.other_funds > "0" ? details.other_funds : ""}</p>
 
                                     <label className="col-span-3 p-1 flex items-center border-b border-r border-slate-950 font-normal">
                                         Any expenditure cap?
@@ -358,7 +363,7 @@ export default function Home({ id }: { id: string }) {
                                     <label>Position Title<span className="ml-[14px]">:</span></label>
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_position_title} />
                                     {details && details.approval_signature === null ?
-                                        <></> : <img src={details.approval_signature} className="absolute w-9 h-9 ml-[47vh] -mt-8"/>}
+                                        <></> : <img src={details.approval_signature} className="absolute w-9 h-9 ml-[72vh] -mt-8"/>}
 
                                     <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
                                     <br />
