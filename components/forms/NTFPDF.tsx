@@ -92,7 +92,8 @@ export default function Home({ id }: { id: string }) {
         window.print();
     }
 
-    const capitalizeFirstLetter = (str: string): string => {
+    const capitalizeFirstLetter = (str: string = ''): string => {
+        if (!str) return ''; // Return an empty string if str is null, undefined, or falsy
         return str.trim() // Trim the string first to remove leading/trailing spaces
             .split(" ")
             .map((word: string): string => { // Explicitly declare 'word' as a string
@@ -103,6 +104,7 @@ export default function Home({ id }: { id: string }) {
             })
             .join(" ");
     };
+    
     
     
 
