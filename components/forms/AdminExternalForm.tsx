@@ -305,7 +305,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		// }
 
 		// Generate the security key,
-		// const securityKeyUID = uuidv4();
+		const securityKeyUID = uuidv4();
 
 		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
 		if (externalForm.formStage === 2) {
@@ -317,7 +317,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						expenditure_cap: externalForm.expenditure_cap,
 						expenditure_cap_amount: externalForm.expenditure_cap_amount,
 						revertComment: "None",
-						// securityKey: securityKeyUID,
+						securityKey: securityKeyUID,
 						formStage: 3,
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
@@ -374,7 +374,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 4,
-						// securityKey: securityKeyUID,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 
 						verification_email: values.verification_email,
@@ -407,7 +407,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 5,
-						// securityKey: securityKeyUID,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
@@ -490,6 +490,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				createNotifications(message, updatedData[0].id);
 
+				console.log(updatedData);
+
 				sendContactForm(updatedData);
 
 				router.push("/external_status");
@@ -500,7 +502,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const handleRevert = async (values: z.infer<typeof adminExternalFormSchema>) => {
-		// const securityKeyUID = uuidv4();
+		const securityKeyUID = uuidv4();
 
 		// This is for rejecting the forms by HOS/ ADCR/ MGR, Stage 3 -> Stage 6,
 		if (externalForm.formStage === 3) {
@@ -510,7 +512,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
-						// securityKey: securityKeyUID,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
@@ -540,7 +542,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					{
 						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
-						// securityKey: securityKeyUID,
+						securityKey: securityKeyUID,
 						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
@@ -576,7 +578,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						expenditure_cap: values.expenditure_cap,
 						expenditure_cap_amount: values.expenditure_cap_amount,
 						revertComment: values.revertComment,
-						// securityKey: securityKeyUID,
+						securityKey: securityKeyUID,
 						formStage: 1,
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
@@ -2209,7 +2211,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									/>
 								)}
 
-								{externalForm.formStage === 2 ? (
+								{externalForm.formStage === 2 && authToken ? (
 									<div>
 										<section className="submission-details mb-5">
 											<h1 className="text-2xl font-bold mb-4">Submission Details</h1>

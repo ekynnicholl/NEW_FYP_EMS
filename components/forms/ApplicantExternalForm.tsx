@@ -297,6 +297,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			toast.error("Error submitting form");
 		} else {
 			formReset();
+			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 			const { data: fetchedForms, error: fetchedError } = await supabase
 				.from("external_forms")
 				.select("*")
@@ -327,7 +328,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 				// Send email
 				sendContactForm(fetchedForms);
-				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+				// showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 				setFormIsSuccess(true);
 			}
 			router.refresh();
