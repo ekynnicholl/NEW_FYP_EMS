@@ -61,7 +61,7 @@ const showSuccessToast = (message: string) => {
 	});
 };
 
-const Document = ({ documents }: { documents?: string[] }) => {		
+const Document = ({ documents }: { documents?: string[] }) => {
 	if (documents?.length === 0 || !documents) {
 		return null;
 	}
@@ -238,6 +238,25 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			approval_date: approvalDate,
 		},
 	});
+
+	const [emails, setEmails] = useState<any[]>([]);
+
+	useEffect(() => {
+		const fetchEmails = async () => {
+			const { data, error } = await supabase
+				.from("external_emails")
+				.select("*");
+
+			if (error) {
+				// console.error("Error fetching emails:", error);
+				return;
+			}
+
+			setEmails(data || []);
+		};
+
+		fetchEmails();
+	}, [])
 
 	const checkFormStatus = () => {
 		setApplicantOpen(false);
@@ -2208,11 +2227,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	</SelectTrigger>
 																</FormControl>
 																<SelectContent>
-																	<SelectItem value="fypemsmaster369@gmail.com">
-																		fypemsmaster369@gmail.com
-																	</SelectItem>
-																	<SelectItem value="newfypems369@gmail.com">newfypems369@gmail.com</SelectItem>
-																	<SelectItem value="email3@gmail.com">email3@gmail.com</SelectItem>
+																	{emails
+																		.filter(email => email.extECategory === 1)
+																		.map((email, index) => (
+																			<SelectItem key={index} value={email.extEMail}>
+																				{email.extEMail}
+																			</SelectItem>
+																		))}
 																</SelectContent>
 															</Select>
 															<FormMessage />
@@ -2232,11 +2253,13 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	</SelectTrigger>
 																</FormControl>
 																<SelectContent>
-																	<SelectItem value="fypemsmaster369@gmail.com">
-																		fypemsmaster369@gmail.com
-																	</SelectItem>
-																	<SelectItem value="newfypems369@gmail.com">newfypems369@gmail.com</SelectItem>
-																	<SelectItem value="email3@gmail.com">email3@gmail.com</SelectItem>
+																	{emails
+																		.filter(email => email.extECategory === 2)
+																		.map((email, index) => (
+																			<SelectItem key={index} value={email.extEMail}>
+																				{email.extEMail}
+																			</SelectItem>
+																		))}
 																</SelectContent>
 															</Select>
 															<FormMessage />

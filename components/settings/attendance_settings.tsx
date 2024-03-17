@@ -67,21 +67,21 @@ const AttendanceSettings = () => {
         fetchFacultyOptions();
     }, [])
 
-	const fetchFacultyStudent = async () => {
-		const { data, error } = await supabase
-			.from('attendance_settings')
-			.select('*')
-			.eq('attsType', 0)
-			.order('attsName', { ascending: true });
+    const fetchFacultyStudent = async () => {
+        const { data, error } = await supabase
+            .from('attendance_settings')
+            .select('*')
+            .eq('attsType', 0)
+            .order('attsName', { ascending: true });
 
-		if (error) {
-			console.error('Error fetching faculty units:', error);
-			return;
-		}
+        if (error) {
+            console.error('Error fetching faculty units:', error);
+            return;
+        }
 
-		// const facultyStudents = data.map((item) => item.attsName);
-		setFacultyStudents(data || []);
-	};
+        // const facultyStudents = data.map((item) => item.attsName);
+        setFacultyStudents(data || []);
+    };
 
     useEffect(() => {
         fetchFacultyStudent();
@@ -278,7 +278,7 @@ const AttendanceSettings = () => {
             }
 
             setNewCategory('');
-			setSelectedOption('');
+            setSelectedOption('');
             fetchFacultyUnits();
         } catch (error) {
             console.error('Error creating new category:', error);
@@ -287,21 +287,21 @@ const AttendanceSettings = () => {
 
     const createNewFacultyStudent = async (newFacultyStudent: string) => {
         try {
-			const {data: CategoryData, error: CategoryError} = await supabase
-				.from('attendance_settings')				
-				.select('attsCategory')
-				.eq('attsType', 0)
-				.order('attsCategory', {ascending: false})
-				.limit(1);
-			
-			if(CategoryError) {
-				console.error('Error creating new faculty unit for student:', CategoryError);
-                return;
-			}
+            const { data: CategoryData, error: CategoryError } = await supabase
+                .from('attendance_settings')
+                .select('attsCategory')
+                .eq('attsType', 0)
+                .order('attsCategory', { ascending: false })
+                .limit(1);
 
-			const maxCategory = CategoryData[0]?.attsCategory || 0;
-        	
-			const { data, error } = await supabase
+            if (CategoryError) {
+                console.error('Error creating new faculty unit for student:', CategoryError);
+                return;
+            }
+
+            const maxCategory = CategoryData[0]?.attsCategory || 0;
+
+            const { data, error } = await supabase
                 .from('attendance_settings')
                 .insert({
                     attsName: newFacultyStudent,
@@ -319,7 +319,7 @@ const AttendanceSettings = () => {
 
             setNewFacultyStudent('');
             fetchFacultyStudent();
-			fetchFacultyUnits();
+            fetchFacultyUnits();
         } catch (error) {
             console.error('Error creating new faculty/unit:', error);
         }
@@ -380,19 +380,16 @@ const AttendanceSettings = () => {
                 <div className="overflow-y-auto max-h-fit">
                     <div className="overflow-y-auto max-h-[500px]">
                         <div>
-                            <p className="text-slate-900 dark:text-dark_text">Change the options for the drop-down menu for students and staff in the attendance forms.</p>
-                        </div>
-                        <div>
                             <Tab.Group>
-                                <Tab.List className="mt-3 ml-2">
+                                <Tab.List className="">
                                     <Tab
-                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
+                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 focus:outline-none
                                         ${activeTab === 'Staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
                                         onClick={() => setActiveTab('Staff')}>
                                         Staff
                                     </Tab>
                                     <Tab
-                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 
+                                        className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 focus:outline-none
                                         ${activeTab === 'Student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
                                         onClick={() => setActiveTab('Student')}>
                                         Student
@@ -509,7 +506,7 @@ const AttendanceSettings = () => {
 
                                     {/* Settings for Student */}
                                     <Tab.Panel>
-										
+
                                         <div className="border-2 p-7 mt-12 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right w-1/4">
                                             <p className="font-bold text-md">Add New Faculty / Unit</p>
                                             <input type="text"
@@ -532,17 +529,17 @@ const AttendanceSettings = () => {
                                                 defaultValue=""
                                                 className="w-full px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
                                                 required
-                                                onChange={event => { 
-                                                    handleSelectChange(event); 
-                                                    setCatFacultyID(event.target.selectedIndex); 
+                                                onChange={event => {
+                                                    handleSelectChange(event);
+                                                    setCatFacultyID(event.target.selectedIndex);
                                                 }}
-                                            >   
+                                            >
                                                 <option value="" disabled>Select Faculty/ Unit</option>
                                                 {facultyStudents.map((faculty, index) => (
                                                     <option key={index} value={faculty.attsName}>
                                                         {faculty.attsName}
                                                     </option>
-                                                ))}                                             
+                                                ))}
                                             </select>
 
                                             {selectedOption &&
@@ -570,35 +567,35 @@ const AttendanceSettings = () => {
                                                     <p className="text-lg font-semibold">{faculty.attsName}</p>
 
                                                     {categories
-                                                        .filter(cat => cat.category === faculty.attsCategory || (cat.category === 0 && (faculty.attsCategory === 1 || faculty.attsCategory === 2) ))
+                                                        .filter(cat => cat.category === faculty.attsCategory || (cat.category === 0 && (faculty.attsCategory === 1 || faculty.attsCategory === 2)))
                                                         .map(categories => (
                                                             <React.Fragment key={categories.id}>
 
                                                                 <div className="w-1/2 mt-5">
                                                                     <div className=" flex items-center justify-between border-[1px] bg-slate-800 text-white py-2 px-4 mt-2 rounded-t-md">
                                                                         <p>{categories.name}</p>
-                                                                                                                                               
-                                                                            <button className="flex cursor-pointer text-white text-2xl mr-1"
-                                                                                onClick={() => {
-                                                                                    setShowCreateOptionModal(true);
-                                                                                    setCategory(categories.name);
-                                                                                    openAddCourseModal(categories.id, index + 1);
-                                                                                }}
-                                                                            >
-                                                                                <IoIosAddCircleOutline /> 
-                                                                                <span className="text-base ml-1 mr-2">Add Course</span>
-                                                                            </button>                                                                            
-                                                                        
+
+                                                                        <button className="flex cursor-pointer text-white text-2xl mr-1"
+                                                                            onClick={() => {
+                                                                                setShowCreateOptionModal(true);
+                                                                                setCategory(categories.name);
+                                                                                openAddCourseModal(categories.id, index + 1);
+                                                                            }}
+                                                                        >
+                                                                            <IoIosAddCircleOutline />
+                                                                            <span className="text-base ml-1 mr-2">Add Course</span>
+                                                                        </button>
+
                                                                     </div>
 
                                                                     <table className="w-full shadow-sm">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-l-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4">
-                                                                                    <p className={`${categories.subcategories.length > 0 ? 'ml-0': 'ml-[155px]'}`}>Course</p>
+                                                                                    <p className={`${categories.subcategories.length > 0 ? 'ml-0' : 'ml-[155px]'}`}>Course</p>
                                                                                 </th>
                                                                                 <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-                                                                                    <p className={`${categories.subcategories.length > 0 ? 'ml-0': 'ml-[155px]'}`}>Action</p>
+                                                                                    <p className={`${categories.subcategories.length > 0 ? 'ml-0' : 'ml-[155px]'}`}>Action</p>
                                                                                 </th>
                                                                             </tr>
                                                                         </thead>
@@ -670,7 +667,6 @@ const AttendanceSettings = () => {
                                 </Tab.Panels>
                             </Tab.Group>
                         </div>
-
                     </div>
 
                     <DeleteModal
