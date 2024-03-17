@@ -309,7 +309,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			} else {
 				const notificationDescription = `A Nominations/ Travelling Form has been submitted by ${data[0].full_name} (${data[0].staff_id}).`;
 				const notificationType = "Nominations/ Travelling Form";
-				const notificationLink = `${url}/form/external_review/${data[0].id}`;
+				const notificationLink = `/form/external/${data[0].id}`;
 
 				const { data: notificationData, error: notificationError } = await supabase.from("notifications").insert([
 					{

@@ -250,7 +250,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							<DropdownMenuItem
 								onClick={() => {
 									const formId = row.original.id;
-									const newTab = window.open(`${url}/form/external_review/${formId}`, "_blank");
+									const newTab = window.open(`${url}/form/external/${formId}`, "_blank");
 									newTab?.focus();
 								}}
 							>
