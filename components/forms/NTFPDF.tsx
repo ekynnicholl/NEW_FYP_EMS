@@ -365,7 +365,7 @@ export default function Home({ id }: { id: string }) {
                                     <label>Position Title<span className="ml-[14px]">:</span></label>
                                     <input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_position_title} />
                                     {details && details.approval_signature === null ?
-                                        <></> : <img src={details.approval_signature} className="absolute w-9 h-9 ml-[72vh] -mt-8"/>}
+                                        <></> : <img src={details.approval_signature} className="absolute w-9 h-9 ml-[52vh] -mt-8"/>}
 
                                     <input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
                                     <br />
