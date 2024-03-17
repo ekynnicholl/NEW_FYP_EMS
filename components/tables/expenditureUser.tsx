@@ -154,7 +154,7 @@ const ExpenditureUser = () => {
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
                             </button>
                         </div> */}
-                        <div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
+                        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                             <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
                                 <table className="lg:w-full w-auto">
                                     <thead>
