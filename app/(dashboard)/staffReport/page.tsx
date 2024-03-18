@@ -78,7 +78,7 @@ export default function Home() {
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
         eventsAttended: string[];
-		externalEventsAttended: {programName: string; totalHours: number;}[];
+		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string;}[];
         totalHours: string;
 	}[]>([]);
 
@@ -89,7 +89,7 @@ export default function Home() {
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
         eventsAttended: string[];
-		externalEventsAttended: {programName: string; totalHours: number;}[];
+		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string;}[];
         totalHours: string;
 	}[]>([]);
 
@@ -169,7 +169,8 @@ export default function Home() {
 						.filter(event => event.staff_id === uniqueStaffID)
 						.map(event => ({
 							programName: event.program_title,
-							totalHours: event.grand_total_fees
+							totalHours: event.grand_total_fees,
+							commencementDate: event.commencement_date
 						}))
 				);		
             }
@@ -263,6 +264,7 @@ export default function Home() {
 	// Refresh data from database
 	const refreshData = async () => {
 		fetchInfos();
+		setActiveTab('all');
 	};
 
 	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
@@ -305,40 +307,40 @@ export default function Home() {
 	};
 
 
-	// go to previous page
-	const handleArrowLeftClick = () => {
-		if (currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-			setActivePage(currentPage - 1);
-		}
-	};
+	// // go to previous page
+	// const handleArrowLeftClick = () => {
+	// 	if (currentPage > 1) {
+	// 		setCurrentPage(currentPage - 1);
+	// 		setActivePage(currentPage - 1);
+	// 	}
+	// };
 
-	// go to next page
-	const handleArrowRightClick = () => {
-		if (currentPage < Math.ceil(infos.length / entriesToShow)) {
-			setCurrentPage(currentPage + 1);
-			setActivePage(currentPage + 1);
-		}
-	};
+	// // go to next page
+	// const handleArrowRightClick = () => {
+	// 	if (currentPage < Math.ceil(infos.length / entriesToShow)) {
+	// 		setCurrentPage(currentPage + 1);
+	// 		setActivePage(currentPage + 1);
+	// 	}
+	// };
 
-	// skip to the first page
-	const handleSkipToFirstPage = () => {
-		setCurrentPage(1);
-		setActivePage(1);
-	};
+	// // skip to the first page
+	// const handleSkipToFirstPage = () => {
+	// 	setCurrentPage(1);
+	// 	setActivePage(1);
+	// };
 
-	// skip to the last page
-	const handleSkipToLastPage = () => {
-		const lastPage = Math.ceil(infos.length / entriesToShow);
-		setCurrentPage(lastPage);
-		setActivePage(lastPage);
-	};
+	// // skip to the last page
+	// const handleSkipToLastPage = () => {
+	// 	const lastPage = Math.ceil(infos.length / entriesToShow);
+	// 	setCurrentPage(lastPage);
+	// 	setActivePage(lastPage);
+	// };
 
-	// Function to handle pagination button click
-	const handlePageClick = (pageNumber: number) => {
-		setCurrentPage(pageNumber);
-		setActivePage(pageNumber);
-	};
+	// // Function to handle pagination button click
+	// const handlePageClick = (pageNumber: number) => {
+	// 	setCurrentPage(pageNumber);
+	// 	setActivePage(pageNumber);
+	// };
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
@@ -493,6 +495,17 @@ export default function Home() {
 
 		fetchFacultyUnits();
 	}, []);
+
+	const generateYearOptions = () => {
+		let startYear = 2023;
+		let currentYear = new Date().getFullYear();
+
+		const options = [];
+		for (let year = startYear; year <= currentYear; year++) {
+			options.push(<option key={year} value={year}>{year}</option>);
+		}
+		return options;
+	}
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
 		
@@ -735,8 +748,8 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="flex flex-row justify-between">
-								<div>
+							<div className="flex flex-col lg:flex-row justify-between">
+								<div className="flex flex-row">
 									<button
 										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 											}`}
@@ -766,6 +779,14 @@ export default function Home() {
 										Visitor
 									</button>
 								</div>
+								
+								{/* <label htmlFor="year" className="text-light dark:text-dark_text">Year: </label>
+								<select 
+									className=""
+									id="year"
+								>
+									{generateYearOptions()}
+								</select> */}
 
 								{activeTab === "all" && (
 									<div>
@@ -773,7 +794,7 @@ export default function Home() {
 											name="facultyUnit"
 											id="facultyUnit"
 											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-xs lg:text-base w-96"
+											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
 											required
 											onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
@@ -800,7 +821,7 @@ export default function Home() {
 																	</option>
 																))))
 																
-												))}       
+												))}     
 										</select>
 									</div>
 								)}
@@ -811,7 +832,7 @@ export default function Home() {
 											name="facultyUnit"
 											id="facultyUnit"
 											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none mt-3 text-xs lg:text-base w-96"
+											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
 											required
 											onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
@@ -836,7 +857,7 @@ export default function Home() {
 											name="studentFacultyUnit"
 											id="studentFacultyUnit"
 											defaultValue=""
-											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none mt-3 text-xs lg:text-base w-96"
+											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
 											required
 											onChange={event => setSelectedFilterStudent(event.target.value)}
 										>					
@@ -862,30 +883,30 @@ export default function Home() {
 								)}
 							</div>
 
-							<div className="-mx-4 hidden sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
-								<div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
-									<table className="min-w-full leading-normal min-h-[70vh]">
+						<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                            <div className="inline-block lg:w-full shadow rounded-sm ">
+                                <table className="lg:w-full w-auto min-h-[70vh] overflow-x-auto">
 										{/* Table Header */}
 										<thead>
                                             <tr className="flex">
-                                                <th className="flex-1 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="ml-7">NO.</p>
+                                                <th className="flex-1 px-[30px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                    <p className="">NO.</p>
                                                 </th>
-                                                <th className="flex-1  py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="-ml-8">Name</p>
+                                                <th className="flex-1 px-[33px] lg:px-0 py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                    <p className="lg:-ml-2">Name</p>
                                                 </th>
-                                                <th className="flex-1 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="-ml-[56px]">Staff / Student ID</p>
+                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                    <p className="lg:ml-4">Staff / Student ID</p>
                                                 </th>
-                                                <th className="flex-1 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="-ml-[82px]">Faculty / Unit</p>
+                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                    <p className="lg:-ml-8">Faculty / Unit</p>
                                                 </th>
-                                                <th className="flex-1 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="-ml-10">Program Name(s) - Total Hours(h)</p>
+                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                    <p className="">Program Name(s) - Total Hours(h)</p>
                                                 </th>
 
-                                                <th className="flex-1 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="ml-4">Grand Total Hours(h)</p>
+                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                    <p className="lg:-ml-5">Grand Total Hours(h)</p>
                                                 </th>
                                             </tr>
                                         </thead>
@@ -893,7 +914,7 @@ export default function Home() {
                                         {/* Table Body */}
                                         <tbody>
 										{searchQuery.length > 0 && dataResults.length === 0 ? (
-                                        	<p className="text-lg text-center mt-4">No data available.</p>
+                                        	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
                                     	) : (
                                             sortedData
                                                 .slice(
@@ -915,24 +936,24 @@ export default function Home() {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="flex-1 lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
-                                                            <p className="-ml-4 text-gray-900 whitespace-no-wrap dark:text-dark_text">
+                                                        <td className="flex-1 -ml-[52px] lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
+                                                            <p className=" text-gray-900 whitespace-no-wrap dark:text-dark_text">
                                                                 {info.staffName}
                                                             </p>
                                                         </td>
-                                                        <td className="flex-1 lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
-                                                            <p className="-ml-5 text-gray-900 whitespace-no-wrap dark:text-dark_text">
+                                                        <td className="flex-1 -ml-3 lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
+                                                            <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text">
                                                                 {info.staffID}
                                                             </p>
                                                         </td>
-                                                        <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
-                                                            <p className="text-gray-900 lg:-ml-8 dark:text-dark_text">
+                                                        <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
+                                                            <p className="ml-8 text-gray-900 lg:-ml-8 dark:text-dark_text">
                                                                 {info.staffFaculty}
                                                             </p>
                                                         </td>
 
-                                                        <td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
-                                                            <p className="text-gray-900 whitespace-no-wrap lg:ml-[18px] dark:text-dark_text">
+                                                        <td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
+                                                            <p className="ml-4 text-gray-900 whitespace-no-wrap lg:ml-1 dark:text-dark_text">
                                                                 {allMainEvent
                                                                     .filter(event => info.eventsAttended.includes(event.intFID))
                                                                     .map((event, index) => (
@@ -948,8 +969,8 @@ export default function Home() {
                                                             </p>
                                                         </td>
 
-                                                        <td className="flex-1 lg:px-11 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-left">
-                                                            <p className="text-gray-900 whitespace-no-wrap lg:ml-11 dark:text-dark_text">
+                                                        <td className="flex-1 lg:px-11 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
+                                                            <p className="ml-14 text-gray-900 whitespace-no-wrap lg:ml-11 dark:text-dark_text">
                                                                 {info.totalHours}
                                                             </p>
                                                         </td>
@@ -1091,124 +1112,47 @@ export default function Home() {
 								</div>
 							</div>
 
-							{/* mobile view table*/}
-							<div className="grid grid-cols-1 gap-4 mb-12 lg:hidden">
-								{sortedData
-									.map((info, index) => (
-										<div key={info.staffID} className="bg-slate-100 p-4 rounded-lg shadow dark:bg-[#1D2021]">
-											<table className="w-full">
-												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-dark_text">
-														No.
-													</th>
-													<td className="float-right flex text-xs mt-3 px-4">
-														{(currentPage - 1) * 3 + index + 1}
-													</td>
-												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
-													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-														Name
-													</th>
-													<td className="float-right text-xs mt-3 px-4">
-														{info.staffName}
-													</td>
-												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
-													<th className="py-3 float-left text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-														Staff / Student ID
-													</th>
-													<td className="float-right text-xs mt-3 px-4">
-														{info.staffID}
-													</td>
-												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-														Faculty / Unit
-													</th>
-													<td className="float-right text-xs mt-3 px-4">
-														{info.staffFaculty}
-													</td>
-												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:text-[#B0AA9F] dark:bg-[#1D2021]">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-														Event Attended
-													</th>
-													<td className="float-right text-xs py-1 mr-4">
-														{info.totalSubEvents}
-													</td>
-												</tr>
-
-												<tr className="bg-gray-100 dark:text-sky-300 dark:bg-[#1D2021]">
-													<span className="float-right border dark:border-[#363B3D] bg-slate-200 rounded-full p-2 mt-2 dark:bg-[#242729]">
-														<p
-															onClick={() => { openModal(info.subEventsAttended.map(e => e.sub_eventsID)); }}
-															style={{ cursor: 'pointer' }}
-														>View</p>
-													</span>
-												</tr>
-											</table>
-										</div>
-									))}
-							</div>
-
+							
 							{/*mobile view pagination */}
 							<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
 								<button
 									className="opacity-70"
-									onClick={() => handleSkipToFirstPage}
+									onClick={() => handlePageChange(1)}
 									disabled={currentPage === 1}
 								>
-									<DoubleLeftArrow />
+									<MdKeyboardDoubleArrowLeft className="text-3xl"/>
 								</button>
 								<button
-									onClick={() => handleArrowLeftClick}
+									onClick={() => handlePageChange(currentPage - 1)}
 									disabled={currentPage === 1}
 									className="opacity-70"
 								>
-									<LeftArrow />
+									<MdKeyboardArrowLeft className="text-3xl"/>
 								</button>
 
 								{/* Pagination Buttons */}
 								<div className="flex">
-									{[1, 2, 3].map(pageNumber => (
-										<button
-											type="button"
-											className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-												? "text-slate-100 bg-slate-900"
-												: "text-slate-800 bg-slate-200"
-												}`}
-											key={pageNumber}
-											onClick={() => {
-												if (
-													pageNumber <=
-													Math.ceil(
-														aggregatedInfo.length /
-														entriesToShow,
-													)
-												) {
-													handlePageClick(pageNumber);
-												}
-											}}>
-											{pageNumber}
-										</button>
-									))}
+									<button
+										className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
+										onClick={() => handlePageChange(currentPage)}
+									>
+                                		{currentPage}/ {pageCount}
+                            		</button>
 								</div>
 
 								<button
-									onClick={handleArrowRightClick}
-									disabled={
-										currentPage ===
-										Math.ceil(aggregatedInfo?.length / entriesToShow)
-									}
+									onClick={() => handlePageChange(currentPage + 1)}
+									disabled={currentPage === pageCount}
 									className="opacity-70"
 								>
-									<RightArrow />
+									<MdKeyboardArrowRight className="text-3xl"/>
 								</button>
 								<button
 									className="opacity-70"
-									onClick={handleSkipToLastPage}
+									onClick={() => handlePageChange(pageCount)}
+									disabled={currentPage === pageCount}
 								>
-									<DoubleRightArrow />
+									<MdKeyboardDoubleArrowRight className="text-3xl"/>
 								</button>
 							</div>
 						</div>
@@ -1216,31 +1160,23 @@ export default function Home() {
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<div>
-						<Tab.Group>
-                            <Tab.List className="mt-3 ml-2">
-                                <Tab>
-                                    Sub-Events Attended
-                                </Tab>
-                                {/* <Tab>
-                                    Nomination / Traveling Form
-                                </Tab> */}
-                            </Tab.List>
-                            <Tab.Panels>
-                                <Tab.Panel>                                    
-									<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
-										<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
+						
+							<p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p>
+                                                               
+									<div className="p-5 bg-slate-100 h-[520px] w-[360px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-x-auto dark:bg-dark_mode_bg">
+										<table className="leading-normal lg:w-[1090px] ml-4 dark:bg-[#1D2021]">
 											<thead>
 												<tr className="flex">
-													<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+													<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 														NO.
 													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+													<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 														Main Event
 													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 														Sub-Event Session
 													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
 														Start Date 
 													</th>
 												</tr>
@@ -1252,7 +1188,7 @@ export default function Home() {
 															key={index}
 															onClick={() => setShowModal(true)}>
 
-															<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
+															<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
 																<div>
 																	<div className="ml-[2px]">
 																		<p className="text-gray-900 dark:text-dark_text">
@@ -1261,20 +1197,20 @@ export default function Home() {
 																	</div>
 																</div>
 															</td>
-															<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
+															<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
 																<p className="text-gray-900 dark:text-dark_text">
 																	{mainEventAttended[index]?.intFEventName || "N/A"}
 																</p>
 															</td>
 
-															<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
-																<p className="text-gray-900 ml-1 dark:text-dark_text">
+															<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+																<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
 																	{subEvent.sub_eventsName}
 																</p>
 															</td>
 
-															<td className="flex-1 px-3 py-5 text-xs lg:text-md">
-																<p className="text-gray-900 -ml-2 dark:text-dark_text">
+															<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+																<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
 																	{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
 																</p>
 															</td>
@@ -1283,116 +1219,6 @@ export default function Home() {
 											</tbody>
 										</table>
 									</div>
-                                </Tab.Panel>
-								{/* <Tab.Panel>
-								<div className="p-5 bg-slate-100 h-[520px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-auto dark:bg-dark_mode_bg">
-										<table className="leading-normal w-[1090px] ml-4 hidden lg:table dark:bg-[#1D2021]">
-											<thead>
-												<tr className="flex">
-													<th className="flex-1 pl-[33px] px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														NO.
-													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Program Title
-													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Form Status
-													</th>
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Submitted At
-													</th>
-
-													<th className="flex-1 pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Action
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{subEventsAttended
-													.map((subEvent, index) => (
-														<tr className="flex"
-															key={index}
-															onClick={() => setShowModal(true)}>
-
-															<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-8">
-																<div>
-																	<div className="ml-[2px]">
-																		<p className="text-gray-900 dark:text-dark_text">
-																			{index + 1}
-																		</p>
-																	</div>
-																</div>
-															</td>
-															<td className="flex-1 py-5 text-xs lg:text-md -ml-24">
-																<p className="text-gray-900 dark:text-dark_text">
-																	{mainEventAttended[index]?.intFEventName || "N/A"}
-																</p>
-															</td>
-
-															<td className="flex-1 px-3 py-5 text-xs lg:text-md ">
-																<p className="text-gray-900 ml-1 dark:text-dark_text">
-																	{subEvent.sub_eventsName}
-																</p>
-															</td>
-
-															<td className="flex-1 px-3 py-5 text-xs lg:text-md">
-																<p className="text-gray-900 -ml-2 dark:text-dark_text">
-																	{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-																</p>
-															</td>
-														</tr>
-													))}
-											</tbody>
-										</table>
-									</div>
-                                </Tab.Panel> */}
-							</Tab.Panels>
-						</Tab.Group>
-						{/* <p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p> */}
-						
-
-							{/* mobile view */}
-							<div className="grid grid-cols-1 gap-4 lg:hidden">
-								{subEventsAttended
-									.map((subEvent, index) => (
-										<div key={index} className="bg-slate-100 p-4 rounded-lg overflow-auto shadow">
-											<table className="overflow-auto min-w-full leading-normal">
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-														No.
-													</th>
-													<td className="float-right flex text-xs mt-3 px-4">
-														{index + 1}
-													</td>
-												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-														Main Event
-													</th>
-													<td className="float-right flex text-xs mt-3 px-4">
-														{mainEventAttended[index]?.intFEventName || "N/A"}
-													</td>
-												</tr>
-												<tr className="border-b-2 border-gray-200 bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-														Sub-Event Session
-													</th>
-													<td className="float-right flex text-xs mt-3 px-4">
-														{subEvent.sub_eventsName}
-													</td>
-												</tr>
-												<tr className="bg-gray-100">
-													<th className="py-3 float-left text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-														Start Date
-													</th>
-													<td className="float-right flex text-xs mt-3 px-4">
-														{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-													</td>
-												</tr>
-											</table>
-										</div>
-									))}
-							</div>
 						</div>
 
 					</EventModal>
