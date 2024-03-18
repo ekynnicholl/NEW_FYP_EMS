@@ -4169,7 +4169,7 @@ export default function Homepage() {
 
 										if (filteredSubEvent) {
 											openModal(
-												"https://source.unsplash.com/600x300?beers",
+												swinburneLogo.src,
 												latestEvent[5]?.intFID,
 												latestEvent[5]?.intFEventName,
 												latestEvent[5]?.intFEventDescription,
@@ -4218,7 +4218,7 @@ export default function Homepage() {
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
 											<img
-												src="https://source.unsplash.com/600x300?beers"
+												src="/swinburne_logo.png"
 												alt="Random"
 												className="w-full h-full object-cover"
 											/>
