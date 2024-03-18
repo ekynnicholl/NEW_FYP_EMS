@@ -271,12 +271,18 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 				});
 
 				if (upload.data?.path) {
-					documentPaths.push(upload.data.path);
+					console.log(upload.data.path);
 				}
+
+				const { data } = supabase.storage.from("supporting_documents").getPublicUrl(upload?.data.path);
+
+				console.log(data);
 
 				if (upload.error) {
 					console.log(upload.error);
 				}
+
+				documentPaths.push(data.publicUrl);
 			}
 		}
 

@@ -134,7 +134,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		},
 	});
 
-	const isWithinRange = (row: { getValue: (arg0: any) => string | number | Date; }, columnId: any, value: any) => {
+	const isWithinRange = (row: { getValue: (arg0: any) => string | number | Date }, columnId: any, value: any) => {
 		console.log("row: ", row.getValue(columnId));
 		console.log("columnId: ", columnId);
 		console.log("value: ", value);
@@ -249,9 +249,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem
 								onClick={() => {
-									const formId = row.original.id;
-									const newTab = window.open(`${url}/form/external/${formId}`, "_blank");
-									newTab?.focus();
+									router.push(`/form/external/${row.original.id}`);
 								}}
 							>
 								View
@@ -311,9 +309,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		from: new Date(2022, 0, 20),
 		to: addDays(new Date(2022, 0, 20), 20),
 	});
-	useEffect(() => {
-		console.log(date);
-	}, [date]);
 
 	const table = useReactTable({
 		data,
@@ -379,7 +374,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						<Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal text-muted-foreground")}>
 							<CalendarIcon className="mr-2 h-4 w-4" />
 							<span>Select a year range</span>
-							{/* {date ? format(date, "PPP") : } */}
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent className="w-auto p-0">
