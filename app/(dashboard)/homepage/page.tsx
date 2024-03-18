@@ -1312,7 +1312,7 @@ export default function Homepage() {
 
 								<hr className="border-t-2 border-slate-200 my-4 w-[270px] lg:w-[505px] dark:border-[#253345]" />
 
-								<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] dark:text-dark_textbox_title">
+								{/* <p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] dark:text-dark_textbox_title">
 									Event / Course Banner
 									<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
 										*
@@ -1330,7 +1330,7 @@ export default function Homepage() {
 										</div>
 										<input id="dropzone-file" type="file" className="hidden" />
 									</label>
-								</div>
+								</div> */}
 
 								<div className="w-full pr-[11px]">
 									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] mt-2 dark:text-dark_textbox_title">
