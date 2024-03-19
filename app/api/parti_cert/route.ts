@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
 import puppeteer from 'puppeteer';
-import { GenerateCertificateParticipation } from "@/components/certificates/parti_cert";
+import { GenerateCertificateParticipation } from "@/components/certificates/parti_cert2";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,7 +11,7 @@ const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(html);
-    const pdfBuffer = await page.pdf({ landscape: true, printBackground: true });
+    const pdfBuffer = await page.pdf({ printBackground: true });
     await browser.close();
     return pdfBuffer;
 };
@@ -30,14 +30,15 @@ export async function POST(request: Request) {
 
         const atEmail = requestData.attFormsStaffEmail;
         const atEventName = requestData.eventName;
-        const atSubEventName = requestData.sub_eventsName;
+        const atSubEventName = requestData.sub_eventName;
         const atStaffID = requestData.attFormsStaffID;
-        const atStartDate = requestData.eventStartDate;
+        // const atStartDate = requestData.eventStartDate;
         const atDateSubmitted = requestData.attDateSubmitted;
         const atStaffName = requestData.attFormsStaffName;
         const atFormsID = requestData.attFormsID;
+        const atVenue = requestData.sub_eventVenue;
 
-        const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atStartDate, atDateSubmitted, atEventName);
+        const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atDateSubmitted, atEventName, atVenue);
 
         const pdfBuffer = await generatePdfFromHtml(certificateContent);
 

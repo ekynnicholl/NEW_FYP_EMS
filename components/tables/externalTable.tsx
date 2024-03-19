@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { v4 as uuidv4 } from "uuid";
 
 import Modal from "@/components/QR_Codes_Modal";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -90,15 +91,19 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 	const handleUndoAction = async (values: z.infer<typeof schema>) => {
 		if (values.undoOption != "" || parseInt(values.undoOption, 10) != selectedRow.formStage) {
+			const securityKeyUID = uuidv4();
 			console.log("Undo Action clicked!");
 			const selectedStage = parseInt(values.undoOption, 10);
 			const formID = selectedRow.id;
+
+			const securityKey = values.undoOption === "2" ? null : securityKeyUID;
 
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update({
 					formStage: values.undoOption,
 					revertComment: values.revertComment,
+					securityKey: securityKey,
 				})
 				.eq("id", formID);
 
@@ -106,7 +111,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				console.error("Error updating formStage:", error.message);
 			} else {
 				setFormData(selectedRow);
-				console.log("FormStage updated successfully:", data);
+				// console.log("FormStage updated successfully:", data);
 				showSuccessToast("Action has been submitted.");
 
 				setFormData(prevFormData => ({
@@ -114,7 +119,18 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					formStage: selectedStage,
 				}));
 
-				// sendContactForm(formData);
+				const { data: latestFormsData, error: latestFormsError } = await supabase
+					.from("external_forms")
+					.select()
+					.eq("id", formID);
+
+				if (latestFormsError) {
+					toast.error("Failed to send email. Please contact server administrator.");
+				}
+
+				console.log(latestFormsData);
+
+				sendContactForm(latestFormsData);
 
 				router.refresh();
 			}

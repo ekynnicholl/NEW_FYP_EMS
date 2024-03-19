@@ -30,6 +30,7 @@ type AttendanceDataType = {
     attFormsFacultyUnit: string;
     attDateSubmitted: string;
     sub_eventName: string;
+    sub_eventVenue: string;
 };
 
 interface Props {
@@ -80,8 +81,10 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             }
 
             const subEventNameMap: { [key: string]: string } = {};
+            const subEventVenueMap: { [key: string]: string } = {};
             subEvents.forEach(subEvent => {
                 subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+                subEventVenueMap[subEvent.sub_eventsID] = subEvent.sub_eventsVenue;
             });
 
             // Set the main ID for the, 
@@ -105,6 +108,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
                 ...attendanceItem,
                 sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+                sub_eventVenue: subEventVenueMap[attendanceItem.attFSubEventID],
             }));
 
             // Set the attendance data for the main event,
@@ -132,8 +136,10 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         }
 
         const subEventNameMap: { [key: string]: string } = {};
+        const subEventVenueMap: { [key: string]: string } = {};
         subEvents.forEach(subEvent => {
             subEventNameMap[subEvent.sub_eventsID] = subEvent.sub_eventsName;
+            subEventVenueMap[subEvent.sub_eventsID] = subEvent.sub_eventsVenue;
         });
 
         // Extract the subEventID values from the fetched sub_events
@@ -152,6 +158,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             const attendanceDataWithSubEventNames = attendanceForms.map(attendanceItem => ({
                 ...attendanceItem,
                 sub_eventName: subEventNameMap[attendanceItem.attFSubEventID],
+                sub_eventVenue: subEventVenueMap[attendanceItem.attFSubEventID],
             }));
 
             setAttendanceData(attendanceDataWithSubEventNames);
@@ -440,6 +447,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                     >
                         Refresh
                     </button>
+
                     {/* This is to loop through the attendance data. */}
                     {attendanceData && attendanceData.length > 0 ? (
                         <div className="lg:text-[16px] text-[12px]">
@@ -505,11 +513,12 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 />
                             </div>
                             <div className="h-[450px]">
-                                {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
-                                    <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
+                                {/* {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
+                                    <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID}/>
                                 ) : (
                                     <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
-                                )}
+                                )} */}
+                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} />
                             </div>
                         </div>
                     ) : (

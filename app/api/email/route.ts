@@ -53,6 +53,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
+                    Process: ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -63,7 +65,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
                     +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
                     unauthorised access or unauthorised amendment. <br/>
-                    Process: ${process}
                     </p>
                 </div>
             </body>
@@ -106,6 +107,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     ${rejectMessage}
                     <p class="no-p-m">Thank you for using our system.</p>
+                    Process: ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -116,7 +119,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
                     +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
                     unauthorised access or unauthorised amendment. <br/>
-                    Process: ${process}
                     </p>
                 </div>
             </body>
@@ -151,6 +153,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     <br/><br/>
                     <p class="no-p-m">Thank you for using our system.</p>
+                    Process: ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -161,7 +165,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
                     +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
                     unauthorised access or unauthorised amendment. <br/>
-                    Process: ${process}
                     </p>
                 </div>
             </body>
@@ -204,6 +207,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
+                    Process: ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -214,7 +219,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
                     +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
                     unauthorised access or unauthorised amendment. <br/>
-                    Process: ${process}
                     </p>
                 </div>
             </body>
@@ -251,6 +255,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
+                    Process: ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     <br/>
@@ -261,7 +267,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
                     +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
                     unauthorised access or unauthorised amendment. <br/>
-                    Process: ${process}
                     </p>
                 </div>
             </body>
@@ -295,6 +300,8 @@ export async function POST(request: Request) {
         const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
         const verificationEmail = requestData.verification_email;
         const approvalEmail = requestData.approval_email;
+        const staffName = requestData.full_name;
+        const staffID = requestData.staff_id;
 
         // Debugging statements,
         // console.log("Debugging Form Stage: " + formStage);
@@ -316,7 +323,7 @@ export async function POST(request: Request) {
 
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: "[NTF] Nominations Travelling Form",
+                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Staff to Academic Administration Office]",
                     html: generateEmailHTML("[Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
                 });
@@ -328,7 +335,7 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: "[NTF] Nominations Travelling Form",
+                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]",
                 html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey, formDetails)
             });
@@ -340,7 +347,7 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + approvalEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: "[NTF] Nominations Travelling Form",
+                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
                 html: generateEmailHTML("[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
             });
@@ -351,7 +358,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: "[NTF] Nominations Travelling Form",
+                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Rejection Email]",
                     html: generateEmailHTML("[Rejection Email]", formID, 2, requestData.revertComment)
                 });
@@ -363,7 +370,7 @@ export async function POST(request: Request) {
             // console.log("Debugging reverted comment: " + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: "[NTF] Nominations Travelling Form",
+                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Academic Administration Office to Staff]",
                 html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
             });
@@ -374,7 +381,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: "[NTF] Nominations Travelling Form",
+                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Accepted Email]",
                     html: generateEmailHTML("[Accepted Email]", formID, 3)
                 });

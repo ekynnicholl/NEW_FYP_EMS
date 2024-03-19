@@ -215,20 +215,21 @@ export default function AttendanceForm() {
 				if (error) {
 
 				} else {
-					const participationData = {
-						sub_eventsName: eventData.sub_eventsName,
-						eventName: eventData.intFEventName,
-						// eventVenue: eventData.sub_eventsVenue,
-						eventStartDate: formatDate(eventData.sub_eventsStartDate),
-						// eventEndDate: formatDate(eventData.sub_eventsEndDate),
-						attFormsStaffName: info.attFormsStaffName,
-						attFormsStaffID: info.attFormsStaffID,
-						attFormsStaffEmail: info.attFormsStaffEmail,
-						attDateSubmitted: newForms[0].attDateSubmitted,
-						attFormsID: newForms[0].attFormsID
-					};
+					// const participationData = {
+					// 	sub_eventsName: eventData.sub_eventsName,
+					// 	eventName: eventData.intFEventName,
+					// 	// eventVenue: eventData.sub_eventsVenue,
+					// 	eventStartDate: formatDate(eventData.sub_eventsStartDate),
+					// 	// eventEndDate: formatDate(eventData.sub_eventsEndDate),
+					// 	attFormsStaffName: info.attFormsStaffName,
+					// 	attFormsStaffID: info.attFormsStaffID,
+					// 	attFormsStaffEmail: info.attFormsStaffEmail,
+					// 	attDateSubmitted: newForms[0].attDateSubmitted,
+					// 	attFormsID: newForms[0].attFormsID,
+					// 	eventVenue: eventData.sub_eventsVenue
+					// };
 
-					sendParticipationCert(participationData);
+					// sendParticipationCert(participationData);
 					setFormSubmitted(true);
 				}
 			}
@@ -293,9 +294,9 @@ export default function AttendanceForm() {
 
 			// const facultyStudents = data.map((item) => item.attsName);
 			const facultyStudentsData = data.map((item: any) => ({
-                facultyName: item.attsName, 
-                facultyCategory: item.attsCategory,
-            }));
+				facultyName: item.attsName,
+				facultyCategory: item.attsCategory,
+			}));
 
 			setFacultyStudents(facultyStudentsData);
 		};
@@ -383,7 +384,7 @@ export default function AttendanceForm() {
 									<option key={index} value={subcategory.name}>
 										{subcategory.name}
 									</option>
-							))}
+								))}
 						</optgroup>
 					))
 				}

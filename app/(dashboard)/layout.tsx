@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import useViewModeStore from '@/components/zustand/viewModeStorage';
 import darkLightStorage from '@/components/zustand/darkLightStorage';
 import cookie from 'js-cookie';
-import loadingGIF from "@/public/loading_duck.gif";
+import loadingGIF from "@/public/loading_bird.gif";
 import { useRouter } from "next/navigation";
 import Chatbot from "@/components/chatbot/chatbot";
 
@@ -49,9 +49,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         <>
             {isLoading && (
-                <div className="flex flex-col justify-center items-center h-screen bg-[#e9e9eb] z-[999]">
-                    <img src={loadingGIF.src} alt="" className="w-[300px] lg:w-[420px]" />
-                    <p>- Quack Quack! - </p>
+                <div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
+                    <img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
                 </div>
             )}
             {!isLoading && isAuthenticated && (
