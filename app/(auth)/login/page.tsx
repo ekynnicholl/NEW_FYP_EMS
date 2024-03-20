@@ -12,7 +12,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from 'js-cookie';
 import ReCAPTCHA from "react-google-recaptcha";
 import toast from 'react-hot-toast';
-import loadingGIF from "@/public/loading_duck.gif";
+import loadingGIF from "@/public/loading_bird.gif";
 
 type Info = {
 	id: string
@@ -171,9 +171,8 @@ export default function Login() {
 	return (
 		<>
 			{isLoading ? (
-				<div className="flex flex-col justify-center items-center h-screen bg-[#e9e9eb] z-[999]">
-					<img src={loadingGIF.src} alt="" className="w-[300px] lg:w-[420px]" />
-					<p>- Quack Quack! - </p>
+				<div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
+					<img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
 				</div>
 			) : (
 				<div>

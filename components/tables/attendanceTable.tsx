@@ -6,10 +6,12 @@ import LeftArrow from '@/components/icons/LeftArrow';
 import exportCSV from "@/public/images/export_csv.png";
 import { BsFillTrash3Fill } from 'react-icons/bs';
 import { HiPencilAlt } from 'react-icons/hi';
-import { IoIosCloseCircleOutline} from "react-icons/io";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 import { tr } from 'date-fns/locale';
 import DeleteModal from "@/components/EditEvent_Modal";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { sendParticipationCert } from "@/lib/api";
+import toast from 'react-hot-toast';
 
 type AttendanceDataType = {
     attFormsID: string;
@@ -19,6 +21,7 @@ type AttendanceDataType = {
     attFormsFacultyUnit: string;
     attDateSubmitted: string;
     sub_eventName: string;
+    sub_eventVenue: string;
 };
 
 type FacultyUnit = {
@@ -35,6 +38,7 @@ interface Props {
     attendanceData: AttendanceDataType[];
     itemsPerPage: number;
     isAllTabActive: boolean;
+    attendanceMainEventID: string;
 }
 
 const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
@@ -106,9 +110,9 @@ const downloadCSV = (data: AttendanceDataType[]) => {
     window.URL.revokeObjectURL(url);
 };
 
-const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive }) => {
+const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID }) => {
     const supabase = createClientComponentClient();
-    
+
     const [currentPage, setCurrentPage] = useState(1);
 
     // Calculate the start and end indices for the current page
@@ -181,115 +185,133 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     const [editedStaffName, setEditedStaffName] = useState("");
     const [editedStaffID, setEditedStaffID] = useState("");
     const [editedFacultyUnit, setEditedFacultyUnit] = useState("");
-    const [deletingAttendance, setDeletingAttendance] = useState({attFormsID: "", attFormsStaffName: ""});
+    const [deletingAttendance, setDeletingAttendance] = useState({ attFormsID: "", attFormsStaffName: "" });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [attendanceInfo, setAttendanceInfo] = useState<AttendanceDataType[]>([]);
     const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
-	const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
-	const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
+    const [facultyStudents, setFacultyStudents] = useState<{ facultyName: string; facultyCategory: number; }[]>([]);
+    const [facultyUnits, setFacultyUnits] = useState<FacultyUnit[]>([]);
 
-	useEffect(() => {
-		// Function to fetch data from Supabase
-		const fetchFacultyOptions = async () => {
-			try {
-				const { data, error } = await supabase
-					.from('attendance_settings')
-					.select('attsName')
-					.eq('attsType', 1)
-					.order('attsName', { ascending: true });
+    useEffect(() => {
+        // Function to fetch data from Supabase
+        const fetchFacultyOptions = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('attendance_settings')
+                    .select('attsName')
+                    .eq('attsType', 1)
+                    .order('attsName', { ascending: true });
 
-				if (error) {
-					// console.error('Error fetching faculty options:', error.message);
-					return;
-				}
+                if (error) {
+                    // console.error('Error fetching faculty options:', error.message);
+                    return;
+                }
 
-				// Extracting only the 'attsName' values from the data
-				const facultyNames = data.map((item) => item.attsName);
+                // Extracting only the 'attsName' values from the data
+                const facultyNames = data.map((item) => item.attsName);
 
-				setFacultyOptions(facultyNames);
-			} catch (error) {
-				// console.error('Error:', error);
-			}
-		};
+                setFacultyOptions(facultyNames);
+            } catch (error) {
+                // console.error('Error:', error);
+            }
+        };
 
-		// Fetch the faculty options when the component mounts
-		fetchFacultyOptions();
-	}, [])
+        // Fetch the faculty options when the component mounts
+        fetchFacultyOptions();
+    }, [])
 
-	useEffect(() => {
-		const fetchFacultyStudent = async () => {
-			const { data, error } = await supabase
-				.from('attendance_settings')
-				// .select('attsName')
-				.select('attsCategory, attsName')
-				.eq('attsType', 0)
-				.order('attsName', { ascending: true });
+    const [eventName, setEventName] = useState<string>("");
 
-			if (error) {
-				// console.error('Error fetching faculty units:', error);
-				return;
-			}
+    useEffect(() => {
+        const fetchEventDetails = async () => {
+            const { data, error } = await supabase
+                .from("internal_events")
+                .select("intFEventName")
+                .eq("intFID", attendanceMainEventID)
 
-			// const facultyStudents = data.map((item) => item.attsName);
-			const facultyStudentsData = data.map((item: any) => ({
-                facultyName: item.attsName, 
+            if (error) {
+                return;
+            }
+
+            setEventName(data[0].intFEventName || "")
+        }
+        fetchEventDetails();
+    }, [])
+
+    useEffect(() => {
+        const fetchFacultyStudent = async () => {
+            const { data, error } = await supabase
+                .from('attendance_settings')
+                // .select('attsName')
+                .select('attsCategory, attsName')
+                .eq('attsType', 0)
+                .order('attsName', { ascending: true });
+
+            if (error) {
+                // console.error('Error fetching faculty units:', error);
+                return;
+            }
+
+            // const facultyStudents = data.map((item) => item.attsName);
+            const facultyStudentsData = data.map((item: any) => ({
+                facultyName: item.attsName,
                 facultyCategory: item.attsCategory,
             }));
 
-			setFacultyStudents(facultyStudentsData);
-		};
+            setFacultyStudents(facultyStudentsData);
+        };
 
-		fetchFacultyStudent();
-	}, []);
+        fetchFacultyStudent();
+    }, []);
 
 
-	const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
+    const [categories, setCategories] = useState<{ id: number; category: number; name: string; subcategories: { name: string; facultyUnit: number }[]; }[]>([]);
 
-	// retrieve units according categories
-	useEffect(() => {
-		const fetchFacultyUnits = async () => {
-			const { data, error } = await supabase
-				.from('attendance_settings')
-				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
-				.eq('attsType', 2)
-				.order('attsCategory, attsName');
-			// .order('attsCategory, attsPosition');
+    // retrieve units according categories
+    useEffect(() => {
+        const fetchFacultyUnits = async () => {
+            const { data, error } = await supabase
+                .from('attendance_settings')
+                .select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
+                .eq('attsType', 2)
+                .order('attsCategory, attsName');
+            // .order('attsCategory, attsPosition');
 
-			if (error) {
-				// console.error('Error fetching faculty units:', error);
-				return;
-			}
+            if (error) {
+                // console.error('Error fetching faculty units:', error);
+                return;
+            }
 
-			if (data) {
-				setFacultyUnits(data);
-				// console.log(data);
+            if (data) {
+                setFacultyUnits(data);
+                // console.log(data);
 
-				// Extract unique categories and subcategories
-				const uniqueCategories = Array.from(new Set(data
-					.filter(unit => unit.attsCategory > 0)));
+                // Extract unique categories and subcategories
+                const uniqueCategories = Array.from(new Set(data
+                    .filter(unit => unit.attsCategory > 0)));
 
-				const uniqueSubcategories = Array.from(new Set(data
-					.filter(unit => unit.attsSubcategory > 0)));
+                const uniqueSubcategories = Array.from(new Set(data
+                    .filter(unit => unit.attsSubcategory > 0)));
 
-				// Create categories array with subcategories
-				const categoriesArray = uniqueCategories.map((category) => ({
-					id: category.attsCategory,
-					category: category.attsPosition,
-					name: category.attsName,
-					subcategories: uniqueSubcategories
-						.filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
-						.map(subcategory => ({
-							name: subcategory.attsName,
-							facultyUnit: subcategory.attsFacultyUnit
-						}))
-				}));
+                // Create categories array with subcategories
+                const categoriesArray = uniqueCategories.map((category) => ({
+                    id: category.attsCategory,
+                    category: category.attsPosition,
+                    name: category.attsName,
+                    subcategories: uniqueSubcategories
+                        .filter((subcategory) => category.attsCategory === subcategory.attsSubcategory)
+                        .map(subcategory => ({
+                            name: subcategory.attsName,
+                            facultyUnit: subcategory.attsFacultyUnit
+                        }))
+                }));
 
-				setCategories(categoriesArray);
-			}
-		};
+                setCategories(categoriesArray);
+            }
+        };
 
-		fetchFacultyUnits();
-	}, []);
+        fetchFacultyUnits();
+    }, []);
 
 
     const handleEdit = (attFormsID: string, attFormsStaffID: string, attFormsStaffName: string, attFormsFacultyUnit: string) => {
@@ -303,10 +325,10 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     };
 
     const handleUpdateAttendanceData = async (formsID: string, staffID: string, staffName: string, facultyUnit: string) => {
-        try{
+        try {
             const { error } = await supabase
                 .from('attendance_forms')
-                .update({attFormsStaffName: staffName, attFormsStaffID: staffID, attFormsFacultyUnit: facultyUnit})
+                .update({ attFormsStaffName: staffName, attFormsStaffID: staffID, attFormsFacultyUnit: facultyUnit })
                 .eq('attFormsID', formsID)
 
             if (error) {
@@ -317,16 +339,16 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             setEditedStaffName('');
             setEditedFacultyUnit('');
             setUpdateOption(false);
-            
-        }catch(error){
+
+        } catch (error) {
 
         }
 
-        
+
     }
 
     const openDeleteModal = (attFormID: string, attFormsStaffName: string) => {
-        setDeletingAttendance({attFormsID: attFormID, attFormsStaffName: attFormsStaffName});
+        setDeletingAttendance({ attFormsID: attFormID, attFormsStaffName: attFormsStaffName });
         setShowDeleteModal(true);
     }
 
@@ -357,7 +379,18 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             console.log(error);
         }
     }
-    
+
+    const distributeCertificates = () => {
+        toast.success("Distributing... Please wait at least 1 minute before leaving this page. TQ.");
+        attendanceData.forEach(attendanceItem => {
+            const itemWithEventName = {
+                ...attendanceItem,
+                eventName: eventName,
+            };
+            sendParticipationCert(itemWithEventName);
+        });
+    }
+
     return (
         <div>
             {attendanceData.length > 0 ? (
@@ -366,8 +399,9 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                         <div className="mb-5">
                             <button
                                 type="button"
-                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
-                                onClick={() => downloadCSV(attendanceData)}>
+                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729] mr-3"
+                                onClick={() => downloadCSV(attendanceData)}
+                            >
                                 <img
                                     src={exportCSV.src}
                                     alt=""
@@ -375,6 +409,13 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     className="text-slate-800"
                                 />
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
+                                onClick={() => distributeCertificates()}
+                            >
+                                <span className="ml-2 text-slate-800 dark:text-dark_text">Distribute Certificates</span>
                             </button>
                         </div>
                         <table className="lg:w-full w-auto">
@@ -427,8 +468,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     defaultValue={editedFacultyUnit}
                                                     className="w-28 px-4 py-2 border border-gray-300 focus:outline-none mt-1 text-xs lg:text-base"
                                                     required
-                                                    onChange={event =>
-                                                        {setEditedFacultyUnit(event.target.value); console.log(event.target.value);}
+                                                    onChange={event => { setEditedFacultyUnit(event.target.value); console.log(event.target.value); }
                                                     }
 
                                                 >
@@ -440,7 +480,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                             {faculty}
                                                         </option>
                                                     ))}
-                                                   {facultyStudents.map((faculty) => (
+                                                    {facultyStudents.map((faculty) => (
                                                         categories
                                                             .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
                                                             .map((cat) => (
@@ -451,8 +491,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                                             {faculty.facultyName} - {subcategory.name}
                                                                         </option>
                                                                     ))))
-                                                            
-                                                    ))}                                                    
+
+                                                    ))}
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </td>
@@ -479,11 +519,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     className="border-[0.5px] rounded-md bg-slate-100 mt-2 px-3 py-2 hover:bg-slate-200 duration-300 ease-in-out"
                                                     onClick={() => { setCancelOptionUpdate(true); }}
                                                 >
-                                                     Cancel
+                                                    Cancel
                                                 </button>
                                             </td>
                                         </tr>
-                                    ):(
+                                    ) : (
                                         <tr key={attendanceItem.attFormsID}>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsStaffID}
@@ -505,7 +545,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                 {formatDate(attendanceItem.attDateSubmitted).time}
                                             </td>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                <button 
+                                                <button
                                                     onClick={() => handleEdit(attendanceItem.attFormsID, attendanceItem.attFormsStaffID, attendanceItem.attFormsStaffName, attendanceItem.attFormsFacultyUnit)}>
                                                     <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[24px] lg:text-base dark:text-dark_text2" />
                                                 </button>
@@ -514,7 +554,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                 </button>
                                             </td>
                                         </tr>
-                                )))}
+                                    )))}
                             </tbody>
                         </table>
                     </div>
@@ -625,11 +665,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                             className="border-[0.5px] rounded-md bg-white px-6 py-2 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
                             onClick={() => setShowDeleteModal(false)}>Cancel</button>
 
-                            <button
-                                className="border-2 rounded-md bg-red-600 ml-2 text-white px-6 py-2 font-semibold hover:bg-red-700 duration-300 ease-in-out"
-                                onClick={() => handleDeleteAttendanceData(deletingAttendance.attFormsID)}>Delete</button>
-                        </div>
+                        <button
+                            className="border-2 rounded-md bg-red-600 ml-2 text-white px-6 py-2 font-semibold hover:bg-red-700 duration-300 ease-in-out"
+                            onClick={() => handleDeleteAttendanceData(deletingAttendance.attFormsID)}>Delete</button>
                     </div>
+                </div>
             </DeleteModal>
         </div>
     );
