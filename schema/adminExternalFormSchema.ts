@@ -11,6 +11,10 @@ const adminExternalFormSchema = z
 		revertComment: z.string().optional(),
 		formStage: z.number().optional(),
 		securityKey: z.string().optional(),
+		total_hours: z
+			.number()
+			.optional()
+			.nullable(),
 
 		// Section 1
 		email: z
@@ -76,7 +80,7 @@ const adminExternalFormSchema = z
 			.nullable(),
 		hotel_name: z.string().optional(),
 
-		// // Section 4
+		// Section 4
 		course_fee: z
 			.number({
 				required_error: "Course fee is required.",
@@ -185,8 +189,8 @@ const adminExternalFormSchema = z
 			.optional(),
 
 		// Section 9
-		verification_email: z.string().min(1, { message: "Applicant email is required" }),
-		approval_email: z.string().min(1, { message: "Applicant email is required" }),
+		verification_email: z.string().optional(),
+		approval_email: z.string().optional(),
 	})
 	// .refine(
 	// 	data => {

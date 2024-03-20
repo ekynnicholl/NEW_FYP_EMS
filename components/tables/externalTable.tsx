@@ -262,18 +262,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							>
 								Undo Action
 							</DropdownMenuItem>
-							<DropdownMenuSub>
-								<DropdownMenuSubTrigger>
-									<span>Forward To</span>
-								</DropdownMenuSubTrigger>
-								<DropdownMenuPortal>
-									<DropdownMenuSubContent>
-										<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
-										<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
-										<DropdownMenuItem>example1@gmail.com</DropdownMenuItem>
-									</DropdownMenuSubContent>
-								</DropdownMenuPortal>
-							</DropdownMenuSub>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);

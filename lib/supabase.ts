@@ -6,30 +6,90 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
+      access_tokens: {
+        Row: {
+          atAccessToken: string | null
+          atCreatedAt: string
+          atExpiredAt: string
+          atID: string
+          atIdentifier: string | null
+          atIdentifier2: string | null
+          atUsage: string | null
+        }
+        Insert: {
+          atAccessToken?: string | null
+          atCreatedAt?: string
+          atExpiredAt?: string
+          atID?: string
+          atIdentifier?: string | null
+          atIdentifier2?: string | null
+          atUsage?: string | null
+        }
+        Update: {
+          atAccessToken?: string | null
+          atCreatedAt?: string
+          atExpiredAt?: string
+          atID?: string
+          atIdentifier?: string | null
+          atIdentifier2?: string | null
+          atUsage?: string | null
+        }
+        Relationships: []
+      }
+      approvers: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          name: string
+          type: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: number
+          name: string
+          type?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: number
+          name?: string
+          type?: string | null
+        }
+        Relationships: []
+      }
       attendance_forms: {
         Row: {
           attDateSubmitted: string | null
+          attFormsCertofParticipation: string | null
           attFormsFacultyUnit: string | null
           attFormsID: string
+          attFormsStaffEmail: string | null
           attFormsStaffID: string | null
           attFormsStaffName: string | null
           attFSubEventID: string
         }
         Insert: {
           attDateSubmitted?: string | null
+          attFormsCertofParticipation?: string | null
           attFormsFacultyUnit?: string | null
           attFormsID?: string
+          attFormsStaffEmail?: string | null
           attFormsStaffID?: string | null
           attFormsStaffName?: string | null
           attFSubEventID: string
         }
         Update: {
           attDateSubmitted?: string | null
+          attFormsCertofParticipation?: string | null
           attFormsFacultyUnit?: string | null
           attFormsID?: string
+          attFormsStaffEmail?: string | null
           attFormsStaffID?: string | null
           attFormsStaffName?: string | null
           attFSubEventID?: string
@@ -41,8 +101,62 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "sub_events"
             referencedColumns: ["sub_eventsID"]
-          }
+          },
         ]
+      }
+      attendance_settings: {
+        Row: {
+          attsCategory: number | null
+          attsDateCreated: string
+          attsFacultyUnit: number | null
+          attsID: string
+          attsName: string | null
+          attsPosition: number | null
+          attsSubcategory: number | null
+          attsType: number | null
+        }
+        Insert: {
+          attsCategory?: number | null
+          attsDateCreated?: string
+          attsFacultyUnit?: number | null
+          attsID?: string
+          attsName?: string | null
+          attsPosition?: number | null
+          attsSubcategory?: number | null
+          attsType?: number | null
+        }
+        Update: {
+          attsCategory?: number | null
+          attsDateCreated?: string
+          attsFacultyUnit?: number | null
+          attsID?: string
+          attsName?: string | null
+          attsPosition?: number | null
+          attsSubcategory?: number | null
+          attsType?: number | null
+        }
+        Relationships: []
+      }
+      external_emails: {
+        Row: {
+          extECategory: number | null
+          extECreatedAt: string
+          extEID: string
+          extEMail: string | null
+        }
+        Insert: {
+          extECategory?: number | null
+          extECreatedAt?: string
+          extEID?: string
+          extEMail?: string | null
+        }
+        Update: {
+          extECategory?: number | null
+          extECreatedAt?: string
+          extEID?: string
+          extEMail?: string | null
+        }
+        Relationships: []
       }
       external_forms: {
         Row: {
@@ -80,6 +194,7 @@ export interface Database {
           hotel_name: string | null
           hrdf_claimable: string | null
           id: string
+          last_updated: string | null
           organiser: string | null
           other_fees: number | null
           other_funds: string | null
@@ -93,8 +208,14 @@ export interface Database {
           staff_development_fund: string | null
           staff_id: string | null
           student_council_fund: string | null
-          supporting_documents: string | null
+          supporting_documents: string[] | null
+          total_hours: number | null
           total_members: number | null
+          transit_destination_from: string | null
+          transit_destination_to: string | null
+          transit_flight_date: string | null
+          transit_flight_number: string | null
+          transit_flight_time: string | null
           transport: string | null
           transportation_fee: number | null
           travel_fund: string | null
@@ -142,6 +263,7 @@ export interface Database {
           hotel_name?: string | null
           hrdf_claimable?: string | null
           id?: string
+          last_updated?: string | null
           organiser?: string | null
           other_fees?: number | null
           other_funds?: string | null
@@ -155,8 +277,14 @@ export interface Database {
           staff_development_fund?: string | null
           staff_id?: string | null
           student_council_fund?: string | null
-          supporting_documents?: string | null
+          supporting_documents?: string[] | null
+          total_hours?: number | null
           total_members?: number | null
+          transit_destination_from?: string | null
+          transit_destination_to?: string | null
+          transit_flight_date?: string | null
+          transit_flight_number?: string | null
+          transit_flight_time?: string | null
           transport?: string | null
           transportation_fee?: number | null
           travel_fund?: string | null
@@ -204,6 +332,7 @@ export interface Database {
           hotel_name?: string | null
           hrdf_claimable?: string | null
           id?: string
+          last_updated?: string | null
           organiser?: string | null
           other_fees?: number | null
           other_funds?: string | null
@@ -217,8 +346,14 @@ export interface Database {
           staff_development_fund?: string | null
           staff_id?: string | null
           student_council_fund?: string | null
-          supporting_documents?: string | null
+          supporting_documents?: string[] | null
+          total_hours?: number | null
           total_members?: number | null
+          transit_destination_from?: string | null
+          transit_destination_to?: string | null
+          transit_flight_date?: string | null
+          transit_flight_number?: string | null
+          transit_flight_time?: string | null
           transport?: string | null
           transportation_fee?: number | null
           travel_fund?: string | null
@@ -322,7 +457,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "sub_events"
             referencedColumns: ["sub_eventsID"]
-          }
+          },
         ]
       }
       internal_events: {
@@ -334,6 +469,9 @@ export interface Database {
           intFEventName: string
           intFEventStartDate: string | null
           intFID: string
+          intFImageUpload: string | null
+          intFIsHidden: number
+          intFTotalHours: number | null
           intFTrainerName: string | null
           intFTrainingProvider: string | null
         }
@@ -345,6 +483,9 @@ export interface Database {
           intFEventName: string
           intFEventStartDate?: string | null
           intFID?: string
+          intFImageUpload?: string | null
+          intFIsHidden?: number
+          intFTotalHours?: number | null
           intFTrainerName?: string | null
           intFTrainingProvider?: string | null
         }
@@ -356,6 +497,9 @@ export interface Database {
           intFEventName?: string
           intFEventStartDate?: string | null
           intFID?: string
+          intFImageUpload?: string | null
+          intFIsHidden?: number
+          intFTotalHours?: number | null
           intFTrainerName?: string | null
           intFTrainingProvider?: string | null
         }
@@ -388,12 +532,54 @@ export interface Database {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          notifAccID: string | null
+          notifCreatedAt: string
+          notifDesc: string | null
+          notifID: string
+          notifIsRead: number | null
+          notifLink: string | null
+          notifReadAt: string | null
+          notifType: string | null
+        }
+        Insert: {
+          notifAccID?: string | null
+          notifCreatedAt?: string
+          notifDesc?: string | null
+          notifID?: string
+          notifIsRead?: number | null
+          notifLink?: string | null
+          notifReadAt?: string | null
+          notifType?: string | null
+        }
+        Update: {
+          notifAccID?: string | null
+          notifCreatedAt?: string
+          notifDesc?: string | null
+          notifID?: string
+          notifIsRead?: number | null
+          notifLink?: string | null
+          notifReadAt?: string | null
+          notifType?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_notifAccID_fkey"
+            columns: ["notifAccID"]
+            isOneToOne: false
+            referencedRelation: "login"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sub_events: {
         Row: {
           date_created: string | null
           sub_eventsEndDate: string | null
           sub_eventsEndTime: string | null
           sub_eventsID: string
+          sub_eventsIsHidden: number | null
           sub_eventsMainID: string | null
           sub_eventsMaxSeats: number | null
           sub_eventsName: string | null
@@ -407,6 +593,7 @@ export interface Database {
           sub_eventsEndDate?: string | null
           sub_eventsEndTime?: string | null
           sub_eventsID?: string
+          sub_eventsIsHidden?: number | null
           sub_eventsMainID?: string | null
           sub_eventsMaxSeats?: number | null
           sub_eventsName?: string | null
@@ -420,6 +607,7 @@ export interface Database {
           sub_eventsEndDate?: string | null
           sub_eventsEndTime?: string | null
           sub_eventsID?: string
+          sub_eventsIsHidden?: number | null
           sub_eventsMainID?: string | null
           sub_eventsMaxSeats?: number | null
           sub_eventsName?: string | null
@@ -435,8 +623,50 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "internal_events"
             referencedColumns: ["intFID"]
-          }
+          },
         ]
+      }
+      suggestions: {
+        Row: {
+          suggBy: string | null
+          suggCreated: string
+          suggDesc: string | null
+          suggID: string
+        }
+        Insert: {
+          suggBy?: string | null
+          suggCreated?: string
+          suggDesc?: string | null
+          suggID?: string
+        }
+        Update: {
+          suggBy?: string | null
+          suggCreated?: string
+          suggDesc?: string | null
+          suggID?: string
+        }
+        Relationships: []
+      }
+      verifiers: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -453,3 +683,85 @@ export interface Database {
     }
   }
 }
+
+type PublicSchema = Database[Extract<keyof Database, "public">]
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never

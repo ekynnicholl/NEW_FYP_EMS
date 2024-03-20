@@ -44,6 +44,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
@@ -62,6 +63,15 @@ const showSuccessToast = (message: string) => {
 };
 
 const Document = ({ documents }: { documents?: string[] }) => {
+	function convertToReadableName(url: string) {
+		const split = url.split("supporting_documents/");
+		const fileName = split[split.length - 1];
+		const firstUnderscorePosition = fileName.indexOf("_");
+		let readableName = fileName.substring(firstUnderscorePosition + 1);
+		readableName = readableName.replaceAll("%20", " ");
+		return readableName;
+	}
+
 	if (documents?.length === 0 || !documents) {
 		return null;
 	}
@@ -71,7 +81,7 @@ const Document = ({ documents }: { documents?: string[] }) => {
 			{documents.map((data: string) => (
 				<Link href={data} target="_blank" className="flex gap-2 p-2 items-start" key={data}>
 					<BsFiletypePdf className="w-6 h-6 text-red-500" />
-					{data.split("_").slice(1).join("_")}
+					{convertToReadableName(data)}
 				</Link>
 			))}
 		</>
@@ -79,9 +89,10 @@ const Document = ({ documents }: { documents?: string[] }) => {
 };
 
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
-	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 	const supabase = createClientComponentClient();
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const secKey = searchParams.get("secKey");
 
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [submitOpen, setSubmitOpen] = useState(false);
@@ -98,18 +109,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [authToken, setAuthToken] = useState<string | undefined>("");
 	useEffect(() => {
 		setAuthToken(cookie.get("authToken"));
-		console.log(!authToken);
-		console.log("Logged auth token: " + authToken);
 	}, [authToken]);
 
-	const searchParams = useSearchParams();
-	const secKey = searchParams.get("secKey");
-
-	// Real-time security key validation,
 	const [securityKeyError, setSecurityKeyError] = useState(false);
-
-	// Fetch the current stage of the form to capture whether the stage has changed to submit email,
-	const [fetchedFormStage, setFetchedFormStage] = useState<number>(data.formStage ?? 0);
 
 	const applicantSigCanvas = useRef({});
 	const applicantSigClear = (field: FieldValues) => {
@@ -142,31 +144,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		externalForm.verification_date ? new Date(externalForm.verification_date) : null,
 	);
 	const [approvalDate, setApprovalDate] = useState<Date | null>(externalForm.approval_date ? new Date(externalForm.approval_date) : null);
-	// console.log(externalForm.verification_date)
-	// console.log(verificationDate)
-
-	useEffect(() => {
-		// console.log(form.getValues("verification_date"))
-		// console.log(form.getValues("approval_date"))
-
-		if (externalForm.formStage === 3) {
-			if (externalForm.verification_date === null || externalForm.verification_date === undefined) {
-				form.setValue("verification_date", new Date());
-				console.log(verificationDate);
-				console.log(externalForm.verification_date);
-				setVerificationDate(new Date());
-			}
-		}
-
-		if (externalForm.formStage === 4) {
-			if (externalForm.approval_date === null || externalForm.approval_date === undefined) {
-				form.setValue("approval_date", new Date());
-				console.log(approvalDate);
-				console.log(externalForm.approval_date);
-				setApprovalDate(new Date());
-			}
-		}
-	}, [externalForm.verification_date, externalForm.approval_date]);
+	const [emails, setEmails] = useState<any[]>([]);
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
@@ -193,6 +171,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			organiser: externalForm.organiser!,
 			venue: externalForm.venue!,
 			hrdf_claimable: externalForm.hrdf_claimable!,
+			total_hours: externalForm.total_hours ?? null,
 
 			flight_date: externalForm.flight_date ? new Date(externalForm.flight_date) : null,
 			flight_time: externalForm.flight_time ?? null,
@@ -239,7 +218,22 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		},
 	});
 
-	const [emails, setEmails] = useState<any[]>([]);
+	useEffect(() => {
+		if (externalForm.formStage === 3) {
+			if (externalForm.verification_date === null || externalForm.verification_date === undefined) {
+				form.setValue("verification_date", new Date());
+				setVerificationDate(new Date());
+			}
+		}
+
+		if (externalForm.formStage === 4) {
+			if (externalForm.approval_date === null || externalForm.approval_date === undefined) {
+				form.setValue("approval_date", new Date());
+				setApprovalDate(new Date());
+			}
+		}
+	}, [externalForm.verification_date, externalForm.approval_date, externalForm.formStage, form]);
+
 
 	useEffect(() => {
 		const fetchEmails = async () => {
@@ -294,9 +288,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		}
 	};
 
-	useEffect(() => {
-		console.log(form.formState.errors);
-	}, [form.formState.errors]);
+	// Enable this for debugging purposes only
+	// useEffect(() => {
+	// 	console.log(form.formState.errors);
+	// }, [form.formState.errors]);
 
 	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
 		// if (values.securityKey != externalForm.securityKey) {
@@ -309,11 +304,20 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
 		if (externalForm.formStage === 2) {
+			if (values.verification_email === "" || !values.verification_email) {
+				toast.error("Please select a verification email.");
+				return;
+			}
+	
+			if (values.approval_email === "" || !values.approval_email) {
+				toast.error("Please select an approval email.");
+				return;
+			}
+
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update([
 					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						expenditure_cap: externalForm.expenditure_cap,
 						expenditure_cap_amount: externalForm.expenditure_cap_amount,
 						revertComment: "None",
@@ -321,6 +325,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						formStage: 3,
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
+						total_hours: values.total_hours,
 					},
 				])
 				.eq("id", externalForm.id);
@@ -334,30 +339,25 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		}
 		// This part is when the staff re-submits the form to the AAO after being reverted,
 		else if (externalForm.formStage === 1) {
+			if (values.securityKey != externalForm.securityKey) {
+				toast.error("Invalid security key!");
+				return;
+			}
+
 			console.log("Updating...");
-			console.log(values);
 			const { error } = await supabase
 				.from("external_forms")
 				.update([
 					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						...values,
 						formStage: 2,
 						securityKey: null,
-						// THIS IS WHAT YOU'RE SUPPOSE TO UPDATE,
-						// fundSourceName: formDetails.fundSourceName,
-						// fundAmount: formDetails.fundAmount,
-						// formStage: 2,
-						// securityKey: null,
-						// hosEmail: formDetails.hosEmail,
-						// deanEmail: formDetails.deanEmail
 					},
 				])
 				.eq("id", externalForm.id);
 
 			if (error) {
-				// console.log(error);
-
+				console.error(error);
 				toast.error("Error submitting form");
 			} else {
 				fetchAndUpdateFormData(externalForm.id, "to_2");
@@ -372,10 +372,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.from("external_forms")
 				.update([
 					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 4,
 						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HOS/ ADCR/ MGR DETAILS INTO THE DATABASE.
 
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
@@ -399,16 +397,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			}
 		}
 
-		// 	// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
+			// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
 		else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update([
 					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 5,
 						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
 						verification_position_title: values.verification_position_title,
@@ -425,6 +421,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.eq("id", externalForm.id);
 
 			if (error) {
+				toast.error("Error submitting form");
 				// console.error("Error inserting data:", error);
 			} else {
 				fetchAndUpdateFormData(externalForm.id, "to_5");
@@ -561,7 +558,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.eq("id", externalForm.id);
 
 			if (error) {
-				console.log(error);
+				console.error(error);
 			} else {
 				fetchAndUpdateFormData(externalForm.id, "to_6");
 			}
@@ -574,7 +571,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.from("external_forms")
 				.update([
 					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						expenditure_cap: values.expenditure_cap,
 						expenditure_cap_amount: values.expenditure_cap_amount,
 						revertComment: values.revertComment,
@@ -582,6 +578,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						formStage: 1,
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
+						total_hours: values.total_hours,
 					},
 				])
 				.eq("id", externalForm.id);
@@ -597,7 +594,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const [group, setGroup] = useState(true);
-	console.log(authToken);
 
 	return (
 		<div>
@@ -640,6 +636,26 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					<div className="grid gap-8 place-items-center">
 						<Form {...form}>
 							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
+							{(externalForm.revertComment != "None" && externalForm.formStage == 1) && (
+									<FormField
+										control={form.control}
+										name="revertComment"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel className="text-red-500">Comments</FormLabel>
+												<FormControl>
+													<Textarea
+														disabled={externalForm.formStage == 1}
+														className="disabled:text-black-500 disabled:opacity-100"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								)}
+								
 								<section className="section-1" id="Personal Details">
 									<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 									<div className="grid gap-8">
@@ -833,7 +849,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<FormItem>
 													<FormLabel>Description <span className="text-red-500"> *</span></FormLabel>
 													<FormControl>
-														<Input
+														<Textarea
 															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
@@ -868,13 +884,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																mode="single"
 																selected={field.value}
 																onSelect={date => {
-																	console.log("Date: " + date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
 																		field.onChange(date);
 																		field.value = date;
 																	}
-																	console.log(field.value);
 																}}
 																disabled={date => {
 																	const today = new Date();
@@ -913,7 +927,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																mode="single"
 																selected={field.value}
 																onSelect={date => {
-																	console.log("Date: " + date);
 																	field.onChange(date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
@@ -949,6 +962,35 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</FormItem>
 											)}
 										/>
+										{externalForm.formStage === 2 && (
+											<FormField
+											control={form.control}
+											name="total_hours"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Total hours</FormLabel>
+													<FormControl>
+														<Input
+															disabled={externalForm.formStage != 2}
+															className="disabled:text-black-500 disabled:opacity-100"
+															{...field}
+															onChange={(e) => {
+																	field.onChange(e);
+																	if (e.target.value === "") {
+																		field.onChange(0);
+																	} else {
+																		field.onChange(parseInt(e.target.value));
+																	}
+																}
+															}
+															value={field.value || ""}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										)}
 										<FormField
 											control={form.control}
 											name="venue"
@@ -960,6 +1002,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															disabled={externalForm.formStage != 1}
 															className="disabled:text-black-500 disabled:opacity-100"
 															{...field}
+															value={field.value || ""}
 														/>
 													</FormControl>
 													<FormMessage />
@@ -1034,7 +1077,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																				mode="single"
 																				selected={field.value!}
 																				onSelect={date => {
-																					console.log("Date: " + date);
 																					field.onChange(date);
 																					if (date !== undefined) {
 																						date.setHours(date.getHours() + 8);
@@ -1134,13 +1176,31 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											</>
 										)}
 
+										<FormField
+											control={form.control}
+											name="hotel_name"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Hotel Name</FormLabel>
+													<FormControl>
+														<Input
+															disabled={externalForm.formStage != 1}
+															className="disabled:text-black-500 disabled:opacity-100"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
 										<div className="grid grid-auto-fit-lg gap-8 ">
 											<FormField
 												control={form.control}
 												name="check_in_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Check In <span className="text-red-500"> *</span></FormLabel>
+														<FormLabel>Check In</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -1160,7 +1220,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	mode="single"
 																	selected={field.value!}
 																	onSelect={date => {
-																		console.log("Date: " + date);
 																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -1184,7 +1243,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												name="check_out_date"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>Check Out <span className="text-red-500"> *</span></FormLabel>
+														<FormLabel>Check Out</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -1204,7 +1263,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	mode="single"
 																	selected={field.value!}
 																	onSelect={date => {
-																		console.log("Date: " + date);
 																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -1224,24 +1282,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												)}
 											/>
 										</div>
-
-										<FormField
-											control={form.control}
-											name="hotel_name"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Hotel Name<span className="text-red-500"> *</span></FormLabel>
-													<FormControl>
-														<Input
-															disabled={externalForm.formStage != 1}
-															className="disabled:text-black-500 disabled:opacity-100"
-															{...field}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
 									</div>
 								</section>
 
@@ -1685,7 +1725,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																mode="single"
 																selected={field.value}
 																onSelect={date => {
-																	console.log("Date: " + date);
 																	field.onChange(date);
 																	if (date !== undefined) {
 																		date.setHours(date.getHours() + 8);
@@ -1777,7 +1816,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																								//@ts-ignore
 																								.getTrimmedCanvas()
 																								.toDataURL("image/png") ?? "";
-																						console.log("Field Value: " + field.value);
 																					}
 																				}}>
 																				Save
@@ -1857,7 +1895,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	mode="single"
 																	selected={field.value!}
 																	onSelect={date => {
-																		console.log("Date: " + date);
 																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -1950,7 +1987,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																									//@ts-ignore
 																									.getTrimmedCanvas()
 																									.toDataURL("image/png") ?? "";
-																							console.log("Field Value: " + field.value);
 																						}
 																					}}>
 																					Save
@@ -2028,7 +2064,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	mode="single"
 																	selected={field.value!}
 																	onSelect={date => {
-																		console.log("Date: " + date);
 																		field.onChange(date);
 																		if (date !== undefined) {
 																			date.setHours(date.getHours() + 8);
@@ -2108,7 +2143,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																							//@ts-ignore
 																							.getTrimmedCanvas()
 																							.toDataURL("image/png") ?? "";
-																					console.log("Field Value: " + field.value);
 																				}
 																			}}>
 																			Save
@@ -2191,26 +2225,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 									</div>
 								) : null}
 
-								{(showCommentInput || (externalForm.revertComment != "None" && externalForm.formStage == 1)) && (
-									<FormField
-										control={form.control}
-										name="revertComment"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Comments</FormLabel>
-												<FormControl>
-													<Input
-														disabled={externalForm.formStage == 1}
-														className="disabled:text-black-500 disabled:opacity-100"
-														{...field}
-													/>
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								)}
-
 								{externalForm.formStage === 2 && authToken ? (
 									<div>
 										<section className="submission-details mb-5">
@@ -2275,10 +2289,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 											<DialogTrigger asChild>
 												<Button
 													type="button"
-													className="mr-5"
-													onClick={() => {
-														setShowCommentInput(true);
-													}}>
+													className="mr-5">
 													Revert
 												</Button>
 											</DialogTrigger>
@@ -2296,7 +2307,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormItem>
 															<FormLabel>Comments</FormLabel>
 															<FormControl>
-																<Input {...field} />
+																<Textarea {...field} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>

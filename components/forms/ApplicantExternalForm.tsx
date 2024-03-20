@@ -13,7 +13,6 @@ import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import SuccessIMG from "@/public/images/success_image.jpg";
 
-import { SiMicrosoftword } from "react-icons/si";
 import { BsFiletypePdf } from "react-icons/bs";
 
 import { toast } from "react-hot-toast";
@@ -36,6 +35,7 @@ import {
 	DialogTrigger,
 	DialogClose,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
@@ -395,7 +395,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 														Email <span className="text-red-500"> *</span>
 													</FormLabel>
 													<FormControl>
-														<Input type="email" placeholder="Email" {...field} />
+														<Input type="email" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -411,7 +411,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 															Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input placeholder="Name" {...field} />
+															<Input {...field} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -591,7 +591,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 														Description <span className="text-red-500"> *</span>
 													</FormLabel>
 													<FormControl>
-														<Input placeholder="" {...field} />
+														<Textarea placeholder="" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -853,7 +853,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		From <span className="text-red-500"> *</span>
 																	</FormLabel>
 																	<FormControl>
-																		<Input placeholder="Sarawak" {...field} />
+																		<Input placeholder="" {...field} />
 																	</FormControl>
 																	<FormMessage />
 																</FormItem>
@@ -868,7 +868,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		To <span className="text-red-500"> *</span>
 																	</FormLabel>
 																	<FormControl>
-																		<Input placeholder="Singapore" {...field} />
+																		<Input placeholder="" {...field} />
 																	</FormControl>
 																	<FormMessage />
 																</FormItem>
@@ -964,7 +964,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																	<FormItem>
 																		<FormLabel>Transit From</FormLabel>
 																		<FormControl>
-																			<Input placeholder="Singapore" {...field} />
+																			<Input placeholder="" {...field} />
 																		</FormControl>
 																		<FormMessage />
 																	</FormItem>
@@ -977,7 +977,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																	<FormItem>
 																		<FormLabel>Transit To</FormLabel>
 																		<FormControl>
-																			<Input placeholder="Melbourne" {...field} />
+																			<Input placeholder="" {...field} />
 																		</FormControl>
 																		<FormMessage />
 																	</FormItem>
