@@ -644,9 +644,9 @@ export default function ExternalFormPage() {
 								</div>
 							</div>
 
-							<p className="text-base text-slate-800 font-medium ml-[1px] mt-3">
+							{/* <p className="text-base text-slate-800 font-medium ml-[1px] mt-3">
 								Grand Total: <span className="text-red-500">RM{grandTotal.toFixed(2)}</span>
-							</p>
+							</p> */}
 
 
 							<p className="text-[15px] text-slate-800 font-medium ml-[1px] mt-8">Source of Fund <br></br><span className="text-slate-800 text-sm font-normal">Details of account(s) to be debited. (It is encouraged to have a single source of funding)</span>.
