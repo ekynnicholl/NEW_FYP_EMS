@@ -747,7 +747,7 @@ export default function ExternalFormPage() {
 								6. Applicant Declaration
 							</p>
 
-							<p className="text-slate-800 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
+							<p className="text-slate-500 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
 							</p>
 
 							<div className="grid grid-cols-2 gap-5">
@@ -797,135 +797,18 @@ export default function ExternalFormPage() {
 								/>
 							</div>
 
-							{/* <div style={{ border: '1px solid #000', padding: '10px' }}>
-								<SignatureCanvas
-									ref={sigCanvas}
-									canvasProps={{ width: 400, height: 200, className: 'signature-canvas' }}
-								/>
-								<button onClick={clearSignature}>Clear Signature</button>
-							</div> */}
-
-						</div>
-					</div>
-
-					<div className="mt-[45px]">
-						<div>
-							<p id="hos_verification" className="text-2xl font-bold mb-4 block text-slate-900">
-								7. Verification (HOS)
-							</p>
-
-							<p className="text-slate-800 text-base font-normal ml-[1px]">I have verified and support of this application.
-							</p>
-
-							<div className="grid grid-cols-2 gap-5">
-								<div>
-									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<div>
-										<input
-											type="text"
-											id="hos_verification_name"
-											placeholder="Name"
-											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										/>
-									</div>
-								</div>
-
-								<div>
-									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<div>
-										<input
-											type="text"
-											id="hos_verification_position_title"
-											placeholder="Position title"
-											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										/>
-									</div>
-								</div>
-							</div>
-
-							<p className="text-sm text-slate-800 font-medium mt-5">Verification Date
+							<p className="text-sm text-slate-800 font-medium mt-5">Signature
 								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
 									*
 								</span>
 							</p>
-							<div>
-								<input
-									type="date"
-									id="hos_verification_date"
-									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-								/>
-							</div>
 						</div>
 					</div>
 
-					<div className="mt-[45px]">
-						<div>
-							<p id="hmu_dean_approval" className="text-2xl font-bold mb-4 block text-slate-900">
-								8. Approval (HMU / Dean / Director / DVC & CEO)
-							</p>
+					<hr className="mt-10" />
 
-							<p className="text-slate-800 text-base font-normal ml-[1px]">I have reviewed, and approve this application.
-							</p>
-
-							<div className="grid grid-cols-2 gap-5">
-								<div>
-									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<div>
-										<input
-											type="text"
-											id="hmu_dean_approval_name"
-											placeholder="Name"
-											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										/>
-									</div>
-								</div>
-
-								<div>
-									<p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
-										<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-											*
-										</span>
-									</p>
-									<div>
-										<input
-											type="text"
-											id="hmu_dean_approval_position_title"
-											placeholder="Position title"
-											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										/>
-									</div>
-								</div>
-							</div>
-
-							<p className="text-sm text-slate-800 font-medium mt-5">Approval Date
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
-									*
-								</span>
-							</p>
-							<div>
-								<input
-									type="date"
-									id="hmu_dean_approval_date"
-									className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-								/>
-							</div>
-						</div>
-					</div>
-
-					<button className="rounded-lg px-[32px] py-[8px] lg:px-[37px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 p-4 w-[125px] mt-6 text-center">
-						Submit
+					<button className="rounded-lg px-[32px] py-[8px] lg:px-[20px] lg:py-[9px]  bg-slate-800 text-slate-100 text-[13px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 mt-10 text-center font-semibold">
+						Submit for Review
 					</button>
 				</form>
 			</div>
