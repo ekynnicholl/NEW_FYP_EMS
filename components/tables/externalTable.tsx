@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use, useRef } from "react";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,8 +8,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from "uuid";
+import toImg from "react-svg-to-image";
 
-import Modal from "@/components/QR_Codes_Modal";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
 	ColumnDef,
@@ -59,12 +59,11 @@ import {
 import { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
 import { sendContactForm } from "@/lib/api";
 
-const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 const supabase = createClientComponentClient();
 
 const showSuccessToast = (message: string) => {
@@ -309,6 +308,20 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			});
 	};
 
+	const NTFRef = useRef(null);
+	const saveAsImage = async () => {
+		console.log("Saving as image...");
+		console.log(NTFRef);
+		const svg = NTFRef.current;
+		await toImg(svg, "name", {
+			scale: 3,
+			format: "webp",
+			quality: 0.01,
+			download: true,
+			ignore: ".ignored",
+		});
+	};
+
 	const [date, setDate] = useState<DateRange | undefined>({
 		from: new Date(2022, 0, 20),
 		to: addDays(new Date(2022, 0, 20), 20),
@@ -336,34 +349,82 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 	return (
 		<div className="w-full">
 			<div className="flex items-center py-4">
-				<button
-					type="button"
-					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729] mr-5"
-					onClick={() => {
-						setShowQRCodesNTF(true);
-					}}
-				>
-					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
-						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
-							Nominations/ Travelling Forms
-						</span>
-					</span>
-				</button>
-				<button
-					type="button"
-					className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
-					onClick={() => {
-						setShowQRCodesNTFList(true);
-					}}
-				>
-					<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
-						<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-						<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
-							View Submitted Nominations/ Travelling Forms
-						</span>
-					</span>
-				</button>
+				<Dialog>
+					<DialogTrigger>
+						<button
+							type="button"
+							className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5"
+						>
+							<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+								<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+								<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+									Nominations/ Travelling Forms
+								</span>
+							</span>
+						</button>
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+								Nominations/ Travelling Forms
+							</DialogTitle>
+						</DialogHeader>
+						<DialogDescription className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
+							This is where the staff can access to submit their forms.
+						</DialogDescription>
+						<div className="grid place-items-center">
+							<QRCodeCanvas value={`${window.location.href}/form/external`} size={256} />
+						</div>
+						<DialogFooter className="sm:justify-center">
+							<button
+								onClick={() => copyToClipboard(`${window.location.href}/form/external`)}
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+							>
+								Copy Link
+							</button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+
+				<Dialog>
+					<DialogTrigger>
+						<button
+							type="button"
+							className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
+							onClick={() => {
+								setShowQRCodesNTFList(true);
+							}}
+						>
+							<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+								<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+								<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+									View Submitted Nominations/ Travelling Forms
+								</span>
+							</span>
+						</button>
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+								View Nominations/ Travelling Forms List
+							</DialogTitle>
+						</DialogHeader>
+						<DialogDescription className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
+							This is where the staff is able to access their past submitted forms.
+						</DialogDescription>
+						<div className="grid place-items-center">
+							<QRCodeCanvas className="bg-white p-1" value={`${window.location.href}/attended_events`} size={256} />
+						</div>
+						<DialogFooter className="sm:justify-center">
+							<button
+								onClick={() => copyToClipboard(`${window.location.href}/attended_events`)}
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+							>
+								Copy Link
+							</button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
 			</div>
 			<div className="flex items-center py-2">
 				<Input
@@ -468,46 +529,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					</Button>
 				</div>
 			</div>
-
-			<Modal isVisible={showQRCodesNTF} onClose={() => setShowQRCodesNTF(false)}>
-				<div className="ml-2 p-5 z-[999]">
-					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-						Nominations/ Travelling Forms
-					</p>
-					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-						This is where the staff can access to submit their forms.
-					</p>
-					<div className="flex flex-col items-center justify-center">
-						<QRCodeSVG className="bg-white p-1" value={`${url}/form/external`} />
-						<button
-							onClick={() => copyToClipboard(`${url}/form/external`)}
-							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-						>
-							Copy Link
-						</button>
-					</div>
-				</div>
-			</Modal>
-
-			<Modal isVisible={showQRCodesNTFList} onClose={() => setShowQRCodesNTFList(false)}>
-				<div className="ml-2 p-5 z-[999]">
-					<p className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-						View Nominations/ Travelling Forms List
-					</p>
-					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-						This is where the staff is able to access their past submitted forms.
-					</p>
-					<div className="flex flex-col items-center justify-center">
-						<QRCodeSVG className="bg-white p-1" value={`${url}/attended_events`} />
-						<button
-							onClick={() => copyToClipboard(`${url}/attended_events`)}
-							className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-						>
-							Copy Link
-						</button>
-					</div>
-				</div>
-			</Modal>
 
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
