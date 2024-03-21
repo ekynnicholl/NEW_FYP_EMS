@@ -544,7 +544,7 @@ export default function ExternalFormPage() {
 											id="course_fee"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
+											// onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -559,7 +559,7 @@ export default function ExternalFormPage() {
 											id="airfare_fee"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
+											// onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -576,7 +576,7 @@ export default function ExternalFormPage() {
 											id="accomodation"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											onChange={(e) => setAccomodation(parseFloat(e.target.value) || 0)}
+											// onChange={(e) => setAccomodation(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -591,7 +591,7 @@ export default function ExternalFormPage() {
 											id="per_diem"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											onChange={(e) => setPerDiem(parseFloat(e.target.value) || 0)}
+											// onChange={(e) => setPerDiem(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -608,7 +608,7 @@ export default function ExternalFormPage() {
 											id="transportation"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											onChange={(e) => setTransportation(parseFloat(e.target.value) || 0)}
+											// onChange={(e) => setTransportation(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -623,7 +623,7 @@ export default function ExternalFormPage() {
 											id="travel_insurance"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											onChange={(e) => setTravelInsurance(parseFloat(e.target.value) || 0)}
+											// onChange={(e) => setTravelInsurance(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -639,7 +639,7 @@ export default function ExternalFormPage() {
 										id="others"
 										placeholder="Amount (RM)"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										onChange={(e) => setOthers(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setOthers(parseFloat(e.target.value) || 0)}
 									/>
 								</div>
 							</div>
@@ -796,7 +796,7 @@ export default function ExternalFormPage() {
 						<p className="text-[15px] text-slate-800 font-normal text-base ml-[1px] mt-4">Additional files to be upload (if have).
 						</p>
 
-						<div className="flex items-center justify-center w-full mt-3">
+						{/* <div className="flex items-center justify-center w-full mt-3">
 							<label
 								htmlFor="dropzone-file"
 								className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -831,7 +831,7 @@ export default function ExternalFormPage() {
 									accept=".pdf,.doc,.docx"
 								/>
 							</label>
-						</div>
+						</div> */}
 					</div>
 
 					<div className="mt-[45px]">
