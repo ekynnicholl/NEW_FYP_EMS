@@ -218,7 +218,9 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					<div className="mt-[45px]">
+					<hr className="mt-10" />
+
+					<div className="mt-[30px]">
 						<div>
 							<p id="travel_details" className="text-2xl font-bold mb-5 block">
 								2. Travel Details
@@ -340,7 +342,9 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					<div className="mt-[45px]">
+					<hr className="mt-10" />
+
+					<div className="mt-[30px]">
 						<div>
 							<p id="logistic_arrangement" className="text-2xl font-bold mb-5 block text-slate-900">
 								3. Logistic Arrangement
@@ -461,7 +465,9 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					<div className="mt-[45px]">
+					<hr className="mt-10" />
+
+					<div className="mt-[30px]">
 						<div>
 							<p id="funding" className="text-2xl font-bold mb-5 block text-slate-900">
 								4. Funding
@@ -680,40 +686,41 @@ export default function ExternalFormPage() {
 
 							<fieldset disabled>
 								<div className="mt-5 cursor-not-allowed">
-									<p className="text-sm text-slate-800 font-medium">Any Expenditure Cap?
+									<p className="text-sm text-slate-800 font-medium">Any expenditure cap? If yes, please specify below,
 									</p>
-									<div className="mt-2">
+									<div className="mt-2 flex items-center space-x-4">
 										<label className="flex items-center space-x-2">
 											<input
-												type="checkbox"
+												type="radio"
 												name="expenditure_cap"
 												value="yes"
-												className="form-checkbox h-4 w-4 text-slate-800 cursor-not-allowed"
+												className="form-radio h-4 w-4 text-slate-800 cursor-not-allowed"
+												disabled
 											/>
 											<span className="text-slate-800 text-[15px]">Yes</span>
 										</label>
-									</div>
-									<div className="mt-2">
 										<label className="flex items-center space-x-2">
 											<input
-												type="checkbox"
+												type="radio"
 												name="expenditure_cap"
 												value="no"
-												className="form-checkbox h-4 w-4 text-slate-800 cursor-not-allowed"
+												className="form-radio h-4 w-4 text-slate-800 cursor-not-allowed"
+												disabled
 											/>
 											<span className="text-slate-800 text-[15px]">No</span>
 										</label>
 									</div>
 
+
 									<div className="mt-5 cursor-not-allowed">
-										<p className="text-sm text-slate-800 font-medium ml-[1px]">Capped Amount
+										<p className="text-sm text-slate-800 font-medium ml-[1px]">Expenditure Cap Amount
 										</p>
 
 										<div>
 											<input
 												type="number"
 												id="capped_amount"
-												placeholder="Amount (RM)"
+												disabled
 												className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] cursor-not-allowed"
 											/>
 										</div>
@@ -724,53 +731,17 @@ export default function ExternalFormPage() {
 						</div>
 					</div>
 
-					<div className="mt-[45px]">
+					<hr className="mt-10" />
+
+					<div className="mt-[30px]">
 						<p id="additional_files" className="text-2xl font-bold block text-slate-900">
-							5. Additional Files
+							5. Supporting Documents
 						</p>
-
-						<p className="text-[15px] text-slate-800 font-normal text-base ml-[1px] mt-4">Additional files to be upload (if have).
-						</p>
-
-						{/* <div className="flex items-center justify-center w-full mt-3">
-							<label
-								htmlFor="dropzone-file"
-								className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-							>
-								<div className="flex flex-col items-center justify-center pt-5 pb-6">
-									<svg
-										className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-										aria-hidden="true"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 20 16"
-									>
-										<path
-											stroke="currentColor"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-										/>
-									</svg>
-									<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
-										<span className="font-semibold">Click to upload</span> or drag and drop
-									</p>
-									<p className="text-sm text-gray-500 dark:text-gray-400">PDF or Word (maximum 2MB)</p>
-									{uploadedFileName && <p className="mt-2 text-xl text-slate-700">{uploadedFileName}</p>}
-								</div>
-								<input
-									id="dropzone-file"
-									type="file"
-									className="hidden"
-									onChange={handleFileUpload}
-									accept=".pdf,.doc,.docx"
-								/>
-							</label>
-						</div> */}
 					</div>
 
-					<div className="mt-[45px]">
+					<hr className="mt-10" />
+
+					<div className="mt-[30px]">
 						<div>
 							<p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
 								6. Applicant Declaration
