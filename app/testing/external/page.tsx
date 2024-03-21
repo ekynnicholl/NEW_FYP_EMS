@@ -890,13 +890,13 @@ export default function ExternalFormPage() {
 								/>
 							</div>
 
-							<div style={{ border: '1px solid #000', padding: '10px' }}>
+							{/* <div style={{ border: '1px solid #000', padding: '10px' }}>
 								<SignatureCanvas
 									ref={sigCanvas}
 									canvasProps={{ width: 400, height: 200, className: 'signature-canvas' }}
 								/>
 								<button onClick={clearSignature}>Clear Signature</button>
-							</div>
+							</div> */}
 
 						</div>
 					</div>
