@@ -308,7 +308,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				toast.error("Please select a verification email.");
 				return;
 			}
-	
+
 			if (values.approval_email === "" || !values.approval_email) {
 				toast.error("Please select an approval email.");
 				return;
@@ -397,7 +397,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			}
 		}
 
-			// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
+		// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
 		else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
 				.from("external_forms")
@@ -636,7 +636,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					<div className="grid gap-8 place-items-center">
 						<Form {...form}>
 							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
-							{(externalForm.revertComment != "None" && externalForm.formStage == 1) && (
+								{(externalForm.revertComment != "None" && externalForm.formStage == 1) && (
 									<FormField
 										control={form.control}
 										name="revertComment"
@@ -655,7 +655,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										)}
 									/>
 								)}
-								
+
 								<section className="section-1" id="Personal Details">
 									<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 									<div className="grid gap-8">
@@ -964,17 +964,17 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										/>
 										{externalForm.formStage === 2 && (
 											<FormField
-											control={form.control}
-											name="total_hours"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Total hours</FormLabel>
-													<FormControl>
-														<Input
-															disabled={externalForm.formStage != 2}
-															className="disabled:text-black-500 disabled:opacity-100"
-															{...field}
-															onChange={(e) => {
+												control={form.control}
+												name="total_hours"
+												render={({ field }) => (
+													<FormItem>
+														<FormLabel>Total Hours</FormLabel>
+														<FormControl>
+															<Input
+																disabled={externalForm.formStage != 2}
+																className="disabled:text-black-500 disabled:opacity-100"
+																{...field}
+																onChange={(e) => {
 																	field.onChange(e);
 																	if (e.target.value === "") {
 																		field.onChange(0);
@@ -982,14 +982,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		field.onChange(parseInt(e.target.value));
 																	}
 																}
-															}
-															value={field.value || ""}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
+																}
+																value={field.value || ""}
+															/>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
 										)}
 										<FormField
 											control={form.control}
