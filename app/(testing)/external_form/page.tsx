@@ -92,7 +92,7 @@ export default function ExternalFormPage() {
 										id="email"
 										placeholder="Email"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, email: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -111,7 +111,7 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Full name"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, full_name: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, full_name: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -128,7 +128,7 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Staff ID"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, staff_id: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, staff_id: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -147,7 +147,7 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Designation / Course"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, course: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, course: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -164,7 +164,7 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Faculty / School / Unit"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, faculty: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, faculty: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -181,7 +181,7 @@ export default function ExternalFormPage() {
 									<select
 										id="transportation"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[6px]  hover:bg-slate-100 text-slate-800"
-										// onChange={(event) => setFormData({ ...formData, transport: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, transport: event.target.value })}
 									>
 										<option value="" className="text-slate-800">Please select an option</option>
 										<option value="aeroplane" className="text-slate-800">Aeroplane</option>
@@ -201,7 +201,7 @@ export default function ExternalFormPage() {
 									<select
 										id="transportation"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[10px]  hover:bg-slate-100 text-slate-800"
-										// onChange={(event) => setFormData({ ...formData, travelling: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, travelling: event.target.value })}
 									>
 										<option value="" className="text-slate-800">Choose an item</option>
 										<option value="alone" className="text-slate-800">Alone</option>
@@ -224,7 +224,7 @@ export default function ExternalFormPage() {
 										id="full_name"
 										placeholder="Name of other staff"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, other_members: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, other_members: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -241,7 +241,7 @@ export default function ExternalFormPage() {
 										id="staff_id"
 										placeholder="Number of total staffs"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, total_members: Number(event.target.value) })}
+									// onChange={(event) => setFormData({ ...formData, total_members: Number(event.target.value) })}
 									/>
 								</div>
 							</div>
@@ -265,7 +265,7 @@ export default function ExternalFormPage() {
 										id="program_title"
 										placeholder="Program title"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, program_title: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, program_title: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -282,7 +282,7 @@ export default function ExternalFormPage() {
 										id="description"
 										placeholder="Description"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(event) => setFormData({ ...formData, program_description: event.target.value })}
+									// onChange={(event) => setFormData({ ...formData, program_description: event.target.value })}
 									/>
 								</div>
 							</div>
@@ -299,7 +299,7 @@ export default function ExternalFormPage() {
 											type="date"
 											id="commencement_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(event) => setFormData({ ...formData, commencement_date: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, commencement_date: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -315,7 +315,7 @@ export default function ExternalFormPage() {
 											type="date"
 											id="completion_date"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(event) => setFormData({ ...formData, completion_date: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, completion_date: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -334,7 +334,7 @@ export default function ExternalFormPage() {
 											id="organizer"
 											placeholder="Organizer"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(event) => setFormData({ ...formData, organiser: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, organiser: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -351,7 +351,7 @@ export default function ExternalFormPage() {
 											id="venue"
 											placeholder="Venue"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(event) => setFormData({ ...formData, venue: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, venue: event.target.value })}
 										/>
 									</div>
 								</div>
@@ -370,7 +370,7 @@ export default function ExternalFormPage() {
 											name="hdrf_claimable"
 											value="yes"
 											className="form-checkbox h-4 w-4 text-slate-800"
-											// onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
 										/>
 										<span className="text-slate-800 text-[15px]">Yes</span>
 									</label>
@@ -382,7 +382,7 @@ export default function ExternalFormPage() {
 											name="hdrf_claimable"
 											value="no"
 											className="form-checkbox h-4 w-4 text-slate-800"
-											// onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
 										/>
 										<span className="text-slate-800 text-[15px]">No</span>
 									</label>
@@ -394,7 +394,7 @@ export default function ExternalFormPage() {
 											name="hdrf_claimable"
 											value="not_indicated"
 											className="form-checkbox h-4 w-4 text-slate-800"
-											// onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
+										// onChange={(event) => setFormData({ ...formData, hrdf_claimable: event.target.value })}
 										/>
 										<span className="text-slate-800 text-[15px]">Not indicated in event brochure / registration form</span>
 									</label>
@@ -544,7 +544,7 @@ export default function ExternalFormPage() {
 											id="course_fee"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setCourseFee(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -559,7 +559,7 @@ export default function ExternalFormPage() {
 											id="airfare_fee"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setAirfareFee(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -576,7 +576,7 @@ export default function ExternalFormPage() {
 											id="accomodation"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(e) => setAccomodation(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setAccomodation(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -591,7 +591,7 @@ export default function ExternalFormPage() {
 											id="per_diem"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(e) => setPerDiem(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setPerDiem(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -608,7 +608,7 @@ export default function ExternalFormPage() {
 											id="transportation"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(e) => setTransportation(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setTransportation(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -623,7 +623,7 @@ export default function ExternalFormPage() {
 											id="travel_insurance"
 											placeholder="Amount (RM)"
 											className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-											// onChange={(e) => setTravelInsurance(parseFloat(e.target.value) || 0)}
+										// onChange={(e) => setTravelInsurance(parseFloat(e.target.value) || 0)}
 										/>
 									</div>
 								</div>
@@ -639,7 +639,7 @@ export default function ExternalFormPage() {
 										id="others"
 										placeholder="Amount (RM)"
 										className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 bg-gray-100 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-										// onChange={(e) => setOthers(parseFloat(e.target.value) || 0)}
+									// onChange={(e) => setOthers(parseFloat(e.target.value) || 0)}
 									/>
 								</div>
 							</div>
@@ -1022,6 +1022,6 @@ export default function ExternalFormPage() {
 					</button>
 				</form>
 			</div>
-		// </div>
+		</div>
 	);
 }
