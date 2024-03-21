@@ -1769,11 +1769,13 @@ export default function Homepage() {
 						isVisible={showModalViewEvent}
 						onClose={() => setShowModalViewEvent(false)}>
 						<div className="py-[30px] lg:py-[100px] relative z-[50] dark:bg-dark_mode_card">
-							<img
-								src={selectedEventImage}
-								alt="Random"
-								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm"
-							/>
+						<Image
+						src={selectedEventImage} // Make sure 'selectedEventImage' is a valid path or URL
+						alt="Random"
+						layout="fill" // This will make the image fill the parent element
+						objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover'
+						className="absolute h-[200px] lg:h-[258px] -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm"
+						/>
 
 							<div className="ml-[6px] lg:ml-[9px]">
 								<h3 className="text-[15px] lg:text-[20px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px] dark:text-dark_text">
@@ -2807,13 +2809,14 @@ export default function Homepage() {
 										}
 									}}>
 									<div className="w-full h-[300px] mb-4 relative">
-										<div className="absolute -inset-6">
-											<img
-												src="/swinburne_logo.png"
-												alt="Random"
-												className="w-full h-full object-cover"
-											/>
-										</div>
+									<div className="absolute -inset-6">
+										<Image
+										src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+										alt="Random"
+										layout="fill"
+										objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
+										/>
+									</div>
 									</div>
 									{latestEvent[0] && (
 										<div className="mt-6">
@@ -3090,13 +3093,14 @@ export default function Homepage() {
 										}
 									}}>
 									<div className="w-full h-[300px] mb-4 relative">
-										<div className="absolute -inset-6">
-											<img
-												src="/swinburne_logo.png"
-												alt="Random"
-												className="w-full h-full object-cover"
-											/>
-										</div>
+									<div className="absolute -inset-6">
+										<Image
+										src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+										alt="Random"
+										layout="fill"
+										objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
+										/>
+									</div>
 									</div>
 									{latestEvent[1] && (
 										<div className="mt-6">
@@ -3372,13 +3376,14 @@ export default function Homepage() {
 										}
 									}}>
 									<div className="w-full h-[300px] mb-4 relative">
-										<div className="absolute -inset-6">
-											<img
-												src="/swinburne_logo.png"
-												alt="Random"
-												className="w-full h-full object-cover"
-											/>
-										</div>
+									<div className="absolute -inset-6">
+										<Image
+										src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+										alt="Random"
+										layout="fill"
+										objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
+										/>
+									</div>
 									</div>
 									{latestEvent[2] && (
 										<div className="mt-6">
@@ -3654,13 +3659,14 @@ export default function Homepage() {
 										}
 									}}>
 									<div className="w-full h-[300px] mb-4 relative">
-										<div className="absolute -inset-6">
-											<img
-												src="/swinburne_logo.png"
-												alt="Random"
-												className="w-full h-full object-cover"
-											/>
-										</div>
+									<div className="absolute -inset-6">
+										<Image
+										src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+										alt="Random"
+										layout="fill"
+										objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
+										/>
+									</div>
 									</div>
 									{latestEvent[3] && (
 										<div className="mt-6">
@@ -3935,13 +3941,14 @@ export default function Homepage() {
 										}
 									}}>
 									<div className="w-full h-[300px] mb-4 relative">
-										<div className="absolute -inset-6">
-											<img
-												src="/swinburne_logo.png"
-												alt="Random"
-												className="w-full h-full object-cover"
-											/>
-										</div>
+									<div className="absolute -inset-6">
+										<Image
+										src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+										alt="Random"
+										layout="fill"
+										objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
+										/>
+									</div>
 									</div>
 									{latestEvent[4] && (
 										<div className="mt-6">
@@ -4216,13 +4223,14 @@ export default function Homepage() {
 										}
 									}}>
 									<div className="w-full h-[300px] mb-4 relative">
-										<div className="absolute -inset-6">
-											<img
-												src="/swinburne_logo.png"
-												alt="Random"
-												className="w-full h-full object-cover"
-											/>
-										</div>
+									<div className="absolute -inset-6">
+										<Image
+										src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+										alt="Random"
+										layout="fill"
+										objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
+										/>
+									</div>
 									</div>
 									{latestEvent[5] && (
 										<div className="mt-6">
@@ -4504,10 +4512,11 @@ export default function Homepage() {
 
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
-											<img
-												src="https://source.unsplash.com/600x300?social"
-												alt="Random"
-												className="w-full h-full object-cover"
+											<Image
+											src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+											alt="Random"
+											layout="fill"
+											objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
 											/>
 										</div>
 									</div>
@@ -4742,10 +4751,11 @@ export default function Homepage() {
 
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
-											<img
-												src="https://source.unsplash.com/600x300?birthday"
-												alt="Random"
-												className="w-full h-full object-cover"
+											<Image
+											src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+											alt="Random"
+											layout="fill"
+											objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
 											/>
 										</div>
 									</div>
@@ -4980,10 +4990,11 @@ export default function Homepage() {
 
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
-											<img
-												src="https://source.unsplash.com/600x300?new+year"
-												alt="Random"
-												className="w-full h-full object-cover"
+											<Image
+											src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+											alt="Random"
+											layout="fill"
+											objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
 											/>
 										</div>
 									</div>
@@ -5218,10 +5229,11 @@ export default function Homepage() {
 
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
-											<img
-												src="https://source.unsplash.com/600x300?events"
-												alt="Random"
-												className="w-full h-full object-cover"
+											<Image
+											src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+											alt="Random"
+											layout="fill"
+											objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
 											/>
 										</div>
 									</div>
@@ -5456,10 +5468,11 @@ export default function Homepage() {
 
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
-											<img
-												src="https://source.unsplash.com/600x300?balloon"
-												alt="Random"
-												className="w-full h-full object-cover"
+											<Image
+											src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+											alt="Random"
+											layout="fill"
+											objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
 											/>
 										</div>
 									</div>
@@ -5694,10 +5707,11 @@ export default function Homepage() {
 
 									<div className="w-full h-[300px] mb-4 relative">
 										<div className="absolute -inset-6">
-											<img
-												src="https://source.unsplash.com/600x300?beers"
-												alt="Random"
-												className="w-full h-full object-cover"
+											<Image
+											src="/swinburne_logo.png" // Make sure to import or define the image path correctly
+											alt="Random"
+											layout="fill"
+											objectFit="cover" // This will cover the area of the parent div, similar to 'object-cover' in tailwind
 											/>
 										</div>
 									</div>
