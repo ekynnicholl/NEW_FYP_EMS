@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import ViewNTF_Modal from "@/components/ViewNTF_Modal";
 
 interface NTFListProps {
     atIdentifier: string | null;
@@ -62,8 +63,17 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
         fetchData();
     }, [atIdentifier]);
 
+    const [showModalViewNTF, setShowModalViewNTF] = useState(false);
+
     return (
         <div>
+            <ViewNTF_Modal isVisible={showModalViewNTF}
+                onClose={() => setShowModalViewNTF(false)}>
+                <div>
+                    <h1>Testing</h1>
+                </div>
+            </ViewNTF_Modal>
+
             <div className="text-justify pr-5">
                 <p className="text-[20px] font-bold">Past Nominations/ Travelling Form(s)</p>
                 <p className="text-[16px] italic">Total Event(s) Attended Count: {forms.length}</p>
@@ -99,6 +109,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                     </th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {forms.map((form) => (
                                     <tr key={form.id}>
@@ -138,7 +149,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                             })()}
                                         </td>
                                         <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                            View
+                                            <button onClick={() => setShowModalViewNTF(true)}>View</button>
                                         </td>
                                     </tr>
                                 ))}
