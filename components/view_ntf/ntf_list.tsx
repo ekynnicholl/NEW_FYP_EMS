@@ -61,7 +61,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
         };
 
         fetchData();
-    }, [atIdentifier]);
+    }, [atIdentifier, supabase]);
 
     const [showModalViewNTF, setShowModalViewNTF] = useState(false);
 
