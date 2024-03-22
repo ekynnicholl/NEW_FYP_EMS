@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from "uuid";
-import toImg from "react-svg-to-image";
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
@@ -28,9 +27,10 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { addDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
-
-import { Calendar } from "@/components/ui/calendar-year";
 import { cn } from "@/lib/utils";
+
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { Calendar } from "@/components/ui/calendar-year";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
 	Dialog,
@@ -63,6 +63,7 @@ import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
 import { sendContactForm } from "@/lib/api";
+import Link from "next/link";
 
 const supabase = createClientComponentClient();
 
@@ -83,10 +84,31 @@ const showSuccessToast = (message: string) => {
 };
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
+	const router = useRouter();
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [rowSelection, setRowSelection] = useState({});
 	const [selectedRow, setSelectedRow] = useState<any>({});
 	const [open, setOpen] = useState(false);
 	const [formData, setFormData] = useState<ExternalForm | null>(null);
-	const router = useRouter();
+	const [date, setDate] = useState<DateRange | undefined>({
+		from: new Date(2022, 0, 20),
+		to: addDays(new Date(2022, 0, 20), 20),
+	});
+
+	const schema = z.object({
+		undoOption: z.string().min(1, "Please select an option"),
+		revertComment: z.string().optional(),
+	});
+
+	const form = useForm({
+		resolver: zodResolver(schema),
+		defaultValues: {
+			undoOption: "",
+			revertComment: "",
+		},
+	});
 
 	const handleUndoAction = async (values: z.infer<typeof schema>) => {
 		if (values.undoOption != "" || parseInt(values.undoOption, 10) != selectedRow.formStage) {
@@ -135,19 +157,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			}
 		}
 	};
-
-	const schema = z.object({
-		undoOption: z.string().min(1, "Please select an option"),
-		revertComment: z.string().optional(),
-	});
-
-	const form = useForm({
-		resolver: zodResolver(schema),
-		defaultValues: {
-			undoOption: "",
-			revertComment: "",
-		},
-	});
 
 	const isWithinRange = (row: { getValue: (arg0: any) => string | number | Date }, columnId: any, value: any) => {
 		console.log("row: ", row.getValue(columnId));
@@ -290,13 +299,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		}
 	}, [formData]);
 
-	const [showQRCodesNTF, setShowQRCodesNTF] = useState(false);
-	const [showQRCodesNTFList, setShowQRCodesNTFList] = useState(false);
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [rowSelection, setRowSelection] = useState({});
-
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard
 			.writeText(text)
@@ -307,25 +309,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				toast.error("Copy failed:", error);
 			});
 	};
-
-	const NTFRef = useRef(null);
-	const saveAsImage = async () => {
-		console.log("Saving as image...");
-		console.log(NTFRef);
-		const svg = NTFRef.current;
-		await toImg(svg, "name", {
-			scale: 3,
-			format: "webp",
-			quality: 0.01,
-			download: true,
-			ignore: ".ignored",
-		});
-	};
-
-	const [date, setDate] = useState<DateRange | undefined>({
-		from: new Date(2022, 0, 20),
-		to: addDays(new Date(2022, 0, 20), 20),
-	});
 
 	const table = useReactTable({
 		data,
@@ -351,10 +334,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			<div className="flex items-center py-4">
 				<Dialog>
 					<DialogTrigger>
-						<button
-							type="button"
-							className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5"
-						>
+						<button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
 							<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
 								<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
 								<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
@@ -388,13 +368,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 				<Dialog>
 					<DialogTrigger>
-						<button
-							type="button"
-							className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]"
-							onClick={() => {
-								setShowQRCodesNTFList(true);
-							}}
-						>
+						<button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm md:inline-flex dark:bg-[#242729]">
 							<span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
 								<LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
 								<span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
@@ -499,15 +473,38 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map(row => (
-								<TableRow
-									key={row.id}
-									data-state={row.getIsSelected() && "selected"}
-									className="text-center dark:bg-dark_mode_card dark:text-dark_text"
-								>
-									{row.getVisibleCells().map(cell => (
-										<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-									))}
-								</TableRow>
+								<ContextMenu key={row.id}>
+									<ContextMenuTrigger asChild>
+										<TableRow
+											onClick={() => {
+												router.push(`/external/${row.original.id}`);
+											}}
+											data-state={row.getIsSelected() && "selected"}
+											className="cursor-pointer text-center dark:bg-dark_mode_card dark:text-dark_text"
+										>
+											{row.getVisibleCells().map(cell => (
+												<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+											))}
+										</TableRow>
+									</ContextMenuTrigger>
+									<ContextMenuContent>
+										<ContextMenuItem
+											onClick={() => {
+												router.push(`/external/${row.original.id}`);
+											}}
+										>
+											View
+										</ContextMenuItem>
+										<ContextMenuItem
+											onClick={() => {
+												setOpen(true);
+												setSelectedRow(row.original);
+											}}
+										>
+											Undo Action
+										</ContextMenuItem>
+									</ContextMenuContent>
+								</ContextMenu>
 							))
 						) : (
 							<TableRow>
