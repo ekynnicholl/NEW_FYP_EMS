@@ -30,6 +30,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
     const [showModalViewNTF, setShowModalViewNTF] = useState(false);
 
+    const [id, setID] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [full_name, setFullName] = useState<string>("");
     const [staff_id, setStaffID] = useState<string>("");
@@ -37,6 +38,8 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const handleViewForm = (formId: string) => {
         setSelectedFormId(formId);
         setShowModalViewNTF(true);
+
+        console.log(formId);
     };
 
     useEffect(() => {
@@ -70,17 +73,15 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
 
                     setForms(data || []);
 
+                    // If data is not empty, set the corresponding values for each form
                     if (data && data.length > 0) {
-                        setEmail(data[0].email);
-                        console.log(data[0].email);
-                    }
+                        // Assuming only the first form is selected initially
+                        const firstFormData = data[0];
 
-                    if (data && data.length > 0) {
-                        setFullName(data[0].full_name);
-                    }
-
-                    if (data && data.length > 0) {
-                        setStaffID(data[0].staff_id);
+                        setID(firstFormData.id);
+                        setEmail(firstFormData.email);
+                        setFullName(firstFormData.full_name);
+                        setStaffID(firstFormData.staff_id);
                     }
                 }
             } catch (e) {
@@ -106,7 +107,12 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                 <div>
                                     <div>
                                         <a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900">
-                                            1. Personal Details
+                                            1. Personal Details {
+                                                        selectedFormId
+                                                            ? forms.find(form => form.id === selectedFormId)?.id || ""
+                                                            : id
+                                                    }
+                                                    
                                         </a>
                                         <div>
                                             <p className="text-sm text-slate-800 font-medium ml-[1px]">Email
@@ -120,7 +126,11 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                     id="email"
                                                     placeholder="Email"
                                                     className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-                                                    value={email}
+                                                    value={
+                                                        selectedFormId
+                                                            ? forms.find(form => form.id === selectedFormId)?.email || ""
+                                                            : email
+                                                    }
                                                     readOnly // make the input read-only
                                                 />
                                             </div>
@@ -139,7 +149,11 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                         id="full_name"
                                                         placeholder="Full name"
                                                         className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-                                                        value={full_name}
+                                                        value={
+                                                            selectedFormId
+                                                                ? forms.find(form => form.id === selectedFormId)?.full_name || ""
+                                                                : full_name
+                                                        }
                                                         readOnly // make the input read-only
                                                     />
                                                 </div>
@@ -157,13 +171,18 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                         id="staff_id"
                                                         placeholder="Staff ID"
                                                         className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
-                                                        value={staff_id}
+                                                        value={
+                                                            selectedFormId
+                                                                ? forms.find(form => form.id === selectedFormId)?.staff_id || ""
+                                                                : staff_id
+                                                        }
                                                         readOnly // make the input read-only
                                                     />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
 
 
 
