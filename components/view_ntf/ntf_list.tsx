@@ -50,8 +50,6 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const handleViewForm = (formId: string) => {
         setSelectedFormId(formId);
         setShowModalViewNTF(true);
-
-        console.log(formId);
     };
 
     useEffect(() => {
