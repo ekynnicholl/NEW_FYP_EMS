@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import ViewNTF_Modal from "@/components/ViewNTF_Modal";
+// import ViewNTF_Modal from "@/components/ViewNTF_Modal";
 
 interface NTFListProps {
     atIdentifier: string | null;
@@ -67,12 +67,12 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
 
     return (
         <div>
-            <ViewNTF_Modal isVisible={showModalViewNTF}
+            {/* <ViewNTF_Modal isVisible={showModalViewNTF}
                 onClose={() => setShowModalViewNTF(false)}>
                 <div>
                     <h1>Testing</h1>
                 </div>
-            </ViewNTF_Modal>
+            </ViewNTF_Modal> */}
 
             <div className="text-justify pr-5">
                 <p className="text-[20px] font-bold">Past Nominations/ Travelling Form(s)</p>
