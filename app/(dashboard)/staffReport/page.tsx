@@ -12,10 +12,6 @@ import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import RightArrow from "@/components/icons/RightArrow";
-import DoubleRightArrow from "@/components/icons/DoubleRightArrow";
-import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
-import LeftArrow from "@/components/icons/LeftArrow";
 import ExpenditureUser from "@/components/tables/expenditureUser";
 import { Info } from "lucide-react";
 import { Tab } from '@headlessui/react';
@@ -78,7 +74,7 @@ export default function Home() {
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
         eventsAttended: string[];
-		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string;}[];
+		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string; formStage: number}[];
         totalHours: string;
 	}[]>([]);
 
@@ -89,7 +85,7 @@ export default function Home() {
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
         eventsAttended: string[];
-		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string;}[];
+		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string; formStage: number}[];
         totalHours: string;
 	}[]>([]);
 
@@ -170,7 +166,8 @@ export default function Home() {
 						.map(event => ({
 							programName: event.program_title,
 							totalHours: event.grand_total_fees,
-							commencementDate: event.commencement_date
+							commencementDate: event.commencement_date,
+							formStage: event.formStage
 						}))
 				);		
             }
@@ -305,42 +302,6 @@ export default function Home() {
 		link.click();
 		document.body.removeChild(link);
 	};
-
-
-	// // go to previous page
-	// const handleArrowLeftClick = () => {
-	// 	if (currentPage > 1) {
-	// 		setCurrentPage(currentPage - 1);
-	// 		setActivePage(currentPage - 1);
-	// 	}
-	// };
-
-	// // go to next page
-	// const handleArrowRightClick = () => {
-	// 	if (currentPage < Math.ceil(infos.length / entriesToShow)) {
-	// 		setCurrentPage(currentPage + 1);
-	// 		setActivePage(currentPage + 1);
-	// 	}
-	// };
-
-	// // skip to the first page
-	// const handleSkipToFirstPage = () => {
-	// 	setCurrentPage(1);
-	// 	setActivePage(1);
-	// };
-
-	// // skip to the last page
-	// const handleSkipToLastPage = () => {
-	// 	const lastPage = Math.ceil(infos.length / entriesToShow);
-	// 	setCurrentPage(lastPage);
-	// 	setActivePage(lastPage);
-	// };
-
-	// // Function to handle pagination button click
-	// const handlePageClick = (pageNumber: number) => {
-	// 	setCurrentPage(pageNumber);
-	// 	setActivePage(pageNumber);
-	// };
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
@@ -496,6 +457,8 @@ export default function Home() {
 		fetchFacultyUnits();
 	}, []);
 
+	const [selectedYear, setSelectedYear] = useState("");
+
 	const generateYearOptions = () => {
 		let startYear = 2023;
 		let currentYear = new Date().getFullYear();
@@ -594,7 +557,8 @@ export default function Home() {
 	];
 
 	// Modify the sorting logic based on the selected option and sort order
-	const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
+	// const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
+	const sortedData = (dataResults)
 		.slice()
 		.sort((a, b) => {
 			if (sortBy === "staffid") {
@@ -620,6 +584,30 @@ export default function Home() {
 			}
 			return 0;
 		});
+
+	const mainEventsByYear = (event: mainEvents[]) => {
+		const mainEventsResult = event.filter(e => {
+			const eventYear = new Date(e.intFEventStartDate).getFullYear();
+			return eventYear.toString() === selectedYear;
+		})
+
+		return (mainEventsResult.map(e => {`${e.intFEventName} - ${e.intFTotalHours}`}));
+	}
+
+	const showMainEventByYear = (eventsAttended: string[], selectedYear: string) => {
+		// const mainEventsResult = eventsAttended.filter(e => {
+		// 	const eventYear = new Date(e.intFEventStartDate).getFullYear();
+		// 	return eventYear.toString() === selectedYear;
+		// })
+
+		// {allMainEvent
+		// 	.filter(event => info.eventsAttended.includes(event.intFID))
+		// 	.map((event, index) => (
+		// 		<p key={index}>
+		// 			{event.intFEventName} - {event.intFTotalHours}
+		// 		</p>
+		// ))}
+	}
 
 	return (
 		<div>
@@ -779,15 +767,10 @@ export default function Home() {
 										Visitor
 									</button>
 								</div>
-								
-								{/* <label htmlFor="year" className="text-light dark:text-dark_text">Year: </label>
-								<select 
-									className=""
-									id="year"
-								>
-									{generateYearOptions()}
-								</select> */}
 
+								<div className="flex flex-row">
+
+								
 								{activeTab === "all" && (
 									<div>
 										<select
@@ -881,6 +864,16 @@ export default function Home() {
 										</select>
 									</div>
 								)}
+
+								{/* <select 
+									className="px-4 border border-gray-300 focus:outline-none text-xs lg:text-base w-auto ml-5"
+									id="year"
+									onChange={event => setSelectedYear(event.target.value)}
+								>
+									<option value="" disabled>Select a year</option>
+									{generateYearOptions()}
+								</select> */}
+								</div>
 							</div>
 
 						<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -893,27 +886,27 @@ export default function Home() {
                                                     <p className="">NO.</p>
                                                 </th>
                                                 <th className="flex-1 px-[33px] lg:px-0 py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="lg:-ml-2">Name</p>
+                                                    <p className="">Name</p>
                                                 </th>
                                                 <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="lg:ml-4">Staff / Student ID</p>
+                                                    <p className="ml-8">Staff / Student ID</p>
                                                 </th>
                                                 <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="lg:-ml-8">Faculty / Unit</p>
+                                                    <p className="lg:-ml-1">Faculty / Unit</p>
                                                 </th>
-                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+                                                <th className="flex-1 px-[73px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
                                                     <p className="">Program Name(s) - Total Hours(h)</p>
                                                 </th>
 
                                                 <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="lg:-ml-5">Grand Total Hours(h)</p>
+                                                    <p className="lg:-ml-8">Grand Total Hours(h)</p>
                                                 </th>
                                             </tr>
                                         </thead>
 
                                         {/* Table Body */}
                                         <tbody>
-										{searchQuery.length > 0 && dataResults.length === 0 ? (
+										{dataResults.length === 0 ? (
                                         	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
                                     	) : (
                                             sortedData
@@ -961,7 +954,12 @@ export default function Home() {
                                                                             {event.intFEventName} - {event.intFTotalHours}
                                                                         </p>
                                                                 ))}
-																{info.externalEventsAttended.map((event, index) => (
+
+																{/* {showMainEventByYear(info.eventsAttended, selectedYear)} */}
+																
+																{info.externalEventsAttended
+																	.filter(event => event.formStage === 5)
+																	.map((event, index) => (
 																	<p key={index}>
 																		{event.programName} - 0
 																	</p>
