@@ -165,7 +165,7 @@ export default function Home() {
 						.filter(event => event.staff_id === uniqueStaffID)
 						.map(event => ({
 							programName: event.program_title,
-							totalHours: event.grand_total_fees,
+							totalHours: event.total_hours,
 							commencementDate: event.commencement_date,
 							formStage: event.formStage
 						}))
@@ -961,7 +961,7 @@ export default function Home() {
 																	.filter(event => event.formStage === 5)
 																	.map((event, index) => (
 																	<p key={index}>
-																		{event.programName} - 0
+																		{event.programName} - {event.totalHours}
 																	</p>
 																))}
                                                             </p>
