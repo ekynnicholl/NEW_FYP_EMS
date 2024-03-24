@@ -71,10 +71,14 @@ export default function Home({ id }: { id: string }) {
 	const [formDetails, setFormDetails] = useState<ExternalForm[]>([]);
 	const [str, setStr] = useState("");
 
-	const [numPages, setNumPages] = useState<number | null>(null);
+	const [numPagesArray, setNumPagesArray] = useState<(number | null)[]>([]);
 
-	function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-		setNumPages(numPages);
+	function onDocumentLoadSuccess({ numPages }: { numPages: number }, index: number) {
+		setNumPagesArray(prevNumPagesArray => {
+			const newNumPagesArray = [...prevNumPagesArray];
+			newNumPagesArray[index] = numPages;
+			return newNumPagesArray;
+		});
 	}
 
 	useEffect(() => {
@@ -708,14 +712,22 @@ export default function Home({ id }: { id: string }) {
 				</div>
 				<div className="w-full">
 					{formDetails?.[0]?.supporting_documents?.map((doc, index) => (
-						<Document key={index} file={doc} onLoadSuccess={onDocumentLoadSuccess} className="grid justify-center">
-							{Array.from(new Array(numPages), (el, index) => (
+						<Document
+							key={index}
+							file={doc}
+							onLoadSuccess={({ numPages }) => onDocumentLoadSuccess({ numPages }, index)}
+							className="grid justify-center"
+						>
+							{Array.from(new Array(numPagesArray[index] || 0), (el, pageIndex) => (
 								<Page
+									key={`page_${pageIndex + 1}`}
+									pageNumber={pageIndex + 1}
 									width={1000}
-									key={`page_${index + 1}`}
-									pageNumber={index + 1}
 									renderTextLayer={false}
 									renderAnnotationLayer={false}
+									onError={error => {
+										console.error("Failed to load page:", error);
+									}}
 								/>
 							))}
 						</Document>
