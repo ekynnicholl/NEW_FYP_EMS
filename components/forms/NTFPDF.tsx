@@ -222,12 +222,14 @@ export default function Home({ id }: { id: string }) {
 								</p>
 
 								<label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Description</label>
-								<input
+								{/* <input
 									typeof="text"
 									className="col-span-6 border-b border-r border-slate-950 p-2"
 									value={details?.program_description ?? ""}
-								/>
-								{/* <p className="col-span-6 border-b border-r border-slate-950 bg-white p-2 flex items-center">{details && details.program_description.length > 0 ? details.program_description : ""}</p> */}
+								/> */}
+								<p className="col-span-6 border-b border-r border-slate-950 bg-white p-2 flex items-center">
+                                    {details?.program_description ?? ""}
+                                </p>
 
 								<label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">
 									Commencement date of event
