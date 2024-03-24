@@ -353,11 +353,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							This is where the staff can access to submit their forms.
 						</DialogDescription>
 						<div className="grid place-items-center">
-							<QRCodeCanvas value={`${window.location.href}/form/external`} size={256} />
+							<QRCodeCanvas value={`${window.location.origin}/form/external`} size={256} />
 						</div>
 						<DialogFooter className="sm:justify-center">
 							<button
-								onClick={() => copyToClipboard(`${window.location.href}/form/external`)}
+								onClick={() => copyToClipboard(`${window.location.origin}/form/external`)}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
 							>
 								Copy Link
@@ -387,11 +387,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							This is where the staff is able to access their past submitted forms.
 						</DialogDescription>
 						<div className="grid place-items-center">
-							<QRCodeCanvas className="bg-white p-1" value={`${window.location.href}/attended_events`} size={256} />
+							<QRCodeCanvas className="bg-white p-1" value={`${window.location.origin}/attended_events`} size={256} />
 						</div>
 						<DialogFooter className="sm:justify-center">
 							<button
-								onClick={() => copyToClipboard(`${window.location.href}/attended_events`)}
+								onClick={() => copyToClipboard(`${window.location.origin}/attended_events`)}
 								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
 							>
 								Copy Link

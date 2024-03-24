@@ -57,7 +57,11 @@ const showSuccessToast = (message: string) => {
 };
 
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
-	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
+	const [numPages, setNumPages] = useState(null);
+	function onDocumentLoadSuccess({ numPages }) {
+		setNumPages(numPages);
+	}
+
 	const supabase = createClientComponentClient();
 	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
 	const router = useRouter();
@@ -288,11 +292,21 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			}
 		}
 
+		const grand_total =
+			values.course_fee +
+			values.airfare_fee +
+			values.accommodation_fee +
+			values.per_diem_fee +
+			values.transportation_fee +
+			values.travel_insurance_fee +
+			values.other_fees;
+
 		const { data, error } = await supabase
 			.from("external_forms")
 			.insert([
 				{
 					...values,
+					grand_total_fees: grand_total,
 					last_updated: new Date(),
 					formStage: 2,
 					supporting_documents: documentPaths,

@@ -16,8 +16,7 @@
 		".gitattributes": true,
 		".eslintrc.json": true,
 		"components.json": true,
-		"google_config.js": true,
-		"next.config.js": true
+		"google_config.js": true
 	},
 	"hide-files.files": [
 		"README.md",
@@ -30,11 +29,7 @@
 		".gitattributes",
 		".eslintrc.json",
 		"components.json",
-		"google_config.js",
-		"next.config.js"
+		"google_config.js"
 	],
-	"cSpell.words": [
-		"hrdf",
-		"Travelling"
-	]
+	"cSpell.words": ["hrdf", "Travelling"]
 }

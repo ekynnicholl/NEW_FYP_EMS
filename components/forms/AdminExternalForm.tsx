@@ -6,7 +6,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
@@ -15,12 +15,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import NTFPDF from "@/components/forms/NTFPDF";
 import TooltipIcon from "@/components/icons/TooltipIcon";
 
-import { SiMicrosoftword } from "react-icons/si";
 import { BsFiletypePdf } from "react-icons/bs";
 
 import adminExternalFormSchema from "@/schema/adminExternalFormSchema";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar-year";
@@ -42,7 +41,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
-import { fi } from "date-fns/locale";
 import type { FieldValues } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 

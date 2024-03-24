@@ -1,7 +1,6 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-import { ArrowLeftIcon } from "lucide-react";
 import DashboardExternalForm from "@/components/forms/DashboardExternalForm";
 import Link from "next/link";
 
@@ -15,12 +14,6 @@ export default async function ExternalPage({ params }: { params: { id: string } 
 
 	return (
 		<div className="w-full p-5 space-y-4">
-			<div className="bg-white rounded-lg p-4">
-				<Link href="/external">
-					<ArrowLeftIcon className="cursor-pointer" />
-				</Link>
-			</div>
-
 			<div className="flex gap-3">
 				<div className="flex-1">
 					<DashboardExternalForm data={externalForm?.[0]} />
