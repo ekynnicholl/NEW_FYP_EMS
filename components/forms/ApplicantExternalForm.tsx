@@ -57,11 +57,6 @@ const showSuccessToast = (message: string) => {
 };
 
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
-	const [numPages, setNumPages] = useState(null);
-	function onDocumentLoadSuccess({ numPages }) {
-		setNumPages(numPages);
-	}
-
 	const supabase = createClientComponentClient();
 	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
 	const router = useRouter();

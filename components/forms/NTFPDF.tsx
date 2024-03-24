@@ -71,9 +71,9 @@ export default function Home({ id }: { id: string }) {
 	const [formDetails, setFormDetails] = useState<ExternalForm[]>([]);
 	const [str, setStr] = useState("");
 
-	const [numPages, setNumPages] = useState(null);
+	const [numPages, setNumPages] = useState<number | null>(null);
 
-	function onDocumentLoadSuccess({ numPages }) {
+	function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
 		setNumPages(numPages);
 	}
 
@@ -141,7 +141,7 @@ export default function Home({ id }: { id: string }) {
 
 				<div>
 					{formDetails.map(details => (
-						<form key={details.formID}>
+						<form key={details.id}>
 							{/* Section 1: Personal details */}
 							<fieldset className="p-[0.5px] bg-slate-950 text-[13px]">
 								<span className="text-slate-50 font-semibold uppercase ml-2">Section 1: Personal Details</span>
@@ -152,7 +152,7 @@ export default function Home({ id }: { id: string }) {
 								</label>
 								<p
 									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										details.full_name.length >= 26 ? "px-2 py-1" : "p-2"
+										(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
 									}`}
 								>
 									{details.full_name}
@@ -166,7 +166,7 @@ export default function Home({ id }: { id: string }) {
 								</label>
 								<p
 									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										details.course.length >= 26 ? "px-2 py-1" : "p-2"
+										(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
 									}`}
 								>
 									{details.course}
@@ -175,7 +175,7 @@ export default function Home({ id }: { id: string }) {
 								<label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Faculty / School / Unit</label>
 								<p
 									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
-										details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
+										details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
 									}`}
 								>
 									{details.faculty}
@@ -185,12 +185,12 @@ export default function Home({ id }: { id: string }) {
 									Type of Transportation
 								</label>
 								<p className="col-span-2 border-b border-slate-950 bg-white p-2">
-									{details && details.transport === "None" ? "" : capitalizeFirstLetter(details.transport)}
+									{details && details.transport === "None" ? "" : capitalizeFirstLetter(details.transport!)}
 								</p>
 
 								<label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Traveling in</label>
 								<p className="col-span-2 border-b border-r border-slate-950 bg-white p-2">
-									{capitalizeFirstLetter(details.travelling)}
+									{capitalizeFirstLetter(details.travelling!)}
 								</p>
 
 								<label className="col-start-1 col-span-2 p-1 border-r border-l border-slate-950">
@@ -198,10 +198,10 @@ export default function Home({ id }: { id: string }) {
 								</label>
 								<p
 									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${
-										details.other_members.length >= 96 ? "px-2 py-1" : "p-2"
+										details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
 									}`}
 								>
-									{details && details.other_members.length > 0 ? details.other_members : ""}
+									{(details && details.other_members?.length) ?? 0 > 0 ? details.other_members : ""}
 								</p>
 							</div>
 
@@ -221,7 +221,7 @@ export default function Home({ id }: { id: string }) {
 								<input
 									typeof="text"
 									className="col-span-6 border-b border-r border-slate-950 p-2"
-									value={details && details.program_description.length > 0 ? details.program_description : ""}
+									value={details?.program_description ?? ""}
 								/>
 								{/* <p className="col-span-6 border-b border-r border-slate-950 bg-white p-2 flex items-center">{details && details.program_description.length > 0 ? details.program_description : ""}</p> */}
 
@@ -229,14 +229,14 @@ export default function Home({ id }: { id: string }) {
 									Commencement date of event
 								</label>
 								<p className="col-span-2 border-b border-slate-950 bg-white p-2 flex items-center">
-									{formatDate(details.commencement_date)}
+									{details.commencement_date ? formatDate(details.commencement_date) : ""}
 								</p>
 
 								<label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">
 									Completion date of event
 								</label>
 								<p className="col-span-2 border-b border-r border-slate-950 bg-white p-2 flex items-center">
-									{formatDate(details.completion_date)}
+									{details.completion_date ? formatDate(details.completion_date) : ""}
 								</p>
 
 								<label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">
@@ -244,16 +244,16 @@ export default function Home({ id }: { id: string }) {
 								</label>
 								<p
 									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										details.organiser.length >= 26 ? "px-2 py-1" : "p-2"
+										details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
 									}`}
 								>
-									{details && details.organiser.length > 0 ? details.organiser : ""}
+									{details && details.organiser?.length ? details.organiser : ""}
 								</p>
 
 								<label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Venue</label>
 								<p
 									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
-										details.venue.length >= 26 ? "px-2 py-1" : "p-2"
+										details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
 									}`}
 								>
 									{details.venue}
@@ -329,13 +329,13 @@ export default function Home({ id }: { id: string }) {
 											{details.flight_time}
 										</p>
 										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.flight_number.toUpperCase()}
+											{details.flight_number ? details.flight_number.toUpperCase() : ""}
 										</p>
 										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.destination_from)}
+											{capitalizeFirstLetter(details.destination_from!)}
 										</p>
 										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.destination_to)}
+											{capitalizeFirstLetter(details.destination_to!)}
 										</p>
 										<p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">
 											{details.transit_flight_date}
@@ -347,10 +347,10 @@ export default function Home({ id }: { id: string }) {
 											{details.transit_flight_number}
 										</p>
 										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.transit_destination_from)}
+											{capitalizeFirstLetter(details.transit_destination_from!)}
 										</p>
 										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.transit_destination_to)}
+											{capitalizeFirstLetter(details.transit_destination_to!)}
 										</p>
 									</div>
 									<div className="col-span-1 row-span-4 grid grid-cols-4 grid-rows-5">
@@ -407,47 +407,53 @@ export default function Home({ id }: { id: string }) {
 										1&#41; Course Fees
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.course_fee > "0" ? details.course_fee : ""}
+										{details && details.course_fee && Number(details.course_fee) > 0 ? details.course_fee : ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">2&#41; Airfare</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.airfare_fee > "0" ? details.airfare_fee : ""}
+										{details && details.airfare_fee && Number(details.airfare_fee) > 0 ? details.airfare_fee : ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">
 										3&#41; <span className="underline">Accommodation</span>
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.accommodation_fee > "0" ? details.accommodation_fee : ""}
+										{details && details.accommodation_fee && Number(details.accommodation_fee) > 0
+											? details.accommodation_fee
+											: ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">
 										4&#41; <span className="underline">Per Diem</span>
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.per_diem_fee > "0" ? details.per_diem_fee : ""}
+										{details && details.per_diem_fee && Number(details.per_diem_fee) > 0 ? details.per_diem_fee : ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">
 										5&#41; <span className="underline">Transportation</span>
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.transportation_fee > "0" ? details.transportation_fee : ""}
+										{details && details.transportation_fee && Number(details.transportation_fee) > 0
+											? details.transportation_fee
+											: ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">
 										6&#41; Travel Insurance
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.travel_insurance_fee > "0" ? details.travel_insurance_fee : ""}
+										{details && details.travel_insurance_fee && Number(details.travel_insurance_fee) > 0
+											? details.travel_insurance_fee
+											: ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 border border-slate-950 border-t-0">
 										7&#41; Others<sup>4</sup>
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-b border-r border-slate-950 flex items-center justify-center">
-										{details && details.others_fee > "0" ? details.others_fee : ""}
+										{details && details.other_fees! > 0 ? details.other_fees : ""}
 									</p>
 									<label className="col-span-1 row-span-1 p-1 bg-gray-200 uppercase border-r border-l border-slate-950">
 										Grand Total
 									</label>
 									<p className="col-span-1 row-span-1 p-1 border-r border-slate-950 flex items-center justify-center">
-										{details && details.grand_total_fees > "0" ? details.grand_total_fees : ""}
+										{details && details.grand_total_fees! > 0 ? details.grand_total_fees : ""}
 									</p>
 								</div>
 								<div className="col-span-3 grid grid-cols-3 grid-rows-10 bg-slate-50">
@@ -457,62 +463,62 @@ export default function Home({ id }: { id: string }) {
 									</label>
 									<label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
 										<span className="border-r border-slate-950 pb-[4.5px] pt-[1px] px-1 text-xs">
-											<input type="checkbox" checked={details && details.staff_development_fund > "0" ? true : false} />
+											<input type="checkbox" checked={details && details.staff_development_fund?.length! > 0} />
 										</span>
 										<span className="ml-2 flex items-center">Staff Development Fund</span>
 									</label>
 
 									<p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">
-										{details && details.staff_development_fund > "0" ? details.staff_development_fund : ""}
+										{details.staff_development_fund! ? details.staff_development_fund : ""}
 									</p>
 
 									<label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
 										<span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1">
-											<input type="checkbox" checked={details && details.consolidated_pool_fund > "0" ? true : false} />
+											<input type="checkbox" checked={details && details.consolidated_pool_fund?.length! > 0} />
 										</span>
 										<span className="ml-2 flex items-center">Consolidated Pool Fund</span>
 									</label>
 
 									<p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">
-										{details && details.consolidated_pool_fund > "0" ? details.consolidated_pool_fund : ""}
+										{details && details.consolidated_pool_fund?.length! > 0 ? details.consolidated_pool_fund : ""}
 									</p>
 
 									<label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
 										<span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1">
-											<input type="checkbox" checked={details && details.research_fund > "0" ? true : false} />
+											<input type="checkbox" checked={details && details.research_fund?.length! > 0} />
 										</span>
 										<span className="ml-2 flex items-center">Research Fund</span>
 									</label>
 
 									<p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">
-										{details && details.research_fund > "0" ? details.research_fund : ""}
+										{details && details.research_fund?.length! > 0 ? details.research_fund : ""}
 									</p>
 
 									<label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
 										<span className="border-r border-slate-950 pb-[4.5px] pt-1 px-1">
-											<input type="checkbox" checked={details && details.travel_fund > "0" ? true : false} />
+											<input type="checkbox" checked={details && details.travel_fund?.length! > 0} />
 										</span>
 										<span className="ml-2">Travel / Accommodation Fund</span>
 									</label>
 
 									<p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">
-										{details && details.travel_fund > "0" ? details.travel_fund : ""}
+										{details && details.travel_fund?.length! > 0 ? details.travel_fund : ""}
 									</p>
 
 									<label className="relative inline-flex col-span-2 whitespace-nowrap border-b border-r border-slate-950">
 										<span className="border-r border-slate-950 pb-[4.5px] px-1 pt-1">
-											<input type="checkbox" checked={details && details.student_council_fund > "0" ? true : false} />
+											<input type="checkbox" checked={details && details.student_council_fund?.length! > 0} />
 										</span>
 										<span className="ml-2 flex items-center">Student Council / Student Welfare Fund</span>
 									</label>
 
 									<p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">
-										{details && details.student_council_fund > "0" ? details.student_council_fund : ""}
+										{details && details.student_council_fund?.length! > 0 ? details.student_council_fund : ""}
 									</p>
 
 									<label className="relative inline-flex col-span-2 border-b border-r border-slate-950">
 										<span className="border-r border-slate-950 pb-[8.5px] pt-1 px-1">
-											<input type="checkbox" checked={details && details.other_funds > "0" ? true : false} />
+											<input type="checkbox" checked={details && details.other_funds?.length! > 0} />
 										</span>
 										<span className="ml-2 flex items-center">
 											Others<sup>3</sup>
@@ -520,22 +526,14 @@ export default function Home({ id }: { id: string }) {
 									</label>
 
 									<p className="col-span-1 p-1 border-b border-r border-slate-950 text-center">
-										{details && details.other_funds > "0" ? details.other_funds : ""}
+										{details && details.other_funds?.length! > 0 ? details.other_funds : ""}
 									</p>
 
 									<label className="col-span-3 p-1 flex items-center border-b border-r border-slate-950 font-normal">
 										Any expenditure cap?
-										<input
-											type="checkbox"
-											className="ml-2"
-											checked={details && details.expenditure_cap === "No" ? true : false}
-										/>
+										<input type="checkbox" className="ml-2" checked={details && details.expenditure_cap === "No"} />
 										<label className="ml-2">No</label>
-										<input
-											type="checkbox"
-											className="ml-4"
-											checked={details && details.expenditure_cap === "Yes" ? true : false}
-										/>
+										<input type="checkbox" className="ml-4" checked={details && details.expenditure_cap === "Yes"} />
 										<label className="ml-2">Yes</label>
 										<p className="italic text-xs font-normal ml-20">if yes, please specify below</p>
 									</label>
@@ -566,7 +564,7 @@ export default function Home({ id }: { id: string }) {
 										{details && details.applicant_declaration_signature === null ? (
 											<></>
 										) : (
-											<img src={details.applicant_declaration_signature} className="absolute w-6 h-6 ml-40 -mt-6" />
+											<img src={details.applicant_declaration_signature ?? ""} className="absolute w-6 h-6 ml-40 -mt-6" />
 										)}
 
 										<input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" />
@@ -577,7 +575,7 @@ export default function Home({ id }: { id: string }) {
 										<input
 											type="text"
 											className="border-b border-slate-950 ml-2 w-60 bg-gray-200"
-											value={details.applicant_declaration_name}
+											value={details.applicant_declaration_name ?? ""}
 										/>
 										<br />
 										<label>
@@ -586,13 +584,17 @@ export default function Home({ id }: { id: string }) {
 										<input
 											type="text"
 											className="border-b border-slate-950 ml-2 w-60 bg-gray-200"
-											value={details.applicant_declaration_position_title}
+											value={details.applicant_declaration_position_title ?? ""}
 										/>
 										<br />
 										<label>
 											Date<span className="ml-[56px]">:</span>
 										</label>
-										<input type="text" className="bg-gray-200 ml-2 w-60" value={formatDate(details.applicant_declaration_date)} />
+										<input
+											type="text"
+											className="bg-gray-200 ml-2 w-60"
+											value={formatDate(details.applicant_declaration_date ?? "")}
+										/>
 										<br />
 									</div>
 								</div>
@@ -606,7 +608,7 @@ export default function Home({ id }: { id: string }) {
 										{details && details.verification_signature === null ? (
 											<></>
 										) : (
-											<img src={details.verification_signature} className="absolute w-6 h-6 ml-40 -mt-6" />
+											<img src={details.verification_signature ?? ""} className="absolute w-6 h-6 ml-40 -mt-6" />
 										)}
 										<input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" />
 										<br />
@@ -616,7 +618,7 @@ export default function Home({ id }: { id: string }) {
 										<input
 											type="text"
 											className="border-b border-slate-950 ml-2 w-60 bg-gray-200"
-											value={details.verification_name}
+											value={details.verification_name ?? ""}
 										/>
 										<br />
 										<label>
@@ -625,13 +627,13 @@ export default function Home({ id }: { id: string }) {
 										<input
 											type="text"
 											className="border-b border-slate-950 ml-2 w-60 bg-gray-200"
-											value={details.verification_position_title}
+											value={details.verification_position_title ?? ""}
 										/>
 										<br />
 										<label>
 											Date<span className="ml-[56px]">:</span>
 										</label>
-										<input type="text" className="bg-gray-200 ml-2 w-60" value={formatDate(details.verification_date)} />
+										<input type="text" className="bg-gray-200 ml-2 w-60" value={formatDate(details.verification_date ?? "")} />
 										<br />
 									</div>
 								</div>
@@ -647,7 +649,11 @@ export default function Home({ id }: { id: string }) {
 									<label>
 										Name<span className="ml-[48px]">:</span>
 									</label>
-									<input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" value={details.approval_name} />
+									<input
+										type="text"
+										className="border-b border-slate-950 ml-2 w-60 bg-gray-200"
+										value={details.approval_name ?? ""}
+									/>
 									<br />
 									<label>
 										Position Title<span className="ml-[14px]">:</span>
@@ -655,12 +661,12 @@ export default function Home({ id }: { id: string }) {
 									<input
 										type="text"
 										className="border-b border-slate-950 ml-2 w-60 bg-gray-200"
-										value={details.approval_position_title}
+										value={details.approval_position_title ?? ""}
 									/>
 									{details && details.approval_signature === null ? (
 										<></>
 									) : (
-										<img src={details.approval_signature} className="absolute w-9 h-9 ml-[52vh] -mt-8" />
+										<img src={details.approval_signature ?? ""} className="absolute w-9 h-9 ml-[52vh] -mt-8" />
 									)}
 
 									<input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />
@@ -668,7 +674,7 @@ export default function Home({ id }: { id: string }) {
 									<label>
 										Date<span className="ml-[56px]">:</span>
 									</label>
-									<input type="text" className="bg-gray-200 ml-2 w-60" value={formatDate(details.approval_date)} />
+									<input type="text" className="bg-gray-200 ml-2 w-60" value={formatDate(details.approval_date ?? "")} />
 									<label className="float-right mr-[135px]">Signature</label>
 								</div>
 							</div>
