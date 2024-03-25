@@ -31,6 +31,7 @@ type AttendanceDataType = {
     attDateSubmitted: string;
     sub_eventName: string;
     sub_eventVenue: string;
+    attFormsStaffEmail: string;
 };
 
 interface Props {
