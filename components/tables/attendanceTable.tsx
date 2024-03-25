@@ -399,7 +399,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             eventName: eventName,
         }));
 
-        // sendParticipationCert(attendanceDataWithEventName);
+        sendParticipationCert(attendanceDataWithEventName);
     }
 
     const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
