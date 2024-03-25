@@ -12,6 +12,17 @@ import DeleteModal from "@/components/EditEvent_Modal";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendParticipationCert } from "@/lib/api";
 import toast from 'react-hot-toast';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type AttendanceDataType = {
     attFormsID: string;
@@ -22,6 +33,7 @@ type AttendanceDataType = {
     attDateSubmitted: string;
     sub_eventName: string;
     sub_eventVenue: string;
+    attFormsStaffEmail: string;
 };
 
 type FacultyUnit = {
@@ -381,15 +393,17 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     }
 
     const distributeCertificates = () => {
-        toast.success("Distributing... Please wait at least 1 minute before leaving this page. TQ.");
-        attendanceData.forEach(attendanceItem => {
-            const itemWithEventName = {
-                ...attendanceItem,
-                eventName: eventName,
-            };
-            sendParticipationCert(itemWithEventName);
-        });
+        toast.success("Successfully queued for distribution.");
+        const attendanceDataWithEventName = attendanceData.map(attendanceItem => ({
+            ...attendanceItem,
+            eventName: eventName,
+        }));
+
+        // sendParticipationCert(attendanceDataWithEventName);
     }
+
+    const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
+    const [isDistributeOpen, setDistributeOpen] = useState(false);
 
     return (
         <div>
@@ -410,13 +424,53 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                 />
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
                             </button>
-                            <button
+                            {/* <button
                                 type="button"
-                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
-                                onClick={() => distributeCertificates()}
+                                className={`flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]`}
+                                onClick={() => setIsDistributeSelected(true)}
                             >
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Distribute Certificates</span>
-                            </button>
+                            </button> */}
+                            {isDistributeSelected ? (
+                                <Dialog open={isDistributeOpen} onOpenChange={setDistributeOpen}>
+                                    <DialogTrigger>
+                                        <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
+                                            <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+                                                <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+                                                    {/* Confirm Selection */}
+                                                    Distribute Certificates
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent className="z-[9999]">
+                                        <DialogHeader>
+                                            <DialogTitle className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+                                                Certificate of Participation
+                                            </DialogTitle>
+                                        </DialogHeader>
+                                        <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+                                            Please confirm you are about to distribute certificates to these emails:
+                                            <div className="max-h-[200px] overflow-auto">
+                                                {attendanceData.map((data, index) => (
+                                                    <span key={index} className="block mt-1">{data.attFormsStaffName} - {data.attFormsStaffEmail}</span>
+                                                ))}
+                                            </div>
+                                        </DialogDescription>
+                                        <DialogFooter className="sm:justify-center">
+                                            <DialogClose asChild>
+                                                <Button variant="outline">Cancel</Button>
+                                            </DialogClose>
+                                            <Button onClick={() => {
+                                                distributeCertificates();
+                                                setDistributeOpen(false);
+                                            }}>
+                                                Confirm
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            ) : null}
                         </div>
                         <table className="lg:w-full w-auto">
                             <thead>

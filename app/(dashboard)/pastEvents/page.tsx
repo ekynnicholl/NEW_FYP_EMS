@@ -34,9 +34,10 @@ import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 import ViewEventFeedback from "@/components/ViewEventFeedback";
 import Modal from "@/components/QR_Codes_Modal";
 import QRCodeModal from "@/components/QR_Codes_Modal";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import AttendanceList from "@/components/attendance/attendance_list";
 import FeedbackList from "@/components/feedback/feedback_list";
+import toast from "react-hot-toast";
 
 type mainEvent = {
     intFID: string;
@@ -436,10 +437,10 @@ export default function Home() {
         navigator.clipboard
             .writeText(text)
             .then(() => {
-                alert("Link copied to clipboard!");
+                toast.success("Link copied to clipboard!");
             })
             .catch(error => {
-                console.error("Copy failed:", error);
+                toast.error("Copy failed:", error);
             });
     };
 
@@ -827,7 +828,7 @@ export default function Home() {
                                                         : "pointer",
                                                 opacity: currentPage === 1 ? 0.5 : 1,
                                             }}>
-                                            <MdKeyboardDoubleArrowLeft className="text-3xl"/>
+                                            <MdKeyboardDoubleArrowLeft className="text-3xl" />
                                         </button>
 
                                         {/* Arrow Previous Page Button */}
@@ -839,7 +840,7 @@ export default function Home() {
                                             style={{
                                                 opacity: currentPage === 1 ? 0.5 : 1,
                                             }}>
-                                            <MdKeyboardArrowLeft className="text-3xl"/>
+                                            <MdKeyboardArrowLeft className="text-3xl" />
                                         </button>
 
                                         {/* Pagination Buttons */}
@@ -872,7 +873,7 @@ export default function Home() {
                                                         ? 0.5
                                                         : 1,
                                             }}>
-                                            <MdKeyboardArrowRight className="text-3xl"/>
+                                            <MdKeyboardArrowRight className="text-3xl" />
                                         </button>
 
                                         {/* Skip To Last Page Button */}
@@ -884,7 +885,7 @@ export default function Home() {
                                                 : ""
                                                 }`}
                                             onClick={handleSkipToLastPage}>
-                                            <MdKeyboardDoubleArrowRight className="text-3xl"/>
+                                            <MdKeyboardDoubleArrowRight className="text-3xl" />
                                         </button>
                                     </div>
                                 </div>
@@ -1099,7 +1100,7 @@ export default function Home() {
                                 Feedback Forms
                             </h3>
                             <div className="flex flex-col items-center justify-center">
-                                <QRCodeSVG
+                                <QRCodeCanvas
                                     className="bg-white p-1"
                                     value={`${url}/form/feedback/${selectedSubEventID}`}
                                 />
