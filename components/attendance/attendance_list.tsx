@@ -23,6 +23,7 @@ type SubEventsDataType = {
 }
 
 type AttendanceDataType = {
+    attFormsCertofParticipation: string;
     attFormsID: string;
     attFSubEventID: string;
     attFormsStaffID: string;

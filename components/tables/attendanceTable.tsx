@@ -4,7 +4,7 @@ import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
 import exportCSV from "@/public/images/export_csv.png";
-import { BsFillTrash3Fill } from 'react-icons/bs';
+import { BsFiletypePdf, BsFillTrash3Fill } from 'react-icons/bs';
 import { HiPencilAlt } from 'react-icons/hi';
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { tr } from 'date-fns/locale';
@@ -23,8 +23,10 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 type AttendanceDataType = {
+    attFormsCertofParticipation: string;
     attFormsID: string;
     attFSubEventID: string;
     attFormsStaffID: string;
@@ -355,8 +357,6 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         } catch (error) {
 
         }
-
-
     }
 
     const openDeleteModal = (attFormID: string, attFormsStaffName: string) => {
@@ -392,18 +392,36 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         }
     }
 
+    useEffect(() => {
+        setSelectedAttendanceData(new Array(attendanceData.length).fill(true));
+    }, [attendanceData]);
+
+    const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
+    const [isDistributeOpen, setDistributeOpen] = useState(false);
+    const [selectedAttendanceData, setSelectedAttendanceData] = useState<boolean[]>([]);
+
     const distributeCertificates = () => {
         toast.success("Successfully queued for distribution.");
-        const attendanceDataWithEventName = attendanceData.map(attendanceItem => ({
+
+        // Filter out only the selected attendance data
+        const selectedAttendance = attendanceData.filter((_, index) => selectedAttendanceData[index]);
+
+        // Map over the selected attendance data to add the eventName
+        const selectedAttendanceWithEventName = selectedAttendance.map(attendanceItem => ({
             ...attendanceItem,
             eventName: eventName,
         }));
 
-        sendParticipationCert(attendanceDataWithEventName);
-    }
+        // console.log(selectedAttendanceWithEventName);
 
-    const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
-    const [isDistributeOpen, setDistributeOpen] = useState(false);
+        sendParticipationCert(selectedAttendanceWithEventName);
+    };
+
+    const toggleSelection = (index: number) => {
+        const updatedSelectedData = [...selectedAttendanceData];
+        updatedSelectedData[index] = !updatedSelectedData[index];
+        setSelectedAttendanceData(updatedSelectedData);
+    };
 
     return (
         <div>
@@ -452,8 +470,16 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                         <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
                                             Please confirm you are about to distribute certificates to these emails:
                                             <div className="max-h-[200px] overflow-auto">
-                                                {attendanceData.map((data, index) => (
-                                                    <span key={index} className="block mt-1">{data.attFormsStaffName} - {data.attFormsStaffEmail}</span>
+                                                {attendanceData.map((attendee, index) => (
+                                                    <div key={index} className="flex items-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedAttendanceData[index]}
+                                                            onChange={() => toggleSelection(index)}
+                                                            className="mr-3 ml-5"
+                                                        />
+                                                        <span>{attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}</span>
+                                                    </div>
                                                 ))}
                                             </div>
                                         </DialogDescription>
@@ -580,7 +606,18 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     ) : (
                                         <tr key={attendanceItem.attFormsID}>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                {attendanceItem.attFormsStaffID}
+                                                {attendanceItem.attFormsCertofParticipation ? (
+                                                    <a
+                                                        href={`https://chyamrnpbrtxhsvkqpry.supabase.co/storage/v1/object/public/attFormsCertofParticipation/${attendanceItem.attFormsCertofParticipation}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-500 hover:underline"
+                                                    >
+                                                        {attendanceItem.attFormsStaffID}
+                                                    </a>
+                                                ) : (
+                                                    attendanceItem.attFormsStaffID
+                                                )}
                                             </td>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsStaffName}
