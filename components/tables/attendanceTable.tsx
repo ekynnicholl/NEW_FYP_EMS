@@ -4,7 +4,7 @@ import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
 import exportCSV from "@/public/images/export_csv.png";
-import { BsFillTrash3Fill } from 'react-icons/bs';
+import { BsFiletypePdf, BsFillTrash3Fill } from 'react-icons/bs';
 import { HiPencilAlt } from 'react-icons/hi';
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { tr } from 'date-fns/locale';
@@ -12,8 +12,21 @@ import DeleteModal from "@/components/EditEvent_Modal";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendParticipationCert } from "@/lib/api";
 import toast from 'react-hot-toast';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 type AttendanceDataType = {
+    attFormsCertofParticipation: string;
     attFormsID: string;
     attFSubEventID: string;
     attFormsStaffID: string;
@@ -22,6 +35,7 @@ type AttendanceDataType = {
     attDateSubmitted: string;
     sub_eventName: string;
     sub_eventVenue: string;
+    attFormsStaffEmail: string;
 };
 
 type FacultyUnit = {
@@ -343,8 +357,6 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         } catch (error) {
 
         }
-
-
     }
 
     const openDeleteModal = (attFormID: string, attFormsStaffName: string) => {
@@ -380,16 +392,44 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         }
     }
 
-    const distributeCertificates = () => {
-        toast.success("Distributing... Please wait at least 1 minute before leaving this page. TQ.");
-        attendanceData.forEach(attendanceItem => {
-            const itemWithEventName = {
+    useEffect(() => {
+        setSelectedAttendanceData(new Array(attendanceData.length).fill(true));
+    }, [attendanceData]);
+
+    const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
+    const [isDistributeOpen, setDistributeOpen] = useState(false);
+    const [selectedAttendanceData, setSelectedAttendanceData] = useState<boolean[]>([]);
+
+    const distributeCertificates = async () => {
+        try {
+            const selectedAttendance = attendanceData.filter((_, index) => selectedAttendanceData[index]);
+
+            const selectedAttendanceWithEventName = selectedAttendance.map(attendanceItem => ({
                 ...attendanceItem,
                 eventName: eventName,
-            };
-            sendParticipationCert(itemWithEventName);
-        });
-    }
+            }));
+
+            await toast.promise(
+                sendParticipationCert(selectedAttendanceWithEventName),
+                {
+                    loading: 'Distributing certificates...',
+                    success: (response) => {
+                        // console.log('Response message:', response);
+                        return response.message || 'Successfully generated PDF.';
+                    },
+                    error: () => 'Error distributing certificates.',
+                }
+            );
+        } catch (error) {
+            toast.error('Error distributing certificates.');
+        }
+    };
+
+    const toggleSelection = (index: number) => {
+        const updatedSelectedData = [...selectedAttendanceData];
+        updatedSelectedData[index] = !updatedSelectedData[index];
+        setSelectedAttendanceData(updatedSelectedData);
+    };
 
     return (
         <div>
@@ -410,13 +450,61 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                 />
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
                             </button>
-                            <button
+                            {/* <button
                                 type="button"
-                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
-                                onClick={() => distributeCertificates()}
+                                className={`flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]`}
+                                onClick={() => setIsDistributeSelected(true)}
                             >
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Distribute Certificates</span>
-                            </button>
+                            </button> */}
+                            {isDistributeSelected ? (
+                                <Dialog open={isDistributeOpen} onOpenChange={setDistributeOpen}>
+                                    <DialogTrigger>
+                                        <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
+                                            <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+                                                <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+                                                    {/* Confirm Selection */}
+                                                    Distribute Certificates
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent className="z-[9999]">
+                                        <DialogHeader>
+                                            <DialogTitle className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+                                                Certificate of Participation
+                                            </DialogTitle>
+                                        </DialogHeader>
+                                        <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+                                            Please confirm you are about to distribute certificates to these emails:
+                                            <div className="max-h-[200px] overflow-auto">
+                                                {attendanceData.map((attendee, index) => (
+                                                    <div key={index} className="flex items-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedAttendanceData[index]}
+                                                            onChange={() => toggleSelection(index)}
+                                                            className="mr-3 ml-5"
+                                                        />
+                                                        <span>{attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </DialogDescription>
+                                        <DialogFooter className="sm:justify-center">
+                                            <DialogClose asChild>
+                                                <Button variant="outline">Cancel</Button>
+                                            </DialogClose>
+                                            <Button onClick={() => {
+                                                distributeCertificates();
+                                                setDistributeOpen(false);
+                                            }}>
+                                                Confirm
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            ) : null}
                         </div>
                         <table className="lg:w-full w-auto">
                             <thead>
@@ -526,7 +614,18 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     ) : (
                                         <tr key={attendanceItem.attFormsID}>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                {attendanceItem.attFormsStaffID}
+                                                {attendanceItem.attFormsCertofParticipation ? (
+                                                    <a
+                                                        href={`https://chyamrnpbrtxhsvkqpry.supabase.co/storage/v1/object/public/attFormsCertofParticipation/${attendanceItem.attFormsCertofParticipation}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-500 hover:underline"
+                                                    >
+                                                        {attendanceItem.attFormsStaffID}
+                                                    </a>
+                                                ) : (
+                                                    attendanceItem.attFormsStaffID
+                                                )}
                                             </td>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsStaffName}

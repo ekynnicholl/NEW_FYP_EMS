@@ -23,6 +23,7 @@ type SubEventsDataType = {
 }
 
 type AttendanceDataType = {
+    attFormsCertofParticipation: string;
     attFormsID: string;
     attFSubEventID: string;
     attFormsStaffID: string;
@@ -31,6 +32,7 @@ type AttendanceDataType = {
     attDateSubmitted: string;
     sub_eventName: string;
     sub_eventVenue: string;
+    attFormsStaffEmail: string;
 };
 
 interface Props {
