@@ -400,21 +400,29 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     const [isDistributeOpen, setDistributeOpen] = useState(false);
     const [selectedAttendanceData, setSelectedAttendanceData] = useState<boolean[]>([]);
 
-    const distributeCertificates = () => {
-        toast.success("Successfully queued for distribution.");
+    const distributeCertificates = async () => {
+        try {
+            const selectedAttendance = attendanceData.filter((_, index) => selectedAttendanceData[index]);
 
-        // Filter out only the selected attendance data
-        const selectedAttendance = attendanceData.filter((_, index) => selectedAttendanceData[index]);
+            const selectedAttendanceWithEventName = selectedAttendance.map(attendanceItem => ({
+                ...attendanceItem,
+                eventName: eventName,
+            }));
 
-        // Map over the selected attendance data to add the eventName
-        const selectedAttendanceWithEventName = selectedAttendance.map(attendanceItem => ({
-            ...attendanceItem,
-            eventName: eventName,
-        }));
-
-        // console.log(selectedAttendanceWithEventName);
-
-        sendParticipationCert(selectedAttendanceWithEventName);
+            await toast.promise(
+                sendParticipationCert(selectedAttendanceWithEventName),
+                {
+                    loading: 'Distributing certificates...',
+                    success: (response) => {
+                        // console.log('Response message:', response);
+                        return response.message || 'Successfully generated PDF.';
+                    },
+                    error: () => 'Error distributing certificates.',
+                }
+            );
+        } catch (error) {
+            toast.error('Error distributing certificates.');
+        }
     };
 
     const toggleSelection = (index: number) => {
