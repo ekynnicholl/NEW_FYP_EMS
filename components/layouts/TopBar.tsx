@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 import MobileTopBar from "./MobileTopBar";
 import AddAdmin_Modal from "@/components/AddAdmin_Modal";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { auth, provider } from "../../google_config";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 
 import Link from "next/link";
@@ -23,13 +24,13 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
 import cookie from "js-cookie";
 import useDarkLight from "@/components/zustand/darkLightStorage";
-import { IoIosArrowDown } from "react-icons/io"
-import { MdNotificationsActive } from "react-icons/md"
-import { BsThreeDotsVertical } from "react-icons/bs"
+import { IoIosArrowDown } from "react-icons/io";
+import { MdNotificationsActive } from "react-icons/md";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { BiSun } from "react-icons/bi"
-import { HiOutlineMoon } from "react-icons/hi"
-import Notification from "@/components/notifications/notification_topbar"
+import { BiSun } from "react-icons/bi";
+import { HiOutlineMoon } from "react-icons/hi";
+import Notification from "@/components/notifications/notification_topbar";
 
 import {
 	DropdownMenu,
@@ -46,8 +47,7 @@ const User = () => {
 	return (
 		<div className="cursor-pointer">
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-				</DropdownMenuTrigger>
+				<DropdownMenuTrigger asChild></DropdownMenuTrigger>
 				<DropdownMenuContent>
 					<DropdownMenuLabel>My Account</DropdownMenuLabel>
 					<DropdownMenuSeparator />
@@ -79,7 +79,7 @@ const BreadCrumb = () => {
 	const pathArrayLength = pathArray.length;
 	const lastPath = pathArray[pathArrayLength - 1];
 	const lastPathCapitalized = lastPath.charAt(0).toUpperCase() + lastPath.slice(1);
-	const lastPathSpaced = lastPathCapitalized.replace(/([a-z])([A-Z])/g, '$1 $2');
+	const lastPathSpaced = lastPathCapitalized.replace(/([a-z])([A-Z])/g, "$1 $2");
 
 	return (
 		<div className="flex items-center space-x-2 text-[15px] ml-[11px] text-slate-800 dark:text-dark_text">
@@ -101,7 +101,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 	const [userId, setUserId] = useState<string | null>(null);
 	const [homepageView, setHomepageView] = useState(1);
 	const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-	const authToken = cookie.get('authToken');
+	const authToken = cookie.get("authToken");
 
 	useEffect(() => {
 		const storedUserId = localStorage.getItem("concatenatedID");
@@ -127,8 +127,8 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 
 		// Set the homepageView based on the fetched value
-		setHomepageView(data[0]?.accHomeView ?? '1');
-		useViewModeStore.setState({ viewMode: data[0]?.accHomeView ?? '1' });
+		setHomepageView(data[0]?.accHomeView ?? "1");
+		useViewModeStore.setState({ viewMode: data[0]?.accHomeView ?? "1" });
 	};
 
 	const fetchIsDarkMode = async () => {
@@ -149,9 +149,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		useDarkLight.setState({ isDarkMode: accIsDarkMode });
 
 		if (accIsDarkMode) {
-			document.documentElement.classList.add('dark');
+			document.documentElement.classList.add("dark");
 		} else {
-			document.documentElement.classList.remove('dark');
+			document.documentElement.classList.remove("dark");
 		}
 	};
 
@@ -244,49 +244,46 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 				// Check if the user with this firebase_uid already exists in Supabase
 				const { data, error } = await supabase
-					.from('login')
-					.select('firebase_uid, email_address')
-					.eq('firebase_uid', userId);
+					.from("login")
+					.select("firebase_uid, email_address")
+					.eq("firebase_uid", userId);
 
 				if (error) {
-					console.error('Error fetching user data:', error.message);
+					console.error("Error fetching user data:", error.message);
 					return;
 				}
 
 				if (data && data.length > 0) {
 					// User with this firebase_uid already exists, handle it accordingly
-					console.log('User with this firebase_uid already exists:', data);
+					console.log("User with this firebase_uid already exists:", data);
 				} else {
 					// User with this firebase_uid does not exist, proceed with inserting it
-					const { data, error } = await supabase
-						.from('login')
-						.upsert([{ firebase_uid: userId, email_address: email }]);
+					const { data, error } = await supabase.from("login").upsert([{ firebase_uid: userId, email_address: email }]);
 
 					if (error) {
-						console.error('Error inserting data into Supabase:', error.message);
+						console.error("Error inserting data into Supabase:", error.message);
 					}
 				}
-
 			} catch (error) {
 				const firebaseError = error as any;
 
 				// Handle Firebase authentication errors
-				if (firebaseError.code === 'auth/email-already-in-use') {
+				if (firebaseError.code === "auth/email-already-in-use") {
 					setErrorMessageEmailAddress("Email is already in use.");
 					setErrorMessagePassword(null);
 					setErrorMessageConfirmPassword(null);
-				} else if (firebaseError.code === 'auth/weak-password') {
+				} else if (firebaseError.code === "auth/weak-password") {
 					setErrorMessagePassword("Password must be at least 6 characters.");
-				} else if (firebaseError.code === 'auth/invalid-email') {
+				} else if (firebaseError.code === "auth/invalid-email") {
 					setErrorMessageEmailAddress("Invalid email address.");
 				} else {
-					console.error('Sign-up error: ', error);
+					console.error("Sign-up error: ", error);
 				}
 			}
 		} else {
 			setErrorMessageConfirmPassword("Passwords do not match.");
 		}
-	}
+	};
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const password = e.target.value;
@@ -298,7 +295,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const confirmPassword = e.target.value;
-		const passwordElement = document.getElementById('password');
+		const passwordElement = document.getElementById("password");
 
 		if (passwordElement && passwordElement instanceof HTMLInputElement) {
 			const password = passwordElement.value;
@@ -315,26 +312,40 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
 		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card max-md:flex-row-reverse">
 			<AddAdmin_Modal isVisible={showModalAddAdmin} onClose={() => setShowModalAddAdmin(false)}>
-				<form onSubmit={(e) => handleCreateAccount(e)}>
-
+				<form onSubmit={e => handleCreateAccount(e)}>
 					<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
 						<div className="mx-auto max-w-xs ">
 							<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
 							<input
 								className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-								type="email" placeholder="Email address" name="email" required />
+								type="email"
+								placeholder="Email address"
+								name="email"
+								required
+							/>
 							<p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
 
 							<div className="relative">
 								<input
 									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-									type={showPassword ? 'password' : 'text'} placeholder="Password" id="password" name="password" required onChange={handlePasswordChange} />
-								<button className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4" type="button"
-									id="password-toggle" onClick={togglePasswordVisibility}>
-									{showPassword ?
-										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" /> :
+									type={showPassword ? "password" : "text"}
+									placeholder="Password"
+									id="password"
+									name="password"
+									required
+									onChange={handlePasswordChange}
+								/>
+								<button
+									className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4"
+									type="button"
+									id="password-toggle"
+									onClick={togglePasswordVisibility}
+								>
+									{showPassword ? (
+										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+									) : (
 										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									}
+									)}
 								</button>
 
 								<p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
@@ -342,31 +353,39 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 							<div className="relative">
 								<input
 									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-									type={showConfirmPassword ? 'password' : 'text'}
+									type={showConfirmPassword ? "password" : "text"}
 									placeholder="Confirm password"
 									id="confirmPassword"
 									onChange={handleConfirmPasswordChange}
 									required
 								/>
 
-								<button className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4" type="button" id="confirm-password-toggle" onClick={toggleConfirmPasswordVisibility}>
-									{showConfirmPassword ?
-										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" /> :
+								<button
+									className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4"
+									type="button"
+									id="confirm-password-toggle"
+									onClick={toggleConfirmPasswordVisibility}
+								>
+									{showConfirmPassword ? (
+										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+									) : (
 										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									}
+									)}
 								</button>
 
 								<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
 								<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
 							</div>
-							<button
-								className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
-								<svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
-									strokeLinecap="round" strokeLinejoin="round">
-								</svg>
-								<span className="mr-4 text-[16px]">
-									Register
-								</span>
+							<button className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
+								<svg
+									className="w-6 h-6 -ml-2"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								></svg>
+								<span className="mr-4 text-[16px]">Register</span>
 							</button>
 						</div>
 					</div>
@@ -394,15 +413,11 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
-							<DropdownMenuItem
-								onClick={() => updateHomepageView(1)}
-								className={homepageView === 1 ? "text-blue-500" : ""}>
+							<DropdownMenuItem onClick={() => updateHomepageView(1)} className={homepageView === 1 ? "text-blue-500" : ""}>
 								Card View
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => updateHomepageView(2)}
-								className={homepageView === 2 ? "text-blue-500" : ""}>
+							<DropdownMenuItem onClick={() => updateHomepageView(2)} className={homepageView === 2 ? "text-blue-500" : ""}>
 								List View
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -413,22 +428,17 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<div className="flex items-center gap-3 cursor-pointer">
-								<p className=" text-slate-700 text-[15px] font-medium dark:text-dark_text">
-									Administrator
-								</p>
+								<p className=" text-slate-700 text-[15px] font-medium dark:text-dark_text">Administrator</p>
 								<IoIosArrowDown className="text-slate-800 dark:text-dark_text mt-[2.5px]" />
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
-
 							<button onClick={() => setShowModalAddAdmin(true)}>
 								<DropdownMenuLabel>Admin Registration</DropdownMenuLabel>
 							</button>
 
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={handleLogoutClick}>
-								Logout
-							</DropdownMenuItem>
+							<DropdownMenuItem onClick={handleLogoutClick}>Logout</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>

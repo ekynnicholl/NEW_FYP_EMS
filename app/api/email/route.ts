@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
 
-const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 // To handle a GET request to /ap
 export async function GET(request: Request) {
@@ -10,7 +9,7 @@ export async function GET(request: Request) {
 
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
 function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string) {
-    const link = `${url}/form/external/${formID}`;
+    const link = `${window.location.origin}/form/external/${formID}`;
     if (type == 1) {
         let securityKeySentence = '';
 

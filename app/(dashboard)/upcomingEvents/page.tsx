@@ -1116,7 +1116,7 @@ export default function Home() {
                                 <button
                                     onClick={() =>
                                         copyToClipboard(
-                                            `${url}/form/${selectedSubEventID}`
+                                            `${window.location.origin}/form/${selectedSubEventID}`
                                         )
                                     }
                                     className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
@@ -1141,7 +1141,7 @@ export default function Home() {
                                 <button
                                     onClick={() =>
                                         copyToClipboard(
-                                            `${url}/form/feedback/${selectedSubEventID}`
+                                            `${window.location.origin}/form/feedback/${selectedSubEventID}`
                                         )
                                     }
                                     className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"

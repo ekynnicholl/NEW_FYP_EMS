@@ -1677,7 +1677,7 @@ export default function Homepage() {
 							<div className="flex flex-col items-center justify-center">
 								<QRCodeCanvas className="bg-white p-1" value={`${window.location.origin}/form/${selectedSubEventID}`} size={256} />
 								<button
-									onClick={() => copyToClipboard(`${url}/form/${selectedSubEventID}`)}
+									onClick={() => copyToClipboard(`${window.location.origin}/form/${selectedSubEventID}`)}
 									className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
 								>
 									Copy Link
@@ -1698,7 +1698,7 @@ export default function Homepage() {
 									size={256}
 								/>
 								<button
-									onClick={() => copyToClipboard(`${url}/form/feedback/${selectedSubEventID}`)}
+									onClick={() => copyToClipboard(`${window.location.origin}/form/feedback/${selectedSubEventID}`)}
 									className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
 								>
 									Copy Link

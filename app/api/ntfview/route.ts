@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { mailOptions, transporter } from '@/config/nodemailer'
 
-const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
-
 // To handle a GET request to /ap
 export async function GET(request: Request) {
     return NextResponse.json({ request }, { status: 200 });
@@ -34,7 +32,7 @@ export async function POST(request: Request) {
         const atAccessToken = requestData[0].atAccessToken;
         const atCreatedAt = requestData[0].atCreatedAt;
 
-        const tempLink = `${url}/attended_events?tokenid=${atID}&ptoken=${atAccessToken}`;
+        const tempLink = `${window.location.origin}/attended_events?tokenid=${atID}&ptoken=${atAccessToken}`;
 
         const mailContent = `
             <html>
