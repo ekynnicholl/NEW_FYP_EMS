@@ -102,22 +102,30 @@ export default function AttendanceForm() {
 			const endTimeWindow = new Date(eventEndTime);
 			endTimeWindow.setMinutes(endTimeWindow.getMinutes() + 15);
 
+			const event_id = attendanceListData[0]?.sub_eventsMainID;
+
 			// Check if the current time is AFTER the event start date and time,
 			if (currentTime > endTimeWindow) {
-				router.push('/notFound?from=end_att');
+				const { data: eventDetails, error: eventError } = await supabase
+					.from('internal_events')
+					.select('intFEventName')
+					.eq('intFID', event_id);
+				router.push(`/notFound?from=end_att&event_name=${eventDetails![0].intFEventName}`);
 				return;
 			}
 
 			// Check if the current time is BEFORE the event start date and time,
 			if (currentTime < startTimeWindow) {
+				const { data: eventDetails, error: eventError } = await supabase
+					.from('internal_events')
+					.select('intFEventName')
+					.eq('intFID', event_id);
 				const eventStartTimeString = startTimeWindow.toISOString();
-				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}`);
+				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}&event_name=${eventDetails![0].intFEventName}`);
 				return;
 			}
 
 			setEventData(attendanceListData);
-
-			const event_id = attendanceListData[0]?.sub_eventsMainID;
 
 			if (event_id) {
 				// Fetch the event details based on the event_id

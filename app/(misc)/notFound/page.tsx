@@ -10,6 +10,7 @@ const PageNotFound = () => {
   const search = searchParams.get('from')
   const time = searchParams.get("time");
   const event_id = searchParams.get("event_id");
+  const event_name = searchParams.get("event_name");
 
   const [countdown, setCountdown] = useState<{ days: number, hours: number, minutes: number, seconds: number } | null>(null);
 
@@ -64,6 +65,9 @@ const PageNotFound = () => {
             <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
               The forms you&rsquo;re currently accessing is <span className="font-bold">no longer accepting new responses.</span> <br /> Contact the event organizer(s) if you think this was a mistake.
             </div>
+            <div className="text-slate-700 font-bold">
+              Event Accessed: {event_name}
+            </div>
           </div>
         ) : search == 'start_att' ? (
           <div>
@@ -71,6 +75,10 @@ const PageNotFound = () => {
             <div className="text-sm lg:text-base font-normal mb-4 text-slate-700 lg:whitespace-nowrap">
               Hey! The forms you&rsquo;re currently accessing <span className="font-bold">has not yet opened for submission</span>! <br /> Contact the event organizer(s) if you think this was a mistake.
             </div>
+            <div className="text-slate-700 font-bold">
+              Event Accessed: {event_name}
+            </div>
+            <br />
             <div className="text-slate-700 font-bold">
               Time Remaining: <br className="lg:hidden" />{countdown?.days} days, {countdown?.hours} hours, {countdown?.minutes} minutes, {countdown?.seconds} seconds
             </div>

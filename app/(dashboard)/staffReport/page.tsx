@@ -73,9 +73,9 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
-        eventsAttended: string[];
-		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string; formStage: number}[];
-        totalHours: string;
+		eventsAttended: string[];
+		externalEventsAttended: { programName: string; totalHours: number; commencementDate: string; formStage: number }[];
+		totalHours: string;
 	}[]>([]);
 
 	const [aggregatedInfo, setAggregatedInfo] = useState<{
@@ -84,9 +84,9 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		subEventsAttended: subEvents[];
-        eventsAttended: string[];
-		externalEventsAttended: {programName: string; totalHours: number; commencementDate: string; formStage: number}[];
-        totalHours: string;
+		eventsAttended: string[];
+		externalEventsAttended: { programName: string; totalHours: number; commencementDate: string; formStage: number }[];
+		totalHours: string;
 	}[]>([]);
 
 	useEffect(() => {
@@ -144,21 +144,21 @@ export default function Home() {
 		}
 
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-        const groupedData = staffData.reduce((result, form) => {
+		const groupedData = staffData.reduce((result, form) => {
 
-            const uniqueStaffID = form.attFormsStaffID;
+			const uniqueStaffID = form.attFormsStaffID;
 
-            if (!result[uniqueStaffID]) {
-                result[uniqueStaffID] = {
-                    staffID: form.attFormsStaffID,
-                    staffName: form.attFormsStaffName,
-                    staffFaculty: form.attFormsFacultyUnit,
-                    totalSubEvents: 0,
-                    subEventsAttended:[],
-                    eventsAttended: [],
+			if (!result[uniqueStaffID]) {
+				result[uniqueStaffID] = {
+					staffID: form.attFormsStaffID,
+					staffName: form.attFormsStaffName,
+					staffFaculty: form.attFormsFacultyUnit,
+					totalSubEvents: 0,
+					subEventsAttended: [],
+					eventsAttended: [],
 					externalEventsAttended: [],
-                    totalHours: 0,
-                };
+					totalHours: 0,
+				};
 
 				result[uniqueStaffID].externalEventsAttended.push(
 					...externalEvents
@@ -169,30 +169,30 @@ export default function Home() {
 							commencementDate: event.commencement_date,
 							formStage: event.formStage
 						}))
-				);		
-            }
+				);
+			}
 
-            if (!result[uniqueStaffID].subEventsAttended.some((event: subEvents) => event.sub_eventsID === form.attFSubEventID)) {
-                result[uniqueStaffID].totalSubEvents++;
-
-				result[uniqueStaffID].eventsAttended.push(
-					...subEvents
-						.filter(event => event.sub_eventsID === form.attFSubEventID)
-						.map(event => event.sub_eventsMainID)
-				);     
-
-                result[uniqueStaffID].subEventsAttended.push(
-                    ...subEvents.filter(event => event.sub_eventsID === form.attFSubEventID)
-                );
+			if (!result[uniqueStaffID].subEventsAttended.some((event: subEvents) => event.sub_eventsID === form.attFSubEventID)) {
+				result[uniqueStaffID].totalSubEvents++;
 
 				result[uniqueStaffID].eventsAttended.push(
 					...subEvents
 						.filter(event => event.sub_eventsID === form.attFSubEventID)
 						.map(event => event.sub_eventsMainID)
-				);				
-            }			
+				);
 
-            return result;
+				result[uniqueStaffID].subEventsAttended.push(
+					...subEvents.filter(event => event.sub_eventsID === form.attFSubEventID)
+				);
+
+				result[uniqueStaffID].eventsAttended.push(
+					...subEvents
+						.filter(event => event.sub_eventsID === form.attFSubEventID)
+						.map(event => event.sub_eventsMainID)
+				);
+			}
+
+			return result;
 
 		}, {});
 
@@ -200,20 +200,22 @@ export default function Home() {
 			if (Object.prototype.hasOwnProperty.call(groupedData, staffID)) {
 				const staffInfo = groupedData[staffID];
 				let totalHours = 0;
-			
-				staffInfo.eventsAttended.forEach((mainEventID: string) => {
+
+				const uniqueEventsAttended = new Set<string>(staffInfo.eventsAttended);
+
+				uniqueEventsAttended.forEach((mainEventID: string) => {
 					const event = mainEvents.find(e => e.intFID === mainEventID);
 					if (event) {
 						totalHours += Number(event.intFTotalHours);
 					}
 				});
-			
+
 				staffInfo.totalHours = totalHours;
 			}
 		}
 
-        // Set the aggregated data in the state
-        setAggregatedInfo(Object.values(groupedData));
+		// Set the aggregated data in the state
+		setAggregatedInfo(Object.values(groupedData));
 	};
 
 	// Fetch data from database
@@ -404,9 +406,9 @@ export default function Home() {
 
 			// const facultyStudents = data.map((item) => item.attsName);
 			const facultyStudentsData = data.map((item: any) => ({
-                facultyName: item.attsName, 
-                facultyCategory: item.attsCategory,
-            }));
+				facultyName: item.attsName,
+				facultyCategory: item.attsCategory,
+			}));
 
 			setFacultyStudents(facultyStudentsData);
 		};
@@ -471,7 +473,7 @@ export default function Home() {
 	}
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
-		
+
 		setSearchQuery(query);
 
 		// Clear the data results
@@ -479,12 +481,12 @@ export default function Home() {
 
 		const filterByFacultyUnit = (facultyUnit: string) => {
 			filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
-		} 
+		}
 
 		let filteredUserData = [...aggregatedInfo];
 
 		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));			
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
 			if (selectedFilterStaff.length > 0) {
 				filterByFacultyUnit(selectedFilterStaff);
 			}
@@ -591,7 +593,7 @@ export default function Home() {
 			return eventYear.toString() === selectedYear;
 		})
 
-		return (mainEventsResult.map(e => {`${e.intFEventName} - ${e.intFTotalHours}`}));
+		return (mainEventsResult.map(e => { `${e.intFEventName} - ${e.intFTotalHours}` }));
 	}
 
 	const showMainEventByYear = (eventsAttended: string[], selectedYear: string) => {
@@ -770,16 +772,16 @@ export default function Home() {
 
 								<div className="flex flex-row">
 
-								
-								{activeTab === "all" && (
-									<div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFacultyUnit(event.target.value)}
+
+									{activeTab === "all" && (
+										<div>
+											<select
+												name="facultyUnit"
+												id="facultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit
@@ -803,21 +805,21 @@ export default function Home() {
 																		{subcategory.name}
 																	</option>
 																))))
-																
-												))}     
-										</select>
-									</div>
-								)}
-								
-								{activeTab === "staff" && (
-									<div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFilterStaff(event.target.value)}
+
+												))}
+											</select>
+										</div>
+									)}
+
+									{activeTab === "staff" && (
+										<div>
+											<select
+												name="facultyUnit"
+												id="facultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit (Staff)
@@ -829,43 +831,43 @@ export default function Home() {
 													<option key={index} value={faculty}>
 														{faculty}
 													</option>
-												))}												
-										</select>
-									</div>
-								)}
+												))}
+											</select>
+										</div>
+									)}
 
-								{activeTab === "student" && (
-									<div className="flex flex-row">
-										<select
-											name="studentFacultyUnit"
-											id="studentFacultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFilterStudent(event.target.value)}
-										>					
-											<option value="" disabled>Select Faculty/ Unit (Student)</option>
-											<option value="all">
+									{activeTab === "student" && (
+										<div className="flex flex-row">
+											<select
+												name="studentFacultyUnit"
+												id="studentFacultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFilterStudent(event.target.value)}
+											>
+												<option value="" disabled>Select Faculty/ Unit (Student)</option>
+												<option value="all">
 													All
-											</option>
-											{facultyStudents.map((faculty) => (
-                                                categories
-                                                    .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
-                                                    .map((cat) => (
-                                                        cat.subcategories
-                                                            .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
-                                                            .map((subcategory, index) => (
-                                                                <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
-                                                                    {subcategory.name}
-                                                                </option>
-                                                            ))))
-                                                            
-                                            ))}       
-										</select>
-									</div>
-								)}
+												</option>
+												{facultyStudents.map((faculty) => (
+													categories
+														.filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+														.map((cat) => (
+															cat.subcategories
+																.filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+																.map((subcategory, index) => (
+																	<option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+																		{subcategory.name}
+																	</option>
+																))))
 
-								{/* <select 
+												))}
+											</select>
+										</div>
+									)}
+
+									{/* <select 
 									className="px-4 border border-gray-300 focus:outline-none text-xs lg:text-base w-auto ml-5"
 									id="year"
 									onChange={event => setSelectedYear(event.target.value)}
@@ -876,104 +878,104 @@ export default function Home() {
 								</div>
 							</div>
 
-						<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                            <div className="inline-block lg:w-full shadow rounded-sm ">
-                                <table className="lg:w-full w-auto min-h-[70vh] overflow-x-auto">
+							<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+								<div className="inline-block lg:w-full shadow rounded-sm ">
+									<table className="lg:w-full w-auto min-h-[70vh] overflow-x-auto">
 										{/* Table Header */}
 										<thead>
-                                            <tr className="flex">
-                                                <th className="flex-1 px-[30px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="">NO.</p>
-                                                </th>
-                                                <th className="flex-1 px-[33px] lg:px-0 py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="">Name</p>
-                                                </th>
-                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="ml-8">Staff / Student ID</p>
-                                                </th>
-                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="lg:-ml-1">Faculty / Unit</p>
-                                                </th>
-                                                <th className="flex-1 px-[73px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="">Program Name(s) - Total Hours(h)</p>
-                                                </th>
+											<tr className="flex">
+												<th className="flex-1 px-[30px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+													<p className="">NO.</p>
+												</th>
+												<th className="flex-1 px-[33px] lg:px-0 py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+													<p className="">Name</p>
+												</th>
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+													<p className="ml-8">Staff / Student ID</p>
+												</th>
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+													<p className="lg:-ml-1">Faculty / Unit</p>
+												</th>
+												<th className="flex-1 px-[73px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+													<p className="">Program Name(s) - Total Hours(h)</p>
+												</th>
 
-                                                <th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-                                                    <p className="lg:-ml-8">Grand Total Hours(h)</p>
-                                                </th>
-                                            </tr>
-                                        </thead>
+												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
+													<p className="lg:-ml-8">Grand Total Hours(h)</p>
+												</th>
+											</tr>
+										</thead>
 
-                                        {/* Table Body */}
-                                        <tbody>
-										{dataResults.length === 0 ? (
-                                        	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
-                                    	) : (
-                                            sortedData
-                                                .slice(
-                                                    (currentPage - 1) * entriesToShow,
-                                                    currentPage * entriesToShow,
-                                                )
-                                                .map((info, index) => (
-                                                    <tr className="flex" key={info.staffID}
-                                                        onClick={() => {
-                                                            openModal(info.subEventsAttended.map(e => e.sub_eventsID));
-                                                        }}
-                                                    >
-                                                        <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                            <div className="flex items-center">
-                                                                <div className="ml-[34px]">
-                                                                    <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-center">
-                                                                        {(currentPage - 1) * entriesToShow + index + 1} 
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="flex-1 -ml-[52px] lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
-                                                            <p className=" text-gray-900 whitespace-no-wrap dark:text-dark_text">
-                                                                {info.staffName}
-                                                            </p>
-                                                        </td>
-                                                        <td className="flex-1 -ml-3 lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
-                                                            <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text">
-                                                                {info.staffID}
-                                                            </p>
-                                                        </td>
-                                                        <td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
-                                                            <p className="ml-8 text-gray-900 lg:-ml-8 dark:text-dark_text">
-                                                                {info.staffFaculty}
-                                                            </p>
-                                                        </td>
+										{/* Table Body */}
+										<tbody>
+											{dataResults.length === 0 ? (
+												<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+											) : (
+												sortedData
+													.slice(
+														(currentPage - 1) * entriesToShow,
+														currentPage * entriesToShow,
+													)
+													.map((info, index) => (
+														<tr className="flex" key={info.staffID}
+															onClick={() => {
+																openModal(info.subEventsAttended.map(e => e.sub_eventsID));
+															}}
+														>
+															<td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+																<div className="flex items-center">
+																	<div className="ml-[34px]">
+																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-center">
+																			{(currentPage - 1) * entriesToShow + index + 1}
+																		</p>
+																	</div>
+																</div>
+															</td>
+															<td className="flex-1 -ml-[52px] lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
+																<p className=" text-gray-900 whitespace-no-wrap dark:text-dark_text">
+																	{info.staffName}
+																</p>
+															</td>
+															<td className="flex-1 -ml-3 lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
+																<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text">
+																	{info.staffID}
+																</p>
+															</td>
+															<td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
+																<p className="ml-8 text-gray-900 lg:-ml-8 dark:text-dark_text">
+																	{info.staffFaculty}
+																</p>
+															</td>
 
-                                                        <td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
-                                                            <p className="ml-4 text-gray-900 whitespace-no-wrap lg:ml-1 dark:text-dark_text">
-                                                                {allMainEvent
-                                                                    .filter(event => info.eventsAttended.includes(event.intFID))
-                                                                    .map((event, index) => (
-                                                                        <p key={index}>
-                                                                            {event.intFEventName} - {event.intFTotalHours}
-                                                                        </p>
-                                                                ))}
+															<td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
+																<p className="ml-4 text-gray-900 whitespace-no-wrap lg:ml-1 dark:text-dark_text">
+																	{allMainEvent
+																		.filter(event => info.eventsAttended.includes(event.intFID))
+																		.map((event, index) => (
+																			<p key={index}>
+																				{event.intFEventName} - {event.intFTotalHours}
+																			</p>
+																		))}
 
-																{/* {showMainEventByYear(info.eventsAttended, selectedYear)} */}
-																
-																{info.externalEventsAttended
-																	.filter(event => event.formStage === 5)
-																	.map((event, index) => (
-																	<p key={index}>
-																		{event.programName} - {event.totalHours}
-																	</p>
-																))}
-                                                            </p>
-                                                        </td>
+																	{/* {showMainEventByYear(info.eventsAttended, selectedYear)} */}
 
-                                                        <td className="flex-1 lg:px-11 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
-                                                            <p className="ml-14 text-gray-900 whitespace-no-wrap lg:ml-11 dark:text-dark_text">
-                                                                {info.totalHours}
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                ))
+																	{info.externalEventsAttended
+																		.filter(event => event.formStage === 5)
+																		.map((event, index) => (
+																			<p key={index}>
+																				{event.programName} - {event.totalHours}
+																			</p>
+																		))}
+																</p>
+															</td>
+
+															<td className="flex-1 lg:px-11 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
+																<p className="ml-14 text-gray-900 whitespace-no-wrap lg:ml-11 dark:text-dark_text">
+																	{info.totalHours}
+																</p>
+															</td>
+														</tr>
+													))
 											)}
 
 											{/* pagination */}
@@ -1067,15 +1069,15 @@ export default function Home() {
 													className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(1)}
 													disabled={currentPage === 1}
-												>													
-													<MdKeyboardDoubleArrowLeft className="text-3xl"/>
+												>
+													<MdKeyboardDoubleArrowLeft className="text-3xl" />
 												</button>
 												<button
 													onClick={() => handlePageChange(currentPage - 1)}
 													disabled={currentPage === 1}
 													className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<MdKeyboardArrowLeft className="text-3xl"/>
+													<MdKeyboardArrowLeft className="text-3xl" />
 												</button>
 
 												{/* Pagination Buttons */}
@@ -1095,14 +1097,14 @@ export default function Home() {
 													disabled={currentPage === pageCount}
 													className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<MdKeyboardArrowRight className="text-3xl"/>
+													<MdKeyboardArrowRight className="text-3xl" />
 												</button>
 												<button
 													className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(pageCount)}
 													disabled={currentPage === pageCount}
 												>
-													<MdKeyboardDoubleArrowRight className="text-3xl"/>
+													<MdKeyboardDoubleArrowRight className="text-3xl" />
 												</button>
 											</div>
 										</div>
@@ -1110,7 +1112,7 @@ export default function Home() {
 								</div>
 							</div>
 
-							
+
 							{/*mobile view pagination */}
 							<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
 								<button
@@ -1118,14 +1120,14 @@ export default function Home() {
 									onClick={() => handlePageChange(1)}
 									disabled={currentPage === 1}
 								>
-									<MdKeyboardDoubleArrowLeft className="text-3xl"/>
+									<MdKeyboardDoubleArrowLeft className="text-3xl" />
 								</button>
 								<button
 									onClick={() => handlePageChange(currentPage - 1)}
 									disabled={currentPage === 1}
 									className="opacity-70"
 								>
-									<MdKeyboardArrowLeft className="text-3xl"/>
+									<MdKeyboardArrowLeft className="text-3xl" />
 								</button>
 
 								{/* Pagination Buttons */}
@@ -1134,8 +1136,8 @@ export default function Home() {
 										className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
 										onClick={() => handlePageChange(currentPage)}
 									>
-                                		{currentPage}/ {pageCount}
-                            		</button>
+										{currentPage}/ {pageCount}
+									</button>
 								</div>
 
 								<button
@@ -1143,14 +1145,14 @@ export default function Home() {
 									disabled={currentPage === pageCount}
 									className="opacity-70"
 								>
-									<MdKeyboardArrowRight className="text-3xl"/>
+									<MdKeyboardArrowRight className="text-3xl" />
 								</button>
 								<button
 									className="opacity-70"
 									onClick={() => handlePageChange(pageCount)}
 									disabled={currentPage === pageCount}
 								>
-									<MdKeyboardDoubleArrowRight className="text-3xl"/>
+									<MdKeyboardDoubleArrowRight className="text-3xl" />
 								</button>
 							</div>
 						</div>
@@ -1158,65 +1160,65 @@ export default function Home() {
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<div>
-						
+
 							<p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p>
-                                                               
-									<div className="p-5 bg-slate-100 h-[520px] w-[360px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-x-auto dark:bg-dark_mode_bg">
-										<table className="leading-normal lg:w-[1090px] ml-4 dark:bg-[#1D2021]">
-											<thead>
-												<tr className="flex">
-													<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														NO.
-													</th>
-													<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Main Event
-													</th>
-													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Sub-Event Session
-													</th>
-													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Start Date 
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{subEventsAttended
-													.map((subEvent, index) => (
-														<tr className="flex"
-															key={index}
-															onClick={() => setShowModal(true)}>
 
-															<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
-																<div>
-																	<div className="ml-[2px]">
-																		<p className="text-gray-900 dark:text-dark_text">
-																			{index + 1}
-																		</p>
-																	</div>
-																</div>
-															</td>
-															<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
+							<div className="p-5 bg-slate-100 h-[520px] w-[360px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-x-auto dark:bg-dark_mode_bg">
+								<table className="leading-normal lg:w-[1090px] ml-4 dark:bg-[#1D2021]">
+									<thead>
+										<tr className="flex">
+											<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												NO.
+											</th>
+											<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												Main Event
+											</th>
+											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												Sub-Event Session
+											</th>
+											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												Start Date
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{subEventsAttended
+											.map((subEvent, index) => (
+												<tr className="flex"
+													key={index}
+													onClick={() => setShowModal(true)}>
+
+													<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
+														<div>
+															<div className="ml-[2px]">
 																<p className="text-gray-900 dark:text-dark_text">
-																	{mainEventAttended[index]?.intFEventName || "N/A"}
+																	{index + 1}
 																</p>
-															</td>
+															</div>
+														</div>
+													</td>
+													<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
+														<p className="text-gray-900 dark:text-dark_text">
+															{mainEventAttended[index]?.intFEventName || "N/A"}
+														</p>
+													</td>
 
-															<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-																<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
-																	{subEvent.sub_eventsName}
-																</p>
-															</td>
+													<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+														<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
+															{subEvent.sub_eventsName}
+														</p>
+													</td>
 
-															<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-																<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
-																	{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-																</p>
-															</td>
-														</tr>
-													))}
-											</tbody>
-										</table>
-									</div>
+													<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+														<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+															{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+														</p>
+													</td>
+												</tr>
+											))}
+									</tbody>
+								</table>
+							</div>
 						</div>
 
 					</EventModal>
