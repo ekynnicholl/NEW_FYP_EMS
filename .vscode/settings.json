@@ -15,8 +15,7 @@
 		"postcss.config.js": true,
 		".gitattributes": true,
 		".eslintrc.json": true,
-		"components.json": true,
-		"google_config.js": true
+		"components.json": true
 	},
 	"hide-files.files": [
 		"README.md",
@@ -28,8 +27,7 @@
 		"postcss.config.js",
 		".gitattributes",
 		".eslintrc.json",
-		"components.json",
-		"google_config.js"
+		"components.json"
 	],
 	"cSpell.words": ["hrdf", "Travelling"]
 }

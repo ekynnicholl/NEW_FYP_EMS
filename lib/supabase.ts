@@ -137,6 +137,41 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+          ntf_id: string | null
+          type: string | null
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: number
+          ntf_id?: string | null
+          type?: string | null
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: number
+          ntf_id?: string | null
+          type?: string | null
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_audit_log_ntf_id_fkey"
+            columns: ["ntf_id"]
+            isOneToOne: false
+            referencedRelation: "external_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       external_emails: {
         Row: {
           extECategory: number | null

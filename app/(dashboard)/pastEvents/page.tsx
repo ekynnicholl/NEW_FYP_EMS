@@ -34,7 +34,7 @@ import DoubleLeftArrow from "@/components/icons/DoubleLeftArrow";
 import ViewEventFeedback from "@/components/ViewEventFeedback";
 import Modal from "@/components/QR_Codes_Modal";
 import QRCodeModal from "@/components/QR_Codes_Modal";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import AttendanceList from "@/components/attendance/attendance_list";
 import FeedbackList from "@/components/feedback/feedback_list";
 
@@ -1099,9 +1099,10 @@ export default function Home() {
                                 Feedback Forms
                             </h3>
                             <div className="flex flex-col items-center justify-center">
-                                <QRCodeSVG
+                                <QRCodeCanvas
                                     className="bg-white p-1"
-                                    value={`${url}/form/feedback/${selectedSubEventID}`}
+                                    value={`${window.locaiton.origin}/form/feedback/${selectedSubEventID}`}
+                                    size={256}
                                 />
                                 <button
                                     onClick={() =>

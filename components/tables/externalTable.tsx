@@ -59,11 +59,11 @@ import {
 import { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
 import { sendContactForm } from "@/lib/api";
-import Link from "next/link";
+import { getAuth } from "firebase/auth";
 
 const supabase = createClientComponentClient();
 
@@ -97,6 +97,15 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		to: addDays(new Date(2022, 0, 20), 20),
 	});
 
+	let displayName: string | null = null;
+	let email: string | null = null;
+	const auth = getAuth();
+	const user = auth.currentUser;
+	if (user !== null) {
+		displayName = user.displayName;
+		email = user.email;
+	}
+
 	const schema = z.object({
 		undoOption: z.string().min(1, "Please select an option"),
 		revertComment: z.string().optional(),
@@ -113,7 +122,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 	const handleUndoAction = async (values: z.infer<typeof schema>) => {
 		if (values.undoOption != "" || parseInt(values.undoOption, 10) != selectedRow.formStage) {
 			const securityKeyUID = uuidv4();
-			console.log("Undo Action clicked!");
 			const selectedStage = parseInt(values.undoOption, 10);
 			const formID = selectedRow.id;
 
@@ -131,8 +139,16 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			if (error) {
 				console.error("Error updating formStage:", error.message);
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: formID,
+						type: "Undo",
+						username: displayName,
+						email: email,
+					},
+				]);
+
 				setFormData(selectedRow);
-				// console.log("FormStage updated successfully:", data);
 				showSuccessToast("Action has been submitted.");
 
 				setFormData(prevFormData => ({
@@ -149,10 +165,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					toast.error("Failed to send email. Please contact server administrator.");
 				}
 
-				console.log(latestFormsData);
-
 				sendContactForm(latestFormsData);
-
 				router.refresh();
 			}
 		}

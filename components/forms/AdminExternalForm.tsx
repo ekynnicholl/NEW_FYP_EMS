@@ -43,6 +43,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 import type { FieldValues } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
+import { getAuth } from "firebase/auth";
 
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
@@ -100,14 +101,21 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [verificationImageURL, setVerificationImageURL] = useState(data.verification_signature);
 	const [approvalImageURL, setApprovalImageURL] = useState(data.approval_signature);
 
-	// Keep track of the revert comment,
 	const [showCommentInput, setShowCommentInput] = useState(false);
 
-	// Check whether the user is logged in,
 	const [authToken, setAuthToken] = useState<string | undefined>("");
 	useEffect(() => {
 		setAuthToken(cookie.get("authToken"));
 	}, [authToken]);
+
+	let displayName: string | null = null;
+	let email: string | null = null;
+	const auth = getAuth();
+	const user = auth.currentUser;
+	if (user !== null) {
+		displayName = user.displayName;
+		email = user.email;
+	}
 
 	const [securityKeyError, setSecurityKeyError] = useState(false);
 
@@ -297,7 +305,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		// 	return;
 		// }
 
-		// Generate the security key,
 		const securityKeyUID = uuidv4();
 
 		// This part is for submission for review from AAO to HOS/ MGR/ ADCR, Stage 2 -> Stage 3,
@@ -330,8 +337,15 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 			if (error) {
 				toast.error("Error submitting form");
-				// console.error("Error updating data:", error);
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: externalForm.id,
+						type: "Review",
+						username: displayName,
+						email: email,
+					},
+				]);
 				fetchAndUpdateFormData(externalForm.id, "to_3");
 			}
 		}
@@ -358,6 +372,14 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				console.error(error);
 				toast.error("Error submitting form");
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: externalForm.id,
+						type: "Resubmit",
+						username: values.full_name,
+						email: values.email,
+					},
+				]);
 				fetchAndUpdateFormData(externalForm.id, "to_2");
 			}
 		}
@@ -391,6 +413,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				// console.error("Error inserting data:", error);
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: externalForm.id,
+						type: "Verified",
+					},
+				]);
 				fetchAndUpdateFormData(externalForm.id, "to_4");
 			}
 		}
@@ -422,6 +450,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				toast.error("Error submitting form");
 				// console.error("Error inserting data:", error);
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: externalForm.id,
+						type: "Approved",
+					},
+				]);
 				fetchAndUpdateFormData(externalForm.id, "to_5");
 			}
 		}
@@ -528,6 +562,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				console.error("Error updating data:", error);
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: externalForm.id,
+						type: "Rejected at verification stage",
+					},
+				]);
 				fetchAndUpdateFormData(externalForm.id, "to_6");
 			}
 		} else if (externalForm.formStage === 4) {
@@ -535,10 +575,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.from("external_forms")
 				.update([
 					{
-						// TO-DO: CONFIRM IT WILL UPDATE CORRECTLY,
 						formStage: 6,
 						securityKey: securityKeyUID,
-						// TO-DO: ADD IN HMU/ DEAN DETAILS INTO THE DATABASE.
 						revertComment: values.revertComment,
 						verification_email: values.verification_email,
 						verification_name: values.verification_name,
@@ -558,6 +596,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			if (error) {
 				console.error(error);
 			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: externalForm.id,
+						type: "Rejected at approval stage",
+					},
+				]);
 				fetchAndUpdateFormData(externalForm.id, "to_6");
 			}
 		}

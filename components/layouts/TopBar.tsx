@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import MobileTopBar from "./MobileTopBar";
 import AddAdmin_Modal from "@/components/AddAdmin_Modal";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { auth, provider } from "../../google_config";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 
 import Link from "next/link";

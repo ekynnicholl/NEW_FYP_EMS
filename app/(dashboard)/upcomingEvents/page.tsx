@@ -15,7 +15,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MdFilterListAlt, MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { LiaQrcodeSolid } from "react-icons/lia";
@@ -84,7 +84,6 @@ type FeedbackDataType = {
 
 
 export default function Home() {
-    const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
     const supabase = createClientComponentClient();
 
     const [entriesToShow, setEntriesToShow] = useState(10); // Show the entries
@@ -1108,9 +1107,10 @@ export default function Home() {
                                 Attendance Forms
                             </h3>
                             <div className="flex flex-col items-center justify-center">
-                                <QRCodeSVG
+                                <QRCodeCanvas
                                     className="bg-white p-1"
-                                    value={`${url}/form/${selectedSubEventID}`}
+                                    value={`${window.location.origin}/form/${selectedSubEventID}`}
+                                    size={256}
                                 />
                                 <button
                                     onClick={() =>
@@ -1132,9 +1132,10 @@ export default function Home() {
                                 Feedback Forms
                             </h3>
                             <div className="flex flex-col items-center justify-center">
-                                <QRCodeSVG
+                                <QRCodeCanvas
                                     className="bg-white p-1"
-                                    value={`${url}/form/feedback/${selectedSubEventID}`}
+                                    value={`${window.location.origin}/form/feedback/${selectedSubEventID}`}
+                                    size={256}
                                 />
                                 <button
                                     onClick={() =>

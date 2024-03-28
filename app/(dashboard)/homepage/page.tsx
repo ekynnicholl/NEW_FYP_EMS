@@ -10,7 +10,7 @@ import EditSubEvent_Modal from "@/components/EditSubEvent_Modal";
 import AddSubEvent_Modal from "@/components/EditSubEvent_Modal";
 import Success_CreateEventModal from "@/components/Modal";
 import Modal from "@/components/QR_Codes_Modal";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import Success_AddSubEventModal from "@/components/Modal";
 import QRCodeIcon from '@/components/icons/QRCodeIcon';
 import swinburneLogo from '@/public/images/swinburne_logo.png';
@@ -157,7 +157,6 @@ type FeedbackDataType = {
 }
 
 export default function Homepage() {
-	const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 	const supabase = createClientComponentClient();
 	const malaysiaTimezone = "Asia/Kuala_Lumpur";
@@ -1723,9 +1722,10 @@ export default function Homepage() {
 								Attendance Forms
 							</h3>
 							<div className="flex flex-col items-center justify-center">
-								<QRCodeSVG
+								<QRCodeCanvas
 									className="bg-white p-1"
-									value={`${url}/form/${selectedSubEventID}`}
+									value={`${window.location.origin}/form/${selectedSubEventID}`}
+									size={256}
 								/>
 								<button
 									onClick={() =>
@@ -1747,9 +1747,10 @@ export default function Homepage() {
 								Feedback Forms
 							</h3>
 							<div className="flex flex-col items-center justify-center">
-								<QRCodeSVG
+								<QRCodeCanvas
 									className="bg-white p-1"
-									value={`${url}/form/feedback/${selectedSubEventID}`}
+									value={`${window.location.origin}/form/feedback/${selectedSubEventID}`}
+									size={256}
 								/>
 								<button
 									onClick={() =>

@@ -313,6 +313,15 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			console.log(error);
 			toast.error("Error submitting form");
 		} else {
+			await supabase.from("audit_log").insert([
+				{
+					ntf_id: data[0].id,
+					type: "Create",
+					username: data[0].full_name,
+					email: data[0].email,
+				},
+			]);
+
 			formReset();
 			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 			const { data: fetchedForms, error: fetchedError } = await supabase
@@ -320,16 +329,12 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 				.select("*")
 				.eq("id", data[0].id);
 
-			console.log(`Fetched forms ${fetchedForms}`);
-
-			if (fetchedError) {
-				// console.log(fetchedError);
-			} else {
+			if (!fetchedError) {
 				const notificationDescription = `A Nominations/ Travelling Form has been submitted by ${data[0].full_name} (${data[0].staff_id}).`;
 				const notificationType = "Nominations/ Travelling Form";
 				const notificationLink = `/form/external/${data[0].id}`;
 
-				const { data: notificationData, error: notificationError } = await supabase.from("notifications").insert([
+				const { error: notificationError } = await supabase.from("notifications").insert([
 					{
 						notifDesc: notificationDescription,
 						notifType: notificationType,
@@ -338,18 +343,14 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 				]);
 
 				if (notificationError) {
-					// console.error(notificationError);
-				} else {
-					// console.log("Notification inserted successfully:", notificationData);
+					toast.success("We have notified AAO about your submission.");
 				}
 
 				// Send email
 				sendContactForm(fetchedForms);
-				// showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 				setFormIsSuccess(true);
 			}
 			router.refresh();
-			// window.location.reload();
 		}
 	}
 

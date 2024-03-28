@@ -69,6 +69,7 @@ type Form = {
 export default function Home({ id }: { id: string }) {
 	const supabase = createClientComponentClient();
 	const [formDetails, setFormDetails] = useState<ExternalForm[]>([]);
+	const [auditLog, setAuditLog] = useState<AuditLog[]>([]);
 	const [str, setStr] = useState("");
 
 	const [numPagesArray, setNumPagesArray] = useState<(number | null)[]>([]);
@@ -93,9 +94,20 @@ export default function Home({ id }: { id: string }) {
 				return;
 			}
 			setFormDetails(external || []);
+
+			const { data: audit, error: auditError } = await supabase
+				.from("audit_log")
+				.select("*")
+				.eq("ntf_id", id);
+
+			if (auditError) {
+				console.error("Error fetching audit log data:", auditError);
+				return;
+			}
+			setAuditLog(audit || []);
 		};
 		fetchFormInfos();
-	}, [supabase]);
+	}, [id, supabase]);
 
 	const handlePrint = () => {
 		window.print();
@@ -122,6 +134,15 @@ export default function Home({ id }: { id: string }) {
 		const day = date.toLocaleDateString("en-GB", { day: "numeric" });
 		return `${day} ${month} ${date.getFullYear()}`;
 	};
+
+	const formatDateAndTime = (dateString: string): string => {
+		const date = new Date(dateString);
+		const month = date.toLocaleDateString("en-GB", { month: "long" });
+		const day = date.toLocaleDateString("en-GB", { day: "numeric" });
+		const time = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+		return `${day} ${month} ${date.getFullYear()}, ${time}`;
+	};
+
 	return (
 		<div className="bg-white w-full h-screen">
 			<div className="m-auto bg-white w-a4 h-a4">
@@ -228,8 +249,8 @@ export default function Home({ id }: { id: string }) {
 									value={details?.program_description ?? ""}
 								/> */}
 								<p className="col-span-6 border-b border-r border-slate-950 bg-white p-2 flex items-center">
-                                    {details?.program_description ?? ""}
-                                </p>
+									{details?.program_description ?? ""}
+								</p>
 
 								<label className="col-start-1 col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">
 									Commencement date of event
@@ -712,6 +733,56 @@ export default function Home({ id }: { id: string }) {
 						</form>
 					))}
 				</div>
+
+				<div className="py-4">
+					{auditLog.map((log, index) => (
+						<div key={index} className="my-3">
+							{log.type?.toLocaleLowerCase() === "create" && (
+								<div>
+									<p className="font-semibold">Created By:</p>
+									<span>
+										{log.username} ({log.email})
+									</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
+							{log.type?.toLocaleLowerCase() === "undo" && (
+								<div>
+									<p className="font-semibold">Undo By:</p>
+									<span>
+										{log.username} ({log.email})
+									</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
+							{log.type?.toLocaleLowerCase() === "verified" && (
+								<div>
+									<p className="font-semibold">Verified By:</p>
+									<span>{formDetails[0].approval_email}</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
+							{log.type?.toLocaleLowerCase() === "approved" && (
+								<div>
+									<p className="font-semibold">Approved By:</p>
+									<span>{formDetails[0].verification_email}</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
+							{log.type?.toLocaleLowerCase() === "reject" && (
+								<div>
+									<p className="font-semibold">Rejected:</p>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+						</div>
+					))}
+				</div>
+
 				<div className="w-full">
 					{formDetails?.[0]?.supporting_documents?.map((doc, index) => (
 						<Document
