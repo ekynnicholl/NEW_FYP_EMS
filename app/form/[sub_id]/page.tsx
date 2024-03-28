@@ -147,8 +147,11 @@ export default function AttendanceForm() {
 
 
 	// Handle data submission
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const handleSubmit = async () => {
+		// e.preventDefault();
+
+		setFormSubmitted(true);
+
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
 		if (!isValidEmail) {
@@ -212,28 +215,30 @@ export default function AttendanceForm() {
 					.select("attFormsID, attDateSubmitted")
 					.eq("attFormsID", oldForms[0].attFormsID);
 
-				if (error) {
+				// if (error) {
 
-				} else {
-					// const participationData = {
-					// 	sub_eventsName: eventData.sub_eventsName,
-					// 	eventName: eventData.intFEventName,
-					// 	// eventVenue: eventData.sub_eventsVenue,
-					// 	eventStartDate: formatDate(eventData.sub_eventsStartDate),
-					// 	// eventEndDate: formatDate(eventData.sub_eventsEndDate),
-					// 	attFormsStaffName: info.attFormsStaffName,
-					// 	attFormsStaffID: info.attFormsStaffID,
-					// 	attFormsStaffEmail: info.attFormsStaffEmail,
-					// 	attDateSubmitted: newForms[0].attDateSubmitted,
-					// 	attFormsID: newForms[0].attFormsID,
-					// 	eventVenue: eventData.sub_eventsVenue
-					// };
+				// } else {
+				// 	// const participationData = {
+				// 	// 	sub_eventsName: eventData.sub_eventsName,
+				// 	// 	eventName: eventData.intFEventName,
+				// 	// 	// eventVenue: eventData.sub_eventsVenue,
+				// 	// 	eventStartDate: formatDate(eventData.sub_eventsStartDate),
+				// 	// 	// eventEndDate: formatDate(eventData.sub_eventsEndDate),
+				// 	// 	attFormsStaffName: info.attFormsStaffName,
+				// 	// 	attFormsStaffID: info.attFormsStaffID,
+				// 	// 	attFormsStaffEmail: info.attFormsStaffEmail,
+				// 	// 	attDateSubmitted: newForms[0].attDateSubmitted,
+				// 	// 	attFormsID: newForms[0].attFormsID,
+				// 	// 	eventVenue: eventData.sub_eventsVenue
+				// 	// };
 
-					// sendParticipationCert(participationData);
-					setFormSubmitted(true);
-				}
+				// 	// sendParticipationCert(participationData);
+
+				// }
 			}
 		}
+
+
 
 		// setInfo({} as Info);
 	};
@@ -666,7 +671,7 @@ export default function AttendanceForm() {
 							</div>
 						</div>
 
-						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+						{/* <div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 							<div className="ml-1">
 								<label
 									htmlFor="name"
@@ -675,19 +680,49 @@ export default function AttendanceForm() {
 									<span className="text-red-500"> *</span>
 								</label>
 								<input
-									type="text"
+									type="email"
 									name="name"
 									id="name"
 									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 									required
 									placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
 									style={{ paddingLeft: "5px" }}
-									onChange={event =>
-										setInfo({ ...info, attFormsStaffEmail: event.target.value })
-									}
+									onChange={event => {
+										if (!formSubmitted) {
+											setInfo({ ...info, attFormsStaffEmail: event.target.value });
+										}
+									}}
 								/>
 							</div>
+						</div> */}
+
+						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+							<div className="ml-1">
+								<label
+									htmlFor="email"
+									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+								>
+									Email
+									<span className="text-red-500"> *</span>
+								</label>
+								<input
+									type="email"
+									name="email"
+									id="email"
+									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+									required
+									placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
+									style={{ paddingLeft: "5px" }}
+									onChange={event => {
+										if (!formSubmitted) {
+											setInfo({ ...info, attFormsStaffEmail: event.target.value });
+										}
+									}}
+								/>
+						
+							</div>
 						</div>
+
 
 						{userType === 'staff' && (
 							<div>
@@ -872,7 +907,7 @@ export default function AttendanceForm() {
 											className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
 												if (info.attFormsStaffName && !formSubmitted) {
-													handleSubmit
+													handleSubmit();
 												}
 											}}
 											disabled={!info.attFormsStaffName || formSubmitted}>
@@ -884,7 +919,7 @@ export default function AttendanceForm() {
 											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
 												if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted) {
-													handleSubmit
+													handleSubmit();
 												}
 											}}
 											disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
