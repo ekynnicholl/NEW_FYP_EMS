@@ -67,12 +67,51 @@ export default function FeedbackForm() {
 	const [eventData, setEventData] = useState<any>(null);
 	const [formData, setFormData] = useState<FeedbackFormData>(initialFormData);
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
+	const [formErrors, setFormErrors] = useState({
+		fbSectionA1: false,
+		fbSectionA2: false,
+		fbSectionA3: false,
+		fbSectionA4: false,
+		fbSectionA5: false,
+		fbSectionB1: false,
+		fbSectionB2: false,
+		fbSectionB3: false,
+		fbSectionB4: false,
+		fbSectionC1: false,
+		fbSectionD1: false,
+		fbSectionESuggestions: false,
+		fbSectionEChanges: false,
+		fbSectionEAdditional: false,
+		fbFullName: false,
+		fbEmailAddress: false,
+		// Add default values for other form fields if needed
+		
+	  });
 
 	// Get the Event ID from the link,
 	const { sub_id } = useParams();
 	const router = useRouter();
 	const handleClearForm = () => {
 		setFormData(initialFormData);
+		setFormErrors({
+			fbSectionA1: false,
+			fbSectionA2: false,
+			fbSectionA3: false,
+			fbSectionA4: false,
+			fbSectionA5: false,
+			fbSectionB1: false,
+			fbSectionB2: false,
+			fbSectionB3: false,
+			fbSectionB4: false,
+			fbSectionC1: false,
+			fbSectionD1: false,
+			fbSectionESuggestions: false,
+			fbSectionEChanges: false,
+			fbSectionEAdditional: false,
+			fbFullName: false,
+			fbEmailAddress: false,
+		});
+
 	};
 	useEffect(() => {
 		const fetchEventData = async () => {
@@ -118,6 +157,13 @@ export default function FeedbackForm() {
 		fetchEventData();
 	}, [sub_id, supabase, router]);
 
+	//// Add validation function for email
+	const validateEmail = (email: string): boolean => {
+		// Regular expression pattern for email validation
+		const emailPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailPattern.test(email);
+	};
+
 	// Handle form submission
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -143,8 +189,30 @@ export default function FeedbackForm() {
 		} = formData;
 
 		// Validate form fields
-		if (!fbSectionA1 || !fbSectionA2 || !fbSectionA3 || !fbSectionA4 || !fbSectionA5 || !fbSectionB1 || !fbSectionB2 || !fbSectionB3 || !fbSectionB4 || !fbSectionC1 || !fbSectionD1 || !fbSectionESuggestions || !fbSectionEChanges || !fbSectionEAdditional || !fbFullName || !fbEmailAddress) {
-			return;
+		const errors = {
+		fbSectionA1: !formData.fbSectionA1,
+		fbSectionA2: !formData.fbSectionA2,
+		fbSectionA3: !formData.fbSectionA3,
+		fbSectionA4: !formData.fbSectionA4,
+		fbSectionA5: !formData.fbSectionA5,
+		fbSectionB1: !formData.fbSectionB1,
+		fbSectionB2: !formData.fbSectionB2,
+		fbSectionB3: !formData.fbSectionB3,
+		fbSectionB4: !formData.fbSectionB4,
+		fbSectionC1: !formData.fbSectionC1,
+		fbSectionD1: !formData.fbSectionD1,
+		fbSectionESuggestions: !formData.fbSectionESuggestions,
+		fbSectionEChanges: !formData.fbSectionEChanges,
+		fbSectionEAdditional: !formData.fbSectionEAdditional,
+		fbFullName: !formData.fbFullName,
+		fbEmailAddress: !validateEmail(formData.fbEmailAddress),
+		};
+	
+		// Check if there are any validation errors
+		if (Object.values(errors).some((error) => error)) {
+		// Update form state with validation errors
+		setFormErrors(errors);
+		return;
 		}
 
 		// Insert/upsert data into the database using Supabase API
@@ -259,7 +327,9 @@ export default function FeedbackForm() {
 												name="question1"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionA1: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionA1: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionA1 === value}
 											/>
 										</td>
 									))}
@@ -276,7 +346,9 @@ export default function FeedbackForm() {
 												name="question2"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionA2: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionA2: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionA2 === value}
 											/>
 										</td>
 									))}
@@ -293,7 +365,9 @@ export default function FeedbackForm() {
 												name="question3"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionA3: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionA3: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionA3 === value}
 											/>
 										</td>
 									))}
@@ -310,7 +384,9 @@ export default function FeedbackForm() {
 												name="question4"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionA4: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionA4: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionA4 === value}
 											/>
 										</td>
 									))}
@@ -327,7 +403,9 @@ export default function FeedbackForm() {
 												name="question5"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionA5: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionA5: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionA5 === value}
 											/>
 										</td>
 									))}
@@ -346,7 +424,9 @@ export default function FeedbackForm() {
 												name="question6"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionB1: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionB1: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionB1 === value}
 											/>
 										</td>
 									))}
@@ -362,7 +442,9 @@ export default function FeedbackForm() {
 												name="question7"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionB2: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionB2: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionB2 === value}
 											/>
 										</td>
 									))}
@@ -379,7 +461,9 @@ export default function FeedbackForm() {
 												name="question8"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionB3: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionB3: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionB3 === value}
 											/>
 										</td>
 									))}
@@ -395,7 +479,9 @@ export default function FeedbackForm() {
 												name="question9"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionB4: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionB4: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionB4 === value}
 											/>
 										</td>
 									))}
@@ -414,7 +500,9 @@ export default function FeedbackForm() {
 												name="question10"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionC1: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionC1: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionC1 === value}
 											/>
 										</td>
 									))}
@@ -433,7 +521,9 @@ export default function FeedbackForm() {
 												name="question11"
 												value={value}
 												className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out sm:text-sm sm:leading-5 hover:cursor-pointer hover:shadow-lg"
-												onChange={(e) => setFormData({ ...formData, fbSectionD1: parseInt(e.target.value) })}
+												onChange={(e) => setFormData({ ...formData, fbSectionD1: parseInt(e.target.value) })
+											}
+											checked={formData.fbSectionD1 === value}
 											/>
 										</td>
 									))}
@@ -558,78 +648,43 @@ export default function FeedbackForm() {
 				<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 					<div className="ml-1">
 						<label
-							htmlFor="emailAddress"
-							className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-							Email Address
-							<span className="text-red-500"> *</span>
+						htmlFor="emailAddress"
+						className="block text-gray-700 text-xs lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+						>
+						Email Address
+						<span className="text-red-500"> *</span>
 						</label>
 						<input
-							type="email"
-							name="emailAddress"
-							id="emailAddress"
-							className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-							required
-							placeholder="Your answer"
-							style={{ paddingLeft: "5px" }}
-							value={formData.fbEmailAddress}
-							onChange={(event) =>
-								setFormData({ ...formData, fbEmailAddress: event.target.value })
-							}
+						type="email"
+						name="emailAddress"
+						id="emailAddress"
+						className={`w-full px-4 py-2 border-b ${
+							formErrors.fbEmailAddress ? 'border-red-500' : 'border-gray-300'
+						} focus:outline-none mt-3 text-sm lg:text-base`}
+						required
+						placeholder="Your answer"
+						style={{ paddingLeft: '5px' }}
+						value={formData.fbEmailAddress}
+						onChange={(event) => {
+							setFormData({ ...formData, fbEmailAddress: event.target.value });
+							setFormErrors({ ...formErrors, fbEmailAddress: !validateEmail(event.target.value) });
+						}}
 						/>
+						{formErrors.fbEmailAddress && (
+						<p className="text-red-500 text-sm mt-1">Please enter a valid email address.</p>
+						)}
 					</div>
 				</div>
 
 
 				<Fragment>
-					<button
-						type="submit"
-						className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
-						onClick={() => {
-							if (
-								formData.fbSectionA1 &&
-								formData.fbSectionA2 &&
-								formData.fbSectionA3 &&
-								formData.fbSectionA4 &&
-								formData.fbSectionA5 &&
-								formData.fbSectionB1 &&
-								formData.fbSectionB2 &&
-								formData.fbSectionB3 &&
-								formData.fbSectionB4 &&
-								formData.fbSectionC1 &&
-								formData.fbSectionD1 &&
-								formData.fbSectionESuggestions &&
-								formData.fbSectionEChanges &&
-								formData.fbSectionEAdditional &&
-								formData.fbFullName &&
-								formData.fbEmailAddress
-
-
-							) {
-								setShowModalSuccess(true);
-							}
-						}}
-						disabled={
-							!formData.fbSectionA1 ||
-							!formData.fbSectionA2 ||
-							!formData.fbSectionA3 ||
-							!formData.fbSectionA4 ||
-							!formData.fbSectionA5 ||
-							!formData.fbSectionB1 ||
-							!formData.fbSectionB2 ||
-							!formData.fbSectionB3 ||
-							!formData.fbSectionB4 ||
-							!formData.fbSectionC1 ||
-							!formData.fbSectionD1 ||
-							!formData.fbSectionESuggestions ||
-							!formData.fbSectionEChanges ||
-							!formData.fbSectionEAdditional ||
-							!formData.fbFullName ||
-							!formData.fbEmailAddress
-
-						}
+				<button
+					type="submit"
+					className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 rounded mb-10 mt-3 focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base"
+					disabled={Object.values(formErrors).some((error) => error)}
 					>
-						Submit
-					</button>
+					Submit
+				</button>
 				</Fragment>
 
 				<button
