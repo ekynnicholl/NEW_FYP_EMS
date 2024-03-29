@@ -307,7 +307,7 @@ export async function POST(request: Request) {
         // console.log('Received request data:', requestData);
 
         if (formStage === 2) {
-            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
             const formIDs = [1, 5];
             // Debugging statements,
             // console.log("Started sending email process: ")
@@ -351,7 +351,7 @@ export async function POST(request: Request) {
                 html: generateEmailHTML("[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
             });
         } else if (formStage === 6) {
-            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;
@@ -374,7 +374,7 @@ export async function POST(request: Request) {
                 html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
             });
         } else if (formStage === 5) {
-            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;

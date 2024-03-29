@@ -6,11 +6,13 @@ export const transporter = nodemailer.createTransport({
     auth: {
         user: 'fypemsmaster369@gmail.com',
         pass: 'lxsw qfhm bzev nstm'
+        // user: 'swinburneacademicoffice@gmail.com',
+        // pass: 'omhn bvmc ymxx lvuh'
     }
 });
 
 export const mailOptions = {
     from: 'acad.admin_servicedesk <fypemsmaster369@gmail.com>',
     // Change this to the AAO service desk,
-    to: 'fypemsmaster369@gmail.com',
+    to: 'swinburneacademicoffice@gmail.com',
 }
