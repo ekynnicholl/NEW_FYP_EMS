@@ -1245,6 +1245,21 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                 *
                                             </span>
                                         </p>
+
+                                        <div className="flex flex-col space-y-2">
+                                            <a
+                                                href="https://chyamrnpbrtxhsvkqpry.supabase.co/storage/v1/object/public/supporting_documents/1449f18f-e305-4c20-8863-546e6b61bd80_PEAS%20Framework%20for%20Ethical%20Thinking.pdf"
+                                                className="text-blue-500 hover:underline"
+                                                download
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                File 1
+                                            </a>
+                                        </div>
+
+
+
                                     </div>
 
                                     <hr className="mt-10" />
