@@ -15,7 +15,10 @@
 		"postcss.config.js": true,
 		".gitattributes": true,
 		".eslintrc.json": true,
-		"components.json": true
+		"components.json": true,
+		"google_config.js": true,
+		"code.txt": true,
+		"next-env.d.ts": true
 	},
 	"hide-files.files": [
 		"README.md",
@@ -27,7 +30,10 @@
 		"postcss.config.js",
 		".gitattributes",
 		".eslintrc.json",
-		"components.json"
+		"components.json",
+		"google_config.js",
+		"code.txt",
+		"next-env.d.ts"
 	],
 	"cSpell.words": ["hrdf", "Travelling"]
 }
