@@ -1,40 +1,42 @@
 import { NextResponse } from "next/server";
-import { mailOptions, transporter } from '@/config/nodemailer'
+import { mailOptions, transporter } from "@/config/nodemailer";
+
+const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 // To handle a GET request to /ap
 export async function GET(request: Request) {
-    return NextResponse.json({ request }, { status: 200 });
+	return NextResponse.json({ request }, { status: 200 });
 }
 
 const formattedDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZoneName: 'short',
-    };
+	const date = new Date(dateString);
+	const options: Intl.DateTimeFormatOptions = {
+		hour: "numeric",
+		minute: "numeric",
+		second: "numeric",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		timeZoneName: "short",
+	};
 
-    return date.toLocaleString('en-US', options);
+	return date.toLocaleString("en-US", options);
 };
 
 export async function POST(request: Request) {
-    try {
-        const requestData = await request.json();
+	try {
+		const requestData = await request.json();
 
-        // console.log('Received request data:', requestData);
+		// console.log('Received request data:', requestData);
 
-        const atID = requestData[0].atID;
-        const atIdentifier = requestData[0].atIdentifier;
-        const atAccessToken = requestData[0].atAccessToken;
-        const atCreatedAt = requestData[0].atCreatedAt;
+		const atID = requestData[0].atID;
+		const atIdentifier = requestData[0].atIdentifier;
+		const atAccessToken = requestData[0].atAccessToken;
+		const atCreatedAt = requestData[0].atCreatedAt;
 
-        const tempLink = `${window.location.origin}/attended_events?tokenid=${atID}&ptoken=${atAccessToken}`;
+		const tempLink = `${url}/attended_events?tokenid=${atID}&ptoken=${atAccessToken}`;
 
-        const mailContent = `
+		const mailContent = `
             <html>
             <head>
                 <style>
@@ -84,24 +86,23 @@ export async function POST(request: Request) {
         </html>
         `;
 
-        const mailOptionsCopy = { ...mailOptions };
-        mailOptionsCopy.to = atIdentifier;
+		const mailOptionsCopy = { ...mailOptions };
+		mailOptionsCopy.to = atIdentifier;
 
-        if (!mailOptions.to) {
-            throw new Error('Recipient email address not specified.');
-        }
+		if (!mailOptions.to) {
+			throw new Error("Recipient email address not specified.");
+		}
 
-        await transporter.sendMail({
-            ...mailOptionsCopy,
-            subject: "[NTF] Access Token for Viewing NTF Status",
-            text: mailContent,
-            html: mailContent
-        });
+		await transporter.sendMail({
+			...mailOptionsCopy,
+			subject: "[NTF] Access Token for Viewing NTF Status",
+			text: mailContent,
+			html: mailContent,
+		});
 
-        return NextResponse.json({ success: true }, { status: 200 });
-    } catch (error) {
-        console.error('Error processing request:', error);
-        return NextResponse.json({ error: (error as any).message }, { status: 500 });
-    }
+		return NextResponse.json({ success: true }, { status: 200 });
+	} catch (error) {
+		console.error("Error processing request:", error);
+		return NextResponse.json({ error: (error as any).message }, { status: 500 });
+	}
 }
-
