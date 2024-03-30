@@ -333,8 +333,8 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
 
                                             <div>
                                                 <textarea
-                                                    id="description"
-                                                    placeholder="Description"
+                                                    id="Reverted Comment"
+                                                    placeholder="Reverted Comment"
                                                     className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
                                                     style={{ height: "100px" }}
                                                     value={
