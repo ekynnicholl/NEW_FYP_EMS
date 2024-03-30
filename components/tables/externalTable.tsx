@@ -292,7 +292,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								View
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								onClick={() => {
+								onClick={e => {
+									e.stopPropagation();
 									setOpen(true);
 									setSelectedRow(row.original);
 								}}
