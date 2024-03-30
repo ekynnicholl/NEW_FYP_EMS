@@ -326,13 +326,35 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         <div className="flex justify-between">
                             <form className="mt-6 w-full ml-[100px] mx-24">
                                 <div>
+
+                                    {revertComment ? (
+                                        <div>
+                                            <p className="text-sm text-red-500 font-medium">Comments</p>
+
+                                            <div>
+                                                <textarea
+                                                    id="description"
+                                                    placeholder="Description"
+                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                    style={{ height: "100px" }}
+                                                    value={
+                                                        selectedFormId
+                                                            ? forms.find(form => form.id === selectedFormId)?.revertComment || ""
+                                                            : revertComment
+                                                    }
+                                                    readOnly // make the input read-only
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : null}
+
                                     <div>
                                         <div>
-                                            <a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900">
+                                            <a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900 mt-5">
                                                 1. Personal Details {
-                                                    selectedFormId
-                                                        ? forms.find(form => form.id === selectedFormId)?.id || ""
-                                                        : id
+                                                    // selectedFormId
+                                                    //     ? forms.find(form => form.id === selectedFormId)?.id || ""
+                                                    //     : id
                                                 }
 
                                             </a>
@@ -1500,7 +1522,6 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                         </div>
 
                                     ) : null}
-
 
 
                                 </div>
