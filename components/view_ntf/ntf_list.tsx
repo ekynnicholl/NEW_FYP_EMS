@@ -38,6 +38,28 @@ interface Form {
     hotel_name: string;
     check_in_date: string;
     check_out_date: string;
+
+    course_fee: string;
+    airfare_fee: string;
+    accommodation_fee: string;
+    per_diem_fee: string;
+    transportation_fee: string;
+    travel_insurance_fee: string;
+    other_fees: string;
+    grand_total_fees: string;
+    staff_development_fund: string;
+    consolidated_pool_fund: string;
+    research_fund: string;
+    travel_fund: string;
+    student_council_fund: string;
+    other_funds: string;
+    expenditure_cap: string;
+    expenditure_cap_amount: string;
+
+    applicant_declaration_name: string;
+    applicant_declaration_position_title: string;
+    applicant_declaration_date: string;
+    applicant_declaration_signature: string;
 }
 
 const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
@@ -55,6 +77,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [transport, setTransport] = useState<string>("");
     const [travelling, setTravelling] = useState<string>("");
     const [other_members, setOtherMembers] = useState<string>("");
+
     const [program_title, setProgramTitle] = useState<string>("");
     const [program_description, setProgramDescription] = useState<string>("");
     const [commencement_date, setCommencementDate] = useState<string>("");
@@ -62,6 +85,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [organiser, setOrganiser] = useState<string>("");
     const [venue, setVenue] = useState<string>("");
     const [hrdf_claimable, setHrdfClaimable] = useState<string>("");
+
     const [flight_number, setFlightNumber] = useState<string>("");
     const [flight_date, setFlightDate] = useState<string>("");
     const [flight_time, setFlightTime] = useState<string>("");
@@ -70,6 +94,32 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [hotel_name, setHotelName] = useState<string>("");
     const [check_in_date, setCheckInDate] = useState<string>("");
     const [check_out_date, setCheckOutDate] = useState<string>("");
+
+    const [course_fee, setCourseFee] = useState<string>("");
+    const [airfare_fee, setAirFareFee] = useState<string>("");
+    const [accommodation_fee, setAccommodationFee] = useState<string>("");
+    const [per_diem_fee, setPerDiemFee] = useState<string>("");
+    const [transportation_fee, setTransportationFee] = useState<string>("");
+    const [travel_insurance_fee, setTravelInsuranceFee] = useState<string>("");
+    const [other_fees, setOtherFees] = useState<string>("");
+    const [grand_total_fees, setGrandTotalFees] = useState<string>("");
+    const [staff_development_fund, setStaffDevelopmentFund] = useState<string>("");
+    const [consolidated_pool_fund, setConsolidatedPoolFund] = useState<string>("");
+    const [research_fund, setResearchFund] = useState<string>("");
+    const [travel_fund, setTravelFund] = useState<string>("");
+    const [student_council_fund, setStudentCouncilFund] = useState<string>("");
+    const [other_funds, setOtherFunds] = useState<string>("");
+    const [expenditure_cap, setExpenditureCap] = useState<string>("");
+    const [expenditure_cap_amount, setExpenditureCapAmount] = useState<string>("");
+
+    const [applicant_declaration_name, setApplicantDeclarationName] = useState<string>("");
+    const [applicant_declaration_position_title, setApplicantDeclarationPositionTitle] = useState<string>("");
+    const [applicant_declaration_date, setApplicantDeclarationDate] = useState<string>("");
+    const [applicant_declaration_signature, setApplicantDeclarationSignature] = useState<string>("");
+
+    const imageName = selectedFormId
+        ? forms.find(form => form.id === selectedFormId)?.applicant_declaration_signature || ""
+        : applicant_declaration_signature;
 
     const handleViewForm = (formId: string) => {
         setSelectedFormId(formId);
@@ -90,12 +140,12 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                     const { data, error } = await (isEmail
                         ? supabase
                             .from('external_forms')
-                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date')
+                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature')
                             .eq('email', searchQuery)
                             .order('formStage')
                         : supabase
                             .from('external_forms')
-                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date')
+                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature')
                             .eq('staff_id', searchQuery)
                             .order('formStage'));
 
@@ -121,6 +171,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         setTransport(firstFormData.transport);
                         setTravelling(firstFormData.travelling);
                         setOtherMembers(firstFormData.other_members);
+
                         setProgramTitle(firstFormData.program_title);
                         setProgramDescription(firstFormData.program_description);
                         setCommencementDate(firstFormData.commencement_date);
@@ -128,6 +179,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         setOrganiser(firstFormData.organiser);
                         setVenue(firstFormData.venue);
                         setHrdfClaimable(firstFormData.hrdf_claimable);
+
                         setFlightNumber(firstFormData.flight_number);
                         setFlightDate(firstFormData.flight_date);
                         setDestinationFrom(firstFormData.destination_from);
@@ -135,6 +187,27 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         setHotelName(firstFormData.hotel_name);
                         setCheckInDate(firstFormData.check_in_date);
                         setCheckOutDate(firstFormData.check_out_date);
+                        setCourseFee(firstFormData.course_fee);
+                        setAirFareFee(firstFormData.airfare_fee);
+                        setAccommodationFee(firstFormData.accommodation_fee);
+                        setPerDiemFee(firstFormData.per_diem_fee);
+                        setTransportationFee(firstFormData.transportation_fee);
+                        setTravelInsuranceFee(firstFormData.travel_insurance_fee);
+                        setOtherFees(firstFormData.other_fees);
+                        setGrandTotalFees(firstFormData.grand_total_fees);
+                        setStaffDevelopmentFund(firstFormData.staff_development_fund);
+                        setConsolidatedPoolFund(firstFormData.consolidated_pool_fund);
+                        setResearchFund(firstFormData.research_fund);
+                        setTravelFund(firstFormData.travel_fund);
+                        setStudentCouncilFund(firstFormData.student_council_fund);
+                        setOtherFunds(firstFormData.other_funds);
+                        setExpenditureCap(firstFormData.expenditure_cap);
+                        setExpenditureCapAmount(firstFormData.expenditure_cap_amount);
+
+                        setApplicantDeclarationName(firstFormData.applicant_declaration_name);
+                        setApplicantDeclarationPositionTitle(firstFormData.applicant_declaration_position_title);
+                        setApplicantDeclarationDate(firstFormData.applicant_declaration_date);
+                        setApplicantDeclarationSignature(firstFormData.applicant_declaration_signature);
                     }
                 }
             } catch (e) {
@@ -732,6 +805,468 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                         </div>
                                     </div>
 
+                                    <hr className="mt-10" />
+
+                                    <div className="mt-[30px]">
+                                        <div>
+                                            <p id="funding" className="text-2xl font-bold mb-5 block text-slate-900">
+                                                4. Funding
+                                            </p>
+
+                                            <p className="text-[15px] text-slate-800 font-medium ml-[1px]">Please indicate estimated cost.
+                                            </p>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-4">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Course Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="course_fee"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.course_fee || "0"
+                                                                    : course_fee
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Airfare Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="airfare_fee"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.airfare_fee || "0"
+                                                                    : airfare_fee
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-5">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Accomodation Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="accomodation_fee"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.accommodation_fee || "0"
+                                                                    : accommodation_fee
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Per Diem Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="per_diem_fee"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.per_diem_fee || "0"
+                                                                    : per_diem_fee
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-5">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Transportation Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="transportation_fee"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.transportation_fee || "0"
+                                                                    : transportation_fee
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Travel Insurance Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="travel_insurance_fee"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.travel_insurance_fee || "0"
+                                                                    : travel_insurance_fee
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-5">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Others
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="others"
+                                                            placeholder="Amount (RM)"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.other_fees || "0"
+                                                                    : other_fees
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Total Fee
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="number"
+                                                            id="total_fee"
+                                                            placeholder="0"
+                                                            disabled
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.grand_total_fees || "0"
+                                                                    : grand_total_fees
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <p className="text-[15px] text-slate-800 font-medium ml-[1px] mt-8">Source of Fund -<span className="text-slate-500 text-sm font-bold">Details of account(s) to be debited. (It is encouraged to have a single source of funding)</span>.
+                                            </p>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-4">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Staff Development Fund
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="staff_development_fund"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.staff_development_fund || "0"
+                                                                    : staff_development_fund
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Consolidated Pool Fund
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="consolidated_pool_fund"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.consolidated_pool_fund || "0"
+                                                                    : consolidated_pool_fund
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-5">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Research Fund
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="research_fund"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.research_fund || "0"
+                                                                    : research_fund
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Travel Fund
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="travel_fund"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.travel_fund || "0"
+                                                                    : travel_fund
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-5 mt-5">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Student Welfare Fund
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="student_welfare_fund"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.student_council_fund || "0"
+                                                                    : student_council_fund
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium ml-[1px]">Other Funds
+                                                    </p>
+
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="other_fund"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.other_funds || "0"
+                                                                    : other_funds
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <fieldset disabled>
+                                                <div className="mt-5 cursor-not-allowed">
+                                                    <p className="text-sm text-slate-800 font-medium">Any expenditure cap? If yes, please specify below,
+                                                    </p>
+                                                    <div className="mt-2 flex items-center space-x-4">
+                                                        <label className="flex items-center space-x-2">
+                                                            <input
+                                                                type="radio"
+                                                                name="expenditure_cap"
+                                                                className="form-radio h-4 w-4 text-slate-800 cursor-not-allowed"
+                                                                disabled
+                                                                value={
+                                                                    selectedFormId
+                                                                        ? forms.find(form => form.id === selectedFormId)?.expenditure_cap || ""
+                                                                        : expenditure_cap
+                                                                }
+                                                            />
+                                                            <span className="text-slate-800 text-[15px]">Yes</span>
+                                                        </label>
+                                                        <label className="flex items-center space-x-2">
+                                                            <input
+                                                                type="radio"
+                                                                name="expenditure_cap"
+                                                                className="form-radio h-4 w-4 text-slate-800 cursor-not-allowed"
+                                                                disabled
+                                                                value={
+                                                                    selectedFormId
+                                                                        ? forms.find(form => form.id === selectedFormId)?.expenditure_cap || ""
+                                                                        : expenditure_cap
+                                                                }
+                                                            />
+                                                            <span className="text-slate-800 text-[15px]">No</span>
+                                                        </label>
+
+                                                    </div>
+
+                                                    <div className="mt-5 cursor-not-allowed">
+                                                        <p className="text-sm text-slate-800 font-medium ml-[1px]">Expenditure Cap Amount
+                                                        </p>
+
+                                                        <div>
+                                                            <input
+                                                                type="number"
+                                                                id="capped_amount"
+                                                                disabled
+                                                                className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px] cursor-not-allowed"
+                                                                value={
+                                                                    selectedFormId
+                                                                        ? forms.find(form => form.id === selectedFormId)?.expenditure_cap_amount || ""
+                                                                        : expenditure_cap_amount
+                                                                }
+                                                                readOnly // make the input read-only
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                        </div>
+                                    </div>
+
+                                    <hr className="mt-10" />
+
+                                    <div className="mt-[30px]">
+                                        <p id="additional_files" className="text-2xl font-bold block text-slate-900">
+                                            5. Supporting Documents
+                                            <span className="text-[25px] text-red-500 ml-[5px]">
+                                                *
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <hr className="mt-10" />
+
+                                    <div className="mt-[30px]">
+                                        <div>
+                                            <p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
+                                                6. Applicant Declaration
+                                            </p>
+
+                                            <p className="text-slate-500 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
+                                            </p>
+
+                                            <div className="grid grid-cols-2 gap-5">
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
+                                                        <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                            *
+                                                        </span>
+                                                    </p>
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="applicant_declaration_name"
+                                                            placeholder="Name"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.applicant_declaration_name || ""
+                                                                    : applicant_declaration_name
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
+                                                        <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                            *
+                                                        </span>
+                                                    </p>
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            id="applicant_declaration_position_title"
+                                                            placeholder="Position title"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.applicant_declaration_position_title || ""
+                                                                    : applicant_declaration_position_title
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <p className="text-sm text-slate-800 font-medium mt-5">Declaration Date
+                                                <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                    *
+                                                </span>
+                                            </p>
+                                            <div>
+                                                <input
+                                                    type="date"
+                                                    id="applicant_declaration_date"
+                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                    value={
+                                                        selectedFormId
+                                                            ? forms.find(form => form.id === selectedFormId)?.applicant_declaration_date || ""
+                                                            : applicant_declaration_date
+                                                    }
+                                                    readOnly // make the input read-only
+                                                />
+                                            </div>
+
+                                            <p className="text-sm text-slate-800 font-medium mt-5">Signature
+                                                <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                    *
+                                                </span>
+
+                                                <div className="border-2 border-gray-300 p-2 mt-3 flex justify-center">
+                                                    <Image src={imageName} alt="Applicant Declaration Image" width={300} height={150} className="mt-3" />
+                                                </div>
+                                            </p>
+                                        </div>
+                                    </div>
 
 
 
