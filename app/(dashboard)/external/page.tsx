@@ -7,7 +7,7 @@ export default async function ExternalPage() {
 	const cookieStore = cookies()
 	const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
 
-	const { data, error } = await supabase.from("external_forms").select("*").order("created_at", { ascending: false });
+	const { data, error } = await supabase.from("external_forms").select("*").order("created_at", { ascending: false }).eq("isHidden", 0);
 	// const { data, error } = await supabase.from("external_forms").select("*");
 
 	// const modifiedData = data?.map((form: any) => {

@@ -302,11 +302,11 @@ export async function POST(request: Request) {
 		// console.log("Debugging Form Stage: " + formStage);
 		// console.log('Received request data:', requestData);
 
-		if (formStage === 2) {
-			const recipients = ["fypemsmaster369@gmail.com", staffEmail];
-			const formIDs = [1, 5];
-			// Debugging statements,
-			// console.log("Started sending email process: ")
+        if (formStage === 2) {
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
+            const formIDs = [1, 5];
+            // Debugging statements,
+            // console.log("Started sending email process: ")
 
 			for (let i = 0; i < recipients.length; i++) {
 				const mailOptionsCopy = { ...mailOptions };
@@ -316,83 +316,72 @@ export async function POST(request: Request) {
 
 				const formIDForRecipient = formIDs[i];
 
-				await transporter.sendMail({
-					...mailOptionsCopy,
-					subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-					text: "[Staff to Academic Administration Office]",
-					html: generateEmailHTML("[Staff to Academic Administration Office]", formID, formIDForRecipient, "", formDetails),
-				});
-			}
-		} else if (formStage === 3) {
-			const mailOptionsCopy = { ...mailOptions };
-			mailOptionsCopy.to = verificationEmail;
-			// Debugging statements,
-			// console.log("Started sending email process: " + verificationEmail)
-			await transporter.sendMail({
-				...mailOptionsCopy,
-				subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-				text: "[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]",
-				html: generateEmailHTML(
-					"[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]",
-					formID,
-					1,
-					requestData.securityKey,
-					formDetails,
-				),
-			});
-		} else if (formStage === 4) {
-			const mailOptionsCopy = { ...mailOptions };
-			mailOptionsCopy.to = approvalEmail;
-			// Debugging statements,
-			// console.log("Started sending email process: " + approvalEmail)
-			await transporter.sendMail({
-				...mailOptionsCopy,
-				subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-				text: "[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-				html: generateEmailHTML(
-					"[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-					formID,
-					1,
-					requestData.securityKey,
-					formDetails,
-				),
-			});
-		} else if (formStage === 6) {
-			const recipients = ["fypemsmaster369@gmail.com", staffEmail];
-			for (const recipient of recipients) {
-				const mailOptionsCopy = { ...mailOptions };
-				mailOptionsCopy.to = recipient;
-				await transporter.sendMail({
-					...mailOptionsCopy,
-					subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-					text: "[Rejection Email]",
-					html: generateEmailHTML("[Rejection Email]", formID, 2, requestData.revertComment),
-				});
-			}
-		} else if (formStage === 1) {
-			const mailOptionsCopy = { ...mailOptions };
-			mailOptionsCopy.to = staffEmail;
-			// Debugging statements,
-			// console.log("Debugging reverted comment: " + requestData.revertComment);
-			await transporter.sendMail({
-				...mailOptionsCopy,
-				subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-				text: "[Academic Administration Office to Staff]",
-				html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey),
-			});
-		} else if (formStage === 5) {
-			const recipients = ["fypemsmaster369@gmail.com", staffEmail];
-			for (const recipient of recipients) {
-				const mailOptionsCopy = { ...mailOptions };
-				mailOptionsCopy.to = recipient;
-				await transporter.sendMail({
-					...mailOptionsCopy,
-					subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-					text: "[Accepted Email]",
-					html: generateEmailHTML("[Accepted Email]", formID, 3),
-				});
-			}
-		}
+                await transporter.sendMail({
+                    ...mailOptionsCopy,
+                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    text: "[Staff to Academic Administration Office]",
+                    html: generateEmailHTML("[Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
+                });
+            }
+        } else if (formStage === 3) {
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = verificationEmail;
+            // Debugging statements,
+            // console.log("Started sending email process: " + verificationEmail)
+            await transporter.sendMail({
+                ...mailOptionsCopy,
+                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                text: "[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]",
+                html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey, formDetails)
+            });
+
+        } else if (formStage === 4) {
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = approvalEmail;
+            // Debugging statements,
+            // console.log("Started sending email process: " + approvalEmail)
+            await transporter.sendMail({
+                ...mailOptionsCopy,
+                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                text: "[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
+                html: generateEmailHTML("[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
+            });
+        } else if (formStage === 6) {
+            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            for (const recipient of recipients) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipient;
+                await transporter.sendMail({
+                    ...mailOptionsCopy,
+                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    text: "[Rejection Email]",
+                    html: generateEmailHTML("[Rejection Email]", formID, 2, requestData.revertComment)
+                });
+            }
+        } else if (formStage === 1) {
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = staffEmail;
+            // Debugging statements,
+            // console.log("Debugging reverted comment: " + requestData.revertComment);
+            await transporter.sendMail({
+                ...mailOptionsCopy,
+                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                text: "[Academic Administration Office to Staff]",
+                html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
+            });
+        } else if (formStage === 5) {
+            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            for (const recipient of recipients) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipient;
+                await transporter.sendMail({
+                    ...mailOptionsCopy,
+                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    text: "[Accepted Email]",
+                    html: generateEmailHTML("[Accepted Email]", formID, 3)
+                });
+            }
+        }
 
 		return NextResponse.json({ success: true }, { status: 200 });
 	} catch (error) {

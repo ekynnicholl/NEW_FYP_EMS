@@ -139,7 +139,6 @@ const Chatbot = () => {
             `;
 
             if (events.length > 0) {
-
                 return await getOpenAIResponse(eventQuestion);
             } else {
                 await fetchEvents();
@@ -147,13 +146,7 @@ const Chatbot = () => {
                 return await getOpenAIResponse(eventQuestion);
             }
         } else if (!hasClearMessage) {
-            // localStorage.removeItem('chatMessages');
-            // setMessages([]);
-            // setIsInitialMessage(true);
-
-            // console.log("clear message");
-
-            // return null;
+            // 
         }
 
         const response = await getOpenAIResponse(question);
