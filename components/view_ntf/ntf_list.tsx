@@ -60,6 +60,18 @@ interface Form {
     applicant_declaration_position_title: string;
     applicant_declaration_date: string;
     applicant_declaration_signature: string;
+
+    verification_name: string;
+    verification_position_title: string;
+    verification_date: string;
+    verification_signature: string;
+
+    approval_name: string;
+    approval_position_title: string;
+    approval_date: string;
+    approval_signature: string;
+
+    revertComment: string;
 }
 
 const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
@@ -117,9 +129,30 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [applicant_declaration_date, setApplicantDeclarationDate] = useState<string>("");
     const [applicant_declaration_signature, setApplicantDeclarationSignature] = useState<string>("");
 
-    const imageName = selectedFormId
+    const [verification_name, setVerificationName] = useState<string>("");
+    const [verification_position_title, setVerificationPositionTitle] = useState<string>("");
+    const [verification_date, setVerificationDate] = useState<string>("");
+    const [verification_signature, setVerificationSignature] = useState<string>("");
+
+    const [approval_name, setApprovalName] = useState<string>("");
+    const [approval_position_title, setApprovalPositionTitle] = useState<string>("");
+    const [approval_date, setApprovalDate] = useState<string>("");
+    const [approval_signature, setApprovalSignature] = useState<string>("");
+
+    const [revertComment, setRevertComment] = useState<string>("");
+
+
+    const applicant_declaration_signature_image = selectedFormId
         ? forms.find(form => form.id === selectedFormId)?.applicant_declaration_signature || ""
         : applicant_declaration_signature;
+
+    const verification_signature_image = selectedFormId
+        ? forms.find(form => form.id === selectedFormId)?.verification_signature || ""
+        : verification_signature;
+
+    const approval_signature_image = selectedFormId
+        ? forms.find(form => form.id === selectedFormId)?.approval_signature || ""
+        : approval_signature;
 
     const handleViewForm = (formId: string) => {
         setSelectedFormId(formId);
@@ -140,12 +173,12 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                     const { data, error } = await (isEmail
                         ? supabase
                             .from('external_forms')
-                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature')
+                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature, verification_name, verification_position_title, verification_date, verification_signature, approval_name, approval_position_title, approval_date, approval_signature, revertComment')
                             .eq('email', searchQuery)
                             .order('formStage')
                         : supabase
                             .from('external_forms')
-                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature')
+                            .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature, verification_name, verification_position_title, verification_date, verification_signature, approval_name, approval_position_title, approval_date, approval_signature, revertComment')
                             .eq('staff_id', searchQuery)
                             .order('formStage'));
 
@@ -208,6 +241,18 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         setApplicantDeclarationPositionTitle(firstFormData.applicant_declaration_position_title);
                         setApplicantDeclarationDate(firstFormData.applicant_declaration_date);
                         setApplicantDeclarationSignature(firstFormData.applicant_declaration_signature);
+
+                        setVerificationName(firstFormData.verification_name);
+                        setVerificationPositionTitle(firstFormData.verification_position_title);
+                        setVerificationDate(firstFormData.verification_date);
+                        setVerificationSignature(firstFormData.verification_signature);
+
+                        setApprovalName(firstFormData.approval_name);
+                        setApprovalPositionTitle(firstFormData.approval_position_title);
+                        setApprovalDate(firstFormData.approval_date);
+                        setApprovalSignature(firstFormData.approval_signature);
+
+                        setRevertComment(firstFormData.revertComment);
                     }
                 }
             } catch (e) {
@@ -281,13 +326,35 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         <div className="flex justify-between">
                             <form className="mt-6 w-full ml-[100px] mx-24">
                                 <div>
+
+                                    {revertComment ? (
+                                        <div>
+                                            <p className="text-sm text-red-500 font-medium">Comments</p>
+
+                                            <div>
+                                                <textarea
+                                                    id="Reverted Comment"
+                                                    placeholder="Reverted Comment"
+                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                    style={{ height: "100px" }}
+                                                    value={
+                                                        selectedFormId
+                                                            ? forms.find(form => form.id === selectedFormId)?.revertComment || ""
+                                                            : revertComment
+                                                    }
+                                                    readOnly // make the input read-only
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : null}
+
                                     <div>
                                         <div>
-                                            <a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900">
+                                            <a href="#personal_details" className="text-2xl font-bold mb-5 block text-slate-900 mt-5">
                                                 1. Personal Details {
-                                                    selectedFormId
-                                                        ? forms.find(form => form.id === selectedFormId)?.id || ""
-                                                        : id
+                                                    // selectedFormId
+                                                    //     ? forms.find(form => form.id === selectedFormId)?.id || ""
+                                                    //     : id
                                                 }
 
                                             </a>
@@ -1178,6 +1245,21 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                 *
                                             </span>
                                         </p>
+
+                                        <div className="flex flex-col space-y-2">
+                                            <a
+                                                href="https://chyamrnpbrtxhsvkqpry.supabase.co/storage/v1/object/public/supporting_documents/1449f18f-e305-4c20-8863-546e6b61bd80_PEAS%20Framework%20for%20Ethical%20Thinking.pdf"
+                                                className="text-blue-500 hover:underline"
+                                                download
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                File 1
+                                            </a>
+                                        </div>
+
+
+
                                     </div>
 
                                     <hr className="mt-10" />
@@ -1262,18 +1344,199 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                 </span>
 
                                                 <div className="border-2 border-gray-300 p-2 mt-3 flex justify-center">
-                                                    <Image src={imageName} alt="Applicant Declaration Image" width={300} height={150} className="mt-3" />
+                                                    <Image src={applicant_declaration_signature_image} alt="Applicant Declaration Signature Image" width={300} height={150} className="mt-3" />
                                                 </div>
                                             </p>
                                         </div>
                                     </div>
 
+                                    {verification_signature_image ? (
 
+                                        <div>
+                                            <hr className="mt-10" />
 
+                                            <div className="mt-[30px]">
+                                                <div>
+                                                    <p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
+                                                        7. Verification Declaration
+                                                    </p>
 
+                                                    <p className="text-slate-500 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
+                                                    </p>
 
+                                                    <div className="grid grid-cols-2 gap-5">
+                                                        <div>
+                                                            <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
+                                                                <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                                    *
+                                                                </span>
+                                                            </p>
+                                                            <div>
+                                                                <input
+                                                                    type="text"
+                                                                    id="verification_name"
+                                                                    placeholder="Name"
+                                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                                    value={
+                                                                        selectedFormId
+                                                                            ? forms.find(form => form.id === selectedFormId)?.verification_name || ""
+                                                                            : verification_name
+                                                                    }
+                                                                    readOnly // make the input read-only
+                                                                />
+                                                            </div>
+                                                        </div>
 
+                                                        <div>
+                                                            <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
+                                                                <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                                    *
+                                                                </span>
+                                                            </p>
+                                                            <div>
+                                                                <input
+                                                                    type="text"
+                                                                    id="verification_position_title"
+                                                                    placeholder="Position title"
+                                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                                    value={
+                                                                        selectedFormId
+                                                                            ? forms.find(form => form.id === selectedFormId)?.verification_position_title || ""
+                                                                            : verification_position_title
+                                                                    }
+                                                                    readOnly // make the input read-only
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
+                                                    <p className="text-sm text-slate-800 font-medium mt-5">Declaration Date
+                                                        <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                            *
+                                                        </span>
+                                                    </p>
+                                                    <div>
+                                                        <input
+                                                            type="date"
+                                                            id="verification_date"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.verification_date || ""
+                                                                    : verification_date
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+
+                                                    <p className="text-sm text-slate-800 font-medium mt-5">Signature
+                                                        <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                            *
+                                                        </span>
+
+                                                        <div className="border-2 border-gray-300 p-2 mt-3 flex justify-center">
+                                                            <Image src={verification_signature_image} alt="Verification Signature Image" width={300} height={150} className="mt-3" />
+                                                        </div>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    ) : null}
+
+                                    {approval_signature_image ? (
+
+                                        <div>
+                                            <hr className="mt-10" />
+
+                                            <div className="mt-[30px]">
+                                                <div>
+                                                    <p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
+                                                        8. Approval Declaration
+                                                    </p>
+
+                                                    <p className="text-slate-500 text-base font-normal ml-[1px]">I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any attachments) provided for this application.
+                                                    </p>
+
+                                                    <div className="grid grid-cols-2 gap-5">
+                                                        <div>
+                                                            <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Name
+                                                                <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                                    *
+                                                                </span>
+                                                            </p>
+                                                            <div>
+                                                                <input
+                                                                    type="text"
+                                                                    id="approval_name"
+                                                                    placeholder="Name"
+                                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                                    value={
+                                                                        selectedFormId
+                                                                            ? forms.find(form => form.id === selectedFormId)?.approval_name || ""
+                                                                            : approval_name
+                                                                    }
+                                                                    readOnly // make the input read-only
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <p className="text-sm text-slate-800 font-medium mt-5 ml-[1px]">Position Title
+                                                                <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                                    *
+                                                                </span>
+                                                            </p>
+                                                            <div>
+                                                                <input
+                                                                    type="text"
+                                                                    id="approval_position_title"
+                                                                    placeholder="Position title"
+                                                                    className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                                    value={
+                                                                        selectedFormId
+                                                                            ? forms.find(form => form.id === selectedFormId)?.approval_position_title || ""
+                                                                            : approval_position_title
+                                                                    }
+                                                                    readOnly // make the input read-only
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p className="text-sm text-slate-800 font-medium mt-5">Declaration Date
+                                                        <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                            *
+                                                        </span>
+                                                    </p>
+                                                    <div>
+                                                        <input
+                                                            type="date"
+                                                            id="approval_date"
+                                                            className="border border-gray-300 px-2 py-[7px] w-full rounded mt-2 placeholder-gray-500 lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mb-[3px] text-[12px] text-left pl-[11px]"
+                                                            value={
+                                                                selectedFormId
+                                                                    ? forms.find(form => form.id === selectedFormId)?.approval_date || ""
+                                                                    : approval_date
+                                                            }
+                                                            readOnly // make the input read-only
+                                                        />
+                                                    </div>
+
+                                                    <p className="text-sm text-slate-800 font-medium mt-5">Signature
+                                                        <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px]">
+                                                            *
+                                                        </span>
+
+                                                        <div className="border-2 border-gray-300 p-2 mt-3 flex justify-center">
+                                                            <Image src={approval_signature_image} alt="Approval Signature Image" width={300} height={150} className="mt-3" />
+                                                        </div>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    ) : null}
 
 
                                 </div>
