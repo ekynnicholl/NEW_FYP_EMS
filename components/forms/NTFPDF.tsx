@@ -66,7 +66,7 @@ type Form = {
 	transit_destination_to: string;
 };
 
-export default function Home({ id }: { id: string }) {
+export default function NTFPDF({ id }: { id: string }) {
 	const supabase = createClientComponentClient();
 	const [formDetails, setFormDetails] = useState<ExternalForm[]>([]);
 	const [auditLog, setAuditLog] = useState<AuditLog[]>([]);
@@ -740,6 +740,16 @@ export default function Home({ id }: { id: string }) {
 							{log.type?.toLocaleLowerCase() === "create" && (
 								<div>
 									<p className="font-semibold">Created By:</p>
+									<span>
+										{log.username} ({log.email})
+									</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
+							{log.type?.toLocaleLowerCase() === "revert" && (
+								<div>
+									<p className="font-semibold">Reverted By:</p>
 									<span>
 										{log.username} ({log.email})
 									</span>

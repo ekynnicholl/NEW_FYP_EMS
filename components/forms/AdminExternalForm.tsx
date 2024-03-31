@@ -519,8 +519,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				createNotifications(message, updatedData[0].id);
 
-				console.log(updatedData);
-
 				sendContactForm(updatedData);
 
 				router.push("/external_status");
