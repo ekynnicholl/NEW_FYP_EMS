@@ -13,8 +13,7 @@ import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, M
 import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ExpenditureUser from "@/components/tables/expenditureUser";
-import { Info } from "lucide-react";
-import { Tab } from '@headlessui/react';
+import { CiCalendar } from "react-icons/ci";
 
 type Info = {
 	attFormsAttendanceID: string;
@@ -62,20 +61,14 @@ export default function Home() {
 	const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
 
 	const [showModal, setShowModal] = useState(false);
-	const [infos, setInfos] = useState<Info[]>([] as Info[]);
-	const [subEventsAttended, setSubEventsAttended] = useState<subEvents[]>([]);
-	const [mainEventAttended, setMainEventAttended] = useState<{ intFEventName: string[]; }[]>([]);
-	const [allMainEvent, setAllMainEvent] = useState<mainEvents[]>([]);
 
 	const [dataResults, setDataResults] = useState<{
 		staffID: string;
 		staffName: string;
 		staffFaculty: string;
 		totalSubEvents: number;
-		subEventsAttended: subEvents[];
-		eventsAttended: string[];
-		externalEventsAttended: { programName: string; totalHours: number; commencementDate: string; formStage: number }[];
-		totalHours: string;
+		allEventsAttended: {programName: string; totalHours: number; startDate: string; endDate: string;}[];
+        grandTotalHours: number;
 	}[]>([]);
 
 	const [aggregatedInfo, setAggregatedInfo] = useState<{
@@ -83,28 +76,9 @@ export default function Home() {
 		staffName: string;
 		staffFaculty: string;
 		totalSubEvents: number;
-		subEventsAttended: subEvents[];
-		eventsAttended: string[];
-		externalEventsAttended: { programName: string; totalHours: number; commencementDate: string; formStage: number }[];
-		totalHours: string;
+		allEventsAttended: {programName: string; totalHours: number; startDate: string; endDate: string;}[];
+        grandTotalHours: number;
 	}[]>([]);
-
-	useEffect(() => {
-		const fetchMainEvent = async () => {
-			const { data: mainEvent, error: mainEventError } = await supabase
-				.from('internal_events')
-				.select('*');
-
-			if (mainEventError) {
-				// console.error("Error fetching main_events:", mainEventError);
-				return;
-			}
-			setAllMainEvent(mainEvent || []);
-		}
-
-		fetchMainEvent();
-
-	}, [supabase]);
 
 	const fetchInfos = async () => {
 		const { data: staffData, error: attendedEventError } = await supabase
@@ -144,78 +118,67 @@ export default function Home() {
 		}
 
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-		const groupedData = staffData.reduce((result, form) => {
+        const groupedData = staffData.reduce((result, form) => {
 
-			const uniqueStaffID = form.attFormsStaffID;
+            const uniqueStaffID = form.attFormsStaffID;
 
-			if (!result[uniqueStaffID]) {
-				result[uniqueStaffID] = {
-					staffID: form.attFormsStaffID,
-					staffName: form.attFormsStaffName,
-					staffFaculty: form.attFormsFacultyUnit,
-					totalSubEvents: 0,
-					subEventsAttended: [],
-					eventsAttended: [],
-					externalEventsAttended: [],
-					totalHours: 0,
-				};
+            if (!result[uniqueStaffID]) {
+                result[uniqueStaffID] = {
+                    staffID: form.attFormsStaffID,
+                    staffName: form.attFormsStaffName,
+                    staffFaculty: form.attFormsFacultyUnit,
+                    totalSubEvents: 0,
+					allEventsAttended: [],
+                    grandTotalHours: 0,
+                };
 
-				result[uniqueStaffID].externalEventsAttended.push(
+				result[uniqueStaffID].totalSubEvents++;
+
+				result[uniqueStaffID].allEventsAttended.push(
 					...externalEvents
 						.filter(event => event.staff_id === uniqueStaffID)
 						.map(event => ({
-							programName: event.program_title,
-							totalHours: event.total_hours,
-							commencementDate: event.commencement_date,
-							formStage: event.formStage
+							programName: event.program_title, 
+							totalHours: event.total_hours, 
+							startDate: event.commencement_date,  
+							endDate: event.completion_date,							
 						}))
-				);
-			}
+				)
 
-			if (!result[uniqueStaffID].subEventsAttended.some((event: subEvents) => event.sub_eventsID === form.attFSubEventID)) {
-				result[uniqueStaffID].totalSubEvents++;
+				result[uniqueStaffID].allEventsAttended.push(
+					...mainEvents
+						.filter(event => {
+							const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
+            				return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;})
+						.map(event => ({
+							programName: event.intFEventName,
+							totalHours: event.intFTotalHours,
+							startDate: event.intFEventStartDate,
+							endDate: event.intFEventEndDate,
+						}))
+				)
 
-				result[uniqueStaffID].eventsAttended.push(
-					...subEvents
-						.filter(event => event.sub_eventsID === form.attFSubEventID)
-						.map(event => event.sub_eventsMainID)
-				);
+				
+				const totalMainEventsHours = mainEvents
+					.filter(event => {
+						const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
+						return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
+					})
+					.reduce((total, event) => total + event.intFTotalHours, 0);
 
-				result[uniqueStaffID].subEventsAttended.push(
-					...subEvents.filter(event => event.sub_eventsID === form.attFSubEventID)
-				);
+				const totalExternalEventsHours = externalEvents
+					.filter(event => event.staff_id === uniqueStaffID)
+					.reduce((total, event) => total + event.total_hours, 0);
 
-				result[uniqueStaffID].eventsAttended.push(
-					...subEvents
-						.filter(event => event.sub_eventsID === form.attFSubEventID)
-						.map(event => event.sub_eventsMainID)
-				);
-			}
+				const grandTotalHours = totalMainEventsHours + totalExternalEventsHours;
 
-			return result;
+				result[uniqueStaffID].grandTotalHours = grandTotalHours;     	
+            }
+
+            return result;
 
 		}, {});
-
-		for (const staffID in groupedData) {
-			if (Object.prototype.hasOwnProperty.call(groupedData, staffID)) {
-				const staffInfo = groupedData[staffID];
-				let totalHours = 0;
-
-				const uniqueEventsAttended = new Set<string>(staffInfo.eventsAttended);
-
-				uniqueEventsAttended.forEach((mainEventID: string) => {
-					const event = mainEvents.find(e => e.intFID === mainEventID);
-					if (event) {
-						totalHours += Number(event.intFTotalHours);
-					}
-				});
-
-				staffInfo.totalHours = totalHours;
-			}
-		}
-
-		// Set the aggregated data in the state
-		setAggregatedInfo(Object.values(groupedData));
+        setAggregatedInfo(Object.values(groupedData));
 	};
 
 	// Fetch data from database
@@ -223,40 +186,13 @@ export default function Home() {
 		fetchInfos();
 	}, [supabase]);
 
-	//this is use to fetch sub event data of staff attended
-	const fetchSubEventList = async (event_id: string[]) => {
-		const { data: subEvents, error: subEventsError } = await supabase
-			.from("sub_events")
-			.select("*")
-			.in("sub_eventsID", event_id)
-			.order("sub_eventsStartDate");
-
-		if (subEventsError) {
-			// console.error("Error fetching sub_events:", subEventsError);
-			return;
-		}
-
-		setSubEventsAttended(subEvents || []);
-
-		const mainEventIDs = subEvents.map((subEvent) => subEvent.sub_eventsMainID);
-
-		//extract the main event title		
-		const { data: mainEvent, error: mainEventError } = await supabase
-			.from("internal_events")
-			.select("intFEventName")
-			.in("intFID", mainEventIDs)
-			.order("intFEventStartDate");
-
-		if (mainEventError) {
-			// console.error("Error fetching sub_events:", mainEventError);
-			return;
-		}
-		setMainEventAttended((mainEvent || []));
-	}
+	const [eventsAttended, setEventsAttended] = useState<{ programName: string; totalHours: number; startDate: string; endDate: string; }[]>([]);
 
 	//display the sub event attended modal
-	const openModal = async (staff_event_id: string[]) => {
-		fetchSubEventList(staff_event_id);
+	// const openModal = async (staff_event_id: string[], allEvents: { programName: string; totalHours: number; startDate: string; endDate: string; }[]) => {
+	const openModal = async (allEvents: { programName: string; totalHours: number; startDate: string; endDate: string; }[]) => {
+		// fetchSubEventList(staff_event_id);
+		setEventsAttended(allEvents || []);
 		setShowModal(true);
 	}
 
@@ -291,7 +227,7 @@ export default function Home() {
 		// Combine header and data rows
 		const csvContent = `${header}\n${aggregatedInfo.map(row => {
 			// Exclude the eventsAttended field
-			const { eventsAttended, ...rowWithoutEvents } = row;
+			const { allEventsAttended, ...rowWithoutEvents } = row;
 			return Object.values(rowWithoutEvents).map(value => `"${value}"`).join(",");
 		}).join("\n")}`;
 
@@ -406,9 +342,9 @@ export default function Home() {
 
 			// const facultyStudents = data.map((item) => item.attsName);
 			const facultyStudentsData = data.map((item: any) => ({
-				facultyName: item.attsName,
-				facultyCategory: item.attsCategory,
-			}));
+                facultyName: item.attsName, 
+                facultyCategory: item.attsCategory,
+            }));
 
 			setFacultyStudents(facultyStudentsData);
 		};
@@ -473,7 +409,7 @@ export default function Home() {
 	}
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
-
+		
 		setSearchQuery(query);
 
 		// Clear the data results
@@ -481,12 +417,12 @@ export default function Home() {
 
 		const filterByFacultyUnit = (facultyUnit: string) => {
 			filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
-		}
+		} 
 
 		let filteredUserData = [...aggregatedInfo];
 
 		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));			
 			if (selectedFilterStaff.length > 0) {
 				filterByFacultyUnit(selectedFilterStaff);
 			}
@@ -593,10 +529,10 @@ export default function Home() {
 			return eventYear.toString() === selectedYear;
 		})
 
-		return (mainEventsResult.map(e => { `${e.intFEventName} - ${e.intFTotalHours}` }));
+		return (mainEventsResult.map(e => {`${e.intFEventName} - ${e.intFTotalHours}`}));
 	}
 
-	const showMainEventByYear = (eventsAttended: string[], selectedYear: string) => {
+	const showEventByYear = (eventsAttended: string[], selectedYear: string) => {
 		// const mainEventsResult = eventsAttended.filter(e => {
 		// 	const eventYear = new Date(e.intFEventStartDate).getFullYear();
 		// 	return eventYear.toString() === selectedYear;
@@ -772,16 +708,16 @@ export default function Home() {
 
 								<div className="flex flex-row">
 
-
-									{activeTab === "all" && (
-										<div>
-											<select
-												name="facultyUnit"
-												id="facultyUnit"
-												defaultValue=""
-												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-												required
-												onChange={event => setSelectedFacultyUnit(event.target.value)}
+								
+								{activeTab === "all" && (
+									<div>
+										<select
+											name="facultyUnit"
+											id="facultyUnit"
+											defaultValue=""
+											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+											required
+											onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit
@@ -805,21 +741,21 @@ export default function Home() {
 																		{subcategory.name}
 																	</option>
 																))))
-
-												))}
-											</select>
-										</div>
-									)}
-
-									{activeTab === "staff" && (
-										<div>
-											<select
-												name="facultyUnit"
-												id="facultyUnit"
-												defaultValue=""
-												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-												required
-												onChange={event => setSelectedFilterStaff(event.target.value)}
+																
+												))}     
+										</select>
+									</div>
+								)}
+								
+								{activeTab === "staff" && (
+									<div>
+										<select
+											name="facultyUnit"
+											id="facultyUnit"
+											defaultValue=""
+											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+											required
+											onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit (Staff)
@@ -831,152 +767,112 @@ export default function Home() {
 													<option key={index} value={faculty}>
 														{faculty}
 													</option>
-												))}
-											</select>
-										</div>
-									)}
+												))}												
+										</select>
+									</div>
+								)}
 
-									{activeTab === "student" && (
-										<div className="flex flex-row">
-											<select
-												name="studentFacultyUnit"
-												id="studentFacultyUnit"
-												defaultValue=""
-												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-												required
-												onChange={event => setSelectedFilterStudent(event.target.value)}
-											>
-												<option value="" disabled>Select Faculty/ Unit (Student)</option>
-												<option value="all">
+								{activeTab === "student" && (
+									<div className="flex flex-row">
+										<select
+											name="studentFacultyUnit"
+											id="studentFacultyUnit"
+											defaultValue=""
+											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+											required
+											onChange={event => setSelectedFilterStudent(event.target.value)}
+										>					
+											<option value="" disabled>Select Faculty/ Unit (Student)</option>
+											<option value="all">
 													All
-												</option>
-												{facultyStudents.map((faculty) => (
-													categories
-														.filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
-														.map((cat) => (
-															cat.subcategories
-																.filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
-																.map((subcategory, index) => (
-																	<option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
-																		{subcategory.name}
-																	</option>
-																))))
-
-												))}
-											</select>
-										</div>
-									)}
-
-									{/* <select 
-									className="px-4 border border-gray-300 focus:outline-none text-xs lg:text-base w-auto ml-5"
-									id="year"
-									onChange={event => setSelectedYear(event.target.value)}
-								>
-									<option value="" disabled>Select a year</option>
-									{generateYearOptions()}
-								</select> */}
+											</option>
+											{facultyStudents.map((faculty) => (
+                                                categories
+                                                    .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+                                                    .map((cat) => (
+                                                        cat.subcategories
+                                                            .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+                                                            .map((subcategory, index) => (
+                                                                <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+                                                                    {subcategory.name}
+                                                                </option>
+                                                            ))))
+                                                            
+                                            ))}       
+										</select>
+									</div>
+								)}								
 								</div>
 							</div>
 
-							<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-								<div className="inline-block lg:w-full shadow rounded-sm ">
-									<table className="lg:w-full w-auto min-h-[70vh] overflow-x-auto">
+						<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                            <div className="inline-block lg:w-full shadow rounded-sm ">
+                                <table className="lg:w-full w-auto overflow-x-auto min-h-screen cursor-pointer">
 										{/* Table Header */}
 										<thead>
-											<tr className="flex">
-												<th className="flex-1 px-[30px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-													<p className="">NO.</p>
+											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<span className="ml-2 lg:ml-10">No</span>
 												</th>
-												<th className="flex-1 px-[33px] lg:px-0 py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-													<p className="">Name</p>
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<span className="ml-11 lg:ml-6">Name</span>
 												</th>
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-													<p className="ml-8">Staff / Student ID</p>
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<span className="ml-16 lg:ml-1">Staff / Student ID</span>
 												</th>
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-													<p className="lg:-ml-1">Faculty / Unit</p>
+												
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<span className="ml-1">Faculty / Unit</span>
 												</th>
-												<th className="flex-1 px-[73px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-													<p className="">Program Name(s) - Total Hours(h)</p>
-												</th>
-
-												<th className="flex-1 px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider lg:whitespace-nowrap dark:text-[#B0AA9F]">
-													<p className="lg:-ml-8">Grand Total Hours(h)</p>
+												
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<span className="">Grand Total Hours(h)</span>
 												</th>
 											</tr>
 										</thead>
 
-										{/* Table Body */}
-										<tbody>
-											{dataResults.length === 0 ? (
-												<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
-											) : (
-												sortedData
-													.slice(
-														(currentPage - 1) * entriesToShow,
-														currentPage * entriesToShow,
-													)
-													.map((info, index) => (
-														<tr className="flex" key={info.staffID}
-															onClick={() => {
-																openModal(info.subEventsAttended.map(e => e.sub_eventsID));
-															}}
-														>
-															<td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-																<div className="flex items-center">
-																	<div className="ml-[34px]">
-																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-center">
-																			{(currentPage - 1) * entriesToShow + index + 1}
-																		</p>
-																	</div>
-																</div>
-															</td>
-															<td className="flex-1 -ml-[52px] lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
-																<p className=" text-gray-900 whitespace-no-wrap dark:text-dark_text">
-																	{info.staffName}
-																</p>
-															</td>
-															<td className="flex-1 -ml-3 lg:ml-0 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] text-center lg:text-left">
-																<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text">
-																	{info.staffID}
-																</p>
-															</td>
-															<td className="flex-1 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
-																<p className="ml-8 text-gray-900 lg:-ml-8 dark:text-dark_text">
-																	{info.staffFaculty}
-																</p>
-															</td>
-
-															<td className="flex-1 lg:px-2 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
-																<p className="ml-4 text-gray-900 whitespace-no-wrap lg:ml-1 dark:text-dark_text">
-																	{allMainEvent
-																		.filter(event => info.eventsAttended.includes(event.intFID))
-																		.map((event, index) => (
-																			<p key={index}>
-																				{event.intFEventName} - {event.intFTotalHours}
-																			</p>
-																		))}
-
-																	{/* {showMainEventByYear(info.eventsAttended, selectedYear)} */}
-
-																	{info.externalEventsAttended
-																		.filter(event => event.formStage === 5)
-																		.map((event, index) => (
-																			<p key={index}>
-																				{event.programName} - {event.totalHours}
-																			</p>
-																		))}
-																</p>
-															</td>
-
-															<td className="flex-1 lg:px-11 py-5 border-b border-gray-200 bg-white text-xs lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D] lg:text-left">
-																<p className="ml-14 text-gray-900 whitespace-no-wrap lg:ml-11 dark:text-dark_text">
-																	{info.totalHours}
-																</p>
-															</td>
-														</tr>
-													))
-											)}
+                                        {/* Table Body */}
+                                        <tbody>
+										{dataResults.length === 0 ? (
+                                        	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+                                    	) : (
+                                            sortedData
+                                                .slice(
+                                                    (currentPage - 1) * entriesToShow,
+                                                    currentPage * entriesToShow,
+                                                )
+                                                .map((info, index) => (
+											<tr  
+												key={info.staffID}	
+												className="flex"											
+												onClick={() => {
+													openModal(info.allEventsAttended);
+												}}
+											>
+												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">                                                
+													<div className="flex items-center">
+                                                        <div className="ml-[34px]">
+                                                            <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
+                                                                {(currentPage - 1) * entriesToShow + index + 1} 
+                                                            </p>
+                                                        </div>
+                                                    </div>
+												</td>
+												<td className="flex-1 px-6 lg:-ml-3 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+													<span className="-ml-3 lg:-ml-0">{info.staffName}</span>
+												</td>
+												<td className="flex-1 px-6 lg:-ml-10 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+													<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
+												</td>
+												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+													<span className="lg:-ml-0">{info.staffFaculty}</span>
+												</td>
+												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+													<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
+												</td>
+											</tr>
+											))
+										)}
 
 											{/* pagination */}
 											{Array.from({
@@ -1069,15 +965,15 @@ export default function Home() {
 													className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(1)}
 													disabled={currentPage === 1}
-												>
-													<MdKeyboardDoubleArrowLeft className="text-3xl" />
+												>													
+													<MdKeyboardDoubleArrowLeft className="text-3xl"/>
 												</button>
 												<button
 													onClick={() => handlePageChange(currentPage - 1)}
 													disabled={currentPage === 1}
 													className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<MdKeyboardArrowLeft className="text-3xl" />
+													<MdKeyboardArrowLeft className="text-3xl"/>
 												</button>
 
 												{/* Pagination Buttons */}
@@ -1097,14 +993,14 @@ export default function Home() {
 													disabled={currentPage === pageCount}
 													className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<MdKeyboardArrowRight className="text-3xl" />
+													<MdKeyboardArrowRight className="text-3xl"/>
 												</button>
 												<button
 													className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(pageCount)}
 													disabled={currentPage === pageCount}
 												>
-													<MdKeyboardDoubleArrowRight className="text-3xl" />
+													<MdKeyboardDoubleArrowRight className="text-3xl"/>
 												</button>
 											</div>
 										</div>
@@ -1112,7 +1008,7 @@ export default function Home() {
 								</div>
 							</div>
 
-
+							
 							{/*mobile view pagination */}
 							<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
 								<button
@@ -1120,14 +1016,14 @@ export default function Home() {
 									onClick={() => handlePageChange(1)}
 									disabled={currentPage === 1}
 								>
-									<MdKeyboardDoubleArrowLeft className="text-3xl" />
+									<MdKeyboardDoubleArrowLeft className="text-3xl"/>
 								</button>
 								<button
 									onClick={() => handlePageChange(currentPage - 1)}
 									disabled={currentPage === 1}
 									className="opacity-70"
 								>
-									<MdKeyboardArrowLeft className="text-3xl" />
+									<MdKeyboardArrowLeft className="text-3xl"/>
 								</button>
 
 								{/* Pagination Buttons */}
@@ -1136,8 +1032,8 @@ export default function Home() {
 										className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
 										onClick={() => handlePageChange(currentPage)}
 									>
-										{currentPage}/ {pageCount}
-									</button>
+                                		{currentPage}/ {pageCount}
+                            		</button>
 								</div>
 
 								<button
@@ -1145,14 +1041,14 @@ export default function Home() {
 									disabled={currentPage === pageCount}
 									className="opacity-70"
 								>
-									<MdKeyboardArrowRight className="text-3xl" />
+									<MdKeyboardArrowRight className="text-3xl"/>
 								</button>
 								<button
 									className="opacity-70"
 									onClick={() => handlePageChange(pageCount)}
 									disabled={currentPage === pageCount}
 								>
-									<MdKeyboardDoubleArrowRight className="text-3xl" />
+									<MdKeyboardDoubleArrowRight className="text-3xl"/>
 								</button>
 							</div>
 						</div>
@@ -1160,65 +1056,128 @@ export default function Home() {
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<div>
-
+															
 							<p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p>
-
-							<div className="p-5 bg-slate-100 h-[520px] w-[360px] lg:w-[1160px] lg:h-[420px] ml-1 overflow-x-auto dark:bg-dark_mode_bg">
-								<table className="leading-normal lg:w-[1090px] ml-4 dark:bg-[#1D2021]">
-									<thead>
-										<tr className="flex">
-											<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-												NO.
-											</th>
-											<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-												Main Event
-											</th>
-											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-												Sub-Event Session
-											</th>
-											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-xs whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-												Start Date
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{subEventsAttended
-											.map((subEvent, index) => (
-												<tr className="flex"
-													key={index}
-													onClick={() => setShowModal(true)}>
-
-													<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
-														<div>
-															<div className="ml-[2px]">
-																<p className="text-gray-900 dark:text-dark_text">
-																	{index + 1}
-																</p>
-															</div>
-														</div>
-													</td>
-													<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
-														<p className="text-gray-900 dark:text-dark_text">
-															{mainEventAttended[index]?.intFEventName || "N/A"}
-														</p>
-													</td>
-
-													<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-														<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
-															{subEvent.sub_eventsName}
-														</p>
-													</td>
-
-													<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-														<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
-															{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-														</p>
-													</td>
+								<select 
+									className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-auto ml-5 float-right mr-10"
+									id="year"
+									onChange={event => setSelectedYear(event.target.value)}
+								>
+									<option value="" disabled>Select a year</option>
+									{generateYearOptions()}
+								</select>
+                                                               
+									<div className="p-5 bg-slate-100 h-[520px] w-[360px] lg:w-full lg:h-11/12 ml-1 overflow-x-auto dark:bg-dark_mode_bg">
+										<table className="leading-normal lg:w-11/12 mx-auto dark:bg-[#1D2021]">
+											<thead>
+												<tr className="flex">
+													<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														NO.
+													</th>
+													<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Program Name
+													</th>
+													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Start Date
+													</th>
+													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														End Date 
+													</th>
+													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+														Total Hour (h) 
+													</th>
 												</tr>
-											))}
-									</tbody>
-								</table>
-							</div>
+											</thead>
+											<tbody>
+												{/* {subEventsAttended */}
+												{eventsAttended
+													.map((event, index) => (
+														// <tr className="flex"
+														// 	key={index}
+														// 	onClick={() => setShowModal(true)}>
+
+														// 	<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
+														// 		<div>
+														// 			<div className="ml-[2px]">
+														// 				<p className="text-gray-900 dark:text-dark_text">
+														// 					{index + 1}
+														// 				</p>
+														// 			</div>
+														// 		</div>
+														// 	</td>
+														// 	<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
+														// 		<p className="text-gray-900 dark:text-dark_text">
+														// 			{mainEventAttended[index]?.intFEventName || "N/A"}
+														// 		</p>
+														// 	</td>
+
+														// 	{/* <td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+														// 		<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
+														// 			{subEvent.sub_eventsName}
+														// 		</p>
+														// 	</td> */}
+
+														// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+														// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+														// 			{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+														// 		</p>
+														// 	</td>
+														// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+														// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+														// 			{subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
+														// 		</p>
+														// 	</td>
+														// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+														// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+																
+														// 		</p>
+														// 	</td>
+														// </tr>
+														<tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
+														<td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
+															<div>
+																<div className="ml-2">
+																	<p className="ml-2 text-gray-900 dark:text-dark_text">
+																		{(currentPage - 1) *
+																			entriesToShow +
+																			index +
+																			1
+																		}
+																	</p>
+																</div>
+															</div>
+														</td>
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 -ml-16 dark:text-dark_text w-60">
+																{/* {mainEventAttended[index]?.intFEventName || "N/A"} */}
+																{event.programName}
+															</p>
+														</td>
+		
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 -ml-10 dark:text-dark_text">
+																{/* {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime} */}
+																{event.startDate}
+															</p>
+														</td>
+		
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 -ml-6 dark:text-dark_text">
+																{/* {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime} */}
+																{event.endDate}
+															</p>
+														</td>
+		
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
+																{event.totalHours ?? 0}
+															</p>
+														</td>
+													</tr>
+													))}
+											</tbody>
+										</table>
+									</div>
 						</div>
 
 					</EventModal>
