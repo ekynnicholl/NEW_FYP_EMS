@@ -6,7 +6,7 @@ const formatDateAndTime = (dateString: string): string => {
 	return `${day} ${month} ${date.getFullYear()}, ${time}`;
 };
 
-export default function AuditLog({ auditLogs }: { auditLogs: AuditLog[] }) {
+export default function AuditLog({ auditLogs, externalForm }: { auditLogs: AuditLog[], externalForm: ExternalForm }) {
 	return (
 		<div>
 			{auditLogs?.map((log, index) => (

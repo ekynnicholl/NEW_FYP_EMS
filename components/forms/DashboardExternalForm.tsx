@@ -2061,7 +2061,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 							<div className="rounded-sm bg-cyan-400 w-4 h-8"></div>
 							<h1 className="text-xl font-semibold">Audit Log</h1>
 						</div>
-						<AuditLog auditLogs={auditLogs} />
+						<AuditLog auditLogs={auditLogs} externalForm={externalForm} />
 					</aside>
 				</div>
 			</div>
