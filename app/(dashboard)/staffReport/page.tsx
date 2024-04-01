@@ -160,24 +160,8 @@ export default function Home() {
 					}))
 			)		
 
-			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total, event) => total + event.totalHours, 0);
+			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
     		result[uniqueStaffID].grandTotalHours = totalHours;
-			
-			// const totalMainEventsHours = mainEvents
-			// 	.filter(event => {
-			// 		const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
-			// 		return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
-			// 	})
-			// 	.reduce((total, event) => total + event.intFTotalHours, 0);
-
-			// const totalExternalEventsHours = externalEvents
-			// 	.filter(event => event.staff_id === uniqueStaffID)
-			// 	.reduce((total, event) => total + event.total_hours, 0);
-
-			// const grandTotalHours = totalMainEventsHours + totalExternalEventsHours;
-
-			// result[uniqueStaffID].grandTotalHours = grandTotalHours; 
-
 
             return result;
 
