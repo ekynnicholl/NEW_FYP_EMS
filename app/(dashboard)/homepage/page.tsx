@@ -4,6 +4,7 @@ import SideBarDesktop from "@/components/layouts/SideBarDesktop";
 import SideBarMobile from "@/components/layouts/SideBarMobile";
 import TopBar from "@/components/layouts/TopBar";
 import CreateEvent_Modal from "@/components/CreateEvent_Modal";
+import EventsOnDateModal from "@/components/EventsOnDateModal";
 import ViewEvent_Modal from "@/components/ViewEvent_Modal";
 import EditEvent_Modal from "@/components/EditEvent_Modal";
 import EditSubEvent_Modal from "@/components/EditSubEvent_Modal";
@@ -245,6 +246,9 @@ export default function Homepage() {
 	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
 	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
 	const [showSubEventModal, setShowSubEventModal] = useState(false);
+	const [showEventsOnDateModal, setShowEventsOnDateModal] = useState(false);
+	const [selectedDate, setSelectedDate] = useState('');
+	const [eventsOnSelectedDate, setEventsOnSelectedDate] = useState<any[]>([]);
 
 	// Function to fetch the 6 latest events
 	useEffect(() => {
@@ -468,7 +472,7 @@ export default function Homepage() {
 					new Date(event.intFEventEndDate).getTime() >= new Date(today).getTime(),
 			);
 
-			const displayedEvents = upcomingEvents.slice(0, 55);
+			const displayedEvents = upcomingEvents.slice(0, 5);
 
 			// Set the categorized events
 			setTodayEvents(todayEvents);
@@ -594,6 +598,27 @@ export default function Homepage() {
 		},
 	]);
 
+	const handleDateClick = async (date: Date) => {
+		const formattedDate = date.toISOString().split('T')[0];
+		setSelectedDate(formattedDate);
+	  
+		// Fetch events for the selected date and update the state
+		const { data: eventsData, error } = await supabase
+		  .from('internal_events')
+		  .select('*')
+		  .gte('intFEventStartDate', formattedDate)
+		  .lte('intFEventEndDate', formattedDate)
+		  .eq('intFIsHidden', 0);
+	  
+		if (error) {
+		  console.error('Error fetching events for selected date:', error);
+		  return;
+		}
+	  
+		setEventsOnSelectedDate(eventsData);
+		setShowEventsOnDateModal(true);
+	  };
+
 	const lastDetailRef = useRef<HTMLDivElement>(null);
 	const addEventDetails = () => {
 		setEventDetails(eventDetails => [
@@ -694,32 +719,7 @@ export default function Homepage() {
 		console.log("DATAWEEEEEEE" + data![0].intFID);
 		const generatedEventID = data![0].intFID;
 
-		// // This attendance list will be created x times based on how many days (sub-events spread out across multiple days), x the event has.
-		// if (error) {
-		// 	console.error("Error inserting event data:", error);
-		// } else {
-		// 	// Extract the generated UUID from the event data
-		// 	const generatedEventID = data[0].intFID;
 
-		// 	const { data: attendanceData, error: attendanceError } = await supabase
-		// 		.from("attendance_list")
-		// 		.upsert({
-		// 			attListEventID: generatedEventID,
-		// 			attListDayCount: 0,
-		// 			attListEventDate: info.intFStartDate,
-		// 		});
-
-		// 	if (attendanceError) {
-		// 		console.error("Error inserting attendance data:", attendanceError);
-		// 	} else {
-		// 		console.log("Attendance data inserted successfully:", attendanceData);
-		// 	}
-		// }
-
-		// if (error) {
-		// 	console.error(error);
-		// 	return;
-		// }
 
 		setMainEvents([
 			...mainEvents,
@@ -737,49 +737,6 @@ export default function Homepage() {
 		]);
 
 		setMainEvent({} as mainEvent);
-
-		// { event_names: [''], venues: [''], maximum_seats: [''], start_dates: [''], end_dates: [''], start_times: [''], end_times: [''], organizers: [''], faculties: [''] },
-		// SUB EVENTS
-
-		// THIS IS THE OLD ONE WITH RED RED
-		// for (const [index, detail] of eventDetails.entries()) {
-		// 	for (let i = 0; i < detail.venues.length; i++) {
-		// 		console.log("Index: " + index)
-		// 		console.log("Length" + detail.venues.length)
-
-		// 		const sub_eventsName = detail.event_names[i];
-		// 		const sub_eventsVenue = detail.venues[i];
-		// 		const sub_eventsStartDate = detail.start_dates[i];
-		// 		const sub_eventsEndDate = detail.end_dates[i];
-		// 		const sub_eventsStartTime = detail.start_times[i];
-		// 		const sub_eventsEndTime = detail.end_times[i];
-		// 		const sub_eventsMaxSeats = detail.maximum_seats[i];
-		// 		const sub_eventsOrganizer = detail.organizers[i];
-		// 		const sub_eventsFaculty = detail.faculties[i];
-
-		// 		const { data: subEventData, error: subEventError } = await supabase.from("sub_events").insert({
-		// 			sub_eventsMainID: generatedEventID,
-		// 			sub_eventsName,
-		// 			sub_eventsVenue,
-		// 			sub_eventsStartDate,
-		// 			sub_eventsEndDate,
-		// 			sub_eventsStartTime,
-		// 			sub_eventsEndTime,
-		// 			sub_eventsMaxSeats,
-		// 			sub_eventsOrganizer,
-		// 			sub_eventsFaculty,
-		// 		});
-
-		// 		if (subEventError) {
-		// 			console.error(subEventError);
-		// 			return;
-		// 		}
-
-		// 		if (subEventData && (subEventData as any[]).length > 0) {
-		// 			setSubEvents(prevSubEvents => [...prevSubEvents, subEventData[0]]);
-		// 		}
-		// 	}
-		// }
 
 		for (let index = 0; index < eventDetails.length; index++) {
 			const detail = eventDetails[index];
@@ -1876,6 +1833,13 @@ export default function Homepage() {
 							</div>
 						</div>
 					</ViewEvent_Modal>
+					
+					<EventsOnDateModal
+						isVisible={showEventsOnDateModal}
+						onClose={() => setShowEventsOnDateModal(false)}
+						events={eventsOnSelectedDate}
+						selectedDate={selectedDate}
+					/>
 
 					<ViewEventFeedback isVisible={showFeedbackModal} onClose={() => setShowFeedbackModal(false)}>
 						<FeedbackList event_id={feedbackID} mainEvent={mainEventForFeedback} />
@@ -5761,7 +5725,8 @@ export default function Homepage() {
 
 					<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
 						<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
-						<Calendar onDateChange={handleDateChange} eventDates={eventDates} />
+						<Calendar onDateChange={handleDateChange} eventDates={eventDates} onClickDay={handleDateClick} />
+						<div>
 						<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
 						<div className="mt-4 overflow-auto max-h-[200px]">
 							<ul className="space-y-2">
@@ -5799,6 +5764,7 @@ export default function Homepage() {
 							</ul>
 						</div>
 					</div>
+				</div>
 				</div>
 			) : (
 				<div

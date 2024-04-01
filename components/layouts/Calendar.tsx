@@ -7,9 +7,10 @@ import './CustomCalendar.css'; // Import your custom styles
 interface CalendarComponentProps {
   onDateChange: (date: Date) => void;
   eventDates: string[];
+  onClickDay: (date: Date) => void;
 }
 
-const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eventDates }) => {
+const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eventDates, onClickDay }) => {
   const [date, setDate] = useState(new Date());
 
   // Existing functionality remains unchanged
@@ -17,9 +18,11 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eve
     if (value instanceof Date) {
       setDate(value);
       onDateChange(value);
+      onClickDay(value); 
     } else if (Array.isArray(value) && value.length > 0 && value[0] instanceof Date) {
       setDate(value[0]);
       onDateChange(value[0]);
+      onClickDay(value[0]);
     }
     // Additional cases can be handled as needed
   };
@@ -30,6 +33,17 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eve
     const month = date.getMonth() + 1; // getMonth() is zero-based
     const day = date.getDate();
     return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  };
+
+  const tileContent = ({ date, view }: { date: Date; view: string }) => {
+    if (view === 'month' && isEventDate(date)) {
+      return (
+        <>
+          <div className="event-icon">●</div>
+        </>
+      );
+    }
+    return null;
   };
 
   // Adjust isEventDate function to use the local date string for comparison
@@ -45,8 +59,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eve
         value={date}
         locale="en-US"
         className="custom-calendar"
-        tileClassName={({ date, view }) => 
-          view === 'month' && isEventDate(date) ? 'event-day' : null}
+        tileClassName={({ date, view }) => (view === 'month' && isEventDate(date) ? 'event-day' : null)}
+        tileContent={tileContent}
       />
     </div>
   );
