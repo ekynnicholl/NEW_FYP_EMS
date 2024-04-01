@@ -37,7 +37,7 @@ type mainEvents = {
 };
 
 type subEvents = {
-	sub_eventsMainID: string;
+	sub_eventsMainID: string; 
 	sub_eventsID: string;
 	sub_eventsName: string;
 	sub_eventsVenue: string;
@@ -130,7 +130,18 @@ export default function Home() {
                     totalSubEvents: 0,
 					allEventsAttended: [],
                     grandTotalHours: 0,
-                };						  	
+                };		
+				
+				result[uniqueStaffID].allEventsAttended.push(
+					...externalEvents
+						.filter(event => event.staff_id === uniqueStaffID)
+						.map(event => ({
+							programName: event.program_title, 
+							totalHours: event.total_hours, 
+							startDate: event.commencement_date,  
+							endDate: event.completion_date,							
+						}))
+				)
             }
 
 			result[uniqueStaffID].totalSubEvents++;
@@ -147,18 +158,7 @@ export default function Home() {
 						startDate: event.intFEventStartDate,
 						endDate: event.intFEventEndDate,
 					}))
-			)
-
-			result[uniqueStaffID].allEventsAttended.push(
-				...externalEvents
-					.filter(event => event.staff_id === uniqueStaffID)
-					.map(event => ({
-						programName: event.program_title, 
-						totalHours: event.total_hours, 
-						startDate: event.commencement_date,  
-						endDate: event.completion_date,							
-					}))
-			)		
+			)					
 
 			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
     		result[uniqueStaffID].grandTotalHours = totalHours;
