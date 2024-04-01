@@ -599,7 +599,14 @@ export default function Homepage() {
 	]);
 
 	const handleDateClick = async (date: Date) => {
-		const formattedDate = date.toISOString().split('T')[0];
+
+		// Calculate the local time offset in minutes and convert it to milliseconds
+		const timeOffsetInMilliseconds = date.getTimezoneOffset() * 60000;
+
+		// Create a new Date object adjusted for the local time offset
+		const localDate = new Date(date.getTime() - timeOffsetInMilliseconds);
+
+		const formattedDate = localDate.toISOString().split('T')[0];
 		setSelectedDate(formattedDate);
 	  
 		// Fetch events for the selected date and update the state
@@ -613,6 +620,8 @@ export default function Homepage() {
 		if (error) {
 		  console.error('Error fetching events for selected date:', error);
 		  return;
+		}else{
+			console.log(formattedDate)
 		}
 	  
 		setEventsOnSelectedDate(eventsData);
