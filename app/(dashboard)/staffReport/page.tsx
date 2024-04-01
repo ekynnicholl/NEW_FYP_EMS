@@ -67,8 +67,8 @@ export default function Home() {
 		staffName: string;
 		staffFaculty: string;
 		totalSubEvents: number;
-		allEventsAttended: {programName: string; totalHours: number; startDate: string; endDate: string;}[];
-        grandTotalHours: number;
+		allEventsAttended: { programName: string; totalHours: number; startDate: string; endDate: string; }[];
+		grandTotalHours: number;
 	}[]>([]);
 
 	const [aggregatedInfo, setAggregatedInfo] = useState<{
@@ -76,8 +76,8 @@ export default function Home() {
 		staffName: string;
 		staffFaculty: string;
 		totalSubEvents: number;
-		allEventsAttended: {programName: string; totalHours: number; startDate: string; endDate: string;}[];
-        grandTotalHours: number;
+		allEventsAttended: { programName: string; totalHours: number; startDate: string; endDate: string; }[];
+		grandTotalHours: number;
 	}[]>([]);
 
 	const fetchInfos = async () => {
@@ -118,19 +118,19 @@ export default function Home() {
 		}
 
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-        const groupedData = staffData.reduce((result, form) => {
+		const groupedData = staffData.reduce((result, form) => {
 
-            const uniqueStaffID = form.attFormsStaffID;
+			const uniqueStaffID = form.attFormsStaffID;
 
-            if (!result[uniqueStaffID]) {
-                result[uniqueStaffID] = {
-                    staffID: form.attFormsStaffID,
-                    staffName: form.attFormsStaffName,
-                    staffFaculty: form.attFormsFacultyUnit,
-                    totalSubEvents: 0,
+			if (!result[uniqueStaffID]) {
+				result[uniqueStaffID] = {
+					staffID: form.attFormsStaffID,
+					staffName: form.attFormsStaffName,
+					staffFaculty: form.attFormsFacultyUnit,
+					totalSubEvents: 0,
 					allEventsAttended: [],
-                    grandTotalHours: 0,
-                };
+					grandTotalHours: 0,
+				};
 
 				result[uniqueStaffID].totalSubEvents++;
 
@@ -138,10 +138,10 @@ export default function Home() {
 					...externalEvents
 						.filter(event => event.staff_id === uniqueStaffID)
 						.map(event => ({
-							programName: event.program_title, 
-							totalHours: event.total_hours, 
-							startDate: event.commencement_date,  
-							endDate: event.completion_date,							
+							programName: event.program_title,
+							totalHours: event.total_hours,
+							startDate: event.commencement_date,
+							endDate: event.completion_date,
 						}))
 				)
 
@@ -149,7 +149,8 @@ export default function Home() {
 					...mainEvents
 						.filter(event => {
 							const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
-            				return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;})
+							return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
+						})
 						.map(event => ({
 							programName: event.intFEventName,
 							totalHours: event.intFTotalHours,
@@ -158,7 +159,7 @@ export default function Home() {
 						}))
 				)
 
-				
+
 				const totalMainEventsHours = mainEvents
 					.filter(event => {
 						const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
@@ -172,13 +173,13 @@ export default function Home() {
 
 				const grandTotalHours = totalMainEventsHours + totalExternalEventsHours;
 
-				result[uniqueStaffID].grandTotalHours = grandTotalHours;     	
-            }
+				result[uniqueStaffID].grandTotalHours = grandTotalHours;
+			}
 
-            return result;
+			return result;
 
 		}, {});
-        setAggregatedInfo(Object.values(groupedData));
+		setAggregatedInfo(Object.values(groupedData));
 	};
 
 	// Fetch data from database
@@ -342,9 +343,9 @@ export default function Home() {
 
 			// const facultyStudents = data.map((item) => item.attsName);
 			const facultyStudentsData = data.map((item: any) => ({
-                facultyName: item.attsName, 
-                facultyCategory: item.attsCategory,
-            }));
+				facultyName: item.attsName,
+				facultyCategory: item.attsCategory,
+			}));
 
 			setFacultyStudents(facultyStudentsData);
 		};
@@ -409,7 +410,7 @@ export default function Home() {
 	}
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
-		
+
 		setSearchQuery(query);
 
 		// Clear the data results
@@ -417,12 +418,12 @@ export default function Home() {
 
 		const filterByFacultyUnit = (facultyUnit: string) => {
 			filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
-		} 
+		}
 
 		let filteredUserData = [...aggregatedInfo];
 
 		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));			
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
 			if (selectedFilterStaff.length > 0) {
 				filterByFacultyUnit(selectedFilterStaff);
 			}
@@ -529,7 +530,7 @@ export default function Home() {
 			return eventYear.toString() === selectedYear;
 		})
 
-		return (mainEventsResult.map(e => {`${e.intFEventName} - ${e.intFTotalHours}`}));
+		return (mainEventsResult.map(e => { `${e.intFEventName} - ${e.intFTotalHours}` }));
 	}
 
 	const showEventByYear = (eventsAttended: string[], selectedYear: string) => {
@@ -708,16 +709,16 @@ export default function Home() {
 
 								<div className="flex flex-row">
 
-								
-								{activeTab === "all" && (
-									<div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFacultyUnit(event.target.value)}
+
+									{activeTab === "all" && (
+										<div>
+											<select
+												name="facultyUnit"
+												id="facultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit
@@ -741,21 +742,21 @@ export default function Home() {
 																		{subcategory.name}
 																	</option>
 																))))
-																
-												))}     
-										</select>
-									</div>
-								)}
-								
-								{activeTab === "staff" && (
-									<div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFilterStaff(event.target.value)}
+
+												))}
+											</select>
+										</div>
+									)}
+
+									{activeTab === "staff" && (
+										<div>
+											<select
+												name="facultyUnit"
+												id="facultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit (Staff)
@@ -767,47 +768,47 @@ export default function Home() {
 													<option key={index} value={faculty}>
 														{faculty}
 													</option>
-												))}												
-										</select>
-									</div>
-								)}
+												))}
+											</select>
+										</div>
+									)}
 
-								{activeTab === "student" && (
-									<div className="flex flex-row">
-										<select
-											name="studentFacultyUnit"
-											id="studentFacultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFilterStudent(event.target.value)}
-										>					
-											<option value="" disabled>Select Faculty/ Unit (Student)</option>
-											<option value="all">
+									{activeTab === "student" && (
+										<div className="flex flex-row">
+											<select
+												name="studentFacultyUnit"
+												id="studentFacultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFilterStudent(event.target.value)}
+											>
+												<option value="" disabled>Select Faculty/ Unit (Student)</option>
+												<option value="all">
 													All
-											</option>
-											{facultyStudents.map((faculty) => (
-                                                categories
-                                                    .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
-                                                    .map((cat) => (
-                                                        cat.subcategories
-                                                            .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
-                                                            .map((subcategory, index) => (
-                                                                <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
-                                                                    {subcategory.name}
-                                                                </option>
-                                                            ))))
-                                                            
-                                            ))}       
-										</select>
-									</div>
-								)}								
+												</option>
+												{facultyStudents.map((faculty) => (
+													categories
+														.filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+														.map((cat) => (
+															cat.subcategories
+																.filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+																.map((subcategory, index) => (
+																	<option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+																		{subcategory.name}
+																	</option>
+																))))
+
+												))}
+											</select>
+										</div>
+									)}
 								</div>
 							</div>
 
-						<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                            <div className="inline-block lg:w-full shadow rounded-sm ">
-                                <table className="lg:w-full w-auto overflow-x-auto min-h-screen cursor-pointer">
+							<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+								<div className="inline-block lg:w-full shadow rounded-sm ">
+									<table className="lg:w-full w-auto overflow-x-auto min-h-screen cursor-pointer">
 										{/* Table Header */}
 										<thead>
 											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
@@ -820,59 +821,59 @@ export default function Home() {
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="ml-16 lg:ml-1">Staff / Student ID</span>
 												</th>
-												
+
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="ml-1">Faculty / Unit</span>
 												</th>
-												
+
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="">Grand Total Hours(h)</span>
+													<span className="">Grand Total Hours (H)</span>
 												</th>
 											</tr>
 										</thead>
 
-                                        {/* Table Body */}
-                                        <tbody>
-										{dataResults.length === 0 ? (
-                                        	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
-                                    	) : (
-                                            sortedData
-                                                .slice(
-                                                    (currentPage - 1) * entriesToShow,
-                                                    currentPage * entriesToShow,
-                                                )
-                                                .map((info, index) => (
-											<tr  
-												key={info.staffID}	
-												className="flex"											
-												onClick={() => {
-													openModal(info.allEventsAttended);
-												}}
-											>
-												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">                                                
-													<div className="flex items-center">
-                                                        <div className="ml-[34px]">
-                                                            <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
-                                                                {(currentPage - 1) * entriesToShow + index + 1} 
-                                                            </p>
-                                                        </div>
-                                                    </div>
-												</td>
-												<td className="flex-1 px-6 lg:-ml-3 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="-ml-3 lg:-ml-0">{info.staffName}</span>
-												</td>
-												<td className="flex-1 px-6 lg:-ml-10 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
-												</td>
-												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="lg:-ml-0">{info.staffFaculty}</span>
-												</td>
-												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
-												</td>
-											</tr>
-											))
-										)}
+										{/* Table Body */}
+										<tbody>
+											{dataResults.length === 0 ? (
+												<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+											) : (
+												sortedData
+													.slice(
+														(currentPage - 1) * entriesToShow,
+														currentPage * entriesToShow,
+													)
+													.map((info, index) => (
+														<tr
+															key={info.staffID}
+															className="flex"
+															onClick={() => {
+																openModal(info.allEventsAttended);
+															}}
+														>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+																<div className="flex items-center">
+																	<div className="ml-[34px]">
+																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
+																			{(currentPage - 1) * entriesToShow + index + 1}
+																		</p>
+																	</div>
+																</div>
+															</td>
+															<td className="flex-1 px-6 lg:-ml-3 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-3 lg:-ml-0">{info.staffName}</span>
+															</td>
+															<td className="flex-1 px-6 lg:-ml-10 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
+															</td>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="lg:-ml-0">{info.staffFaculty}</span>
+															</td>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
+															</td>
+														</tr>
+													))
+											)}
 
 											{/* pagination */}
 											{Array.from({
@@ -965,15 +966,15 @@ export default function Home() {
 													className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(1)}
 													disabled={currentPage === 1}
-												>													
-													<MdKeyboardDoubleArrowLeft className="text-3xl"/>
+												>
+													<MdKeyboardDoubleArrowLeft className="text-3xl" />
 												</button>
 												<button
 													onClick={() => handlePageChange(currentPage - 1)}
 													disabled={currentPage === 1}
 													className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<MdKeyboardArrowLeft className="text-3xl"/>
+													<MdKeyboardArrowLeft className="text-3xl" />
 												</button>
 
 												{/* Pagination Buttons */}
@@ -993,14 +994,14 @@ export default function Home() {
 													disabled={currentPage === pageCount}
 													className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 												>
-													<MdKeyboardArrowRight className="text-3xl"/>
+													<MdKeyboardArrowRight className="text-3xl" />
 												</button>
 												<button
 													className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(pageCount)}
 													disabled={currentPage === pageCount}
 												>
-													<MdKeyboardDoubleArrowRight className="text-3xl"/>
+													<MdKeyboardDoubleArrowRight className="text-3xl" />
 												</button>
 											</div>
 										</div>
@@ -1008,7 +1009,7 @@ export default function Home() {
 								</div>
 							</div>
 
-							
+
 							{/*mobile view pagination */}
 							<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
 								<button
@@ -1016,14 +1017,14 @@ export default function Home() {
 									onClick={() => handlePageChange(1)}
 									disabled={currentPage === 1}
 								>
-									<MdKeyboardDoubleArrowLeft className="text-3xl"/>
+									<MdKeyboardDoubleArrowLeft className="text-3xl" />
 								</button>
 								<button
 									onClick={() => handlePageChange(currentPage - 1)}
 									disabled={currentPage === 1}
 									className="opacity-70"
 								>
-									<MdKeyboardArrowLeft className="text-3xl"/>
+									<MdKeyboardArrowLeft className="text-3xl" />
 								</button>
 
 								{/* Pagination Buttons */}
@@ -1032,8 +1033,8 @@ export default function Home() {
 										className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
 										onClick={() => handlePageChange(currentPage)}
 									>
-                                		{currentPage}/ {pageCount}
-                            		</button>
+										{currentPage}/ {pageCount}
+									</button>
 								</div>
 
 								<button
@@ -1041,14 +1042,14 @@ export default function Home() {
 									disabled={currentPage === pageCount}
 									className="opacity-70"
 								>
-									<MdKeyboardArrowRight className="text-3xl"/>
+									<MdKeyboardArrowRight className="text-3xl" />
 								</button>
 								<button
 									className="opacity-70"
 									onClick={() => handlePageChange(pageCount)}
 									disabled={currentPage === pageCount}
 								>
-									<MdKeyboardDoubleArrowRight className="text-3xl"/>
+									<MdKeyboardDoubleArrowRight className="text-3xl" />
 								</button>
 							</div>
 						</div>
@@ -1056,128 +1057,131 @@ export default function Home() {
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<div>
-															
-							<p className='font-semibold text-md text-gray-600 p-2 ml-2 dark:text-dark_text'>Sub-Events Attended</p>
-								<select 
-									className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-auto ml-5 float-right mr-10"
-									id="year"
-									onChange={event => setSelectedYear(event.target.value)}
-								>
-									<option value="" disabled>Select a year</option>
-									{generateYearOptions()}
-								</select>
-                                                               
-									<div className="p-5 bg-slate-100 h-[520px] w-[360px] lg:w-full lg:h-11/12 ml-1 overflow-x-auto dark:bg-dark_mode_bg">
-										<table className="leading-normal lg:w-11/12 mx-auto dark:bg-[#1D2021]">
-											<thead>
-												<tr className="flex">
-													<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														NO.
-													</th>
-													<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Program Name
-													</th>
-													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Start Date
-													</th>
-													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														End Date 
-													</th>
-													<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-														Total Hour (h) 
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{/* {subEventsAttended */}
-												{eventsAttended
-													.map((event, index) => (
-														// <tr className="flex"
-														// 	key={index}
-														// 	onClick={() => setShowModal(true)}>
+							<div className="flex items-center mb-5 mt-5 ml-[64px] mr-[72px]">
+								<p className='font-semibold text-lg text-gray-600 p-2 dark:text-dark_text'>Event(s) Attended (including Nominations/ Travelling Forms)</p>
+								<div className="flex items-center ml-auto">
+									<select
+										className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base"
+										id="year"
+										onChange={event => setSelectedYear(event.target.value)}
+									>
+										<option value="" disabled>Select Year</option>
+										{generateYearOptions()}
+									</select>
+								</div>
+							</div>
 
-														// 	<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
-														// 		<div>
-														// 			<div className="ml-[2px]">
-														// 				<p className="text-gray-900 dark:text-dark_text">
-														// 					{index + 1}
-														// 				</p>
-														// 			</div>
-														// 		</div>
-														// 	</td>
-														// 	<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
-														// 		<p className="text-gray-900 dark:text-dark_text">
-														// 			{mainEventAttended[index]?.intFEventName || "N/A"}
-														// 		</p>
-														// 	</td>
+							<div className="bg-white h-[520px] w-[360px] lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg">
+								<table className="leading-normal lg:w-11/12 mx-auto dark:bg-[#1D2021]">
+									<thead>
+										<tr className="flex">
+											<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												NO.
+											</th>
+											<th className="flex-1 ml-6 lg:ml-0 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												Program Name
+											</th>
+											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												Start Date
+											</th>
+											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												End Date
+											</th>
+											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
+												Total Hour (h)
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{/* {subEventsAttended */}
+										{eventsAttended
+											.map((event, index) => (
+												// <tr className="flex"
+												// 	key={index}
+												// 	onClick={() => setShowModal(true)}>
 
-														// 	{/* <td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-														// 		<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
-														// 			{subEvent.sub_eventsName}
-														// 		</p>
-														// 	</td> */}
+												// 	<td className="flex-1 py-5 text-xs mt-1 lg:text-xs ml-1 lg:ml-8">
+												// 		<div>
+												// 			<div className="ml-[2px]">
+												// 				<p className="text-gray-900 dark:text-dark_text">
+												// 					{index + 1}
+												// 				</p>
+												// 			</div>
+												// 		</div>
+												// 	</td>
+												// 	<td className="flex-1 py-5 text-xs lg:text-md -ml-24 lg:-ml-[84px] text-center lg:text-left">
+												// 		<p className="text-gray-900 dark:text-dark_text">
+												// 			{mainEventAttended[index]?.intFEventName || "N/A"}
+												// 		</p>
+												// 	</td>
 
-														// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-														// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
-														// 			{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-														// 		</p>
-														// 	</td>
-														// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-														// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
-														// 			{subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
-														// 		</p>
-														// 	</td>
-														// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
-														// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
-																
-														// 		</p>
-														// 	</td>
-														// </tr>
-														<tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-														<td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
-															<div>
-																<div className="ml-2">
-																	<p className="ml-2 text-gray-900 dark:text-dark_text">
-																		{(currentPage - 1) *
-																			entriesToShow +
-																			index +
-																			1
-																		}
-																	</p>
-																</div>
+												// 	{/* <td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+												// 		<p className="text-gray-900 ml-6 lg:ml-3 dark:text-dark_text">
+												// 			{subEvent.sub_eventsName}
+												// 		</p>
+												// 	</td> */}
+
+												// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+												// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+												// 			{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+												// 		</p>
+												// 	</td>
+												// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+												// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+												// 			{subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
+												// 		</p>
+												// 	</td>
+												// 	<td className="flex-1 px-3 py-5 text-xs lg:text-md text-center lg:text-left">
+												// 		<p className="text-gray-900 ml-6 lg:ml-4 dark:text-dark_text">
+
+												// 		</p>
+												// 	</td>
+												// </tr>
+												<tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
+													<td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
+														<div>
+															<div className="ml-2">
+																<p className="ml-2 text-gray-900 dark:text-dark_text">
+																	{(currentPage - 1) *
+																		entriesToShow +
+																		index +
+																		1
+																	}
+																</p>
 															</div>
-														</td>
-														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 -ml-16 dark:text-dark_text w-60">
-																{/* {mainEventAttended[index]?.intFEventName || "N/A"} */}
-																{event.programName}
-															</p>
-														</td>
-		
-														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 -ml-10 dark:text-dark_text">
-																{/* {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime} */}
-																{event.startDate}
-															</p>
-														</td>
-		
-														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 -ml-6 dark:text-dark_text">
-																{/* {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime} */}
-																{event.endDate}
-															</p>
-														</td>
-		
-														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
-																{event.totalHours ?? 0}
-															</p>
-														</td>
-													</tr>
-													))}
-											</tbody>
-										</table>
-									</div>
+														</div>
+													</td>
+													<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+														<p className="text-gray-900 -ml-16 dark:text-dark_text w-60">
+															{/* {mainEventAttended[index]?.intFEventName || "N/A"} */}
+															{event.programName}
+														</p>
+													</td>
+
+													<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+														<p className="text-gray-900 -ml-10 dark:text-dark_text">
+															{/* {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime} */}
+															{event.startDate}
+														</p>
+													</td>
+
+													<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+														<p className="text-gray-900 -ml-6 dark:text-dark_text">
+															{/* {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime} */}
+															{event.endDate}
+														</p>
+													</td>
+
+													<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+														<p className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
+															{event.totalHours ?? 0}
+														</p>
+													</td>
+												</tr>
+											))}
+									</tbody>
+								</table>
+							</div>
 						</div>
 
 					</EventModal>
