@@ -87,6 +87,8 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                     chartInstance.current.destroy();
                 }
 
+                const maxDataValue = Math.max(...monthlyData.map(entry => entry.total)) + 50;
+
                 chartInstance.current = new Chart(ctx, {
                     type: "bar",
                     data: {
@@ -121,11 +123,20 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                                 grid: {
                                     display: false,
                                 },
+                                max: maxDataValue,
                             },
                         },
                         plugins: {
                             legend: {
                                 display: false,
+                            },
+                            datalabels: {
+                                color: '#000000',
+                                align: 'end',
+                                anchor: 'end',
+                                formatter: (value: number) => {
+                                    return value.toString();
+                                },
                             },
                         },
                     },

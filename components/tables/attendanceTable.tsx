@@ -479,7 +479,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             Please confirm you are about to distribute certificates to these emails:
                                             <div className="max-h-[200px] overflow-auto">
                                                 {attendanceData.map((attendee, index) => (
-                                                    <div key={index} className="flex items-center">
+                                                    <div key={index} className="flex justify-start items-start text-left">
                                                         <input
                                                             type="checkbox"
                                                             checked={selectedAttendanceData[index]}

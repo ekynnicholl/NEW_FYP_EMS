@@ -5,30 +5,30 @@ const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 // To handle a GET request to /ap
 export async function GET(request: Request) {
-	return NextResponse.json({ request }, { status: 200 });
+    return NextResponse.json({ request }, { status: 200 });
 }
 
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
 function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string) {
-	const link = `${url}/form/external/${formID}`;
-	if (type == 1) {
-		let securityKeySentence = "";
+    const link = `${url}/form/external/${formID}`;
+    if (type == 1) {
+        let securityKeySentence = "";
 
-		if (optionalFields && optionalFields.trim() !== "") {
-			securityKeySentence = `
+        if (optionalFields && optionalFields.trim() !== "") {
+            securityKeySentence = `
                 <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
                 <br/>
                 <p class="no-p-m">Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
-		}
+        }
 
-		let staffDetails = "";
+        let staffDetails = "";
 
-		if (optionalFields2 && optionalFields2.trim() !== "") {
-			staffDetails = optionalFields2;
-		}
+        if (optionalFields2 && optionalFields2.trim() !== "") {
+            staffDetails = optionalFields2;
+        }
 
-		return `
+        return `
         <html>
             <head>
                 <style>
@@ -70,19 +70,19 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-	} else if (type == 2) {
-		let rejectMessage = "";
+    } else if (type == 2) {
+        let rejectMessage = "";
 
-		if (optionalFields && optionalFields.trim() !== "") {
-			rejectMessage = `
+        if (optionalFields && optionalFields.trim() !== "") {
+            rejectMessage = `
                 <br/>
                 <br/>
                 <p class="no-p-m" style="font-weight:bold;"> Reason(s) of Rejection: </p>
                 <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                 <br/>
             `;
-		}
-		return `
+        }
+        return `
         <html>
             <head>
                 <style>
@@ -123,8 +123,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-	} else if (type == 3) {
-		return `
+    } else if (type == 3) {
+        return `
         <html>
             <head>
                 <style>
@@ -168,16 +168,16 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-	} else if (type == 4) {
-		let securityKeySentence = "";
+    } else if (type == 4) {
+        let securityKeySentence = "";
 
-		if (optionalFields2 && optionalFields2.trim() !== "") {
-			securityKeySentence = `
+        if (optionalFields2 && optionalFields2.trim() !== "") {
+            securityKeySentence = `
                 <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><a href="${link}/?secKey=${optionalFields2}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></a></p>
                 <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
             `;
-		}
-		return `
+        }
+        return `
         <html>
             <head>
                 <style>
@@ -221,8 +221,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-	} else if (type == 5) {
-		return `
+    } else if (type == 5) {
+        return `
         <html>
             <head>
                 <style>
@@ -268,8 +268,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-	} else {
-		return `
+    } else {
+        return `
         <html>
             <head>
             </head>
@@ -281,26 +281,26 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-	}
+    }
 }
 
 export async function POST(request: Request) {
-	try {
-		const tempData = await request.json();
-		const requestData = tempData[0];
+    try {
+        const tempData = await request.json();
+        const requestData = tempData[0];
 
-		const formStage = requestData.formStage;
-		const formID = requestData.id;
-		const staffEmail = requestData.email;
-		const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
-		const verificationEmail = requestData.verification_email;
-		const approvalEmail = requestData.approval_email;
-		const staffName = requestData.full_name;
-		const staffID = requestData.staff_id;
+        const formStage = requestData.formStage;
+        const formID = requestData.id;
+        const staffEmail = requestData.email;
+        const formDetails = requestData.full_name + " (" + requestData.staff_id + ") - " + requestData.program_title;
+        const verificationEmail = requestData.verification_email;
+        const approvalEmail = requestData.approval_email;
+        const staffName = requestData.full_name;
+        const staffID = requestData.staff_id;
 
-		// Debugging statements,
-		// console.log("Debugging Form Stage: " + formStage);
-		// console.log('Received request data:', requestData);
+        // Debugging statements,
+        // console.log("Debugging Form Stage: " + formStage);
+        // console.log('Received request data:', requestData);
 
         if (formStage === 2) {
             const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
@@ -308,13 +308,13 @@ export async function POST(request: Request) {
             // Debugging statements,
             // console.log("Started sending email process: ")
 
-			for (let i = 0; i < recipients.length; i++) {
-				const mailOptionsCopy = { ...mailOptions };
-				mailOptionsCopy.to = recipients[i];
-				// Debugging statements,
-				// console.log("Sending email: " + recipients[i])
+            for (let i = 0; i < recipients.length; i++) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipients[i];
+                // Debugging statements,
+                // console.log("Sending email: " + recipients[i])
 
-				const formIDForRecipient = formIDs[i];
+                const formIDForRecipient = formIDs[i];
 
                 await transporter.sendMail({
                     ...mailOptionsCopy,
@@ -347,7 +347,7 @@ export async function POST(request: Request) {
                 html: generateEmailHTML("[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
             });
         } else if (formStage === 6) {
-            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;
@@ -370,7 +370,7 @@ export async function POST(request: Request) {
                 html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
             });
         } else if (formStage === 5) {
-            const recipients = ['fypemsmaster369@gmail.com', staffEmail];
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
             for (const recipient of recipients) {
                 const mailOptionsCopy = { ...mailOptions };
                 mailOptionsCopy.to = recipient;
@@ -383,8 +383,8 @@ export async function POST(request: Request) {
             }
         }
 
-		return NextResponse.json({ success: true }, { status: 200 });
-	} catch (error) {
-		return NextResponse.json({ error: error }, { status: 500 });
-	}
+        return NextResponse.json({ success: true }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: error }, { status: 500 });
+    }
 }

@@ -676,7 +676,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 					<div className="grid gap-8 place-items-center">
 						<Form {...form}>
 							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
-								{(externalForm.revertComment != "None" && externalForm.formStage == 1) && (
+								{(externalForm.revertComment != "None" && externalForm.revertComment != "" && externalForm.formStage == 1) && (
 									<FormField
 										control={form.control}
 										name="revertComment"
