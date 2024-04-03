@@ -13,12 +13,17 @@ function generateEmailHTML(process: string, formID: string, type: number, option
     const link = `${url}/form/external/${formID}`;
     if (type == 1) {
         let securityKeySentence = "";
+        let securityKey = "";
 
         if (optionalFields && optionalFields.trim() !== "") {
             securityKeySentence = `
                 <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
                 <br/>
                 <p class="no-p-m">Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+            `;
+
+            securityKey = `
+                <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields} </p>
             `;
         }
 
@@ -51,6 +56,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
                     <br/>
                     <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
+                    <br/>
+                    ${securityKey}
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
                     Process: ${process}
@@ -170,11 +177,16 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         `;
     } else if (type == 4) {
         let securityKeySentence = "";
+        let securityKey = "";
 
         if (optionalFields2 && optionalFields2.trim() !== "") {
             securityKeySentence = `
                 <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><a href="${link}/?secKey=${optionalFields2}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></a></p>
                 <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+            `;
+
+            securityKey = `
+                <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields} </p>
             `;
         }
         return `
@@ -199,6 +211,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <p class="no-p-m">Your form has been reverted for further changes. Please refer to the link below to make changes: </p>
                     ${securityKeySentence}
+                    <br/>
+                    ${securityKey}
                     <br/>
                     <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>
                     <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
@@ -318,7 +332,7 @@ export async function POST(request: Request) {
 
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - REVIEW] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Staff to Academic Administration Office]",
                     html: generateEmailHTML("[Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
                 });
@@ -330,7 +344,7 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - VERIFY] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]",
                 html: generateEmailHTML("[Academic Administration Office to Head of School/ Associate Dean of Research/ Manager]", formID, 1, requestData.securityKey, formDetails)
             });
@@ -342,7 +356,7 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + approvalEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - APPROVAL] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
                 html: generateEmailHTML("[Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
             });
@@ -353,7 +367,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - REJECTED] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Rejection Email]",
                     html: generateEmailHTML("[Rejection Email]", formID, 2, requestData.revertComment)
                 });
@@ -365,7 +379,7 @@ export async function POST(request: Request) {
             // console.log("Debugging reverted comment: " + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - REVERTED] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Academic Administration Office to Staff]",
                 html: generateEmailHTML("[Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
             });
@@ -376,7 +390,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - APPROVED] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Accepted Email]",
                     html: generateEmailHTML("[Accepted Email]", formID, 3)
                 });
