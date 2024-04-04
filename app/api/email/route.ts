@@ -11,6 +11,7 @@ export async function GET(request: Request) {
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
 function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string) {
     const link = `${url}/form/external/${formID}`;
+    const linkForAAO = `${url}/external/${formID}`;
     if (type == 1) {
         let securityKeySentence = "";
         let securityKey = "";
@@ -282,6 +283,54 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
+    } else if (type == 6) {
+        let staffDetails = "";
+
+        if (optionalFields2 && optionalFields2.trim() !== "") {
+            staffDetails = optionalFields2;
+        }
+
+        return `
+        <html>
+            <head>
+                <style>
+                    .email-container {
+                        padding: 20px;
+                        max-width: 1400px; 
+                        margin: 0 auto;
+                    }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="email-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
+                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <br/>
+                    <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
+                    <br/>
+                    <p class="no-p-m">${linkForAAO}</p>
+                    <br/>
+                    <p class="no-p-m">Thank you for using our system.</p>
+                    Process: ${process}
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    <br/>
+                    <p class="no-p-m" style="color: red; text-align: justify;">[NOTICE] <br/>
+                    This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
+                    If you are not the intended recipient, any dissemination, distribution, printing, copying or use is strictly prohibited. 
+                    The University does not warrant that this e-mail and any attachments are secure and there is also a risk that it may be corrupted in transmission. 
+                    It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
+                    +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
+                    unauthorised access or unauthorised amendment. <br/>
+                    </p>
+                </div>
+            </body>
+        </html>
+        `;
     } else {
         return `
         <html>
@@ -318,7 +367,7 @@ export async function POST(request: Request) {
 
         if (formStage === 2) {
             const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
-            const formIDs = [1, 5];
+            const formIDs = [6, 5];
             // Debugging statements,
             // console.log("Started sending email process: ")
 
@@ -329,6 +378,7 @@ export async function POST(request: Request) {
                 // console.log("Sending email: " + recipients[i])
 
                 const formIDForRecipient = formIDs[i];
+                console.log(formIDForRecipient);
 
                 await transporter.sendMail({
                     ...mailOptionsCopy,
