@@ -1620,7 +1620,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														className="bg-white border border-gray-200 pl-14 disabled:cursor-not-allowed"
 														disabled={form.getValues("expenditure_cap") !== "Yes"}
 														{...field}
-														value={field.value === 0 ? "" : field.value.toString()}
+														value={field.value === 0 ? "" : field.value?.toString() ?? ""}
 														onChange={e => {
 															const value = e.target.value;
 															if (/^\d*$/.test(value)) {
