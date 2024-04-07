@@ -4,7 +4,6 @@ interface ViewNTF_ModalProps {
   isVisible: boolean;
   onClose: () => void;
   children: ReactNode;
-  formId: string | null; // Add the formId prop here
 }
 
 const ViewNTF_Modal: React.FC<ViewNTF_ModalProps> = ({ isVisible, onClose, children }) => {
