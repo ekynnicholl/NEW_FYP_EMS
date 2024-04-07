@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-[999]" id="wrapper" onClick={handleClose}>
-      <div className="lg:w-[1750px] w-[450px] flex flex-col relative p-10 lg:p-0">
+      <div className="lg:w-[1550px] w-[450px] flex flex-col relative p-10 lg:p-0">
         <div>
           <div className="bg-white rounded-lg border border-slate-200 shadow-md dark:text-dark_textbox_title dark:bg-dark_mode_card dark:border-[#253345]">
             <div className="h-2 w-full bg-red-500 rounded-t-lg"></div>
