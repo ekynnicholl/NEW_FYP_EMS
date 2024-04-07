@@ -146,7 +146,7 @@ const AttendanceList: React.FC<Props> = ({ staffDetails }) => {
                                     />
                                 </div>
                             </div>
-                            <div className="max-h-[680px] overflow-y-auto">
+                            <div className="max-h-[600px] overflow-y-auto">
                                 {staffDetails.length > 0 ? (
                                     <div>
                                         <div className="w-full">
