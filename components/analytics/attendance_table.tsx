@@ -8,7 +8,7 @@ import LeftArrow from '@/components/icons/LeftArrow';
 import { ChangeEvent, useEffect, useState } from "react";
 
 interface Props {
-    staffDetails: Array<{ staffName: string; staffID: string; dateSubmitted: string }>;
+    staffDetails: Array<{ staffName: string; staffID: string; dateSubmitted: string; certificate: string }>;
 }
 
 const AttendanceList: React.FC<Props> = ({ staffDetails }) => {
@@ -174,7 +174,18 @@ const AttendanceList: React.FC<Props> = ({ staffDetails }) => {
                                                                 {index + 1}
                                                             </td>
                                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                {attendanceItem.staffName}
+                                                                {attendanceItem.certificate ? (
+                                                                    <a
+                                                                        href={`https://chyamrnpbrtxhsvkqpry.supabase.co/storage/v1/object/public/attFormsCertofParticipation/${attendanceItem.certificate}`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="text-blue-500 hover:underline"
+                                                                    >
+                                                                        {attendanceItem.staffName}
+                                                                    </a>
+                                                                ) : (
+                                                                    attendanceItem.staffName
+                                                                )}
                                                             </td>
                                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                                 {attendanceItem.staffID}

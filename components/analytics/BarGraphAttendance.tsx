@@ -20,7 +20,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
     const supabase = createClientComponentClient();
     Chart.register(ChartDataLabels);
     const [showAttendanceModal, setShowAttendanceModal] = useState(false);
-    const [selectedStaffDetails, setSelectedStaffDetails] = useState<Array<{ staffName: string; staffID: string; dateSubmitted: string }>>([])
+    const [selectedStaffDetails, setSelectedStaffDetails] = useState<Array<{ staffName: string; staffID: string; dateSubmitted: string; certificate: string }>>([])
 
     const [facultyData, setFacultyData] = useState({});
 
@@ -152,6 +152,7 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
                                     staffName: item.attFormsStaffName,
                                     staffID: item.attFormsStaffID,
                                     dateSubmitted: item.attDateSubmitted,
+                                    certificate: item.attFormsCertofParticipation || ''
                                 }));
 
                             setSelectedStaffDetails(staffDetails);
