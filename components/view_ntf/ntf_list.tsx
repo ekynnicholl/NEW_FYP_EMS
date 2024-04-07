@@ -200,7 +200,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
 
                     <Tab.Panels>
                         <Tab.Panel>
-                            <TimelineNTF />
+                            <TimelineNTF selectedFormId={selectedFormId || ''} formStage={formStage} />
                         </Tab.Panel>
 
                         <Tab.Panel>

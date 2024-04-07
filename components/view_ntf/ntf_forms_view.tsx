@@ -232,17 +232,6 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                     </span>
                                 </p>
                             </div>
-                            <div className="mt-3 text-left">
-                                <a
-                                    href={`/form/external/${selectedFormId}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`flex items-center justify-center bg-slate-900 text-white font-bold py-[11px] lg:py-3 pl-8 pr-6 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-                                >
-                                    View Actual Forms
-                                    <MdKeyboardDoubleArrowRight className="ml-2" />
-                                </a>
-                            </div>
                         </div>
 
                         <hr className="mt-8" />
