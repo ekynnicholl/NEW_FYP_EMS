@@ -58,9 +58,9 @@ const TimelineNTF: React.FC<TimelineNTFProps> = ({ selectedFormId, formStage }) 
                     date="Stage 1"
                     iconStyle={{ background: flashStage === 1 ? 'red' : flashStage > 1 ? 'green' : 'orange', color: '#fff' }}
                     icon={<i className="fas fa-briefcase"></i>}
-                    visible={true}
+                    visible={flashStage === 1 ? true : false}
                 >
-                    <h3 className="vertical-timeline-element-title font-bold">Reverted to Staff (If Applicable)</h3>
+                    <h3 className="vertical-timeline-element-title font-bold">Reverted to Staff (ACTION NEEDED BY YOU!)</h3>
                 </VerticalTimelineElement>
 
                 <VerticalTimelineElement
