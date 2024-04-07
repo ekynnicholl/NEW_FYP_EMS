@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -10,12 +9,14 @@ export default async function ExternalPage({ params }: { params: { id: string } 
 	const { data: externalForm, error: externalFormError } = await supabase
 		.from("external_forms")
 		.select("*")
-		.eq("id", params.id);
+		.eq("id", params.id)
+		.single();
 
 	const { data: auditLog, error: auditLogError } = await supabase
 		.from("audit_log")
 		.select("*")
-		.eq("ntf_id", params.id);
+		.eq("ntf_id", params.id)
+		.order("created_at", { ascending: true });
 
 	const { data: faculties } = await supabase
 		.from("attendance_settings")
@@ -28,7 +29,7 @@ export default async function ExternalPage({ params }: { params: { id: string } 
 	return (
 		<div className="w-full p-5 space-y-4">
 			<div className="flex gap-3">
-				<DashboardExternalForm data={externalForm?.[0]} faculties={facultyNames || []} auditLog={auditLog || []} />
+				<DashboardExternalForm data={externalForm} faculties={facultyNames || []} auditLog={auditLog || []} />
 			</div>
 		</div>
 	);

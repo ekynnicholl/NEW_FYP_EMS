@@ -67,6 +67,18 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const [group, setGroup] = useState(false);
 	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(null);
 
+	const [courseFee, setCourseFee] = useState(0);
+	const [airfareFee, setAirfareFee] = useState(0);
+	const [accommodationFee, setAccommodationFee] = useState(0);
+	const [perDiemFee, setPerDiemFee] = useState(0);
+	const [transportationFee, setTransportationFee] = useState(0);
+	const [travelInsuranceFee, setTravelInsuranceFee] = useState(0);
+	const [otherFees, setOtherFees] = useState(0);
+	const [grandTotal, setGrandTotal] = useState(0);
+
+	const [applicantName, setApplicantName] = useState("");
+	const [applicantPosition, setApplicantPosition] = useState("");
+
 	const sigCanvas = useRef({});
 	//@ts-ignore
 	const clear = () => sigCanvas.current.clear();
@@ -354,6 +366,15 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		}
 	}
 
+	useEffect(() => {
+		setGrandTotal(courseFee + airfareFee + accommodationFee + perDiemFee + transportationFee + travelInsuranceFee + otherFees);
+	}, [courseFee, airfareFee, accommodationFee, perDiemFee, transportationFee, travelInsuranceFee, otherFees]);
+
+	useEffect(() => {
+		setApplicantName(form.getValues("full_name"));
+		setApplicantPosition(form.getValues("course"));
+	}, [form.getValues("full_name"), form.getValues("course")]);
+
 	return (
 		<div>
 			{formIsSuccess === false ? (
@@ -421,7 +442,15 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 															Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input {...field} />
+															<Input
+																// {...field}
+																onChange={e => {
+																	setApplicantName(e.target.value);
+																	field.onChange(e.target.value);
+																	field.value = e.target.value;
+																}}
+																value={field.value}
+															/>
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -436,7 +465,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 															Staff ID / Student No. <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input placeholder="" {...field} />
+															<Input {...field} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -451,7 +480,14 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 															Designation / Course <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input placeholder="" {...field} />
+															<Input
+																{...field}
+																onChange={e => {
+																	setApplicantPosition(e.target.value);
+																	field.onChange(e.target.value);
+																}}
+																value={field.value}
+															/>
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -1138,19 +1174,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Course Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setCourseFee(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1167,19 +1200,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Airfare Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setAirfareFee(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1196,19 +1226,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Accommodation Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setAccommodationFee(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1225,19 +1252,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Per Diem Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setPerDiemFee(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1254,19 +1278,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Transportation Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setTransportationFee(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1283,19 +1304,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Travel Insurance Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setTravelInsuranceFee(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1312,19 +1330,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<FormLabel>Other Fee</FormLabel>
 													<FormControl>
 														<Input
-															type="text" // Use "text" for flexible user input
-															// Convert number to string for display, handle zero and non-zero values appropriately
+															type="text"
 															value={field.value === 0 ? "" : field.value.toString()}
 															onChange={e => {
 																const value = e.target.value;
-																// Check if the input value is numeric or empty and update accordingly
 																if (/^\d*$/.test(value)) {
-																	// Convert the string to a number when not empty, otherwise default to zero
 																	field.onChange(value === "" ? 0 : Number(value));
+																	setOtherFees(Number(value));
 																}
 															}}
 															onBlur={() => {
-																// Ensure the field is treated as a number when focus is lost, correcting any discrepancies
 																field.onChange(field.value || 0);
 															}}
 														/>
@@ -1340,18 +1355,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												<FormItem>
 													<FormLabel>Total Fee</FormLabel>
 													<FormControl>
-														<Input
-															disabled
-															value={
-																form.getValues("course_fee") +
-																form.getValues("airfare_fee") +
-																form.getValues("accommodation_fee") +
-																form.getValues("per_diem_fee") +
-																form.getValues("transportation_fee") +
-																form.getValues("travel_insurance_fee") +
-																form.getValues("other_fees")
-															}
-														/>
+														<Input disabled value={grandTotal} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1532,10 +1536,10 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>
-															Name <span className="text-red-500"> *</span>
+															Name <span className="text-gray-500"> (Auto filled) </span>
 														</FormLabel>
 														<FormControl>
-															<Input placeholder="" {...field} />
+															<Input disabled {...field} value={applicantName} className="disabled:opacity-90" />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -1547,10 +1551,10 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>
-															Position title <span className="text-red-500"> *</span>
+															Position title <span className="text-gray-500"> (Auto filled) </span>
 														</FormLabel>
 														<FormControl>
-															<Input placeholder="" {...field} />
+															<Input disabled {...field} value={applicantPosition} className="disabled:opacity-90" />
 														</FormControl>
 														<FormMessage />
 													</FormItem>

@@ -91,6 +91,31 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	const [undoOpen, setUndoOpen] = useState(false);
 	const [forwardOpen, setForwardOpen] = useState(false);
 
+	const [courseFee, setCourseFee] = useState(0);
+	const [airfareFee, setAirfareFee] = useState(0);
+	const [accommodationFee, setAccommodationFee] = useState(0);
+	const [perDiemFee, setPerDiemFee] = useState(0);
+	const [transportationFee, setTransportationFee] = useState(0);
+	const [travelInsuranceFee, setTravelInsuranceFee] = useState(0);
+	const [otherFees, setOtherFees] = useState(0);
+	const [grandTotal, setGrandTotal] = useState(0);
+
+	useEffect(() => {
+		setGrandTotal(courseFee + airfareFee + accommodationFee + perDiemFee + transportationFee + travelInsuranceFee + otherFees);
+	}, [courseFee, airfareFee, accommodationFee, perDiemFee, transportationFee, travelInsuranceFee, otherFees]);
+
+	useEffect(() => {
+		if (externalForm) {
+			setCourseFee(externalForm.course_fee!);
+			setAirfareFee(externalForm.airfare_fee!);
+			setAccommodationFee(externalForm.accommodation_fee!);
+			setPerDiemFee(externalForm.per_diem_fee!);
+			setTransportationFee(externalForm.transportation_fee!);
+			setTravelInsuranceFee(externalForm.travel_insurance_fee!);
+			setOtherFees(externalForm.other_fees!);
+		}
+	}, [externalForm]);
+
 	useEffect(() => {
 		const fetchEmails = async () => {
 			const { data, error } = await supabase.from("external_emails").select("*");
@@ -185,6 +210,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			check_in_date: externalForm.check_in_date ? new Date(externalForm.check_in_date) : null,
 			check_out_date: externalForm.check_out_date ? new Date(externalForm.check_out_date) : null,
 			hotel_name: externalForm.hotel_name!,
+			total_hours: externalForm.total_hours! ?? null,
 
 			course_fee: externalForm.course_fee!,
 			airfare_fee: externalForm.airfare_fee!,
@@ -491,7 +517,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										</FormItem>
 									)}
 								/>
-								<div className="grid grid-auto-fit-lg gap-8">
+								<div className="grid grid-auto-fit-xl gap-8">
 									<FormField
 										control={form.control}
 										name="full_name"
@@ -656,7 +682,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 								<div className="rounded-sm bg-blue-200 w-4 h-8"></div>
 								<h1 className="text-xl font-semibold">Travel Details</h1>
 							</div>
-							<div className="grid grid-auto-fit-lg gap-8">
+							<div className="grid grid-auto-fit-xl gap-8">
 								<FormField
 									control={form.control}
 									name="program_title"
@@ -1111,7 +1137,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										name="check_in_date"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel className="font-semibold text-sm text-gray-500">Check In</FormLabel>
+												<FormLabel className="font-semibold text-sm text-gray-500">Hotel Check In</FormLabel>
 												<Popover>
 													<PopoverTrigger asChild>
 														<FormControl>
@@ -1153,7 +1179,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										name="check_out_date"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel className="font-semibold text-sm text-gray-500">Check Out</FormLabel>
+												<FormLabel className="font-semibold text-sm text-gray-500">Hotel Check Out</FormLabel>
 												<Popover>
 													<PopoverTrigger asChild>
 														<FormControl>
@@ -1195,6 +1221,21 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										)}
 									/>
 								</div>
+								<FormField
+									control={form.control}
+									name="total_hours"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="font-semibold text-sm text-gray-500">
+												Total Hours <span className="text-red-500"> (Fill in by AAO)</span>
+											</FormLabel>
+											<FormControl>
+												<Input {...field} value={field.value || ""} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 							</div>
 						</section>
 
@@ -1220,8 +1261,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setCourseFee(Number(e.target.value));
+															}
 														}}
 													/>
 												</div>
@@ -1246,8 +1292,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setAirfareFee(Number(e.target.value));
+															}
 														}}
 													/>
 												</div>
@@ -1272,8 +1323,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setAccommodationFee(Number(e.target.value));
+															}
 														}}
 													/>
 												</div>
@@ -1298,8 +1354,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setPerDiemFee(Number(e.target.value));
+															}
 														}}
 													/>
 												</div>
@@ -1324,8 +1385,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setTransportationFee(Number(e.target.value));
+															}
 														}}
 													/>
 												</div>
@@ -1350,8 +1416,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setTravelInsuranceFee(Number(e.target.value));
+															}
 														}}
 													/>
 												</div>
@@ -1376,8 +1447,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+																setOtherFees(Number(value));
+															}
 														}}
 													/>
 												</div>
@@ -1399,18 +1475,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															<DollarSign className="h-5 w-5 text-gray-500" />
 														</div>
 													</div>
-													<Input
-														className="bg-white border border-gray-200 pl-14"
-														value={
-															form.getValues("course_fee") +
-															form.getValues("airfare_fee") +
-															form.getValues("accommodation_fee") +
-															form.getValues("per_diem_fee") +
-															form.getValues("transportation_fee") +
-															form.getValues("travel_insurance_fee") +
-															form.getValues("other_fees")
-														}
-													/>
+													<Input className="bg-white border border-gray-200 pl-14" value={grandTotal} />
 												</div>
 											</FormControl>
 											<FormMessage />
@@ -1510,7 +1575,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 									render={({ field }) => (
 										<FormItem className="space-y-3">
 											<FormLabel className="font-semibold text-sm text-gray-500">
-												Any expenditure cap? If yes, please specify below,{" "}
+												Any expenditure cap? If yes, please specify below
+												<span className="text-red-500"> (Fill in by AAO)</span>
 											</FormLabel>
 											<FormControl>
 												<RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-1">
@@ -1550,11 +1616,16 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														type="text"
 														className="bg-white border border-gray-200 pl-14 disabled:cursor-not-allowed"
 														disabled={form.getValues("expenditure_cap") !== "Yes"}
 														{...field}
+														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
-															field.onChange(Number(e.target.value));
+															const value = e.target.value;
+															if (/^\d*$/.test(value)) {
+																field.onChange(value === "" ? 0 : Number(value));
+															}
 														}}
 													/>
 												</div>
@@ -2042,9 +2113,33 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 				</Form>
 			</div>
 
-			<div className="flex flex-col gap-4">
+			<div className="flex flex-col gap-4 w-80">
+				{externalForm.verification_email && (
+					<div className="flex flex-col gap-3 top-3 bg-white rounded-lg p-4">
+						<aside className="flex flex-col justify-between">
+							<div className="flex gap-3">
+								<div className="rounded-sm bg-yellow-500 w-4 h-8"></div>
+								<h1 className="text-xl font-semibold">Verifier</h1>
+							</div>
+							<p className="mt-2">{externalForm.verification_email}</p>
+						</aside>
+					</div>
+				)}
+
+				{externalForm.approval_email && (
+					<div className="flex flex-col gap-3 top-3 bg-white rounded-lg p-4">
+						<aside className="flex flex-col justify-between">
+							<div className="flex gap-3">
+								<div className="rounded-sm bg-green-500 w-4 h-8"></div>
+								<h1 className="text-xl font-semibold">Approver</h1>
+							</div>
+							<p className="mt-2">{externalForm.approval_email}</p>
+						</aside>
+					</div>
+				)}
+
 				{externalForm?.revertComment?.toLowerCase() !== "none" && externalForm?.revertComment && (
-					<div className="flex flex-col gap-3 sticky top-3 w-96 bg-white rounded-lg p-4">
+					<div className="flex flex-col gap-3 top-3 bg-white rounded-lg p-4">
 						<aside className="flex flex-col justify-between">
 							<div className="flex gap-3">
 								<div className="rounded-sm bg-red-500 w-4 h-8"></div>
@@ -2055,7 +2150,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 					</div>
 				)}
 
-				<div className="flex flex-col gap-3 sticky top-3 w-96 bg-white rounded-lg p-4">
+				<div className="flex flex-col gap-3 sticky top-3 bg-white rounded-lg p-4">
 					<aside className="flex flex-col justify-between">
 						<div className="flex gap-3">
 							<div className="rounded-sm bg-cyan-400 w-4 h-8"></div>
