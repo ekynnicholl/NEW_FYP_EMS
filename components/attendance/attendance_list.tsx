@@ -126,6 +126,23 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         }
     };
 
+    useEffect(() => {
+        const suggestionsSubscription = supabase
+            .channel('attendance_forms')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'attendance_forms' }, handleInserts)
+            .subscribe()
+
+        fetchAttendanceList(event_id);
+
+        return () => {
+            suggestionsSubscription?.unsubscribe();
+        };
+    }, []);
+
+    const handleInserts = (payload: any) => {
+        setAttendanceData((attendanceData) => [...attendanceData, payload.new]);
+    }
+
     const fetchAttendanceList = async (event_id: string) => {
         const { data: subEvents, error: subEventsError } = await supabase
             .from("sub_events")
