@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import * as XLSX from 'xlsx';
 
 type AttendanceDataType = {
     attFormsCertofParticipation: string;
@@ -55,25 +56,95 @@ interface Props {
     attendanceMainEventID: string;
 }
 
-const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
-    const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
+// const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
+//     const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
+//     const body = data.map((row) => {
+//         const newRow = { ...row };
+
+//         Object.keys(columnMapping).forEach((key) => {
+//             if (key === 'attDateSubmitted') {
+//                 const formattedDate = convertDateToLocale(newRow[key as keyof AttendanceDataType]);
+//                 newRow[key as keyof AttendanceDataType] = formattedDate.includes(',')
+//                     ? `"${formattedDate}"`
+//                     : formattedDate;
+//             } else if (typeof newRow[key as keyof AttendanceDataType] === 'string' && newRow[key as keyof AttendanceDataType].includes(',')) {
+//                 newRow[key as keyof AttendanceDataType] = `"${newRow[key as keyof AttendanceDataType]}"`;
+//             }
+//         });
+
+//         return Object.keys(columnMapping).map((key) => newRow[key as keyof AttendanceDataType]).join(',');
+//     }).join('\n');
+//     return `${header}\n${body}`;
+// };
+
+// const downloadCSV = (data: AttendanceDataType[]) => {
+//     const firstRow = data[0];
+//     const subEventName = firstRow ? firstRow.sub_eventName : '';
+
+//     const csv = convertToCSV(data, columnMapping);
+
+//     // Create a data URI for the CSV content
+//     const blob = new Blob([csv], { type: 'text/csv' });
+//     const url = window.URL.createObjectURL(blob);
+
+//     const a = document.createElement('a');
+//     a.style.display = 'none';
+//     a.href = url;
+//     // a.download = `attendance_data_${subEventName}.csv`;
+//     a.download = `attendance_data.csv`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+
+//     window.URL.revokeObjectURL(url);
+// };
+
+const convertToXLSX = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
+    const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
     const body = data.map((row) => {
-        const newRow = { ...row };
+        const newRow: any = { ...row };
 
         Object.keys(columnMapping).forEach((key) => {
             if (key === 'attDateSubmitted') {
                 const formattedDate = convertDateToLocale(newRow[key as keyof AttendanceDataType]);
                 newRow[key as keyof AttendanceDataType] = formattedDate.includes(',')
-                    ? `"${formattedDate}"`
+                    ? `${formattedDate}`
                     : formattedDate;
             } else if (typeof newRow[key as keyof AttendanceDataType] === 'string' && newRow[key as keyof AttendanceDataType].includes(',')) {
                 newRow[key as keyof AttendanceDataType] = `"${newRow[key as keyof AttendanceDataType]}"`;
             }
         });
 
-        return Object.keys(columnMapping).map((key) => newRow[key as keyof AttendanceDataType]).join(',');
-    }).join('\n');
-    return `${header}\n${body}`;
+        return Object.keys(columnMapping).map((key) => newRow[key as keyof AttendanceDataType]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
+
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Change type to 'array'
+
+    return wbout;
+};
+
+const downloadXLSX = (data: AttendanceDataType[]) => {
+    const xlsxContent = convertToXLSX(data, columnMapping);
+    const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+
+    const firstRow = data[0];
+    const subEventName = firstRow ? firstRow.sub_eventName : '';
+    const subEventDate = firstRow ? new Date(firstRow.attDateSubmitted) : null;
+    const formattedDate = subEventDate ? `${subEventDate.getDate()}.${subEventDate.getMonth() + 1}.${subEventDate.getFullYear()}` : '';
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${subEventName} (${formattedDate}) - Attendance Data.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
 };
 
 type ColumnMapping = {
@@ -97,31 +168,9 @@ const convertDateToLocale = (utcDate: string) => {
 const columnMapping: ColumnMapping = {
     attFormsStaffID: 'Staff/ Student ID',
     attFormsStaffName: 'Staff Name',
-    attFormsFacultyUnit: 'Faculty/Unit',
+    attFormsFacultyUnit: 'Faculty/ Unit',
     sub_eventName: 'Session',
     attDateSubmitted: 'Date Submitted',
-};
-
-const downloadCSV = (data: AttendanceDataType[]) => {
-    const firstRow = data[0];
-    const subEventName = firstRow ? firstRow.sub_eventName : '';
-
-    const csv = convertToCSV(data, columnMapping);
-
-    // Create a data URI for the CSV content
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    // a.download = `attendance_data_${subEventName}.csv`;
-    a.download = `attendance_data.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    window.URL.revokeObjectURL(url);
 };
 
 const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID }) => {
@@ -440,7 +489,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                             <button
                                 type="button"
                                 className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729] mr-3"
-                                onClick={() => downloadCSV(attendanceData)}
+                                onClick={() => downloadXLSX(attendanceData)}
                             >
                                 <img
                                     src={exportCSV.src}
@@ -448,7 +497,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     width={14}
                                     className="text-slate-800"
                                 />
-                                <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                                <span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
                             </button>
                             {/* <button
                                 type="button"

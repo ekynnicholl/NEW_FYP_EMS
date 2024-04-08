@@ -216,18 +216,18 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                 }
             });
 
-            const facultyLabels = Object.keys(facultyCounts);
-            const facultyData = facultyLabels.map(label => facultyCounts[label]);
+            // const facultyLabels = Object.keys(facultyCounts);
+            // const facultyData = facultyLabels.map(label => facultyCounts[label]);
 
-            const canvas = chartContainer.current;
+            // const canvas = chartContainer.current;
 
-            if (canvas) {
-                if (chartInstanceRef.current) {
-                    chartInstanceRef.current.destroy();
-                }
+            // if (canvas) {
+            //     if (chartInstanceRef.current) {
+            //         chartInstanceRef.current.destroy();
+            //     }
 
-                createHorizontalBarChart(canvas, facultyLabels, facultyData);
-            }
+            //     createHorizontalBarChart(canvas, facultyLabels, facultyData);
+            // }
         }
     }, [filteredAttendanceData]);
 
@@ -239,6 +239,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     ) => {
         if (chartContainer) {
             const ctx = chartContainer.getContext('2d');
+            console.log("test");
 
             if (ctx) {
                 if (chartInstanceRef.current) {

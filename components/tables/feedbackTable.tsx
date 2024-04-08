@@ -4,6 +4,7 @@ import RightArrow from '@/components/icons/RightArrow';
 import exportCSV from "@/public/images/export_csv.png";
 import Chart from 'chart.js/auto';
 import IndividualFeedback from '@/components/analytics/IndividualFeedback';
+import * as XLSX from 'xlsx';
 
 type FeedbackDataType = {
     fbID: string;
@@ -76,7 +77,6 @@ const columnDisplayNames: { [key in keyof FeedbackDataType]: string } = {
     fbEmailAddress: 'Email Address',
 };
 
-
 const convertToCSV = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
     const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
     const body = data.map((row) => {
@@ -97,6 +97,75 @@ const convertToCSV = (data: FeedbackDataType[], columnMapping: ColumnMapping) =>
     }).join('\n');
     return `${header}\n${body}`;
 };
+
+const downloadCSV = (data: FeedbackDataType[]) => {
+    // const firstRow = data[0];
+    // const subEventName = firstRow ? firstRow.sub_eventName : '';
+
+    const csv = convertToCSV(data, columnMapping);
+
+    // Create a data URI for the CSV content
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // a.download = `attendance_data_${subEventName}.csv`;
+    a.download = `feedback_forms.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(url);
+};
+
+// const convertToXLSX = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
+//     const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
+//     const body = data.map((row) => {
+//         const newRow: any = { ...row };
+
+//         Object.keys(columnMapping).forEach((key) => {
+//             if (key === 'fbDateSubmitted') {
+//                 const formattedDate = convertDateToLocale(newRow[key as keyof FeedbackDataType]);
+//                 newRow[key as keyof FeedbackDataType] = formattedDate.includes(',')
+//                     ? `"${formattedDate}"`
+//                     : formattedDate;
+//             } else if (typeof newRow[key as keyof FeedbackDataType] === 'string' && newRow[key as keyof FeedbackDataType].includes(',')) {
+//                 newRow[key as keyof FeedbackDataType] = `"${newRow[key as keyof FeedbackDataType]}"`;
+//             }
+//         });
+
+//         return Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]);
+//     });
+
+//     const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
+//     const wb = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(wb, ws, 'Feedback Forms');
+//     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+//     return wbout;
+// };
+
+// const downloadXLSX = (data: FeedbackDataType[]) => {
+//     const xlsxContent = convertToXLSX(data, columnMapping);
+//     const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+//     const url = URL.createObjectURL(blob);
+
+//     const firstRow = data[0];
+//     const subEventName = firstRow ? firstRow.sub_eventName : '';
+//     const subEventDate = firstRow ? new Date(firstRow.attDateSubmitted) : null;
+//     const formattedDate = subEventDate ? `${subEventDate.getDate()}.${subEventDate.getMonth() + 1}.${subEventDate.getFullYear()}` : '';
+
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = `${subEventName} (${formattedDate}) - Feedback Data.xlsx`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+
+//     URL.revokeObjectURL(url);
+// };
 
 type ColumnMapping = {
     [key: string]: string;
@@ -139,28 +208,6 @@ const columnMapping: ColumnMapping = {
     fbSectionEAdditional: 'E3',
     fbFullName: 'Full Name',
     fbEmailAddress: 'Email Address',
-};
-
-const downloadCSV = (data: FeedbackDataType[]) => {
-    // const firstRow = data[0];
-    // const subEventName = firstRow ? firstRow.sub_eventName : '';
-
-    const csv = convertToCSV(data, columnMapping);
-
-    // Create a data URI for the CSV content
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    // a.download = `attendance_data_${subEventName}.csv`;
-    a.download = `feedback_forms.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    window.URL.revokeObjectURL(url);
 };
 
 const ratingDescriptions: { [key: string]: string } = {
