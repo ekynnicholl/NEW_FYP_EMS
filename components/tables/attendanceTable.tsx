@@ -111,7 +111,7 @@ const convertToXLSX = (data: AttendanceDataType[], columnMapping: ColumnMapping)
                     ? `${formattedDate}`
                     : formattedDate;
             } else if (typeof newRow[key as keyof AttendanceDataType] === 'string' && newRow[key as keyof AttendanceDataType].includes(',')) {
-                newRow[key as keyof AttendanceDataType] = `"${newRow[key as keyof AttendanceDataType]}"`;
+                newRow[key as keyof AttendanceDataType] = `${newRow[key as keyof AttendanceDataType]}`;
             }
         });
 

@@ -366,10 +366,17 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						<DialogFooter className="sm:justify-center">
 							<button
 								onClick={() => copyToClipboard(`${window.location.origin}/form/external`)}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+								className="mt-4 mr-5 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
 							>
 								Copy Link
 							</button>
+							<a
+								href={`${window.location.origin}/form/external`}
+								target="_blank"
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+							>
+								Open Link
+							</a>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>
