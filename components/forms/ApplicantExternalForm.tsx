@@ -447,6 +447,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																onChange={e => {
 																	setApplicantName(e.target.value);
 																	field.onChange(e.target.value);
+																	form.setValue("applicant_declaration_name", e.target.value);
 																	field.value = e.target.value;
 																}}
 																value={field.value}
@@ -485,6 +486,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																onChange={e => {
 																	setApplicantPosition(e.target.value);
 																	field.onChange(e.target.value);
+																	form.setValue("applicant_declaration_position_title", e.target.value);
 																}}
 																value={field.value}
 															/>
