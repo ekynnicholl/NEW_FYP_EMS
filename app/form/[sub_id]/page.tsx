@@ -70,6 +70,20 @@ export default function AttendanceForm() {
 				return;
 			}
 
+			// Fetch the start and end minutes,
+			const { data: timingData, error: timingError } = await supabase
+				.from("attendance_timing")
+				.select("timStartTime, timEndTime")
+
+			if (timingError) {
+				toast.error("There was an error fetching the availability of the forms, reverting to 15 minutes.")
+			}
+
+			const beforeMinutes = timingData?.[0]?.timStartTime ?? 15;
+			const afterMinutes = timingData?.[0]?.timEndTime ?? 15;
+
+			console.log(beforeMinutes, afterMinutes);
+
 			const eventStartDate = new Date(attendanceListData[0].sub_eventsStartDate);
 			const currentStartDate = new Date(eventStartDate.toDateString());
 			const eventEndDate = new Date(attendanceListData[0].sub_eventsEndDate);
@@ -98,9 +112,9 @@ export default function AttendanceForm() {
 			const currentTime = new Date();
 
 			const startTimeWindow = new Date(eventStartTime);
-			startTimeWindow.setMinutes(startTimeWindow.getMinutes() - 15);
+			startTimeWindow.setMinutes(startTimeWindow.getMinutes() - beforeMinutes);
 			const endTimeWindow = new Date(eventEndTime);
-			endTimeWindow.setMinutes(endTimeWindow.getMinutes() + 15);
+			endTimeWindow.setMinutes(endTimeWindow.getMinutes() + afterMinutes);
 
 			const event_id = attendanceListData[0]?.sub_eventsMainID;
 
@@ -727,7 +741,7 @@ export default function AttendanceForm() {
 										}
 									}}
 								/>
-						
+
 							</div>
 						</div>
 

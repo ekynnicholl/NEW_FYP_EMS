@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import AttendanceSettings from "@/components/settings/attendance_settings";
 import CreateAdminAccount from "@/components/settings/create_account";
 import ExternalEmails from "@/components/settings/external_emails";
+import AttendanceTiming from "@/components/settings/attendance_timing";
 
 export default function Home() {
 	return (
@@ -17,6 +18,9 @@ export default function Home() {
 				</div>
 				<div className="flex-1">
 					<ExternalEmails />
+				</div>
+				<div className="flex-1">
+					<AttendanceTiming />
 				</div>
 			</div>
 		</div>
