@@ -1048,7 +1048,7 @@ export default function Home() {
 
 					<EventModal isVisible={showModal} onClose={() => setShowModal(false)}>
 						<div>
-							<div className="flex items-center mb-5 mt-5 ml-[64px] mr-[72px]">
+							<div className="flex items-center mb-4 mr-20">
 								<p className='font-semibold text-lg text-gray-600 p-2 dark:text-dark_text'>Event(s) Attended (including Nominations/ Travelling Forms)</p>
 								<div className="flex items-center ml-auto">
 									<select
@@ -1062,8 +1062,8 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="bg-white h-[520px] w-[360px] lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg">
-								<table className="leading-normal lg:w-11/12 mx-auto dark:bg-[#1D2021]">
+							<div className="bg-white h-[520px] w-[360px] lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg pb-5">
+								<table className="leading-normal lg:w-full mx-auto dark:bg-[#1D2021]">
 									<thead>
 										<tr className="flex">
 											<th className="flex-1 lg:pl-[33px] lg:px-[10px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">

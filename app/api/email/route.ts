@@ -57,7 +57,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF)</span> pending for approval/ rejection by you from ${staffDetails}. Please visit the link below to take action: </p>
                     <br/>
                     <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
-                    <br/>
                     ${securityKey}
                     <br/>
                     <p class="no-p-m">Thank you for using our system.</p>
@@ -187,7 +186,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             `;
 
             securityKey = `
-                <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields} </p>
+                <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields2} </p>
             `;
         }
         return `
@@ -212,7 +211,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <h2 class="no-p-m">Dear sir/ ma'am,</h2>
                     <p class="no-p-m">Your form has been reverted for further changes. Please refer to the link below to make changes: </p>
                     ${securityKeySentence}
-                    <br/>
                     ${securityKey}
                     <br/>
                     <p class="no-p-m" style="font-weight:bold;"> Reason(s) of reverting: </p>

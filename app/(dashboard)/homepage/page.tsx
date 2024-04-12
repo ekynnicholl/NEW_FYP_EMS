@@ -443,7 +443,7 @@ export default function Homepage() {
 			const { data: mainEventData, error: internalError } = await supabase
 				.from("internal_events")
 				.select(
-					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFTotalHours, intFDurationCourse, intFTrainingProvider",
+					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFTotalHours, intFDurationCourse, intFTrainingProvider, intFTrainerName",
 				)
 				.order("intFEventStartDate", { ascending: true })
 				.eq("intFIsHidden", 0);
@@ -608,25 +608,25 @@ export default function Homepage() {
 
 		const formattedDate = localDate.toISOString().split('T')[0];
 		setSelectedDate(formattedDate);
-	  
+
 		// Fetch events for the selected date and update the state
 		const { data: eventsData, error } = await supabase
-		  .from('internal_events')
-		  .select('*')
-		  .gte('intFEventStartDate', formattedDate)
-		  .lte('intFEventEndDate', formattedDate)
-		  .eq('intFIsHidden', 0);
-	  
+			.from('internal_events')
+			.select('*')
+			.gte('intFEventStartDate', formattedDate)
+			.lte('intFEventEndDate', formattedDate)
+			.eq('intFIsHidden', 0);
+
 		if (error) {
-		  console.error('Error fetching events for selected date:', error);
-		  return;
-		}else{
+			console.error('Error fetching events for selected date:', error);
+			return;
+		} else {
 			console.log(formattedDate)
 		}
-	  
+
 		setEventsOnSelectedDate(eventsData);
 		setShowEventsOnDateModal(true);
-	  };
+	};
 
 	const lastDetailRef = useRef<HTMLDivElement>(null);
 	const addEventDetails = () => {
@@ -1842,7 +1842,7 @@ export default function Homepage() {
 							</div>
 						</div>
 					</ViewEvent_Modal>
-					
+
 					<EventsOnDateModal
 						isVisible={showEventsOnDateModal}
 						onClose={() => setShowEventsOnDateModal(false)}
@@ -2800,9 +2800,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -2822,9 +2821,8 @@ export default function Homepage() {
 											{eventsWithDaysLeft.slice(0, 1).map((event, index) => (
 												<div key={index}>
 													<span
-														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${
-															event.daysLeft <= 1 ? "shake" : ""
-														}`}
+														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? "shake" : ""
+															}`}
 													>
 														<span
 															aria-hidden
@@ -3089,9 +3087,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -3111,9 +3108,8 @@ export default function Homepage() {
 											{eventsWithDaysLeft.slice(1, 2).map((event, index) => (
 												<div key={index}>
 													<span
-														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${
-															event.daysLeft <= 1 ? "shake" : ""
-														}`}
+														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? "shake" : ""
+															}`}
 													>
 														<span
 															aria-hidden
@@ -3378,9 +3374,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -3400,9 +3395,8 @@ export default function Homepage() {
 											{eventsWithDaysLeft.slice(2, 3).map((event, index) => (
 												<div key={index}>
 													<span
-														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${
-															event.daysLeft <= 1 ? "shake" : ""
-														}`}
+														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? "shake" : ""
+															}`}
 													>
 														<span
 															aria-hidden
@@ -3666,9 +3660,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -3688,9 +3681,8 @@ export default function Homepage() {
 											{eventsWithDaysLeft.slice(3, 4).map((event, index) => (
 												<div key={index}>
 													<span
-														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${
-															event.daysLeft <= 1 ? "shake" : ""
-														}`}
+														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? "shake" : ""
+															}`}
 													>
 														<span
 															aria-hidden
@@ -3954,9 +3946,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -3976,9 +3967,8 @@ export default function Homepage() {
 											{eventsWithDaysLeft.slice(4, 5).map((event, index) => (
 												<div key={index}>
 													<span
-														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${
-															event.daysLeft <= 1 ? "shake" : ""
-														}`}
+														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? "shake" : ""
+															}`}
 													>
 														<span
 															aria-hidden
@@ -4242,9 +4232,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-full h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -4264,9 +4253,8 @@ export default function Homepage() {
 											{eventsWithDaysLeft.slice(5, 6).map((event, index) => (
 												<div key={index}>
 													<span
-														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${
-															event.daysLeft <= 1 ? "shake" : ""
-														}`}
+														className={`relative -mt-[35px] px-[10px] py-[5px] font-semibold text-red-900 text-[13px] flex items-center dark:text-red-200 ${event.daysLeft <= 1 ? "shake" : ""
+															}`}
 													>
 														<span
 															aria-hidden
@@ -4529,9 +4517,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -4765,9 +4752,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -5001,9 +4987,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -5237,9 +5222,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -5473,9 +5457,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -5709,9 +5692,8 @@ export default function Homepage() {
 														<div key={index}>
 															<div className="mt-4 w-[343px] h-[10px] bg-gray-200 rounded-full relative dark:bg-[#25282A]">
 																<div
-																	className={`h-full rounded-full ${
-																		isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
-																	} animate-blink `}
+																	className={`h-full rounded-full ${isOverCapacity ? "bg-red-500" : "bg-orange-300 dark:bg-[#864502]"
+																		} animate-blink `}
 																	style={{
 																		width: `${Math.min((currentAttendees / maxAttendees) * 100, 100)}%`,
 																	}}
@@ -5736,50 +5718,49 @@ export default function Homepage() {
 						<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
 						<Calendar onDateChange={handleDateChange} eventDates={eventDates} onClickDay={handleDateClick} />
 						<div>
-						<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
-						<div className="mt-4 overflow-auto max-h-[200px]">
-							<ul className="space-y-2">
-								{displayedEvents.length === 0 && (
-									<li key="noEvents" className="text-center text-m">
-										No upcoming events found
-									</li>
-								)}
-								{displayedEvents.length > 0 &&
-									displayedEvents.map(event => {
-										const startDate = new Date(event.intFEventStartDate);
-										const endDate = new Date(event.intFEventEndDate);
-										const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
-										const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
-										const a = new Date(event.intFEventStartDate).toISOString();
-										const b = new Date(event.intFEventEndDate).toISOString();
-										if (isSameDate(a, b)) {
-											return (
-												<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-													<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
-													<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
-												</li>
-											);
-										} else {
-											return (
-												<li key={event.intFEventName} className="flex justify-between items-center mb-2">
-													<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
-													<span className="text-m mr-6 mb-3">
-														{startDateFormatted} - {endDateFormatted}
-													</span>
-												</li>
-											);
-										}
-									})}
-							</ul>
+							<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
+							<div className="mt-4 overflow-auto max-h-[200px]">
+								<ul className="space-y-2">
+									{displayedEvents.length === 0 && (
+										<li key="noEvents" className="text-center text-m">
+											No upcoming events found
+										</li>
+									)}
+									{displayedEvents.length > 0 &&
+										displayedEvents.map(event => {
+											const startDate = new Date(event.intFEventStartDate);
+											const endDate = new Date(event.intFEventEndDate);
+											const startDateFormatted = `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
+											const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
+											const a = new Date(event.intFEventStartDate).toISOString();
+											const b = new Date(event.intFEventEndDate).toISOString();
+											if (isSameDate(a, b)) {
+												return (
+													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+														<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
+														<span className="text-m mr-6 mb-3">{startDateFormatted}</span>
+													</li>
+												);
+											} else {
+												return (
+													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
+														<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
+														<span className="text-m mr-6 mb-3">
+															{startDateFormatted} - {endDateFormatted}
+														</span>
+													</li>
+												);
+											}
+										})}
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
-				</div>
 			) : (
 				<div
-					className={`w-full bg-slate-100 flex pb-28 ${
-						todayEvents.length === 0 && tomorrowEvents.length === 0 && upcomingEvents.length === 0 ? "h-screen" : ""
-					} dark:bg-dark_mode_bg`}
+					className={`w-full bg-slate-100 flex pb-28 ${todayEvents.length === 0 && tomorrowEvents.length === 0 && upcomingEvents.length === 0 ? "h-screen" : ""
+						} dark:bg-dark_mode_bg`}
 				>
 					<div className="w-full pr-6 bg-slate-100 dark:bg-dark_mode_bg">
 						<div className="w-full bg-slate-100 dark:bg-dark_mode_bg">

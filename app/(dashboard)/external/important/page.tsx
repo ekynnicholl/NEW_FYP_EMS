@@ -18,6 +18,7 @@ export default async function Important() {
 		.order("last_updated", { ascending: true })
 		.eq("isHidden", 0)
 		.not("last_updated", "eq", todayDateString)
+		.not("formStage", "eq", 2)
 		.not("formStage", "eq", 5)
 		.not("formStage", "eq", 6);
 
@@ -26,7 +27,7 @@ export default async function Important() {
 			<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
 				<div>
 					<h1 className="font-bold text-[26px]">Important!</h1>
-					<p>These form&apos;s have not been updated for a day. You may manually trigger an email to relevant party.</p>
+					<p>These form&apos;s have not been updated for a day. You may manually trigger an email to the relevant party.</p>
 				</div>
 				<ImportantForms data={data ? data : []} />
 			</div>

@@ -117,6 +117,7 @@ export default function Home() {
         intFEventDescription: "",
         intFEventStartDate: "",
         intFEventEndDate: "",
+        intFTrainerName: "",
         sub_eventsID: "",
         sub_eventsMainID: "",
         sub_eventsName: "",
@@ -179,6 +180,7 @@ export default function Home() {
         event_description: string,
         event_start_date: string,
         event_end_date: string,
+        event_trainer_name: string,
         sub_event_id: string,
         sub_eventMain_id: string,
         sub_event_name: string,
@@ -197,6 +199,7 @@ export default function Home() {
             intFEventDescription: event_description,
             intFEventStartDate: event_start_date,
             intFEventEndDate: event_end_date,
+            intFTrainerName: event_trainer_name,
             sub_eventsID: sub_event_id,
             sub_eventsMainID: sub_eventMain_id,
             sub_eventsName: sub_event_name,
@@ -448,267 +451,268 @@ export default function Home() {
 
     return (
         <div className="">
-		<div className="flex-1">
-			<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
-				<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
-                    <div className="inline-flex">
-                        <span className="mt-[7px]">
-                            <a href="/homepage">
-                                <IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" />
-                            </a>
-                        </span>
-                        <h1 className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Upcoming Events</span></h1>
-                    </div>
-
-                    <div className="flex items-center justify-between mb-8 mt-5">
-                        {/* Refresh Button */}
-                        <button
-                            type="button"
-                            className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
-                            onClick={refreshData}>
-                            <IoMdRefresh className="text-xl text-slate-800 dark:text-dark_text" />
-                            <span className="ml-2 -mt-[1.25px] text-slate-800 dark:text-dark_text">
-                                Refresh
+            <div className="flex-1">
+                <div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
+                    <div className="bg-white rounded p-8 dark:bg-dark_mode_card">
+                        <div className="inline-flex">
+                            <span className="mt-[7px]">
+                                <a href="/homepage">
+                                    <IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" />
+                                </a>
                             </span>
-                        </button>
+                            <h1 className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Upcoming Events</span></h1>
+                        </div>
 
-                        <div className="flex items-center">
-                            {/* Search Input */}
-                            <div className="max-w-full relative shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
-                                <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        className="h-4 w-4 fill-current text-gray-500">
-                                        <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                                    </svg>
-                                </span>
-                                <input
-                                    placeholder="Search here..."
-                                    className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
-                                    value={searchQuery}
-                                    onChange={e => handleSearch(e.target.value)}
-                                />
-                            </div>
-
-                            {/* mobile view */}
+                        <div className="flex items-center justify-between mb-8 mt-5">
+                            {/* Refresh Button */}
                             <button
                                 type="button"
-                                className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:hidden lg:hidden hover:transition duration-300 transform hover:scale-105"
+                                className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
                                 onClick={refreshData}>
-                                <IoMdRefresh className="text-xl text-slate-800" />
+                                <IoMdRefresh className="text-xl text-slate-800 dark:text-dark_text" />
+                                <span className="ml-2 -mt-[1.25px] text-slate-800 dark:text-dark_text">
+                                    Refresh
+                                </span>
                             </button>
 
-                            {/* Sort By Button */}
-                            <div className="relative">
+                            <div className="flex items-center">
+                                {/* Search Input */}
+                                <div className="max-w-full relative shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
+                                    <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            className="h-4 w-4 fill-current text-gray-500">
+                                            <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                                        </svg>
+                                    </span>
+                                    <input
+                                        placeholder="Search here..."
+                                        className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
+                                        value={searchQuery}
+                                        onChange={e => handleSearch(e.target.value)}
+                                    />
+                                </div>
+
+                                {/* mobile view */}
                                 <button
                                     type="button"
-                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
-                                    onClick={handleSortButtonClick}>
-                                    <Image
-                                        src={filterBar.src}
-                                        alt=""
-                                        width={20}
-                                        height={20}
-                                        className="text-slate-800 dark:text-dark_text"
-                                    />
-                                    <span className="ml-2 text-slate-800 dark:text-dark_text">Sort By</span>
+                                    className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:hidden lg:hidden hover:transition duration-300 transform hover:scale-105"
+                                    onClick={refreshData}>
+                                    <IoMdRefresh className="text-xl text-slate-800" />
                                 </button>
 
-                                {/* Dropdown Menu */}
-                                <div
-                                    className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
-                                        }`}
-                                    style={{ zIndex: 999 }}>
-                                    {showSortOptions && (
-                                        <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-56 rounded-lg">
-                                            <ul>
-                                                <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
-                                                    <span className="font-bold text-slate-800">
-                                                        Sort By:
-                                                    </span>
-                                                </li>
-                                                {sortOptions.map(option => (
-                                                    <li
-                                                        key={option.value}
-                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
-                                                        onClick={() => {
-                                                            handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
-                                                            setSortBy(option.value); // Set the sorting option
-                                                        }}>
-                                                        {option.value === "event" && (
-                                                            <FaSortAlphaUp className="mr-3 ml-2 text-slate-800" />
-                                                        )}
-                                                        {option.value === "date" && (
-                                                            <FaCalendarAlt className="mr-3 ml-2 text-slate-800" />
-                                                        )}
-                                                        <span className="text-slate-500 ">
-                                                            {option.label}
+                                {/* Sort By Button */}
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
+                                        onClick={handleSortButtonClick}>
+                                        <Image
+                                            src={filterBar.src}
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="text-slate-800 dark:text-dark_text"
+                                        />
+                                        <span className="ml-2 text-slate-800 dark:text-dark_text">Sort By</span>
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    <div
+                                        className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
+                                            }`}
+                                        style={{ zIndex: 999 }}>
+                                        {showSortOptions && (
+                                            <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-56 rounded-lg">
+                                                <ul>
+                                                    <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
+                                                        <span className="font-bold text-slate-800">
+                                                            Sort By:
                                                         </span>
                                                     </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
+                                                    {sortOptions.map(option => (
+                                                        <li
+                                                            key={option.value}
+                                                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
+                                                            onClick={() => {
+                                                                handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
+                                                                setSortBy(option.value); // Set the sorting option
+                                                            }}>
+                                                            {option.value === "event" && (
+                                                                <FaSortAlphaUp className="mr-3 ml-2 text-slate-800" />
+                                                            )}
+                                                            {option.value === "date" && (
+                                                                <FaCalendarAlt className="mr-3 ml-2 text-slate-800" />
+                                                            )}
+                                                            <span className="text-slate-500 ">
+                                                                {option.label}
+                                                            </span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
+
+                                {/* Export Button */}
+                                <button
+                                    type="button"
+                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+                                    onClick={exportToCSV}>
+                                    <img
+                                        src={exportCSV.src}
+                                        alt=""
+                                        width={20}
+                                        className="text-slate-800"
+                                    />
+                                    <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                                </button>
                             </div>
-
-                            {/* Export Button */}
-                            <button
-                                type="button"
-                                className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
-                                onClick={exportToCSV}>
-                                <img
-                                    src={exportCSV.src}
-                                    alt=""
-                                    width={20}
-                                    className="text-slate-800"
-                                />
-                                <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
-                            </button>
                         </div>
-                    </div>
 
-                    <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
-						<div className="inline-block min-w-full shadow rounded-sm">
-						<table className="lg:w-full w-auto min-h-screen">
-                            <thead>
-                                <tr className="flex border-b-2 border-gray-200 bg-gray-100">
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                        <span className="ml-8 lg:ml-4">No</span>
-                                    </th>
-                                    <th className="flex-1 lg:px-[3px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-6 lg:ml-2">Event Title</span>
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-6 lg:ml-2">Description</span>
-                                    </th>
-                                    
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-2 lg:ml-1">Start Date</span>
-                                    </th>
-                                    
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-24 lg:ml-20">Status</span>
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-[52px] lg:ml-20">Action</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-								{searchQuery.length > 0 && dataResults.length === 0 ? (
-										<p className="text-lg text-center mt-4">No data available.</p>
-									) : (
-										sortedData.slice((currentPage - 1) * entriesToShow, currentPage * entriesToShow).map((event, index) => (
-                                <tr className="flex" key={index}>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">                                                
-												<div className="flex items-center">
-														<div className="ml-4">
-															<p className="text-gray-900 dark:text-dark_text">
-																{(currentPage - 1) * entriesToShow + index + 1}
-															</p>
-														</div>
-													</div>
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-2 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-80">
-												{event.intFEventName}
-                                            </td>
-                                            <td className="flex-1 px-6 ml-1 lg:ml-0 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-96">
-												{event.intFEventDescription}
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-												<span className="-ml-3 lg:-ml-0">{event.intFEventStartDate} </span> 
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                <div className="flex items-end">
-                                                    <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10 dark:text-orange-200">
-                                                        <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full dark:bg-orange-900"></span>
-                                                        <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-                                                        <span className="relative mt-[1px] leading-3 tracking-wider">
-                                                            Upcoming
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
-                                                            <BsThreeDots />
+                        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
+                            <div className="inline-block min-w-full shadow rounded-sm">
+                                <table className="lg:w-full w-auto min-h-screen">
+                                    <thead>
+                                        <tr className="flex border-b-2 border-gray-200 bg-gray-100">
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+                                                <span className="ml-8 lg:ml-4">No</span>
+                                            </th>
+                                            <th className="flex-1 lg:px-[3px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+                                                <span className="ml-6 lg:ml-2">Event Title</span>
+                                            </th>
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+                                                <span className="ml-6 lg:ml-2">Description</span>
+                                            </th>
+
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+                                                <span className="ml-2 lg:ml-1">Start Date</span>
+                                            </th>
+
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+                                                <span className="ml-24 lg:ml-20">Status</span>
+                                            </th>
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+                                                <span className="ml-[52px] lg:ml-20">Action</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {searchQuery.length > 0 && dataResults.length === 0 ? (
+                                            <p className="text-lg text-center mt-4">No data available.</p>
+                                        ) : (
+                                            sortedData.slice((currentPage - 1) * entriesToShow, currentPage * entriesToShow).map((event, index) => (
+                                                <tr className="flex" key={index}>
+                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-4">
+                                                                <p className="text-gray-900 dark:text-dark_text">
+                                                                    {(currentPage - 1) * entriesToShow + index + 1}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent className="-mt-1">
-                                                        <DropdownMenuItem
-                                                            className="cursor-pointer"
-                                                            onClick={e => {
-                                                                e.stopPropagation();
-                                                                const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-2 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-80">
+                                                        {event.intFEventName}
+                                                    </td>
+                                                    <td className="flex-1 px-6 ml-1 lg:ml-0 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-96">
+                                                        {event.intFEventDescription}
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+                                                        <span className="-ml-3 lg:-ml-0">{event.intFEventStartDate} </span>
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <div className="flex items-end">
+                                                            <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10 dark:text-orange-200">
+                                                                <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full dark:bg-orange-900"></span>
+                                                                <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+                                                                <span className="relative mt-[1px] leading-3 tracking-wider">
+                                                                    Upcoming
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
+                                                                    <BsThreeDots />
+                                                                </div>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent className="-mt-1">
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
+                                                                    onClick={e => {
+                                                                        e.stopPropagation();
+                                                                        const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
-                                                                if (filteredSubEvent) {
-                                                                    openModal(
-                                                                        event.intFID,
-                                                                        event.intFEventName,
-                                                                        event.intFEventDescription,
-                                                                        event.intFEventStartDate,
-                                                                        event.intFEventEndDate,
-                                                                        filteredSubEvent.sub_eventsID,
-                                                                        filteredSubEvent.sub_eventsMainID,
-                                                                        filteredSubEvent.sub_eventsName,
-                                                                        filteredSubEvent.sub_eventsVenue,
-                                                                        filteredSubEvent.sub_eventsStartDate,
-                                                                        filteredSubEvent.sub_eventsEndDate,
-                                                                        filteredSubEvent.sub_eventsStartTime,
-                                                                        filteredSubEvent.sub_eventsEndTime,
-                                                                        filteredSubEvent.sub_eventsMaxSeats,
-                                                                        filteredSubEvent.sub_eventsOrganizer,
-                                                                        filteredSubEvent.sub_eventsFaculty
-                                                                    );
-                                                                }
+                                                                        if (filteredSubEvent) {
+                                                                            openModal(
+                                                                                event.intFID,
+                                                                                event.intFEventName,
+                                                                                event.intFEventDescription,
+                                                                                event.intFEventStartDate,
+                                                                                event.intFEventEndDate,
+                                                                                event.intFTrainerName,
+                                                                                filteredSubEvent.sub_eventsID,
+                                                                                filteredSubEvent.sub_eventsMainID,
+                                                                                filteredSubEvent.sub_eventsName,
+                                                                                filteredSubEvent.sub_eventsVenue,
+                                                                                filteredSubEvent.sub_eventsStartDate,
+                                                                                filteredSubEvent.sub_eventsEndDate,
+                                                                                filteredSubEvent.sub_eventsStartTime,
+                                                                                filteredSubEvent.sub_eventsEndTime,
+                                                                                filteredSubEvent.sub_eventsMaxSeats,
+                                                                                filteredSubEvent.sub_eventsOrganizer,
+                                                                                filteredSubEvent.sub_eventsFaculty
+                                                                            );
+                                                                        }
 
-                                                            }}
-                                                        >Sub-Events Details
-                                                        </DropdownMenuItem>
+                                                                    }}
+                                                                >Sub-Events Details
+                                                                </DropdownMenuItem>
 
-                                                        <DropdownMenuSeparator />
+                                                                <DropdownMenuSeparator />
 
-                                                        <DropdownMenuItem
-                                                            className="cursor-pointer"
-                                                            onClick={e => {
-                                                                e.stopPropagation()
-                                                                openAttendanceModal(event.intFID);
-                                                            }}
-                                                        >Attendance List
-                                                        </DropdownMenuItem>
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer"
+                                                                    onClick={e => {
+                                                                        e.stopPropagation()
+                                                                        openAttendanceModal(event.intFID);
+                                                                    }}
+                                                                >Attendance List
+                                                                </DropdownMenuItem>
 
-                                                        <DropdownMenuSeparator />
+                                                                <DropdownMenuSeparator />
 
-                                                        <DropdownMenuItem onClick={e => {
-                                                            e.stopPropagation();
-                                                            setMainEventForFeedback(event);
-                                                            openFeedbackModal(event.intFID);
-                                                        }}>Event Feedback
-                                                        </DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={e => {
+                                                                    e.stopPropagation();
+                                                                    setMainEventForFeedback(event);
+                                                                    openFeedbackModal(event.intFID);
+                                                                }}>Event Feedback
+                                                                </DropdownMenuItem>
 
-                                                        <DropdownMenuSeparator />
+                                                                <DropdownMenuSeparator />
 
-                                                        <DropdownMenuItem onClick={e => {
-                                                            e.stopPropagation();
-                                                            const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+                                                                <DropdownMenuItem onClick={e => {
+                                                                    e.stopPropagation();
+                                                                    const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
-                                                            if (filteredSubEvent) {
-                                                                openQRCodeModal(event.intFID);
-                                                            }
-                                                        }}>Feedback &amp; Attendance Form
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                        </td>
-                                    </tr>
-									))
-								)}
+                                                                    if (filteredSubEvent) {
+                                                                        openQRCodeModal(event.intFID);
+                                                                    }
+                                                                }}>Feedback &amp; Attendance Form
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
 
-								{/* pagination */}
-								{/* {Array.from({
+                                        {/* pagination */}
+                                        {/* {Array.from({
                                         length: entriesToShow - mainEvents?.length,
                                     }).map((_, index) => (
                                         <tr className="flex invisible" key={index}>
@@ -740,398 +744,398 @@ export default function Home() {
                                             </td>
                                         </tr>
                                     ))} */}
-                            </tbody>
-                        </table>                           
+                                    </tbody>
+                                </table>
 
-                            <div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                <div className="flex items-center text-[14px] text-base">
-                                    <div className="mr-2 ml-3">
-                                        <span className="text-sm lg:text-base dark:text-dark_text">Show</span>
-                                    </div>
+                                <div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                    <div className="flex items-center text-[14px] text-base">
+                                        <div className="mr-2 ml-3">
+                                            <span className="text-sm lg:text-base dark:text-dark_text">Show</span>
+                                        </div>
 
-                                    {/* Filter By How Many Entries */}
-                                    <div className="relative mr-2 ">
-                                        <select
-                                            value={entriesToShow}
-                                            onChange={e =>
-                                                setEntriesToShow(parseInt(e.target.value))
-                                            }
-                                            className="appearance-none h-full rounded-l border block bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-dark_mode_card dark:border-[#484E51] dark:text-dark_text">
-                                            <option
-                                                value={5}
-                                                className="text-sm lg:text-base dark:text-dark_text">
-                                                5
-                                            </option>
-                                            <option
-                                                value={10}
-                                                className="text-sm lg:text-base dark:text-dark_text">
-                                                10
-                                            </option>
-                                            <option
-                                                value={20}
-                                                className="text-sm lg:text-base dark:text-dark_text">
-                                                20
-                                            </option>
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                            <svg
-                                                className="fill-current h-4 w-4"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20">
-                                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                            </svg>
+                                        {/* Filter By How Many Entries */}
+                                        <div className="relative mr-2 ">
+                                            <select
+                                                value={entriesToShow}
+                                                onChange={e =>
+                                                    setEntriesToShow(parseInt(e.target.value))
+                                                }
+                                                className="appearance-none h-full rounded-l border block bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-dark_mode_card dark:border-[#484E51] dark:text-dark_text">
+                                                <option
+                                                    value={5}
+                                                    className="text-sm lg:text-base dark:text-dark_text">
+                                                    5
+                                                </option>
+                                                <option
+                                                    value={10}
+                                                    className="text-sm lg:text-base dark:text-dark_text">
+                                                    10
+                                                </option>
+                                                <option
+                                                    value={20}
+                                                    className="text-sm lg:text-base dark:text-dark_text">
+                                                    20
+                                                </option>
+                                            </select>
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                                <svg
+                                                    className="fill-current h-4 w-4"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20">
+                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <span className="text-sm lg:text-base dark:text-dark_text">
+                                                entries
+                                            </span>
                                         </div>
                                     </div>
-
-                                    <div>
-                                        <span className="text-sm lg:text-base dark:text-dark_text">
-                                            entries
+                                    <div className="flex items-center">
+                                        <span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+                                            1-{entriesToShow} of {mainEvents?.length} entries
                                         </span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center">
-                                    <span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
-                                        1-{entriesToShow} of {mainEvents?.length} entries
-                                    </span>
 
-                                    <div className="flex">
-                                        {/* Skip To First Page Button */}
-                                        <button
-                                            type="button"
-                                            className="px-1 ml-8"
-                                            onClick={handleSkipToFirstPage}
-                                            disabled={currentPage === 1}
-                                            style={{
-                                                cursor:
-                                                    currentPage === 1
-                                                        ? "not-allowed"
-                                                        : "pointer",
-                                                opacity: currentPage === 1 ? 0.5 : 1,
-                                            }}>
-                                            <MdKeyboardDoubleArrowLeft className="text-3xl" />
-                                        </button>
-
-                                        {/* Arrow Previous Page Button */}
-                                        <button
-                                            type="button"
-                                            className="px-1 ml-1"
-                                            onClick={handleArrowLeftClick}
-                                            disabled={currentPage === 1}
-                                            style={{
-                                                opacity: currentPage === 1 ? 0.5 : 1,
-                                            }}>
-                                            <MdKeyboardArrowLeft className="text-3xl" />
-                                        </button>
-
-                                        {/* Pagination Buttons */}
-                                        {generatePageNumbers().map((pageNumber, index) => (
+                                        <div className="flex">
+                                            {/* Skip To First Page Button */}
                                             <button
-                                                key={index}
-                                                className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-                                                    }`}
-                                                onClick={() => handlePageChange(pageNumber)}
-                                            >
-                                                {pageNumber === -1 ? '...' : pageNumber}
+                                                type="button"
+                                                className="px-1 ml-8"
+                                                onClick={handleSkipToFirstPage}
+                                                disabled={currentPage === 1}
+                                                style={{
+                                                    cursor:
+                                                        currentPage === 1
+                                                            ? "not-allowed"
+                                                            : "pointer",
+                                                    opacity: currentPage === 1 ? 0.5 : 1,
+                                                }}>
+                                                <MdKeyboardDoubleArrowLeft className="text-3xl" />
                                             </button>
-                                        ))}
 
-                                        {/* Arrow Next Page Button */}
-                                        <button
-                                            type="button"
-                                            className="px-1 ml-5"
-                                            onClick={handleArrowRightClick}
-                                            disabled={
-                                                currentPage ===
-                                                Math.ceil(mainEvents?.length / entriesToShow)
-                                            }
-                                            style={{
-                                                opacity:
+                                            {/* Arrow Previous Page Button */}
+                                            <button
+                                                type="button"
+                                                className="px-1 ml-1"
+                                                onClick={handleArrowLeftClick}
+                                                disabled={currentPage === 1}
+                                                style={{
+                                                    opacity: currentPage === 1 ? 0.5 : 1,
+                                                }}>
+                                                <MdKeyboardArrowLeft className="text-3xl" />
+                                            </button>
+
+                                            {/* Pagination Buttons */}
+                                            {generatePageNumbers().map((pageNumber, index) => (
+                                                <button
+                                                    key={index}
+                                                    className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+                                                        }`}
+                                                    onClick={() => handlePageChange(pageNumber)}
+                                                >
+                                                    {pageNumber === -1 ? '...' : pageNumber}
+                                                </button>
+                                            ))}
+
+                                            {/* Arrow Next Page Button */}
+                                            <button
+                                                type="button"
+                                                className="px-1 ml-5"
+                                                onClick={handleArrowRightClick}
+                                                disabled={
                                                     currentPage ===
-                                                        Math.ceil(
-                                                            mainEvents?.length / entriesToShow,
-                                                        )
-                                                        ? 0.5
-                                                        : 1,
-                                            }}>
-                                            <MdKeyboardArrowRight className="text-3xl" />
-                                        </button>
-
-                                        {/* Skip To Last Page Button */}
-                                        <button
-                                            type="button"
-                                            className={`px-1 ml-1 ${currentPage ===
-                                                Math.ceil(mainEvents?.length / entriesToShow)
-                                                ? "pointer-events-none opacity-50"
-                                                : ""
-                                                }`}
-                                            onClick={handleSkipToLastPage}>
-                                            <MdKeyboardDoubleArrowRight className="text-3xl" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
-                        <p className='font-semibold text-md text-gray-600 p-2 ml-2'>Sub-Events Details</p>
-                        <div className="p-5 bg-slate-100 h-[520px] lg:w-full lg:h-11/12 ml-1 overflow-x-auto dark:bg-dark_mode_bg">
-                            <table className="leading-normal w-11/12 mx-auto dark:bg-[#1D2021]">
-                                <thead>
-                                    <tr className="flex border-b-2 border-gray-200 bg-gray-100 justify-between dark:bg-[#1D2021] dark:border-[#363B3D]">
-                                        <th className="lg:ml-5 px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            NO.
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            <span className="lg:-ml-12">Event Name</span>
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Organizer
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Venue
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Start Time
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            End Time
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Maximum Seats
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-									{subEvents
-                                        .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
-                                        .map((subEvent, index) => (
-                                            <tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-                                                <td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
-                                                    <div>
-                                                        <div className="ml-4 lg:ml-10">
-                                                            <p className="text-gray-900 dark:text-dark_text">
-                                                                {(currentPage - 1) *
-                                                                    entriesToShow +
-                                                                    index +
-                                                                    1
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-7 lg:-ml-10">
-                                                        {subEvent.sub_eventsName}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-2 dark:text-dark_text">
-                                                        {subEvent.sub_eventsOrganizer}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 lg:ml-4 dark:text-dark_text">
-                                                        {subEvent.sub_eventsVenue}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-7 lg:-ml-0 lg:whitespace-nowrap dark:text-dark_text">
-                                                        {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-5 lg:ml-6 lg:whitespace-nowrap dark:text-dark_text">
-                                                        {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
-                                                    </p>
-                                                </td>
-
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 ml-7 dark:text-dark_text">
-                                                        {subEvent.sub_eventsMaxSeats}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        ))}
-								</tbody>
-                            </table>                            
-                        </div>
-                    </EventListModal>
-
-                    <ViewEventFeedback
-                        isVisible={showFeedbackModal}
-                        onClose={() => setShowFeedbackModal(false)}>
-                        <FeedbackList event_id={feedbackID} mainEvent={mainEventForFeedback} />
-                    </ViewEventFeedback>
-
-                    <ViewAttendance_Modal
-                        isVisible={showAttendanceModal}
-                        onClose={() => setShowAttendanceModal(false)}>
-                        <AttendanceList event_id={attendanceID} />
-                    </ViewAttendance_Modal>
-
-                    <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
-                        <div className="p-5">
-                            {subEvents
-                                .filter(subEvent => subEvent.sub_eventsMainID === selectedMainEventID)
-                                .map((subEvent, index) => (
-                                    <div key={index} className="mt-2">
-                                        <span className="ml-12 text-lg font-semibold">‣ Session {index + 1}</span>
-                                        <div className="flex justify-center">
-                                            <button
-                                                type="button"
-                                                className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
-                                                onClick={e => {
-                                                    setSelectedSubEventID(subEvent.sub_eventsID);
-                                                    setShowQRCodesAttendance(true);
-                                                    setShowQRCodeModal(false);
+                                                    Math.ceil(mainEvents?.length / entriesToShow)
+                                                }
+                                                style={{
+                                                    opacity:
+                                                        currentPage ===
+                                                            Math.ceil(
+                                                                mainEvents?.length / entriesToShow,
+                                                            )
+                                                            ? 0.5
+                                                            : 1,
                                                 }}>
-                                                <span className="ml-2 text-slate-800 flex items-center mr-2">
-                                                    <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-                                                    <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
-                                                        Attendance
-                                                    </span>
-                                                </span>
+                                                <MdKeyboardArrowRight className="text-3xl" />
                                             </button>
+
+                                            {/* Skip To Last Page Button */}
                                             <button
                                                 type="button"
-                                                className="flex items-center bg-slate-200 rounded-lg py-2 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-9 px-[9px] dark:bg-[#242729]"
-                                                onClick={e => {
-                                                    setSelectedSubEventID(subEvent.sub_eventsID);
-                                                    setShowQRCodesFeedback(true);
-                                                    setShowQRCodeModal(false);
-                                                }}>
-                                                <span className="ml-2 text-slate-800 flex items-center mr-2">
-                                                    <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
-                                                    <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
-                                                        Feedback
-                                                    </span>
-                                                </span>
+                                                className={`px-1 ml-1 ${currentPage ===
+                                                    Math.ceil(mainEvents?.length / entriesToShow)
+                                                    ? "pointer-events-none opacity-50"
+                                                    : ""
+                                                    }`}
+                                                onClick={handleSkipToLastPage}>
+                                                <MdKeyboardDoubleArrowRight className="text-3xl" />
                                             </button>
                                         </div>
                                     </div>
-                                ))}
-                        </div>
-                    </QRCodeModal>
-
-
-                    <Modal isVisible={showQRCodesAttendance} onClose={() => { setShowQRCodeModal(true); setShowQRCodesAttendance(false); }}>
-                        <div className="ml-2 p-5 z-[999]">
-                            <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-                                Attendance Forms
-                            </h3>
-                            <div className="flex flex-col items-center justify-center">
-                                <QRCodeCanvas
-                                    className="bg-white p-1"
-                                    value={`${window.location.origin}/form/${selectedSubEventID}`}
-                                    size={256}
-                                />
-                                <button
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            `${window.location.origin}/form/${selectedSubEventID}`
-                                        )
-                                    }
-                                    className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-                                >
-                                    Copy Link
-                                </button>
+                                </div>
                             </div>
                         </div>
-                    </Modal>
 
-                    <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false); }}>
-                        <div className="ml-2 p-5 z-[999]">
-                            <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
-                                Feedback Forms
-                            </h3>
-                            <div className="flex flex-col items-center justify-center">
-                                <QRCodeCanvas
-                                    className="bg-white p-1"
-                                    value={`${window.location.origin}/form/feedback/${selectedSubEventID}`}
-                                    size={256}
-                                />
-                                <button
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            `${window.location.origin}/form/feedback/${selectedSubEventID}`
-                                        )
-                                    }
-                                    className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-                                >
-                                    Copy Link
-                                </button>
+                        <EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
+                            <p className='font-semibold text-lg text-gray-600 p-2 dark:text-dark_text mb-4'>Sub-Event(s) Details</p>
+                            <div className="bg-white h-[520px] w-[360px] lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg">
+                                <table className="leading-normal w-full mx-auto dark:bg-[#1D2021]">
+                                    <thead>
+                                        <tr className="flex border-b-2 border-gray-200 bg-gray-100 justify-between dark:bg-[#1D2021] dark:border-[#363B3D]">
+                                            <th className="lg:ml-5 px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                NO.
+                                            </th>
+                                            <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                <span className="lg:-ml-12">Event Name</span>
+                                            </th>
+                                            <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                Organizer
+                                            </th>
+                                            <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                Venue
+                                            </th>
+                                            <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                Start Time
+                                            </th>
+                                            <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                End Time
+                                            </th>
+                                            <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
+                                                Maximum Seats
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {subEvents
+                                            .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+                                            .map((subEvent, index) => (
+                                                <tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
+                                                    <td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
+                                                        <div>
+                                                            <div className="ml-4 lg:ml-10">
+                                                                <p className="text-gray-900 dark:text-dark_text">
+                                                                    {(currentPage - 1) *
+                                                                        entriesToShow +
+                                                                        index +
+                                                                        1
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <p className="text-gray-900 -ml-7 lg:-ml-10">
+                                                            {subEvent.sub_eventsName}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <p className="text-gray-900 -ml-2 dark:text-dark_text">
+                                                            {selectedEvent.intFTrainerName} - {subEvent.sub_eventsOrganizer}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <p className="text-gray-900 lg:ml-4 dark:text-dark_text">
+                                                            {subEvent.sub_eventsVenue}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <p className="text-gray-900 -ml-7 lg:-ml-0 lg:whitespace-nowrap dark:text-dark_text">
+                                                            {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <p className="text-gray-900 -ml-5 lg:ml-6 lg:whitespace-nowrap dark:text-dark_text">
+                                                            {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                        <p className="text-gray-900 ml-7 dark:text-dark_text">
+                                                            {subEvent.sub_eventsMaxSeats}
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    </Modal>
+                        </EventListModal>
 
-                    {/* mobile view pagination */}
-                    <div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
-                        <button
-                            className="opacity-70"
-                            onClick={() => handleSkipToFirstPage}
-                            disabled={currentPage === 1}
-                        >
-                            <DoubleLeftArrow />
-                        </button>
-                        <button
-                            onClick={() => handleArrowLeftClick}
-                            disabled={currentPage === 1}
-                            className="opacity-70"
-                        >
-                            <LeftArrow />
-                        </button>
+                        <ViewEventFeedback
+                            isVisible={showFeedbackModal}
+                            onClose={() => setShowFeedbackModal(false)}>
+                            <FeedbackList event_id={feedbackID} mainEvent={mainEventForFeedback} />
+                        </ViewEventFeedback>
 
-                        {/* Pagination Buttons */}
-                        <div className="flex">
-                            {[1, 2, 3].map(pageNumber => (
-                                <button
-                                    type="button"
-                                    className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
-                                        ? "text-slate-100 bg-slate-900"
-                                        : "text-slate-800 bg-slate-200"
-                                        }`}
-                                    key={pageNumber}
-                                    onClick={() => {
-                                        if (
-                                            pageNumber <=
-                                            Math.ceil(
-                                                mainEvents.length /
-                                                entriesToShow,
+                        <ViewAttendance_Modal
+                            isVisible={showAttendanceModal}
+                            onClose={() => setShowAttendanceModal(false)}>
+                            <AttendanceList event_id={attendanceID} />
+                        </ViewAttendance_Modal>
+
+                        <QRCodeModal isVisible={showQRCodeModal} onClose={() => setShowQRCodeModal(false)}>
+                            <div className="p-5">
+                                {subEvents
+                                    .filter(subEvent => subEvent.sub_eventsMainID === selectedMainEventID)
+                                    .map((subEvent, index) => (
+                                        <div key={index} className="mt-2">
+                                            <span className="ml-12 text-lg font-semibold">‣ Session {index + 1}</span>
+                                            <div className="flex justify-center">
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-3 px-[5px] dark:bg-[#242729]"
+                                                    onClick={e => {
+                                                        setSelectedSubEventID(subEvent.sub_eventsID);
+                                                        setShowQRCodesAttendance(true);
+                                                        setShowQRCodeModal(false);
+                                                    }}>
+                                                    <span className="ml-2 text-slate-800 flex items-center mr-2">
+                                                        <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+                                                        <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                            Attendance
+                                                        </span>
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center bg-slate-200 rounded-lg py-2 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex mt-3 ml-2 lg:ml-9 px-[9px] dark:bg-[#242729]"
+                                                    onClick={e => {
+                                                        setSelectedSubEventID(subEvent.sub_eventsID);
+                                                        setShowQRCodesFeedback(true);
+                                                        setShowQRCodeModal(false);
+                                                    }}>
+                                                    <span className="ml-2 text-slate-800 flex items-center mr-2">
+                                                        <LiaQrcodeSolid className="text-[23px] dark:text-[#C1C7C1]" />
+                                                        <span className="ml-[3px] lg:ml-[5px] -mt-[1px] text-[11px] lg:text-[14px] dark:text-[#C1C7C1]">
+                                                            Feedback
+                                                        </span>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        </QRCodeModal>
+
+
+                        <Modal isVisible={showQRCodesAttendance} onClose={() => { setShowQRCodeModal(true); setShowQRCodesAttendance(false); }}>
+                            <div className="ml-2 p-5 z-[999]">
+                                <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+                                    Attendance Forms
+                                </h3>
+                                <div className="flex flex-col items-center justify-center">
+                                    <QRCodeCanvas
+                                        className="bg-white p-1"
+                                        value={`${window.location.origin}/form/${selectedSubEventID}`}
+                                        size={256}
+                                    />
+                                    <button
+                                        onClick={() =>
+                                            copyToClipboard(
+                                                `${window.location.origin}/form/${selectedSubEventID}`
                                             )
-                                        ) {
-                                            handlePageClick(pageNumber);
                                         }
-                                    }}>
-                                    {pageNumber}
-                                </button>
-                            ))}
-                        </div>
+                                        className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+                                    >
+                                        Copy Link
+                                    </button>
+                                </div>
+                            </div>
+                        </Modal>
 
-                        <button
-                            onClick={handleArrowRightClick}
-                            disabled={
-                                currentPage ===
-                                Math.ceil(mainEvents?.length / entriesToShow)
-                            }
-                            className="opacity-70"
-                        >
-                            <RightArrow />
-                        </button>
-                        <button
-                            className="opacity-70"
-                            onClick={handleSkipToLastPage}
-                        >
-                            <DoubleRightArrow />
-                        </button>
+                        <Modal isVisible={showQRCodesFeedback} onClose={() => { setShowQRCodeModal(true); setShowQRCodesFeedback(false); }}>
+                            <div className="ml-2 p-5 z-[999]">
+                                <h3 className="lg:text-2xl font-medium text-gray-600 -ml-[9px] mb-3 mt-1 text-center dark:text-slate-200">
+                                    Feedback Forms
+                                </h3>
+                                <div className="flex flex-col items-center justify-center">
+                                    <QRCodeCanvas
+                                        className="bg-white p-1"
+                                        value={`${window.location.origin}/form/feedback/${selectedSubEventID}`}
+                                        size={256}
+                                    />
+                                    <button
+                                        onClick={() =>
+                                            copyToClipboard(
+                                                `${window.location.origin}/form/feedback/${selectedSubEventID}`
+                                            )
+                                        }
+                                        className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px] dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+                                    >
+                                        Copy Link
+                                    </button>
+                                </div>
+                            </div>
+                        </Modal>
+
+                        {/* mobile view pagination */}
+                        <div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
+                            <button
+                                className="opacity-70"
+                                onClick={() => handleSkipToFirstPage}
+                                disabled={currentPage === 1}
+                            >
+                                <DoubleLeftArrow />
+                            </button>
+                            <button
+                                onClick={() => handleArrowLeftClick}
+                                disabled={currentPage === 1}
+                                className="opacity-70"
+                            >
+                                <LeftArrow />
+                            </button>
+
+                            {/* Pagination Buttons */}
+                            <div className="flex">
+                                {[1, 2, 3].map(pageNumber => (
+                                    <button
+                                        type="button"
+                                        className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${pageNumber === activePage
+                                            ? "text-slate-100 bg-slate-900"
+                                            : "text-slate-800 bg-slate-200"
+                                            }`}
+                                        key={pageNumber}
+                                        onClick={() => {
+                                            if (
+                                                pageNumber <=
+                                                Math.ceil(
+                                                    mainEvents.length /
+                                                    entriesToShow,
+                                                )
+                                            ) {
+                                                handlePageClick(pageNumber);
+                                            }
+                                        }}>
+                                        {pageNumber}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button
+                                onClick={handleArrowRightClick}
+                                disabled={
+                                    currentPage ===
+                                    Math.ceil(mainEvents?.length / entriesToShow)
+                                }
+                                className="opacity-70"
+                            >
+                                <RightArrow />
+                            </button>
+                            <button
+                                className="opacity-70"
+                                onClick={handleSkipToLastPage}
+                            >
+                                <DoubleRightArrow />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     )
 };
