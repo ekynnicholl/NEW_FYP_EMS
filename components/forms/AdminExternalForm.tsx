@@ -331,6 +331,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
 						total_hours: values.total_hours,
+						last_updated: new Date(),
 					},
 				])
 				.eq("id", externalForm.id);
@@ -364,6 +365,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						...values,
 						formStage: 2,
 						securityKey: null,
+						last_updated: new Date(),
 					},
 				])
 				.eq("id", externalForm.id);
@@ -406,6 +408,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						approval_position_title: values.approval_position_title,
 						approval_date: values.approval_date,
 						approval_signature: values.approval_signature,
+						last_updated: new Date(),
 					},
 				])
 				.eq("id", externalForm.id);
@@ -427,7 +430,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		else if (externalForm.formStage === 4) {
 			const { data, error } = await supabase
 				.from("external_forms")
-				.update([
+				.update(
 					{
 						formStage: 5,
 						securityKey: securityKeyUID,
@@ -442,8 +445,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						approval_position_title: values.approval_position_title,
 						approval_date: values.approval_date,
 						approval_signature: values.approval_signature,
-					},
-				])
+						last_updated: new Date(),
+					}
+				)
 				.eq("id", externalForm.id);
 
 			if (error) {
@@ -553,6 +557,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						approval_position_title: values.approval_position_title,
 						approval_date: values.approval_date,
 						approval_signature: values.approval_signature,
+						last_updated: new Date(),
 					},
 				])
 				.eq("id", externalForm.id);
@@ -587,6 +592,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						approval_position_title: values.approval_position_title,
 						approval_date: values.approval_date,
 						approval_signature: values.approval_signature,
+						last_updated: new Date(),
 					},
 				])
 				.eq("id", externalForm.id);
@@ -619,6 +625,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						verification_email: values.verification_email,
 						approval_email: values.approval_email,
 						total_hours: values.total_hours,
+						last_updated: new Date(),
 					},
 				])
 				.eq("id", externalForm.id);

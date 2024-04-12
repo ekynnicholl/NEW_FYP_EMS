@@ -254,7 +254,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 		const { error } = await supabase
 			.from("external_forms")
-			.update(updatedExternalForm)
+			.update({
+				...updatedExternalForm,
+				last_updated: new Date(),
+			})
 			.eq("id", externalForm.id);
 
 		if (error) {
@@ -272,7 +275,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 			const { data, error } = await supabase
 				.from("external_forms")
-				.update(updatedExternalForm)
+				.update({
+					...updatedExternalForm,
+					last_updated: new Date(),
+				})
 				.eq("id", externalForm.id)
 				.select();
 
@@ -315,7 +321,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 		const { data, error } = await supabase
 			.from("external_forms")
-			.update(updatedExternalForm)
+			.update({
+				...updatedExternalForm,
+				last_updated: new Date(),
+			})
 			.eq("id", externalForm.id)
 			.select();
 
@@ -352,7 +361,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 		const { data, error } = await supabase
 			.from("external_forms")
-			.update(updatedExternalForm)
+			.update({
+				...updatedExternalForm,
+				last_updated: new Date(),
+			})
 			.eq("id", externalForm.id)
 			.select();
 
