@@ -6,7 +6,7 @@ const formatDateAndTime = (dateString: string): string => {
 	return `${day} ${month} ${date.getFullYear()}, ${time}`;
 };
 
-export default function AuditLog({ auditLogs, externalForm }: { auditLogs: AuditLog[], externalForm: ExternalForm }) {
+export default function AuditLog({ auditLogs, externalForm }: { auditLogs: AuditLog[]; externalForm: ExternalForm }) {
 	return (
 		<div>
 			{auditLogs?.map((log, index) => (
@@ -14,6 +14,16 @@ export default function AuditLog({ auditLogs, externalForm }: { auditLogs: Audit
 					{log.type?.toLocaleLowerCase() === "create" && (
 						<div>
 							<p className="font-semibold">Created By:</p>
+							<span>
+								{log.username} ({log.email})
+							</span>
+							<p>Time: {formatDateAndTime(log.created_at)}</p>
+						</div>
+					)}
+
+					{log.type?.toLocaleLowerCase() === "forward" && (
+						<div>
+							<p className="font-semibold">Reviewed and Forwarded By:</p>
 							<span>
 								{log.username} ({log.email})
 							</span>

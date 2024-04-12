@@ -363,6 +363,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			.from("external_forms")
 			.update({
 				...updatedExternalForm,
+				formStage: 3,
 				last_updated: new Date(),
 			})
 			.eq("id", externalForm.id)
