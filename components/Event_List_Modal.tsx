@@ -19,9 +19,9 @@ const EventListModal: React.FC<EventListModalProps> = ({ isVisible, onClose, chi
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50"
       id="wrapper"
       onClick={handleClose}>
-      
-      <div className="border-slate-350 bg-slate-50 border-[1px] rounded-t-lg w-[500px] h-[600px] lg:w-11/12 lg:h-11/12 flex flex-col relative shadow-md">
-      <div className="p-2 bg-red-500 rounded-t-lg w-full"></div>
+
+      <div className="border-slate-350 bg-slate-50 border-[1px] rounded-t-lg w-[500px] h-[600px] lg:w-9/12 lg:h-11/12 flex flex-col relative shadow-md pb-5">
+        <div className="p-2 bg-red-500 rounded-t-lg w-full"></div>
         <button
           className="absolute top-5 right-3"
           onClick={() => onClose()}>
