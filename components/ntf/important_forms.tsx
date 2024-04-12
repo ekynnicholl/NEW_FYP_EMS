@@ -47,9 +47,12 @@ import {
 import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import toast from "react-hot-toast";
+import { sendReminderEmail } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function ImportantForms({ data }: { data: ExternalForm[] }) {
     const supabase = createClientComponentClient();
+    const router = useRouter();
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -168,10 +171,8 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
             id: "actions",
             enableHiding: false,
             cell: ({ row }) => {
-                const rowID = row.original.id;
-
                 return (
-                    <Button onClick={() => sendReminder(rowID)}>REMIND</Button>
+                    <Button onClick={() => sendReminder(row.original)}>REMIND</Button>
                 );
             },
         },
@@ -196,22 +197,23 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
         },
     });
 
-    const sendReminder = async (id: string) => {
-        console.log(id);
-
+    const sendReminder = async (row: ExternalForm) => {
         const today = new Date();
         const todayDateString = today.toISOString().split('T')[0];
 
         const { data, error } = await supabase
             .from("external_forms")
             .update({ last_updated: todayDateString })
-            .eq("id", id);
+            .eq("id", row.id)
+            .select();
 
         if (error) {
             toast.error("Failed to send reminder.")
+        } else {
+            toast.success("Successfully sent a reminder for the selected forms.")
+            sendReminderEmail(data[0]);
+            router.refresh();
         }
-
-        toast.success("Successfully sent a reminder for the selected forms.")
     }
 
     return (

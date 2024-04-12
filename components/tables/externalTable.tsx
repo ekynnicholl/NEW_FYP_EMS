@@ -121,6 +121,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 			const securityKey = values.undoOption === "2" ? null : securityKeyUID;
 
+			// console.log("test", values.undoOption)
+
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update({
@@ -158,6 +160,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				if (latestFormsError) {
 					toast.error("Failed to send email. Please contact server administrator.");
 				}
+
+				console.log("latest data", latestFormsData)
 
 				sendContactForm(latestFormsData);
 				router.refresh();
