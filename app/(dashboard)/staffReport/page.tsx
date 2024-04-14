@@ -9,7 +9,8 @@ import exportCSV from "@/public/images/export_csv.png";
 
 import { FaSortAlphaDown, FaSortNumericDown, FaSortAmountUp } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
-import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { IoTimerSharp } from "react-icons/io5";
+import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight, MdAccessTimeFilled } from "react-icons/md";
 import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ExpenditureUser from "@/components/tables/expenditureUser";
@@ -481,7 +482,7 @@ export default function Home() {
 		{ label: "Staff Name", value: "name" },
 		{ label: "Staff ID", value: "staffid" },
 		{ label: "Number of Event Attended", value: "eventattended" },
-
+		{ label: "Grand Total Hours", value: "totalhours" },
 	];
 
 	// Modify the sorting logic based on the selected option and sort order
@@ -502,12 +503,17 @@ export default function Home() {
 				} else {
 					return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
 				}
-			}
-			else if (sortBy === "eventattended") {
+			} else if (sortBy === "eventattended") {
 				if (sortOrder === "asc") {
 					return b.totalSubEvents - a.totalSubEvents;
 				} else {
 					return a.totalSubEvents - b.totalSubEvents;
+				}
+			} else if (sortBy === "totalhours") {
+				if (sortOrder === "asc") {
+					return b.grandTotalHours - a.grandTotalHours;
+				} else {
+					return a.grandTotalHours - b.grandTotalHours;
 				}
 			}
 			return 0;
@@ -633,6 +639,9 @@ export default function Home() {
 																)}
 																{option.value === "eventattended" && (
 																	<FaSortAmountUp className="mr-3 ml-2 text-slate-800 whitespace-nowrap" />
+																)}
+																{option.value === "totalhours" && (
+																	<MdAccessTimeFilled className="mr-3 ml-2 text-md text-slate-800 whitespace-nowrap" />
 																)}
 																<span className="text-slate-500 ">
 																	{option.label}
