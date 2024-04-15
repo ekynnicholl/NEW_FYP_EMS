@@ -1154,6 +1154,68 @@ export default function Homepage() {
 		setShowFeedbackModal(true);
 	};
 
+
+	const chartRef = useRef<HTMLCanvasElement | null>(null);
+	const chartInstance = useRef<Chart<"line", number[], unknown> | null>(null);
+	const slate900Color = '#1F2937'; // Slate-900 color hex code
+
+	useEffect(() => {
+		const ctx = chartRef.current;
+
+		// Sample data for events each month in 2024
+		const eventData = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65];
+
+		if (chartInstance.current) {
+			chartInstance.current.destroy(); // Destroy the previous chart instance
+		}
+
+		if (ctx) {
+			chartInstance.current = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+					datasets: [{
+						label: 'Number of Events in 2024',
+						data: eventData,
+						borderColor: 'rgb(75, 192, 192)',
+						tension: 0.1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true,
+							title: {
+								display: true,
+								text: 'Number of Events',
+								color: slate900Color
+							}
+						},
+						x: {
+							ticks: {
+								color: slate900Color
+							}
+						}
+					},
+					plugins: {
+						legend: {
+							labels: {
+								color: slate900Color
+							}
+						}
+					}
+				}
+			});
+		}
+
+		// Cleanup function
+		return () => {
+			if (chartInstance.current) {
+				chartInstance.current.destroy(); // Destroy the chart instance when the component unmounts
+			}
+		};
+	}, []);
+
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
@@ -2591,6 +2653,10 @@ export default function Homepage() {
 						<IoIosAddCircleOutline className="text-[23px] text-slate-100" />
 						<span className="text-slate-100 ml-1 text-[13px] -mt-[0px]">Add Events</span>
 					</button>
+				</div>
+
+				<div>
+					<canvas ref={chartRef} style={{ height: '40px' }} className="mt-2"></canvas>
 				</div>
 			</div>
 
