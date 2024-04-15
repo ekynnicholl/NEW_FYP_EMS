@@ -182,10 +182,24 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
         <>
             {(formStage !== 5 && formStage !== 6) ? (
                 <div>
-                    <div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
-                        <div className="ml-10">
+                    <div className="lg:mx-auto lg:max-w-6xl lg:px-8 lg:my-8 lg:mt-6 lg:mb-[200px]">
+                        <div className="ml-3 lg:ml-5">
+
+                            <h1 className="text-2xl lg:text-3xl font-bold text-slate-800 mb-4 mt-4 text-center lg:-ml-[1px] lg:hidden flex ml-[13px]">
+                                Nomination / Travelling Application Form
+                            </h1>
+
+                            <div className="lg:hidden flex justify-center items-center">
+                                <Image
+                                    src="/swinburne_logo.png"
+                                    alt=""
+                                    width={320}
+                                    height={320}
+                                />
+                            </div>
+
                             <div className="flex ml-[13px]">
-                                <div>
+                                <div className="hidden lg:block">
                                     <Image
                                         src="/swinburne_logo.png"
                                         alt=""
@@ -194,19 +208,19 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                     />
                                 </div>
                                 <div className="ml-8 mt-2">
-                                    <p className="font-medium">Human Resources</p>
-                                    <h1 className="text-3xl font-bold text-slate-800 mb-4 mt-4 -ml-[1px]">
+                                    <p className="font-normal lg:font-medium hidden lg:block">Human Resources</p>
+                                    <h1 className="text-2xl lg:text-3xl font-bold text-slate-800 mb-4 mt-4 -ml-2 lg:-ml-[1px] hidden lg:block">
                                         Nomination / Travelling Application Form
                                     </h1>
                                 </div>
                             </div>
 
-                            <div className="mb-4 text-slate-800 mt-2">
+                            <div className="mb-4 text-slate-800 mt-2 lg:mt-4 mx-6 lg:mx-0">
                                 <p className="mb-2">
                                     <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
                                         *
                                     </span>
-                                    <span>
+                                    <span className="text-[15px] lg:text-base">
                                         Before completing this form, please refer to the separate
                                         document on “General Instructions for completing Nomination /
                                         Travelling Application Form”, which is available on
@@ -217,7 +231,7 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                     <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
                                         *
                                     </span>
-                                    <span>
+                                    <span className="text-[15px] lg:text-base">
                                         All fields are mandatory to complete as required for each
                                         applicable section.
                                     </span>
@@ -226,7 +240,7 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                     <span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">
                                         *
                                     </span>
-                                    <span>
+                                    <span className="text-[15px] lg:text-base">
                                         This form is also to be used for any contracted individual as
                                         consultant, and is to be completed where applicable.
                                     </span>
@@ -237,7 +251,7 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                         <hr className="mt-8" />
 
                         <div className="flex justify-between">
-                            <form className="mt-6 w-full ml-[100px] mx-24">
+                            <form className="mt-6 w-full mx-10">
                                 <div>
 
                                     {revertComment ? (
@@ -1441,7 +1455,6 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                         </div>
 
                                     ) : null}
-
 
                                 </div>
 
