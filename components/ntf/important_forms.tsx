@@ -59,7 +59,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
     const [rowSelection, setRowSelection] = useState({});
     const [selectedRow, setSelectedRow] = useState<any>({});
     const [open, setOpen] = useState(false);
-    const [formData, setFormData] = useState<ExternalForm | null>(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(2022, 0, 20),
         to: addDays(new Date(2022, 0, 20), 20),
@@ -143,7 +143,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
             },
         },
         {
-            accessorKey: "created_at",
+            accessorKey: "last_updated",
             sortingFn: "datetime",
             filterFn: isWithinRange,
             header: ({ column }) => {
@@ -171,8 +171,46 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
             id: "actions",
             enableHiding: false,
             cell: ({ row }) => {
+                let emailToSendTo = "null";
+                if (row.original.formStage === 1) {
+                    emailToSendTo = row.original.email;
+                } else if (row.original.formStage === 3) {
+                    emailToSendTo = row.original.verification_email || "null";
+                } else if (row.original.formStage === 4) {
+                    emailToSendTo = row.original.approval_email || "null";
+                }
+
                 return (
-                    <Button onClick={() => sendReminder(row.original)}>REMIND</Button>
+                    // <Button onClick={() => sendReminder(row.original)}>REMIND</Button>
+
+                    <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                        <DialogTrigger asChild>
+                            <Button
+                                type="button">
+                                REMIND
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Send Reminder</DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                                Are you sure you want to send a reminder to <span className="font-bold">{emailToSendTo}</span>?
+                            </DialogDescription>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button>Cancel</Button>
+                                </DialogClose>
+                                <Button
+                                    onMouseUp={() => {
+                                        setConfirmOpen(false);
+                                        sendReminder(row.original);
+                                    }}>
+                                    Confirm
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 );
             },
         },
@@ -201,6 +239,8 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
         const today = new Date();
         const todayDateString = today.toISOString().split('T')[0];
 
+        console.log("testing");
+
         const { data, error } = await supabase
             .from("external_forms")
             .update({ last_updated: todayDateString })
@@ -211,9 +251,34 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
             toast.error("Failed to send reminder.")
         } else {
             toast.success("Successfully sent a reminder for the selected forms.")
+            console.log("testing1");
             sendReminderEmail(data[0]);
             router.refresh();
         }
+    }
+
+    const sendReminderAll = async () => {
+        const today = new Date();
+        const todayDateString = today.toISOString().split('T')[0];
+
+        const rowIds = data.map(row => row.id);
+        const { data: updatedData, error: updateError } = await supabase
+            .from("external_forms")
+            .update({ last_updated: todayDateString })
+            .in("id", rowIds)
+            .select();
+
+        if (updateError) {
+            toast.error("Failed to update forms.");
+            return;
+        }
+
+        updatedData.forEach(async (updatedRow: ExternalForm) => {
+            toast.success(`Successfully sent reminder to all forms for today.`);
+            sendReminderEmail(updatedRow);
+            // Optionally refresh if needed
+            router.refresh();
+        });
     }
 
     return (
@@ -272,6 +337,36 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
+            </div>
+            <div className="mb-2 flex items-end justify-end">
+                <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                    <DialogTrigger asChild>
+                        <Button
+                            type="button">
+                            REMIND ALL
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Send Reminder</DialogTitle>
+                        </DialogHeader>
+                        <DialogDescription>
+                            Are you sure you want to send a reminder to <span className="font-bold">all the forms</span>?
+                        </DialogDescription>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button>Cancel</Button>
+                            </DialogClose>
+                            <Button
+                                onMouseUp={() => {
+                                    setConfirmOpen(false);
+                                    sendReminderAll();
+                                }}>
+                                Confirm
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
             <div className="rounded-md border">
                 <Table>
