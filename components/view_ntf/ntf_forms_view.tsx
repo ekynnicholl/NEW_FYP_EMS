@@ -193,8 +193,8 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                 <Image
                                     src="/swinburne_logo.png"
                                     alt=""
-                                    width={320}
-                                    height={320}
+                                    width={310}
+                                    height={310}
                                 />
                             </div>
 
@@ -1182,7 +1182,7 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
 
                                     <hr className="mt-10" />
 
-                                    <div className="mt-[30px]">
+                                    <div className="mt-[30px] mb-5 lg:mb-0">
                                         <div>
                                             <p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
                                                 6. Applicant Declaration
@@ -1271,9 +1271,9 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                     {verification_signature_image || verification_name || verification_position_title || verification_signature ? (
 
                                         <div>
-                                            <hr className="mt-10" />
+                                            <hr className="mt-5" />
 
-                                            <div className="mt-[30px]">
+                                            <div className="mt-[30px] mb-5 lg:mb-0">
                                                 <div>
                                                     <p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
                                                         7. Verification Declaration
@@ -1365,9 +1365,9 @@ const FormsView: React.FC<NTFormsProps> = ({ selectedFormId, formStage, forms })
                                     {approval_signature_image || approval_name || approval_position_title || approval_signature ? (
 
                                         <div>
-                                            <hr className="mt-10" />
+                                            <hr className="mt-5" />
 
-                                            <div className="mt-[30px]">
+                                            <div className="mt-[30px] mb-5 lg:mb-0">
                                                 <div>
                                                     <p id="applicant_declaration" className="text-2xl font-bold mb-4 block text-slate-900">
                                                         8. Approval Declaration
