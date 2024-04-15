@@ -1157,7 +1157,9 @@ export default function Homepage() {
 
 	const chartRef = useRef<HTMLCanvasElement | null>(null);
 	const chartInstance = useRef<Chart<"line", number[], unknown> | null>(null);
+
 	const slate900Color = '#1F2937'; // Slate-900 color hex code
+	const slate600Color = '#6B7280'; // Grey color hex code
 
 	useEffect(() => {
 		const ctx = chartRef.current;
@@ -1177,7 +1179,7 @@ export default function Homepage() {
 					datasets: [{
 						label: 'Number of Events in 2024',
 						data: eventData,
-						borderColor: 'rgb(75, 192, 192)',
+						borderColor: slate600Color,
 						tension: 0.1
 					}]
 				},
