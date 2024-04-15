@@ -407,7 +407,9 @@ export default function Home() {
 		setDataResults([]);
 
 		const filterByFacultyUnit = (facultyUnit: string) => {
-			filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
+			if(facultyUnit !== 'all'){
+				filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
+			}			
 		} 
 
 		let filteredUserData = [...aggregatedInfo];
