@@ -243,9 +243,8 @@ export default function Homepage() {
 	const viewMode = useViewModeStore(state => state.viewMode);
 
 	// Temporary variables,
-	const [selectedSubEvent, setSelectedSubEvent] = useState<string>("");
-	const [isAllButtonActive, setIsAllButtonActive] = useState(true);
-	const [showSubEventModal, setShowSubEventModal] = useState(false);
+	const [attendanceTimingStart, setAttendanceTimingStart] = useState<number>(0);
+	const [attendanceTimingEnd, setAttendanceTimingEnd] = useState<number>(0);
 	const [showEventsOnDateModal, setShowEventsOnDateModal] = useState(false);
 	const [selectedDate, setSelectedDate] = useState('');
 	const [eventsOnSelectedDate, setEventsOnSelectedDate] = useState<any[]>([]);
@@ -331,6 +330,18 @@ export default function Homepage() {
 			);
 
 			setEventsWithDaysLeft(updatedMainEventData);
+
+			// Fetch the attendance timing,
+			const { data: timingData, error: timingError } = await supabase
+				.from("attendance_timing")
+				.select("timID, timStartTime, timEndTime")
+
+			if (timingError) {
+				toast.error("ERR_ATT_TIM: This error doesn't affect you. Please contact a developer to report this error.");
+			} else {
+				setAttendanceTimingStart(timingData[0].timStartTime || 0);
+				setAttendanceTimingEnd(timingData[0].timEndTime || 0);
+			}
 		};
 
 		fetchLatestEvent();
@@ -1254,7 +1265,13 @@ export default function Homepage() {
 									Create Event
 								</h3>
 
-								<hr className="border-t-2 border-slate-200 my-4 w-[270px] lg:w-[505px] dark:border-[#253345]" />
+								<hr className="border-t-2 border-slate-200 my-2 w-[270px] lg:w-[505px] dark:border-[#253345]" />
+
+								<p className="italic text-[6px] lg:text-[12px] font-medium text-justify mr-5">
+									Please take note that the attendance forms will automatically open {attendanceTimingStart} minute(s) before and remain open {attendanceTimingEnd} minute(s) after the set time.
+									This can be changed in the settings page.
+								</p>
+
 
 								{/* <p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] dark:text-dark_textbox_title">
 									Event / Course Banner
