@@ -186,6 +186,10 @@ export default function AttendanceForm() {
 			info.attFormsFacultyUnit = 'Visitor';
 		} else {
 			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !info.attFormsStaffEmail) {
+				if (info.attFormsStaffID == '0') {
+					toast.error("Your Staff/ Student ID cannot be 0.");
+					return;
+				}
 				return;
 			}
 		}
