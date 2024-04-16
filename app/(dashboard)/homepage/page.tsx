@@ -1166,23 +1166,23 @@ export default function Homepage() {
 			try {
 				// Get the current year
 				const currentYear = new Date().getFullYear();
-		
+
 				const { data, error } = await supabase
 					.from('internal_events')
 					.select('*')
 					.gte('intFEventStartDate', `${currentYear}-01-01T00:00:00.000Z`) // Filter for the current year
 					.lte('intFEventStartDate', `${currentYear}-12-31T23:59:59.999Z`); // Filter for the current year
-		
+
 				if (error) {
 					throw error;
 				}
-		
+
 				// Extract month and count events
 				const eventData = data.map(entry => ({
 					month: new Date(entry.intFEventStartDate).getMonth() + 1, // Add 1 to get 1-based month index
 					event_count: 1 // Assuming each row represents one event
 				}));
-		
+
 				// Group data by month and calculate event counts
 				const groupedEventData: { [key: number]: number } = {};
 				eventData.forEach(entry => {
@@ -1192,19 +1192,19 @@ export default function Homepage() {
 					}
 					groupedEventData[month]++;
 				});
-		
+
 				// Prepare data for chart
 				const chartData = Object.keys(groupedEventData).map(month => ({
 					month: parseInt(month),
 					event_count: groupedEventData[parseInt(month)]
 				}));
-		
+
 				const ctx = chartRef.current;
-		
+
 				if (chartInstance.current) {
 					chartInstance.current.destroy(); // Destroy the previous chart instance
 				}
-		
+
 				if (ctx) {
 					chartInstance.current = new Chart(ctx, {
 						type: 'line',
@@ -1243,12 +1243,12 @@ export default function Homepage() {
 						}
 					});
 				}
-			}
+			};
 			// } catch (error) {
 			// 	console.error('Error fetching or initializing chart:', error.message);
 			// }
 		};
-		
+
 		fetchDataAndInitializeChart();
 	}, [supabase]);
 
