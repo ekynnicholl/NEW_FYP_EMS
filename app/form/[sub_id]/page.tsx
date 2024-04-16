@@ -167,10 +167,18 @@ export default function AttendanceForm() {
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
+	// Define a state variable to track form submission status
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
 
 	// Handle data submission
 	const handleSubmit = async () => {
 		// e.preventDefault();
+
+		// Prevent multiple submissions if form is already being submitted
+		if (isSubmitting) return;
+
+		setIsSubmitting(true); // Set form submission status to true
 
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
@@ -263,6 +271,9 @@ export default function AttendanceForm() {
 		}
 
 		setFormSubmitted(true);
+
+		// After successful form submission or error handling, reset form submission status
+		setIsSubmitting(false);
 
 		// setInfo({} as Info);
 	};
@@ -928,25 +939,25 @@ export default function AttendanceForm() {
 									{userType === 'visitor' ? (
 										<button
 											type="submit"
-											className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+											className={`${info.attFormsStaffName && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
-												if (info.attFormsStaffName && !formSubmitted) {
+												if (info.attFormsStaffName && !formSubmitted && !isSubmitting) {
 													handleSubmit();
 												}
 											}}
-											disabled={!info.attFormsStaffName || formSubmitted}>
+											disabled={!info.attFormsStaffName || formSubmitted || isSubmitting}>
 											Submit
 										</button>
 									) : (
 										<button
 											type="submit"
-											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !isSubmitting? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
-												if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted) {
+												if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
 													handleSubmit();
 												}
 											}}
-											disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted}>
+											disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
 											Submit
 										</button>
 									)}
