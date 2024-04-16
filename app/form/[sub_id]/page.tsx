@@ -172,8 +172,6 @@ export default function AttendanceForm() {
 	const handleSubmit = async () => {
 		// e.preventDefault();
 
-		setFormSubmitted(true);
-
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
 
 		if (!isValidEmail) {
@@ -264,7 +262,7 @@ export default function AttendanceForm() {
 			}
 		}
 
-
+		setFormSubmitted(true);
 
 		// setInfo({} as Info);
 	};
