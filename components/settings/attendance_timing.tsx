@@ -109,7 +109,7 @@ const AttendanceTiming = () => {
                             <option value={60}>1 hour</option>
                         </select>
                     </div>
-                    <button className="mt-[14px] lg:mt-4 bg-slate-800 text-gray-100 font-semibold text-base px-3 lg:px-4 py-[6px] lg:py-2 rounded-md hover:bg-slate-900 self-center lg:self-end" onClick={handleSaveChanges}>
+                    <button className="mt-4 bg-slate-800 text-gray-100 font-semibold text-[15px] lg:text-base px-3 lg:px-4 py-[6px] lg:py-2 rounded-md hover:bg-slate-900 self-center lg:self-end" onClick={handleSaveChanges}>
                         Save Changes
                     </button>
                 </div>
