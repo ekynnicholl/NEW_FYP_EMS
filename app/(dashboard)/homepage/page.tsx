@@ -2692,7 +2692,7 @@ export default function Homepage() {
 				</div>
 
 				<div>
-					<canvas ref={chartRef} style={{ height: '30px'}} className="mt-2"></canvas>
+					<canvas ref={chartRef} style={{ height: '20px'}} className="mt-2"></canvas>
 				</div>
 			</div>
 
