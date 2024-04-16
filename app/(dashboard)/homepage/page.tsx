@@ -1162,61 +1162,95 @@ export default function Homepage() {
 	const slate600Color = '#6B7280'; // Grey color hex code
 
 	useEffect(() => {
-		const ctx = chartRef.current;
-
-		// Sample data for events each month in 2024
-		const eventData = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65];
-
-		if (chartInstance.current) {
-			chartInstance.current.destroy(); // Destroy the previous chart instance
-		}
-
-		if (ctx) {
-			chartInstance.current = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-					datasets: [{
-						label: 'Number of Events in 2024',
-						data: eventData,
-						borderColor: slate600Color,
-						tension: 0.1
-					}]
-				},
-				options: {
-					scales: {
-						y: {
-							beginAtZero: true,
-							title: {
-								display: true,
-								text: 'Number of Events',
-								color: slate900Color
-							}
-						},
-						x: {
-							ticks: {
-								color: slate900Color
-							}
-						}
-					},
-					plugins: {
-						legend: {
-							labels: {
-								color: slate900Color
-							}
-						}
-					}
+		const fetchDataAndInitializeChart = async () => {
+			try {
+				// Get the current year
+				const currentYear = new Date().getFullYear();
+		
+				const { data, error } = await supabase
+					.from('internal_events')
+					.select('*')
+					.gte('intFEventStartDate', `${currentYear}-01-01T00:00:00.000Z`) // Filter for the current year
+					.lte('intFEventStartDate', `${currentYear}-12-31T23:59:59.999Z`); // Filter for the current year
+		
+				if (error) {
+					throw error;
 				}
-			});
-		}
-
-		// Cleanup function
-		return () => {
-			if (chartInstance.current) {
-				chartInstance.current.destroy(); // Destroy the chart instance when the component unmounts
+		
+				// Extract month and count events
+				const eventData = data.map(entry => ({
+					month: new Date(entry.intFEventStartDate).getMonth() + 1, // Add 1 to get 1-based month index
+					event_count: 1 // Assuming each row represents one event
+				}));
+		
+				// Group data by month and calculate event counts
+				const groupedEventData: { [key: number]: number } = {};
+				eventData.forEach(entry => {
+					const month = entry.month;
+					if (!groupedEventData[month]) {
+						groupedEventData[month] = 0;
+					}
+					groupedEventData[month]++;
+				});
+		
+				// Prepare data for chart
+				const chartData = Object.keys(groupedEventData).map(month => ({
+					month: parseInt(month),
+					event_count: groupedEventData[parseInt(month)]
+				}));
+		
+				const ctx = chartRef.current;
+		
+				if (chartInstance.current) {
+					chartInstance.current.destroy(); // Destroy the previous chart instance
+				}
+		
+				if (ctx) {
+					chartInstance.current = new Chart(ctx, {
+						type: 'line',
+						data: {
+							labels: chartData.map(entry => entry.month),
+							datasets: [{
+								label: `Number of Events in ${currentYear}`,
+								data: chartData.map(entry => entry.event_count),
+								borderColor: slate600Color,
+								tension: 0.1
+							}]
+						},
+						options: {
+							scales: {
+								y: {
+									beginAtZero: true,
+									title: {
+										display: true,
+										text: 'Number of Events',
+										color: slate900Color
+									}
+								},
+								x: {
+									ticks: {
+										color: slate900Color
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									labels: {
+										color: slate900Color
+									}
+								}
+							}
+						}
+					});
+				}
+			} catch (error) {
+				console.error('Error fetching or initializing chart:', error.message);
 			}
 		};
-	}, []);
+		
+		fetchDataAndInitializeChart();
+	}, [supabase]);
+
 
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
