@@ -62,7 +62,7 @@ const AttendanceTiming = () => {
 
     return (
         <div
-            className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? "max-w-[40%]" : "max-w-[400px]"
+            className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? "lg:max-w-[40%]" : "max-w-[400px]"
                 }`}
         >
             <div className="flex items-center">
@@ -79,7 +79,7 @@ const AttendanceTiming = () => {
             <div className="border-t border-gray-300 my-2"></div>
             {isExpanded ? (
                 <div className="overflow-y-auto max-h-80 flex flex-col justify-between">
-                    <div className="text-slate-900 dark:text-dark_text mb-3 text-justify">
+                    <div className="text-slate-900 dark:text-dark_text mb-3 text-justify text-sm lg:text-base">
                         <p>Please take note,</p>
                         <br />
                         <p>
@@ -88,34 +88,34 @@ const AttendanceTiming = () => {
                         </p>
                     </div>
                     <div className="flex">
-                        <label htmlFor="startTime" className="text-slate-800 dark:text-dark_text font-bold">
+                        <label htmlFor="startTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base">
                             Start Time:
                         </label>
-                        <select id="startTime" className="border border-gray-300 p-2 rounded-md ml-10" value={selectedStartTime} onChange={handleStartTimeChange}>
+                        <select id="startTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base" value={selectedStartTime} onChange={handleStartTimeChange}>
                             <option value={15}>15 minutes</option>
                             <option value={30}>30 minutes</option>
                             <option value={45}>45 minutes</option>
                             <option value={60}>1 hour</option>
                         </select>
                     </div>
-                    <div className="flex mt-2">
-                        <label htmlFor="endTime" className="text-slate-800 dark:text-dark_text font-bold">
+                    <div className="flex mt-3 lg:mt-2">
+                        <label htmlFor="endTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base">
                             End Time:
                         </label>
-                        <select id="endTime" className="border border-gray-300 p-2 rounded-md ml-12" value={selectedEndTime} onChange={handleEndTimeChange}>
+                        <select id="endTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-12 text-sm lg:text-base" value={selectedEndTime} onChange={handleEndTimeChange}>
                             <option value={15}>15 minutes</option>
                             <option value={30}>30 minutes</option>
                             <option value={45}>45 minutes</option>
                             <option value={60}>1 hour</option>
                         </select>
                     </div>
-                    <button className="mt-4 bg-slate-800 text-gray-100 font-semibold px-4 py-2 rounded-md hover:bg-slate-900 self-end" onClick={handleSaveChanges}>
+                    <button className="mt-[14px] lg:mt-4 bg-slate-800 text-gray-100 font-semibold text-base px-3 lg:px-4 py-[6px] lg:py-2 rounded-md hover:bg-slate-900 self-center lg:self-end" onClick={handleSaveChanges}>
                         Save Changes
                     </button>
                 </div>
             ) : (
                 <div>
-                    <p className="text-slate-800 dark:text-dark_text">Change how early an attendance forms should open or delay it from closing.</p>
+                    <p className="text-slate-800 dark:text-dark_text text-sm lg:text-base">Change how early an attendance forms should open or delay it from closing.</p>
                 </div>
             )}
         </div>
