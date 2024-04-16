@@ -1218,6 +1218,7 @@ export default function Homepage() {
 							}]
 						},
 						options: {
+							maintainAspectRatio: false,
 							scales: {
 								y: {
 									beginAtZero: true,
