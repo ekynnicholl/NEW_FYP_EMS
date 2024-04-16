@@ -136,9 +136,9 @@ const CreateAdminAccount = () => {
 				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
 				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
 					{isExpanded ? (
-						<IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
+						<IoMdArrowDropleftCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					) : (
-						<IoMdArrowDroprightCircle className="text-[30px] dark:text-dark_text" />
+						<IoMdArrowDroprightCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					)}
 				</div>
 			</div>

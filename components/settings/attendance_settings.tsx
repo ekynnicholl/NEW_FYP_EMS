@@ -369,9 +369,9 @@ const AttendanceSettings = () => {
                 <h1 className="font-bold dark:text-dark_text text-[18px] lg:text-[20px]">Attendance Forms Settings</h1>
                 <div onClick={toggleExpansion} className="ml-auto cursor-pointer">
                     {isExpanded ? (
-                        <IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
+                        <IoMdArrowDropleftCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
                     ) : (
-                        <IoMdArrowDroprightCircle className="text-[30px] dark:text-dark_text" />
+                        <IoMdArrowDroprightCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
                     )}
                 </div>
             </div>
@@ -720,7 +720,7 @@ const AttendanceSettings = () => {
                 </div>
             ) : (
                 <div>
-                    <p className="text-slate-900 dark:text-dark_text">Change the options for the drop-down menu for students and staff in the attendance forms.</p>
+                    <p className="text-slate-900 dark:text-dark_text text-sm lg:text-base">Change the options for the drop-down menu for students and staff in the attendance forms.</p>
                 </div>
             )}
         </div>
