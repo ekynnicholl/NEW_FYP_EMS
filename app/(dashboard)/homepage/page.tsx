@@ -1218,7 +1218,7 @@ export default function Homepage() {
 							}]
 						},
 						options: {
-							maintainAspectRatio: false,
+							// maintainAspectRatio: false, // *** Important : this is required or a strange vanishing zoom out effect occurs with the graph. 
 							scales: {
 								y: {
 									beginAtZero: true,
