@@ -129,11 +129,11 @@ const CreateAdminAccount = () => {
 	return (
 		<div
 			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${
-				isExpanded ? "max-w-[30%]" : "max-w-[400px]"
+				isExpanded ? "lg:max-w-[30%]" : "max-w-[400px]"
 			}`}
 		>
 			<div className="flex items-center">
-				<h1 className="font-bold text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
+				<h1 className="font-bold text-[17px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
 				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
 					{isExpanded ? (
 						<IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
@@ -148,9 +148,9 @@ const CreateAdminAccount = () => {
 					<form onSubmit={e => handleCreateAccount(e)}>
 						<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
 							<div className="mx-auto max-w-xs ">
-								<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
+								<p className="text-xl lg:text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
 								<input
-									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+									className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]" 
 									type="email"
 									placeholder="Email address"
 									name="email"
@@ -160,7 +160,7 @@ const CreateAdminAccount = () => {
 
 								<div className="relative">
 									<input
-										className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+										className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-4 lg:mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 										type={showPassword ? "password" : "text"}
 										placeholder="Password"
 										id="password"
@@ -185,7 +185,7 @@ const CreateAdminAccount = () => {
 								</div>
 								<div className="relative">
 									<input
-										className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+										className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-4 lg:mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
 										type={showConfirmPassword ? "password" : "text"}
 										placeholder="Confirm password"
 										id="confirmPassword"
@@ -209,7 +209,7 @@ const CreateAdminAccount = () => {
 									<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
 									<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
 								</div>
-								<button className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
+								<button className="mt-6 lg:mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-3 lg:py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
 									<svg
 										className="w-6 h-6 -ml-2"
 										fill="none"
@@ -218,7 +218,7 @@ const CreateAdminAccount = () => {
 										strokeLinecap="round"
 										strokeLinejoin="round"
 									></svg>
-									<span className="mr-4 text-[16px]">Register</span>
+									<span className="mr-4 text-[15px] lg:text-[16px]">Register</span>
 								</button>
 							</div>
 						</div>
@@ -226,7 +226,7 @@ const CreateAdminAccount = () => {
 				</div>
 			) : (
 				<div>
-					<p className="text-slate-800 dark:text-dark_text">Register an account for new administrator with their own email and password.</p>
+					<p className="text-slate-800 dark:text-dark_text text-sm lg:text-base">Register an account for new administrator with their own email and password.</p>
 				</div>
 			)}
 		</div>
