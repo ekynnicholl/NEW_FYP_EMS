@@ -486,29 +486,36 @@ const AttendanceSettings = () => {
                                             </tbody>
                                         </table>
 
-                                        <div className=" border-2 p-7 w-1/4 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right dark:border-[#363B3D]">
-                                            <p className="font-bold text-md dark:text-dark_text">Add New Faculty / Unit</p>
-                                            <input type="text"
-                                                placeholder="e.g., Academic Office"
-                                                value={newFacultyName}
-                                                className="mt-7 border-[1px] border-slate-200 rounded-sm w-[360px] px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
-                                                onChange={e => setNewFacultyName(e.target.value)}
-                                            /><br />
-
-                                            <button
-                                                className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right mt-16 mr-3 float-right dark:bg-[#18212F] dark:text-dark_text dark:border-[#736B5E] ${!newFacultyName ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
-                                                onClick={() => { createNewFacultyUnit(newFacultyName); }}
-                                                disabled={!newFacultyName}
-                                            >Add</button>
-
+                                        <div className="lg:flex">
+                                            <table className="w-full lg:w-1/2 lg:float-left">
+                                                {/* Table content */}
+                                            </table>
+                                            <div className="border-2 p-7 lg:w-1/4 mr-6 mt-6 lg:mt-0 shadow-lg dark:bg-dark_mode_card lg:float-right dark:border-[#363B3D]">
+                                                <p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add New Faculty / Unit</p>
+                                                <input
+                                                    type="text"
+                                                    placeholder="e.g., Academic Office"
+                                                    value={newFacultyName}
+                                                    className="text-sm lg:text-base mt-7 border-[1px] border-slate-200 rounded-sm w-full lg:w-[360px] px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
+                                                    onChange={e => setNewFacultyName(e.target.value)}
+                                                />
+                                                <button
+                                                    className={`mt-4 rounded-lg text-sm lg:text-base py-2 px-4 lg:py-3 lg:px-5 font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right dark:bg-[#18212F] dark:text-dark_text dark:border-[#736B5E] ${!newFacultyName ? 'bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+                                                    onClick={() => { createNewFacultyUnit(newFacultyName); }}
+                                                    disabled={!newFacultyName}
+                                                >
+                                                    Add
+                                                </button>
+                                            </div>
                                         </div>
+
                                     </Tab.Panel>
 
                                     {/* Settings for Student */}
                                     <Tab.Panel>
 
                                         <div className="border-2 p-7 mt-12 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right w-1/4">
-                                            <p className="font-bold text-md">Add New Faculty / Unit</p>
+                                            <p className="font-bold text-base">Add New Faculty / Unit</p>
                                             <input type="text"
                                                 placeholder="e.g., Faculty of Business, Design and Arts"
                                                 value={newFacultyStudent}

@@ -396,7 +396,7 @@ const AttendanceSettings = () => {
 				</div>
 			) : (
 				<div>
-					<p className="text-slate-900 dark:text-dark_text">
+					<p className="text-slate-900 dark:text-dark_text text-sm lg:text-base">
 						Change the email options for HOS/ MGR/ ADCR/ HMU/ Dean in Nominations/ Travelling Form&apos;s (NTF) for verification and
 						approval.
 					</p>
