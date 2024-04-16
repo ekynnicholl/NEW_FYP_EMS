@@ -124,7 +124,7 @@ const AttendanceSettings = () => {
 				}`}
 		>
 			<div className="flex items-center">
-				<h1 className="font-bold text-[20px] dark:text-dark_text">External Forms Emails</h1>
+				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">External Forms Emails</h1>
 				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
 					{isExpanded ? (
 						<IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
@@ -136,7 +136,7 @@ const AttendanceSettings = () => {
 			<div className="border-t border-gray-300 my-2"></div>
 			{isExpanded ? (
 				<div>
-					<div className="text-slate-900 dark:text-dark_text mb-3">
+					<div className="text-slate-900 dark:text-dark_text mb-3 text-sm lg:text-base">
 						<p>Please take note,</p>
 						<p>Verification - Head of School/ Manager/ Associate Dean of Research</p>
 						<p>Approval - Head of Management Unit/ Dean</p>

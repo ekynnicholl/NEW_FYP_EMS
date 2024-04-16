@@ -133,7 +133,7 @@ const CreateAdminAccount = () => {
 			}`}
 		>
 			<div className="flex items-center">
-				<h1 className="font-bold text-[17px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
+				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
 				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
 					{isExpanded ? (
 						<IoMdArrowDropleftCircle className="text-[30px] dark:text-dark_text" />
