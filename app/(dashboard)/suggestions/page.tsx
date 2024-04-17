@@ -10,11 +10,11 @@ export default function Home() {
         <div className="">
             <div className="flex-1">
                 <div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
-                    <div className="flex flex-row space-x-4">
+                    <div className="flex flex-col lg:flex-row space-x-4">
                         <Suggestion />
                         <SuggestList />
                     </div>
-                    <div className="flex flex-row space-x-4">
+                    <div className="flex flex-col lg:flex-row space-x-4">
                         <UpdateLogs />
                         <ToDo />
                     </div>
