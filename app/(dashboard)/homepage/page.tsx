@@ -1225,14 +1225,12 @@ export default function Homepage() {
 									title: {
 										display: true,
 										text: 'Number of Events',
-										color: slate900Color,
-										grid: { display: false },
+										color: slate900Color
 									}
 								},
 								x: {
 									ticks: {
-										color: slate900Color,
-										grid: { display: false },
+										color: slate900Color
 									}
 								}
 							},
