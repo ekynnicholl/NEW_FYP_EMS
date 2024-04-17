@@ -88,8 +88,8 @@ const UpdateLogs: React.FC = () => {
     };
 
     return (
-        <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-1/2">
-            <h1 className="font-bold text-[20px] dark:text-dark_text">Update Logs</h1>
+        <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-full">
+            <h1 className="font-bold text-[20px] dark:text-dark_text text-base lg:text-lg">Update Logs</h1>
             <div className="border-t border-gray-300 my-2"></div>
             <ul className="dark:text-dark_text">
                 {commits
@@ -150,9 +150,10 @@ const UpdateLogs: React.FC = () => {
                     </button>
                 </div>
             </div>
+
             {/* Pagination for Mobile */}
             <div className="block lg:hidden">
-                <div className="pagination flex justify-center items-center mt-5 pb-5">
+                <div className="pagination flex justify-center items-center mt-5 pb-5 w-full">
                     <button
                         className="opacity-70 ml-2"
                         onClick={() => handlePageChange(1)}

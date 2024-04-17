@@ -1,10 +1,10 @@
 const ToDo = () => {
     return (
-        <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-1/2">
-            <h1 className="font-bold text-[20px] dark:text-dark_text">Future/ Upcoming Updates</h1>
+        <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-full">
+            <h1 className="font-bold text-[20px] dark:text-dark_text text-base lg:text-lg">Future/ Upcoming Updates</h1>
             <div className="border-t border-gray-300 my-2"></div>
             <div className="dark:text-dark_text text-justify">
-                <ul className="list-disc pl-5">
+                <ul className="list-disc pl-5 text-sm lg:text-base">
                     <li> <span className="text-green-500">Combine graphs according to sections based on HR requirement for feedback forms (Requested by Ms. Bibiana).</span></li>
                     <li> <span className="text-green-500">Added visitor option for attendance forms.</span></li>
                     <li> <span className="text-green-500">Notifications module for Nominations/ Travelling Form (UI).</span></li>
@@ -31,20 +31,20 @@ const ToDo = () => {
             </div>
             <br />
             <div className="dark:text-dark_text">
-                <h2>Indicators: </h2>
-                <div className="flex">
+                <h2 className="lg:text-sm text-base font-bold">Indicators: </h2>
+                <div className="flex text-sm lg:text-base">
                     <div className="w-4 h-4 bg-red-500 mr-2 mt-1"></div>
                     <span>
                         Item is currently being tested/ checked whether it is feasible.
                     </span>
                 </div>
-                <div className="flex">
+                <div className="flex text-sm lg:text-base">
                     <div className="w-4 h-4 bg-black-500 mr-2 mt-1"></div>
                     <span>
                         To be confirmed.
                     </span>
                 </div>
-                <div className="flex">
+                <div className="flex text-sm lg:text-base">
                     <div className="w-4 h-4 bg-green-500 mr-2 mt-1"></div>
                     <span>
                         Item has already been implemented.

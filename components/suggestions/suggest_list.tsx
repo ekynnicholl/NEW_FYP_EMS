@@ -51,7 +51,7 @@ const SuggestList = () => {
 
     return (
         <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left lg:w-1/2">
-            <h1 className="font-bold text-[20px] dark:text-dark_text">Latest Suggestions</h1>
+            <h1 className="font-bold text-base lg:text-lg dark:text-dark_text">Latest Suggestions</h1>
             <div className="border-t border-gray-300 my-2"></div>
             <div className="overflow-y-auto max-h-80">
                 <table className="w-full">
@@ -68,10 +68,10 @@ const SuggestList = () => {
                     <tbody>
                         {suggestions.map((suggestion, index) => (
                             <tr key={index}>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm lg:text-base text-center dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                     {suggestion.suggBy} {/* <br /> {formatDate(suggestion.suggCreated).date} */}
                                 </td>
-                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm lg:text-base text-center dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
                                     {suggestion.suggDesc}
                                 </td>
                             </tr>

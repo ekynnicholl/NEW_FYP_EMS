@@ -33,9 +33,9 @@ const Suggestion = () => {
 
     return (
         <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left lg:w-1/2">
-            <h1 className="font-bold text-[20px] dark:text-dark_text">Submit your suggestions!</h1>
+            <h1 className="font-bold text-[20px] dark:text-dark_text text-base lg:text-lg">Submit your suggestions!</h1>
             <div className="border-t border-gray-300 my-2"></div>
-            <div className="dark:text-dark_text">
+            <div className="dark:text-dark_text text-sm lg:text-base">
                 <p>Your suggestions are invaluable in enhancing our system and making it even better.
                     We appreciate your input and look forward to hearing your ideas!</p>
                 {submissionStatus === 1 && (
@@ -70,7 +70,7 @@ const Suggestion = () => {
                                 <button
                                     type="submit"
                                     disabled={!suggBy && !suggDesc}
-                                    className={`${(suggBy && suggDesc) ? 'bg-[#494F52]' : 'bg-[#494F52]'} text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`} >
+                                    className={`${(suggBy && suggDesc) ? 'bg-slate-900' : 'bg-slate-900'} text-white font-bold py-[11px] lg:py-3 px-8 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`} >
                                     Submit
                                 </button>
                             </div>
@@ -89,7 +89,7 @@ const Suggestion = () => {
                         <h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
                             Oopsies!
                         </h3>
-                        <p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+                        <p className="text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
                             Something went wrong with our side. Please try again or contact the webmaster.
                         </p>
                     </div>
@@ -106,7 +106,7 @@ const Suggestion = () => {
                         <h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
                             Thank you!
                         </h3>
-                        <p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+                        <p className="text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
                             Your suggestion has been recorded successfully.
                         </p>
                     </div>
