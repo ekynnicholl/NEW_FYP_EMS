@@ -167,7 +167,8 @@ const AttendanceSettings = () => {
 
 						<Tab.Panels>
 							<Tab.Panel>
-								<table className="w-1/2 float-left">
+
+								<table className="lg:w-1/2 lg:float-left">
 									<thead>
 										<tr>
 											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -262,25 +263,30 @@ const AttendanceSettings = () => {
 									</tbody>
 								</table>
 
-								<div className=" border-2 p-7 w-1/4 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right dark:border-[#363B3D]">
-									<p className="font-bold text-md dark:text-dark_text">Add Verifier Email</p>
+								<div className="lg:w-1/2 lg:float-right border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card mt-5">
+									<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Verifier Email</p>
 									<input type="text"
 										placeholder="e.g., hos@gmail.com"
 										value={newEmail}
-										className="mt-7 border-[1px] border-slate-200 rounded-sm w-[360px] px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
+										className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
 										onChange={e => setNewEmail(e.target.value)}
 									/><br />
 
-									<button
-										className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right mt-16 mr-3 float-right dark:bg-[#18212F] dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
-										onClick={() => { createNewEmail(newEmail, 1); }}
-										disabled={!newEmail}
-									>Add</button>
+									<div className="flex justify-end">
+										<button
+											className={`mt-4 lg:mt-7 rounded-lg py-[9px] lg:py-3 px-[28px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+											onClick={() => { createNewEmail(newEmail, 1); }}
+											disabled={!newEmail}
+										>
+											Add
+										</button>
+									</div>
 								</div>
+
 							</Tab.Panel>
 
 							<Tab.Panel>
-								<table className="w-1/2 float-left">
+								<table className="lg:w-1/2 float-left mb-5">
 									<thead>
 										<tr>
 											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -375,21 +381,26 @@ const AttendanceSettings = () => {
 									</tbody>
 								</table>
 
-								<div className=" border-2 p-7 w-1/4 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right dark:border-[#363B3D]">
-									<p className="font-bold text-md dark:text-dark_text">Add Approver Email</p>
+								<div className="lg:w-1/2 border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
+									<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Approver Email</p>
 									<input type="text"
 										placeholder="e.g., hmu@gmail.com"
 										value={newEmail}
-										className="mt-7 border-[1px] border-slate-200 rounded-sm w-[360px] px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
+										className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
 										onChange={e => setNewEmail(e.target.value)}
 									/><br />
 
-									<button
-										className={`rounded-lg py-3 px-[50px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 justify-end text-right mt-16 mr-3 float-right dark:bg-[#18212F] dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
-										onClick={() => { createNewEmail(newEmail, 2); }}
-										disabled={!newEmail}
-									>Add</button>
+									<div className="flex justify-end">
+										<button
+											className={`-mt-2 lg:mt-2 rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
+											onClick={() => { createNewEmail(newEmail, 2); }}
+											disabled={!newEmail}
+										>
+											Add
+										</button>
+									</div>
 								</div>
+
 							</Tab.Panel>
 						</Tab.Panels>
 					</Tab.Group>
