@@ -514,21 +514,23 @@ const AttendanceSettings = () => {
                                     {/* Settings for Student */}
                                     <Tab.Panel>
 
-                                        <div className="border-2 p-7 mt-12 lg:mr-72 shadow-lg dark:bg-dark_mode_card float-right w-1/4">
-                                            <p className="font-bold text-base">Add New Faculty / Unit</p>
+                                        <div className="border-2 p-7 mt-12 lg:mr-72 shadow-lg dark:bg-dark_mode_card lg:float-right lg:w-1/4">
+                                            <p className="font-bold text-sm lg:text-base">Add New Faculty / Unit</p>
                                             <input type="text"
                                                 placeholder="e.g., Faculty of Business, Design and Arts"
                                                 value={newFacultyStudent}
-                                                className="mt-7 border-[1px] border-slate-200 rounded-sm w-[373px] px-2 py-1"
+                                                className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 text-sm lg:text-base"
                                                 onChange={e => setNewFacultyStudent(e.target.value)}
                                             />
                                             <button
-                                                className={` rounded-lg py-2 px-[50px] lg:px-[25px] font-medium dark:bg-slate-800 mt-5 mr-3 float-right  ${!newFacultyStudent ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  focus:shadow-outline focus:outline-none focus:ring-2 bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+                                                className={`rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium dark:bg-slate-800 mt-5 text-sm lg:text-base ${!newFacultyStudent ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white focus:shadow-outline focus:outline-none focus:ring-2 bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
                                                 onClick={() => { createNewFacultyStudent(newFacultyStudent); }}
                                                 disabled={!newFacultyStudent}
-                                            >Add</button>
+                                            >
+                                                Add
+                                            </button>
 
-                                            <p className="font-bold text-md mt-24">Add New Category</p>
+                                            <p className="font-bold text-sm lg:text-base mt-7 lg:mt-20">Add New Category</p>
 
                                             <select
                                                 name="studentFacultyUnit"
@@ -561,11 +563,14 @@ const AttendanceSettings = () => {
                                             }
 
                                             <button
-                                                className={` rounded-lg py-2 px-[50px] lg:px-[25px] font-medium dark:bg-slate-800 mt-5 mr-3 float-right  ${!newCategory ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  focus:shadow-outline focus:outline-none focus:ring-2 bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+                                                className={`rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium dark:bg-slate-800 mt-5 text-sm lg:text-base ${!newCategory ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white focus:shadow-outline focus:outline-none focus:ring-2 bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
                                                 onClick={() => { createNewCategory(newCategory, categories.length + 1, catFacultyID); }}
                                                 disabled={!newCategory}
-                                            >Add</button>
+                                            >
+                                                Add
+                                            </button>
                                         </div>
+
 
                                         {facultyStudents.map((faculty, index) => {
 
@@ -723,6 +728,7 @@ const AttendanceSettings = () => {
                                 </button>
                             </div>
                         </div>
+
                     </AddFacultyUnitModal>
                 </div>
             ) : (
