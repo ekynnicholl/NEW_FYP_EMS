@@ -1221,6 +1221,9 @@ export default function Homepage() {
 							// maintainAspectRatio: false, // *** Important : this is required or a strange vanishing zoom out effect occurs with the graph. 
 							scales: {
 								y: {
+									grid: {
+										display: false
+									},
 									beginAtZero: true,
 									title: {
 										display: true,
@@ -1229,6 +1232,9 @@ export default function Homepage() {
 									}
 								},
 								x: {
+									grid: {
+										display: false
+									},
 									ticks: {
 										color: slate900Color
 									}
@@ -1258,7 +1264,7 @@ export default function Homepage() {
 		return months[month - 1]; // Adjusting for 0-based index
 	};
 
-	
+
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
@@ -2699,7 +2705,7 @@ export default function Homepage() {
 				</div>
 
 				<div>
-					<canvas ref={chartRef} height="40" className="mt-2"></canvas>
+					<canvas ref={chartRef} height="30" className="mt-2"></canvas>
 				</div>
 			</div>
 
