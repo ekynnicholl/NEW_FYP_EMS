@@ -2704,7 +2704,8 @@ export default function Homepage() {
 					</button>
 				</div>
 
-				<div>
+
+				<div className="hidden lg:block">
 					<canvas ref={chartRef} height="30" className="mt-2"></canvas>
 				</div>
 			</div>

@@ -168,7 +168,7 @@ const AttendanceSettings = () => {
 						<Tab.Panels>
 							<Tab.Panel>
 
-								<table className="lg:w-1/2 lg:float-left">
+								<table className="lg:float-left">
 									<thead>
 										<tr>
 											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -263,7 +263,7 @@ const AttendanceSettings = () => {
 									</tbody>
 								</table>
 
-								<div className="lg:w-1/2 lg:float-right border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card mt-5">
+								<div className="lg:float-right border-2 p-7 lg:mr-[550px] shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0">
 									<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Verifier Email</p>
 									<input type="text"
 										placeholder="e.g., hos@gmail.com"
@@ -286,7 +286,7 @@ const AttendanceSettings = () => {
 							</Tab.Panel>
 
 							<Tab.Panel>
-								<table className="lg:w-1/2 float-left mb-5">
+								<table className="lg:w-1/2 float-left mb-5 lg:mr-10">
 									<thead>
 										<tr>
 											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -381,7 +381,7 @@ const AttendanceSettings = () => {
 									</tbody>
 								</table>
 
-								<div className="lg:w-1/2 border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
+								<div className="border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
 									<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Approver Email</p>
 									<input type="text"
 										placeholder="e.g., hmu@gmail.com"

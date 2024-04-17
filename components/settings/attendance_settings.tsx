@@ -490,13 +490,13 @@ const AttendanceSettings = () => {
                                             <table className="w-full lg:w-1/2 lg:float-left">
                                                 {/* Table content */}
                                             </table>
-                                            <div className="border-2 p-7 lg:w-1/4 mr-6 mt-6 lg:mt-0 shadow-lg dark:bg-dark_mode_card lg:float-right dark:border-[#363B3D]">
+                                            <div className="border-2 p-7 mr-6 mt-6 lg:mt-0 shadow-lg dark:bg-dark_mode_card lg:float-right dark:border-[#363B3D]">
                                                 <p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add New Faculty / Unit</p>
                                                 <input
                                                     type="text"
                                                     placeholder="e.g., Academic Office"
                                                     value={newFacultyName}
-                                                    className="text-sm lg:text-base mt-7 border-[1px] border-slate-200 rounded-sm w-full lg:w-[360px] px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
+                                                    className="text-sm lg:text-base mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card"
                                                     onChange={e => setNewFacultyName(e.target.value)}
                                                 />
                                                 <button
