@@ -32,7 +32,7 @@ const Suggestion = () => {
     };
 
     return (
-        <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left w-1/2">
+        <div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left lg:w-1/2">
             <h1 className="font-bold text-[20px] dark:text-dark_text">Submit your suggestions!</h1>
             <div className="border-t border-gray-300 my-2"></div>
             <div className="dark:text-dark_text">
