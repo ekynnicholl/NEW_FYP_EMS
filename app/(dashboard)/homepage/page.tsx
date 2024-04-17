@@ -1209,7 +1209,7 @@ export default function Homepage() {
 					chartInstance.current = new Chart(ctx, {
 						type: 'line',
 						data: {
-							labels: chartData.map(entry => entry.month),
+							labels: chartData.map(entry => getMonthName(entry.month)), // Map month numbers to month names
 							datasets: [{
 								label: `Number of Events in ${currentYear}`,
 								data: chartData.map(entry => entry.event_count),
@@ -1252,7 +1252,13 @@ export default function Homepage() {
 		fetchDataAndInitializeChart();
 	}, [supabase]);
 
+	// Function to get month names from month numbers
+	const getMonthName = (month: number): string => {
+		const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		return months[month - 1]; // Adjusting for 0-based index
+	};
 
+	
 	return (
 		// <div className={`pl-1 pr-3 py-3 lg:p-5 ${isDarkMode ? 'bg-black-100' : 'bg-slate-100'} space-y-4`}>
 		<div className="pl-1 pr-3 py-3 lg:p-5 space-y-4 dark:bg-dark_mode_bg bg-slate-100">
