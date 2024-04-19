@@ -511,7 +511,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 							<div className="flex justify-between mb-8">
 								<div className="flex gap-3">
 									<div className="rounded-sm bg-green-200 w-4 h-8"></div>
-									<h1 className="text-xl font-semibold">Persona Details</h1>
+									<h1 className="text-xl font-semibold">Personal Details</h1>
 								</div>
 							</div>
 							<div>
