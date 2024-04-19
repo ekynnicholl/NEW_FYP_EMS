@@ -437,9 +437,9 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - TO REVIEW & APPROVE REMINDER] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - TO VERIFY & SUPPORT REMINDER] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-                html: generateEmailHTML("[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
+                html: generateEmailHTML("[Verifier Level: Review & Approval Reminder to to HOS/ACDR/MGR]", formID, 1, requestData.securityKey, formDetails)
             });
 
         } else if (formStage === 4) {
