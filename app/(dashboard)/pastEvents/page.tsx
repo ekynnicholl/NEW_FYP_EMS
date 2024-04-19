@@ -383,7 +383,7 @@ export default function Home() {
 
 		const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
 		const wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, 'Events Data');
+		XLSX.utils.book_append_sheet(wb, ws, 'Past Events Data');
 
 		const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Change type to 'array'
 
@@ -397,7 +397,7 @@ export default function Home() {
 
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = 'Events Data.xlsx';
+		a.download = 'Past Events Data.xlsx';
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
@@ -421,23 +421,23 @@ export default function Home() {
 	};
 
 	// export to CSV format
-	const exportToCSV = () => {
-		// Generate header row
-		const header = Object.keys(mainEvents[0]).join(",");
-		const dataRows = mainEvents.map(e => Object.values(e).join(",")).join("\n");
+	// const exportToCSV = () => {
+	// 	// Generate header row
+	// 	const header = Object.keys(mainEvents[0]).join(",");
+	// 	const dataRows = mainEvents.map(e => Object.values(e).join(",")).join("\n");
 
-		// Combine header and data rows
-		const csvContent = `${header}\n${dataRows}`;
+	// 	// Combine header and data rows
+	// 	const csvContent = `${header}\n${dataRows}`;
 
-		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-		const link = document.createElement("a");
+	// 	const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+	// 	const link = document.createElement("a");
 
-		link.href = URL.createObjectURL(blob);
-		link.setAttribute("download", "attendance_data.csv");
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	};
+	// 	link.href = URL.createObjectURL(blob);
+	// 	link.setAttribute("download", "attendance_data.csv");
+	// 	document.body.appendChild(link);
+	// 	link.click();
+	// 	document.body.removeChild(link);
+	// };
 
 	// An array of sorting options
 	const sortOptions = [
