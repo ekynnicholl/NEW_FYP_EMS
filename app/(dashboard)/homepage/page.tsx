@@ -22,6 +22,7 @@ import Success_DeleteSubEventModal from "@/components/Modal";
 import Delete_Event_Confirmation_Modal from "@/components/Modal";
 import Delete_SubEvent_Confirmation_Modal from "@/components/Modal";
 import { Chart, registerables } from "chart.js/auto";
+import 'chartjs-plugin-datalabels';
 
 import Image from "next/image";
 import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent } from "react";
@@ -58,6 +59,7 @@ import FeedbackList from "@/components/feedback/feedback_list";
 import Calendar from "@/components/layouts/Calendar";
 import AttendanceList from "@/components/attendance/attendance_list";
 import toast from "react-hot-toast";
+
 
 const currentDate = new Date();
 
@@ -1218,7 +1220,6 @@ export default function Homepage() {
 							}]
 						},
 						options: {
-							// maintainAspectRatio: false, // *** Important : this is required or a strange vanishing zoom out effect occurs with the graph. 
 							scales: {
 								y: {
 									grid: {
@@ -1244,6 +1245,21 @@ export default function Homepage() {
 								legend: {
 									labels: {
 										color: slate900Color
+									}
+								},
+								tooltip: {
+									callbacks: {
+										label: function (context) {
+											return `Events: ${context.parsed.y}`;
+										}
+									}
+								},
+								datalabels: {
+									color: slate600Color,
+									anchor: 'end',
+									align: 'top',
+									formatter: function (value, context) {
+										return value;
 									}
 								}
 							}
@@ -4446,7 +4462,7 @@ export default function Homepage() {
 
 									if (filteredSubEvent) {
 										openModal(
-											"https://source.unsplash.com/600x300?social",
+											swinburneLogo.src,
 											latestEvent[0]?.intFID,
 											latestEvent[0]?.intFEventName,
 											latestEvent[0]?.intFEventDescription,
@@ -4469,7 +4485,7 @@ export default function Homepage() {
 										);
 									} else {
 										openModal(
-											"https://source.unsplash.com/600x300?social",
+											swinburneLogo.src,
 											latestEvent[0]?.intFID,
 											latestEvent[0]?.intFEventName,
 											latestEvent[0]?.intFEventDescription,
@@ -4495,7 +4511,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="https://source.unsplash.com/600x300?social" alt="Random" className="w-full h-full object-cover" />
+										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -4535,15 +4551,10 @@ export default function Homepage() {
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</div>
-										<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-											{latestEvent[0].intFEventDescription}
+										<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[13px]">
+											{latestEvent[0].intFEventDescription.substring(0, 50)}
+											{latestEvent[0].intFEventDescription.length > 50 && " ... "}
 										</p>
-										{/* <div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[0].intFEventStartDate)}
-												</p>
-											</div> */}
 
 										{subEvents.length > 0 &&
 											subEvents
@@ -4681,7 +4692,7 @@ export default function Homepage() {
 
 									if (filteredSubEvent) {
 										openModal(
-											"https://source.unsplash.com/600x300?birthday",
+											swinburneLogo.src,
 											latestEvent[1]?.intFID,
 											latestEvent[1]?.intFEventName,
 											latestEvent[1]?.intFEventDescription,
@@ -4704,7 +4715,7 @@ export default function Homepage() {
 										);
 									} else {
 										openModal(
-											"https://source.unsplash.com/600x300?birthday",
+											swinburneLogo.src,
 											latestEvent[1]?.intFID,
 											latestEvent[1]?.intFEventName,
 											latestEvent[1]?.intFEventDescription,
@@ -4730,7 +4741,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="https://source.unsplash.com/600x300?birthday" alt="Random" className="w-full h-full object-cover" />
+										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -4770,15 +4781,10 @@ export default function Homepage() {
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</div>
-										<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-											{latestEvent[1].intFEventDescription}
+										<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[13px]">
+											{latestEvent[1].intFEventDescription.substring(0, 50)}
+											{latestEvent[1].intFEventDescription.length > 50 && " ... "}
 										</p>
-										{/* <div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[1].intFEventStartDate)}
-												</p>
-											</div> */}
 
 										{subEvents.length > 0 &&
 											subEvents
@@ -4916,7 +4922,7 @@ export default function Homepage() {
 
 									if (filteredSubEvent) {
 										openModal(
-											"https://source.unsplash.com/600x300?new+year",
+											swinburneLogo.src,
 											latestEvent[2]?.intFID,
 											latestEvent[2]?.intFEventName,
 											latestEvent[2]?.intFEventDescription,
@@ -4939,7 +4945,7 @@ export default function Homepage() {
 										);
 									} else {
 										openModal(
-											"https://source.unsplash.com/600x300?new+year",
+											swinburneLogo.src,
 											latestEvent[2]?.intFID,
 											latestEvent[2]?.intFEventName,
 											latestEvent[2]?.intFEventDescription,
@@ -4965,7 +4971,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="https://source.unsplash.com/600x300?new+year" alt="Random" className="w-full h-full object-cover" />
+										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -5005,15 +5011,10 @@ export default function Homepage() {
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</div>
-										<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-											{latestEvent[2].intFEventDescription}
+										<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[13px]">
+											{latestEvent[2].intFEventDescription.substring(0, 50)}
+											{latestEvent[2].intFEventDescription.length > 50 && " ... "}
 										</p>
-										{/* <div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[2].intFEventStartDate)}
-												</p>
-											</div> */}
 
 										{subEvents.length > 0 &&
 											subEvents
@@ -5151,7 +5152,7 @@ export default function Homepage() {
 
 									if (filteredSubEvent) {
 										openModal(
-											"https://source.unsplash.com/600x300?events",
+											swinburneLogo.src,
 											latestEvent[3]?.intFID,
 											latestEvent[3]?.intFEventName,
 											latestEvent[3]?.intFEventDescription,
@@ -5174,7 +5175,7 @@ export default function Homepage() {
 										);
 									} else {
 										openModal(
-											"https://source.unsplash.com/600x300?events",
+											swinburneLogo.src,
 											latestEvent[3]?.intFID,
 											latestEvent[3]?.intFEventName,
 											latestEvent[3]?.intFEventDescription,
@@ -5200,7 +5201,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="https://source.unsplash.com/600x300?events" alt="Random" className="w-full h-full object-cover" />
+										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -5240,15 +5241,10 @@ export default function Homepage() {
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</div>
-										<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-											{latestEvent[3].intFEventDescription}
+										<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[13px]">
+											{latestEvent[3].intFEventDescription.substring(0, 50)}
+											{latestEvent[3].intFEventDescription.length > 50 && " ... "}
 										</p>
-										{/* <div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[3].intFEventStartDate)}
-												</p>
-											</div> */}
 
 										{subEvents.length > 0 &&
 											subEvents
@@ -5386,7 +5382,7 @@ export default function Homepage() {
 
 									if (filteredSubEvent) {
 										openModal(
-											"https://source.unsplash.com/600x300?balloon",
+											swinburneLogo.src,
 											latestEvent[4]?.intFID,
 											latestEvent[4]?.intFEventName,
 											latestEvent[4]?.intFEventDescription,
@@ -5409,7 +5405,7 @@ export default function Homepage() {
 										);
 									} else {
 										openModal(
-											"https://source.unsplash.com/600x300?balloon",
+											swinburneLogo.src,
 											latestEvent[4]?.intFID,
 											latestEvent[4]?.intFEventName,
 											latestEvent[4]?.intFEventDescription,
@@ -5435,7 +5431,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="https://source.unsplash.com/600x300?balloon" alt="Random" className="w-full h-full object-cover" />
+										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -5475,15 +5471,11 @@ export default function Homepage() {
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</div>
-										<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-											{latestEvent[4].intFEventDescription}
+										<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[13px]">
+											{latestEvent[4].intFEventDescription.substring(0, 50)}
+											{latestEvent[4].intFEventDescription.length > 50 && " ... "}
 										</p>
-										{/* <div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[4].intFEventStartDate)}
-												</p>
-											</div> */}
+
 
 										{subEvents.length > 0 &&
 											subEvents
@@ -5621,7 +5613,7 @@ export default function Homepage() {
 
 									if (filteredSubEvent) {
 										openModal(
-											"https://source.unsplash.com/600x300?beers",
+											swinburneLogo.src,
 											latestEvent[5]?.intFID,
 											latestEvent[5]?.intFEventName,
 											latestEvent[5]?.intFEventDescription,
@@ -5644,7 +5636,7 @@ export default function Homepage() {
 										);
 									} else {
 										openModal(
-											"https://source.unsplash.com/600x300?beers",
+											swinburneLogo.src,
 											latestEvent[5]?.intFID,
 											latestEvent[5]?.intFEventName,
 											latestEvent[5]?.intFEventDescription,
@@ -5670,7 +5662,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="https://source.unsplash.com/600x300?beers" alt="Random" className="w-full h-full object-cover" />
+										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -5710,15 +5702,10 @@ export default function Homepage() {
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</div>
-										<p className="text-gray-500 mb-[10px] dark:text-[#7B756B] text-[13px]">
-											{latestEvent[5].intFEventDescription}
+										<p className="text-gray-500 mb-4 dark:text-[#7B756B] text-[13px]">
+											{latestEvent[5].intFEventDescription.substring(0, 50)}
+											{latestEvent[5].intFEventDescription.length > 50 && " ... "}
 										</p>
-										{/* <div className="flex items-center mt-4">
-												<HiMiniCalendarDays className="text-2xl mr-2 text-slate-800 dark:text-dark_text" />
-												<p className="text-slate-600 text-sm dark:text-dark_text">
-													{formatDate(latestEvent[5].intFEventStartDate)}
-												</p>
-											</div> */}
 
 										{subEvents.length > 0 &&
 											subEvents
@@ -5911,7 +5898,7 @@ export default function Homepage() {
 
 											if (filteredSubEvent) {
 												openModal(
-													"https://source.unsplash.com/600x300?party",
+													swinburneLogo.src,
 													event.intFID,
 													event.intFEventName,
 													event.intFEventDescription,
@@ -6022,7 +6009,7 @@ export default function Homepage() {
 
 											if (filteredSubEvent) {
 												openModal(
-													"https://source.unsplash.com/600x300?social",
+													swinburneLogo.src,
 													event.intFID,
 													event.intFEventName,
 													event.intFEventDescription,
@@ -6132,7 +6119,7 @@ export default function Homepage() {
 
 											if (filteredSubEvent) {
 												openModal(
-													"https://source.unsplash.com/600x300?party",
+													swinburneLogo.src,
 													event.intFID,
 													event.intFEventName,
 													event.intFEventDescription,
