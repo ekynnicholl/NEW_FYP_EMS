@@ -38,6 +38,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import AttendanceList from "@/components/attendance/attendance_list";
 import FeedbackList from "@/components/feedback/feedback_list";
 import toast from "react-hot-toast";
+import * as XLSX from 'xlsx';
 
 type mainEvent = {
 	intFID: string;
@@ -48,6 +49,7 @@ type mainEvent = {
 	intFDurationCourse: string;
 	intFTrainerName: string;
 	intFTrainingProvider: string;
+	intFTotalHours: number;
 };
 
 type subEvents = {
@@ -114,6 +116,7 @@ export default function Home() {
 		intFDurationCourse: "",
 		intFTrainerName: "",
 		intFTrainingProvider: "",
+		intFTotalHours: 0,
 	});
 	const [mainEvents, setMainEvents] = useState<mainEvent[]>([] as mainEvent[]);
 	const [dataResults, setDataResults] = useState<mainEvent[]>([] as mainEvent[]);
@@ -371,6 +374,52 @@ export default function Home() {
 		setShowSortOptions(false);
 	};
 
+	const convertToXLSX = (data: mainEvent[], columnMapping: ColumnMapping) => {
+		const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
+		const body = data.map((row) => {
+			const newRow: any = {...row};
+			return Object.keys(columnMapping).map((key) => newRow[key as keyof mainEvent]);
+		});
+
+		const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'Events Data');
+
+		const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Change type to 'array'
+
+		return wbout;
+	};
+
+	const downloadXLSX = (data: mainEvent[]) => {
+		const xlsxContent = convertToXLSX(data, columnMapping);
+		const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+		const url = URL.createObjectURL(blob);
+
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'Events Data.xlsx';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+
+		URL.revokeObjectURL(url);
+	};
+
+	type ColumnMapping = {
+		[key: string]: string;
+	}
+
+	const columnMapping: ColumnMapping = {
+		intFEventName: 'Event Title',
+		intFEventDescription: 'Description',
+		intFEventStartDate: 'Start Date',
+		intFEventEndDate: 'End Date',
+		intFDurationCourse: 'Duration Course',
+		intFTrainerName: 'Trainer Name',
+		intFTrainingProvider: 'Training Provider', 
+		intFTotalHours: 'Total Hour(s)',
+	};
+
 	// export to CSV format
 	const exportToCSV = () => {
 		// Generate header row
@@ -552,10 +601,10 @@ export default function Home() {
 							<button
 								type="button"
 								className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
-								onClick={exportToCSV}
+								onClick={() => downloadXLSX(mainEvents)}
 							>
 								<img src={exportCSV.src} alt="" width={20} className="text-slate-800" />
-								<span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+								<span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
 							</button>
 						</div>
 					</div>
