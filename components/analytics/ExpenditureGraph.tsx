@@ -87,7 +87,7 @@ const ExpenditureGraph: React.FC<ExpenditureGraphProps> = ({ selectedMonth, sele
                     chartInstance.current.destroy();
                 }
 
-                const maxDataValue = Math.max(...monthlyData.map(entry => entry.total)) + 50;
+                const maxDataValue = Math.ceil(Math.max(...monthlyData.map(entry => entry.total)) + 1000);
 
                 chartInstance.current = new Chart(ctx, {
                     type: "bar",

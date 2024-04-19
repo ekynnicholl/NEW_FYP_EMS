@@ -18,8 +18,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== "") {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> The link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><a href="${link}/?secKey=${optionalFields}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields}</span></a></p>
-                <p>Please take note that this key is sent to you and to you only and will be destroyed immediately after use.</p>
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/>Link: <a href="${link}/?secKey=${optionalFields}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields}</span></a></p>
+                <p>Please take note that the following Security Key is sent solely to your email and will be rendered expired immediately after usage.</p>
             `;
 
             securityKey = `
@@ -45,26 +45,20 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
-                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
-                    <p class="no-p-m">The status of this form: <span style="font-weight: bold;"> ${optionalFields2} </span>, have not been updated for more than a day and an Academic Administration Officer has triggered a manual reminder to you. Please visit the link below to take action. </p>
+                    <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
+                    <br/>
+                    <p class="no-p-m">The status of this form: <span style="font-weight: bold;"> ${optionalFields2} </span>, is still pending for your first review and approval, and an Academic Administration Officer has triggered a manual email reminder to you. Please click the link below for your next aciton.</p>
                     ${securityKeySentence}
                     ${securityKey}
                     <br/>
-                    <p class="no-p-m" style="font-weight:bold;"> If you are no longer interested in this forms, please email to our office at ..@.. so you will no longer receive any more reminders.</p>
+                    <p class="no-p-m">Should the action above have been resolved, please note that you will no longer receive any reminders. Please email to fypemsmaster369@gmail.com if you encounter any issues with the link above.</p>
                     <br/>
-                    <p class="no-p-m">Thank you for using our system.</p>
-                    Process: ${process}
+                    <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
+                    <br/>
+                    Process Level: ${process}
                     <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
-                    <br/>
-                    <p class="no-p-m" style="color: red; text-align: justify;">[NOTICE] <br/>
-                    This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
-                    If you are not the intended recipient, any dissemination, distribution, printing, copying or use is strictly prohibited. 
-                    The University does not warrant that this e-mail and any attachments are secure and there is also a risk that it may be corrupted in transmission. 
-                    It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
-                    +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
-                    unauthorised access or unauthorised amendment. <br/>
                     </p>
                 </div>
             </body>
