@@ -60,6 +60,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
     const [selectedRow, setSelectedRow] = useState<any>({});
     const [open, setOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmOpenAll, setConfirmOpenAll] = useState(false);
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(2022, 0, 20),
         to: addDays(new Date(2022, 0, 20), 20),
@@ -339,7 +340,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 </DropdownMenu>
             </div>
             <div className="mb-2 flex items-end justify-end">
-                <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <Dialog open={confirmOpenAll} onOpenChange={setConfirmOpenAll}>
                     <DialogTrigger asChild>
                         <Button
                             type="button">
@@ -359,7 +360,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                             </DialogClose>
                             <Button
                                 onMouseUp={() => {
-                                    setConfirmOpen(false);
+                                    setConfirmOpenAll(false);
                                     sendReminderAll();
                                 }}>
                                 Confirm

@@ -431,7 +431,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 								{externalForm.formStage === 4 && (
 									<div className="flex gap-3 text-blue-500 items-center">
 										<CircleDashed size={20} />
-										<h1 className="text-xl font-semibold">Pending for approve</h1>
+										<h1 className="text-xl font-semibold">Pending for approval</h1>
 									</div>
 								)}
 

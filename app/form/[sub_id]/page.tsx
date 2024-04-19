@@ -60,7 +60,7 @@ export default function AttendanceForm() {
 			// Fetch the event_id associated with the given attendance_list ID
 			const { data: attendanceListData, error: attendanceListError } = await supabase
 				.from('sub_events')
-				.select('sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime')
+				.select('sub_eventsID, sub_eventsMainID, sub_eventsName, sub_eventsVenue, sub_eventsStartDate, sub_eventsEndDate, sub_eventsStartTime, sub_eventsEndTime, sub_eventsOrganizer')
 				.eq('sub_eventsID', sub_id);
 
 			if (attendanceListError || attendanceListData.length == 0) {
@@ -145,7 +145,7 @@ export default function AttendanceForm() {
 				// Fetch the event details based on the event_id
 				const { data: eventDetails, error: eventError } = await supabase
 					.from('internal_events')
-					.select('intFEventName')
+					.select('intFEventName, intFTrainerName, intFEventDescription')
 					.eq('intFID', event_id);
 
 				if (eventError) {
@@ -153,7 +153,9 @@ export default function AttendanceForm() {
 				} else {
 					const combinedData = {
 						...attendanceListData[0],
-						intFEventName: eventDetails[0]?.intFEventName
+						intFEventName: eventDetails[0]?.intFEventName,
+						intFTrainerName: eventDetails[0]?.intFTrainerName,
+						intFEventDescription: eventDetails[0]?.intFEventDescription
 					};
 
 					setEventData(combinedData);
@@ -237,36 +239,6 @@ export default function AttendanceForm() {
 				// console.error("Error inserting data:", error);
 			} else {
 				// console.log("Data inserted successfully:", data);
-				// setInfo({} as Info);
-				// setShowModalSuccess(true);
-
-				// Redirect to the desired page after form submission
-
-				const { data: newForms, error } = await supabase
-					.from("attendance_forms")
-					.select("attFormsID, attDateSubmitted")
-					.eq("attFormsID", oldForms[0].attFormsID);
-
-				// if (error) {
-
-				// } else {
-				// 	// const participationData = {
-				// 	// 	sub_eventsName: eventData.sub_eventsName,
-				// 	// 	eventName: eventData.intFEventName,
-				// 	// 	// eventVenue: eventData.sub_eventsVenue,
-				// 	// 	eventStartDate: formatDate(eventData.sub_eventsStartDate),
-				// 	// 	// eventEndDate: formatDate(eventData.sub_eventsEndDate),
-				// 	// 	attFormsStaffName: info.attFormsStaffName,
-				// 	// 	attFormsStaffID: info.attFormsStaffID,
-				// 	// 	attFormsStaffEmail: info.attFormsStaffEmail,
-				// 	// 	attDateSubmitted: newForms[0].attDateSubmitted,
-				// 	// 	attFormsID: newForms[0].attFormsID,
-				// 	// 	eventVenue: eventData.sub_eventsVenue
-				// 	// };
-
-				// 	// sendParticipationCert(participationData);
-
-				// }
 			}
 		}
 
@@ -277,12 +249,6 @@ export default function AttendanceForm() {
 
 		// setInfo({} as Info);
 	};
-
-	// const handleOK = () => {
-	// 	setShowModalSuccess(false);
-	// 	setShowModalFailure(false);
-	// 	window.location.reload();
-	// };
 
 	// Fetch the attendance forms settings,
 	const [facultyOptions, setFacultyOptions] = useState<string[]>([]);
@@ -602,11 +568,14 @@ export default function AttendanceForm() {
 									Event Attendance
 								</p>
 								<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
-									<p>Please ensure you are attending the correct event,</p>
+									<p>Thank you for attending the following session. Please ensure you are attending the correct event before registering your attendance below.</p>
 									<br />
 									{eventData && (
 										<div>
 											<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
+											<p>Description: <span className="font-bold">{eventData.intFEventDescription}</span></p>
+											<p>Organizer: <span className="font-bold">{eventData.sub_eventsOrganizer}</span></p>
+											<p>Trainer&apos;s Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
 											<p>
 												Date:{" "}
 												<span className="font-bold">
@@ -951,7 +920,7 @@ export default function AttendanceForm() {
 									) : (
 										<button
 											type="submit"
-											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !isSubmitting? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 											onClick={() => {
 												if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
 													handleSubmit();
