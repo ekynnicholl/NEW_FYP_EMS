@@ -75,6 +75,7 @@ const PageNotFound = () => {
             <div className="text-sm lg:text-base font-normal mb-4 text-slate-700 lg:whitespace-nowrap">
               Hey! The forms you&rsquo;re currently accessing <span className="font-bold">has not yet opened for submission</span>! <br /> Contact the event organizer(s) if you think this was a mistake.
             </div>
+            <div>*Are you sure you have attended the correct event?</div>
             <div className="text-slate-700 font-bold">
               Event Accessed: {event_name}
             </div>
