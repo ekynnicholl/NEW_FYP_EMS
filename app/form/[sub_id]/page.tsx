@@ -1,17 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { Fragment, useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-import Modal from "@/components/Modal";
-
-// Import icons from react-icons
-import { BiCalendar } from "react-icons/bi";
 import { useParams, useRouter } from "next/navigation";
 import cookie from 'js-cookie';
 import toast from "react-hot-toast";
-import { sendParticipationCert } from "@/lib/api";
+import loadingGIF from "@/public/loading_bird.gif";
 
 type Info = {
 	attFormsAttendanceID: string;
@@ -36,6 +30,7 @@ export default function AttendanceForm() {
 	const [info, setInfo] = useState<Info>({} as Info);
 	const [eventData, setEventData] = useState<any>(null);
 	const [authToken, setAuthToken] = useState<any>("")
+	const [isLoaded, setIsLoaded] = useState<Boolean>(false);
 
 	const [showModalSuccess, setShowModalSuccess] = useState(false);
 	const [showModalFailure, setShowModalFailure] = useState(false);
@@ -140,6 +135,7 @@ export default function AttendanceForm() {
 			}
 
 			setEventData(attendanceListData);
+			setIsLoaded(true);
 
 			if (event_id) {
 				// Fetch the event details based on the event_id
@@ -166,6 +162,9 @@ export default function AttendanceForm() {
 		fetchEventData();
 	}, [sub_id, supabase, router]);
 
+	useEffect(() => {
+
+	})
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -536,206 +535,130 @@ export default function AttendanceForm() {
 
 
 	return (
-		<div>
-			{!formSubmitted ? (
-				<div className="flex flex-col items-center min-h-screen bg-slate-100">
-					<form
-						onSubmit={handleSubmit}
-						className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
-						<div
-							className="mb-4 rounded-md relative block lg:hidden">
-							<img
-								src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
-								alt="Random"
-								className="object-cover rounded-lg h-full w-full"
-								style={{ objectPosition: "center top" }}
-							/>
-						</div>
+		<>
+			{isLoaded ? (
+				<div>
+					{!formSubmitted ? (
+						<div className="flex flex-col items-center min-h-screen bg-slate-100">
+							<form
+								onSubmit={handleSubmit}
+								className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
+								<div
+									className="mb-4 rounded-md relative block lg:hidden">
+									<img
+										src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
+										alt="Random"
+										className="object-cover rounded-lg h-full w-full"
+										style={{ objectPosition: "center top" }}
+									/>
+								</div>
 
-						<div
-							className="mb-4 rounded-md relative hidden lg:block">
-							<img
-								src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
-								alt="Random"
-								className="object-cover rounded-lg h-1/2 w-1/2"
-								style={{ objectPosition: "center top" }}
-							/>
-						</div>
+								<div
+									className="mb-4 rounded-md relative hidden lg:block">
+									<img
+										src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
+										alt="Random"
+										className="object-cover rounded-lg h-1/2 w-1/2"
+										style={{ objectPosition: "center top" }}
+									/>
+								</div>
 
-						<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
-							<div className="ml-1 mr-1">
-								<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
-									Event Attendance
-								</p>
-								<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
-									<p>Thank you for attending the following session. Please ensure you are attending the correct event before registering your attendance below.</p>
-									<br />
-									{eventData && (
-										<div>
-											<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
-											<p>Description: <span className="font-bold">{eventData.intFEventDescription}</span></p>
-											<p>Organizer: <span className="font-bold">{eventData.sub_eventsOrganizer}</span></p>
-											<p>Trainer&apos;s Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
+								<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
+									<div className="ml-1 mr-1">
+										<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
+											Event Attendance
+										</p>
+										<div className="border-t border-gray-300 pt-3 text-xs lg:text-sm">
+											<p>Thank you for attending the following session. Please ensure you are attending the correct event before registering your attendance below.</p>
+											<br />
+											{eventData && (
+												<div>
+													<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
+													<p>Description: <span className="font-bold">{eventData.intFEventDescription}</span></p>
+													<p>Organizer: <span className="font-bold">{eventData.sub_eventsOrganizer}</span></p>
+													<p>Trainer&apos;s Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
+													<p>
+														Date:{" "}
+														<span className="font-bold">
+															{formatDate(eventData.sub_eventsStartDate)} -{" "}
+															{formatDate(eventData.sub_eventsEndDate)}
+														</span>
+													</p>
+													<p>Time:{" "}
+														<span className="font-bold">
+															{formatTimeToAMPM(eventData.sub_eventsStartTime)} -{" "}
+															{formatTimeToAMPM(eventData.sub_eventsEndTime)}
+														</span>
+													</p>
+													<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
+												</div>
+											)}
+											<br />
 											<p>
-												Date:{" "}
-												<span className="font-bold">
-													{formatDate(eventData.sub_eventsStartDate)} -{" "}
-													{formatDate(eventData.sub_eventsEndDate)}
+												Encountered a technical error? Contact us @{" "}
+												<span className="underline text-blue-700">
+													<a href="mailto:fypemsmaster369@gmail.com">fypemsmaster369@gmail.com</a>
 												</span>
+												.
 											</p>
-											<p>Time:{" "}
-												<span className="font-bold">
-													{formatTimeToAMPM(eventData.sub_eventsStartTime)} -{" "}
-													{formatTimeToAMPM(eventData.sub_eventsEndTime)}
-												</span>
-											</p>
-											<p>Venue: <span className="font-bold">{eventData.sub_eventsVenue}</span></p>
+											<p className="pt-3 text-red-500 font-medium">* Required</p>
 										</div>
-									)}
-									<br />
-									<p>
-										Encountered a technical error? Contact us @{" "}
-										<span className="underline text-blue-700">
-											<a href="mailto:fypemsmaster369@gmail.com">fypemsmaster369@gmail.com</a>
-										</span>
-										.
-									</p>
-									<p className="pt-3 text-red-500 font-medium">* Required</p>
+									</div>
 								</div>
-							</div>
-						</div>
 
-						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-							<div className="ml-1">
-								<label
-									htmlFor="name"
-									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Are you a staff, student, or a visitor?
-									<span className="text-red-500"> *</span>
-								</label>
-								<div>
-									<label className="ml-1">
-										<input
-											type="radio"
-											name="userType"
-											value="staff"
-											checked={userType === 'staff'}
-											onChange={handleUserTypeChange}
-										/>
-										<span className="ml-2 font-medium text-sm lg:text-base">Staff</span>
-									</label>
-								</div>
-								<div className="mt-2">
-									<label className="ml-1">
-										<input
-											type="radio"
-											name="userType"
-											value="student"
-											checked={userType === 'student'}
-											onChange={handleUserTypeChange}
-										/>
-										<span className="ml-2 font-medium text-sm lg:text-base">Student</span>
-									</label>
-								</div>
-								<div className="mt-2">
-									<label className="ml-1">
-										<input
-											type="radio"
-											name="userType"
-											value="visitor"
-											checked={userType === 'visitor'}
-											onChange={handleUserTypeChange}
-										/>
-										<span className="ml-2 font-medium text-sm lg:text-base">External Visitor</span>
-									</label>
-								</div>
-							</div>
-						</div>
-
-						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-							<div className="ml-1">
-								<label
-									htmlFor="name"
-									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Name
-									<span className="text-red-500"> *</span>
-								</label>
-								<input
-									type="text"
-									name="name"
-									id="name"
-									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-									required
-									placeholder="e.g., John Lennon"
-									style={{ paddingLeft: "5px" }}
-									onChange={event =>
-										setInfo({ ...info, attFormsStaffName: event.target.value })
-									}
-								/>
-							</div>
-						</div>
-
-						{/* <div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-							<div className="ml-1">
-								<label
-									htmlFor="name"
-									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-									Email
-									<span className="text-red-500"> *</span>
-								</label>
-								<input
-									type="email"
-									name="name"
-									id="name"
-									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-									required
-									placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
-									style={{ paddingLeft: "5px" }}
-									onChange={event => {
-										if (!formSubmitted) {
-											setInfo({ ...info, attFormsStaffEmail: event.target.value });
-										}
-									}}
-								/>
-							</div>
-						</div> */}
-
-						<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-							<div className="ml-1">
-								<label
-									htmlFor="email"
-									className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
-								>
-									Email
-									<span className="text-red-500"> *</span>
-								</label>
-								<input
-									type="email"
-									name="email"
-									id="email"
-									className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-									required
-									placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
-									style={{ paddingLeft: "5px" }}
-									onChange={event => {
-										if (!formSubmitted) {
-											setInfo({ ...info, attFormsStaffEmail: event.target.value });
-										}
-									}}
-								/>
-
-							</div>
-						</div>
-
-
-						{userType === 'staff' && (
-							<div>
 								<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 									<div className="ml-1">
 										<label
 											htmlFor="name"
 											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Staff ID
+											Are you a staff, student, or a visitor?
+											<span className="text-red-500"> *</span>
+										</label>
+										<div>
+											<label className="ml-1">
+												<input
+													type="radio"
+													name="userType"
+													value="staff"
+													checked={userType === 'staff'}
+													onChange={handleUserTypeChange}
+												/>
+												<span className="ml-2 font-medium text-sm lg:text-base">Staff</span>
+											</label>
+										</div>
+										<div className="mt-2">
+											<label className="ml-1">
+												<input
+													type="radio"
+													name="userType"
+													value="student"
+													checked={userType === 'student'}
+													onChange={handleUserTypeChange}
+												/>
+												<span className="ml-2 font-medium text-sm lg:text-base">Student</span>
+											</label>
+										</div>
+										<div className="mt-2">
+											<label className="ml-1">
+												<input
+													type="radio"
+													name="userType"
+													value="visitor"
+													checked={userType === 'visitor'}
+													onChange={handleUserTypeChange}
+												/>
+												<span className="ml-2 font-medium text-sm lg:text-base">External Visitor</span>
+											</label>
+										</div>
+									</div>
+								</div>
+
+								<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+									<div className="ml-1">
+										<label
+											htmlFor="name"
+											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+											Name
 											<span className="text-red-500"> *</span>
 										</label>
 										<input
@@ -744,274 +667,358 @@ export default function AttendanceForm() {
 											id="name"
 											className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 											required
-											placeholder="e.g., SS207 OR 207"
+											placeholder="e.g., John Lennon"
 											style={{ paddingLeft: "5px" }}
 											onChange={event =>
-												setInfo({ ...info, attFormsStaffID: event.target.value })
+												setInfo({ ...info, attFormsStaffName: event.target.value })
 											}
 										/>
 									</div>
 								</div>
-								<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-									<div className="ml-1">
-										<label
-											htmlFor="facultyUnit"
-											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Faculty/ Unit (STAFF)
-											<span className="text-red-500"> *</span>
-										</label>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-											required
-											onChange={event =>
-												setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+
+								{/* <div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+								<div className="ml-1">
+									<label
+										htmlFor="name"
+										className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+										Email
+										<span className="text-red-500"> *</span>
+									</label>
+									<input
+										type="email"
+										name="name"
+										id="name"
+										className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+										required
+										placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
+										style={{ paddingLeft: "5px" }}
+										onChange={event => {
+											if (!formSubmitted) {
+												setInfo({ ...info, attFormsStaffEmail: event.target.value });
 											}
-
-										>
-											<option value="" disabled>
-												Select Faculty/ Unit
-											</option>
-											{facultyOptions.map((faculty, index) => (
-												<option key={index} value={faculty}>
-													{faculty}
-												</option>
-											))}
-										</select>
-									</div>
+										}}
+									/>
 								</div>
-							</div>
-						)}
+							</div> */}
 
-						{userType === 'student' && (
-							<div>
 								<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 									<div className="ml-1">
 										<label
-											htmlFor="name"
-											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Student ID
-											<span className="text-red-500"> *</span>
-										</label>
-										<input
-											type="text"
-											name="name"
-											id="name"
-											className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-											required
-											placeholder="e.g., 12345678"
-											style={{ paddingLeft: "5px" }}
-											onChange={event =>
-												setInfo({ ...info, attFormsStaffID: event.target.value })
-											}
-										/>
-									</div>
-								</div>
-								<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-									<div className="ml-1">
-										<label
-											htmlFor="studentFacultyUnit"
+											htmlFor="email"
 											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
 										>
-											Faculty/ Unit (STUDENT)
+											Email
 											<span className="text-red-500"> *</span>
 										</label>
-										<select
-											name="studentFacultyUnit"
-											id="studentFacultyUnit"
-											defaultValue=""
-											className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+										<input
+											type="email"
+											name="email"
+											id="email"
+											className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 											required
+											placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
+											style={{ paddingLeft: "5px" }}
 											onChange={event => {
-												setInfo({ ...info, attFormsFacultyUnit: event.target.value });
-												handleSelectChange(event);
+												if (!formSubmitted) {
+													setInfo({ ...info, attFormsStaffEmail: event.target.value });
+												}
 											}}
-										>
-											<option value="" disabled>Select Faculty/ Unit</option>
-											{facultyStudents.map((faculty, index) => (
-												<option key={index} value={faculty.facultyName}>
-													{faculty.facultyName}
-												</option>
-											))}
-										</select>
+										/>
+
 									</div>
 								</div>
-								{selectedOption &&
-									<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-										<div className="ml-1">
-											<label
-												htmlFor="anotherSelect"
-												className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
-											>
-												Course (STUDENT)
-												<span className="text-red-500"> *</span>
-											</label>
-											<select
-												name="anotherSelect"
-												id="anotherSelect"
-												defaultValue=""
-												className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
-												required
-												onChange={handleAnotherSelectChange}
-											>
-												{getSecondSelectOptions()}
-											</select>
+
+
+								{userType === 'staff' && (
+									<div>
+										<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="name"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Staff ID
+													<span className="text-red-500"> *</span>
+												</label>
+												<input
+													type="text"
+													name="name"
+													id="name"
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+													required
+													placeholder="e.g., SS207 OR 207"
+													style={{ paddingLeft: "5px" }}
+													onChange={event =>
+														setInfo({ ...info, attFormsStaffID: event.target.value })
+													}
+												/>
+											</div>
+										</div>
+										<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="facultyUnit"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Faculty/ Unit (STAFF)
+													<span className="text-red-500"> *</span>
+												</label>
+												<select
+													name="facultyUnit"
+													id="facultyUnit"
+													defaultValue=""
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+													required
+													onChange={event =>
+														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+													}
+
+												>
+													<option value="" disabled>
+														Select Faculty/ Unit
+													</option>
+													{facultyOptions.map((faculty, index) => (
+														<option key={index} value={faculty}>
+															{faculty}
+														</option>
+													))}
+												</select>
+											</div>
 										</div>
 									</div>
-								}
-							</div>
-						)}
-
-						<Fragment>
-							<div className="flex justify-end">
-								{authToken && (
-									<button
-										type="button"
-										className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base mr-3"
-										onClick={() => {
-											router.push("/homepage")
-										}}
-									>
-										Cancel
-									</button>
 								)}
-								{/* {userType === 'visitor' ? (
-								<button
-									type="submit"
-									className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-									onClick={() => {
-										if (info.attFormsStaffName) {
-											handleSubmit
+
+								{userType === 'student' && (
+									<div>
+										<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="name"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Student ID
+													<span className="text-red-500"> *</span>
+												</label>
+												<input
+													type="text"
+													name="name"
+													id="name"
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+													required
+													placeholder="e.g., 12345678"
+													style={{ paddingLeft: "5px" }}
+													onChange={event =>
+														setInfo({ ...info, attFormsStaffID: event.target.value })
+													}
+												/>
+											</div>
+										</div>
+										<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="studentFacultyUnit"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+												>
+													Faculty/ Unit (STUDENT)
+													<span className="text-red-500"> *</span>
+												</label>
+												<select
+													name="studentFacultyUnit"
+													id="studentFacultyUnit"
+													defaultValue=""
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+													required
+													onChange={event => {
+														setInfo({ ...info, attFormsFacultyUnit: event.target.value });
+														handleSelectChange(event);
+													}}
+												>
+													<option value="" disabled>Select Faculty/ Unit</option>
+													{facultyStudents.map((faculty, index) => (
+														<option key={index} value={faculty.facultyName}>
+															{faculty.facultyName}
+														</option>
+													))}
+												</select>
+											</div>
+										</div>
+										{selectedOption &&
+											<div className="mb-3 lg:mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+												<div className="ml-1">
+													<label
+														htmlFor="anotherSelect"
+														className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+													>
+														Course (STUDENT)
+														<span className="text-red-500"> *</span>
+													</label>
+													<select
+														name="anotherSelect"
+														id="anotherSelect"
+														defaultValue=""
+														className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-xs lg:text-base"
+														required
+														onChange={handleAnotherSelectChange}
+													>
+														{getSecondSelectOptions()}
+													</select>
+												</div>
+											</div>
 										}
-									}}
-									disabled={!info.attFormsStaffName}>
-									Submit
-								</button>
-							) : (
-								<button
-									type="submit"
-									className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-									onClick={() => {
-										if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
-											handleSubmit
-										}
-									}}
-									disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
-									Submit
-								</button>
-							)} */}
+									</div>
+								)}
 
-
-								<div>
-									{userType === 'visitor' ? (
-										<button
-											type="submit"
-											className={`${info.attFormsStaffName && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-											onClick={() => {
-												if (info.attFormsStaffName && !formSubmitted && !isSubmitting) {
-													handleSubmit();
-												}
-											}}
-											disabled={!info.attFormsStaffName || formSubmitted || isSubmitting}>
-											Submit
-										</button>
-									) : (
-										<button
-											type="submit"
-											className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
-											onClick={() => {
-												if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
-													handleSubmit();
-												}
-											}}
-											disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
-											Submit
-										</button>
-									)}
-								</div>
-							</div>
-						</Fragment>
-
-						{/* <Modal
-							isVisible={showModalSuccess}
-							onClose={() => setShowModalSuccess(false)}>
-							<div className="p-4">
-								<Image
-									src="/images/tick_mark.png"
-									alt="cross_mark"
-									width={200}
-									height={250}
-									className="mx-auto -mt-[39px] lg:-mt-[45px]"
-								/>
-								<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
-									Success!
-								</h3>
-								<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-									Your attendance has been successfully recorded!
-								</p>
-								<div className="text-center ml-4">
+								<Fragment>
+									<div className="flex justify-end">
+										{authToken && (
+											<button
+												type="button"
+												className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base mr-3"
+												onClick={() => {
+													router.push("/homepage")
+												}}
+											>
+												Cancel
+											</button>
+										)}
+										{/* {userType === 'visitor' ? (
 									<button
-										className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
-										onClick={handleOK}>
-										OK
+										type="submit"
+										className={`${info.attFormsStaffName ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+										onClick={() => {
+											if (info.attFormsStaffName) {
+												handleSubmit
+											}
+										}}
+										disabled={!info.attFormsStaffName}>
+										Submit
 									</button>
-								</div>
-							</div>
-						</Modal>
-
-						<Modal
-							isVisible={showModalFailure}
-							onClose={() => setShowModalFailure(false)}>
-							<div className="p-4">
-								<Image
-									src="/images/cross_mark.png"
-									alt="cross_mark"
-									width={200}
-									height={250}
-									className="mx-auto -mt-[39px] lg:-mt-[45px]"
-								/>
-								<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
-									Failed.
-								</h3>
-								<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-									An attendance form already exists associated with your staff/ student ID. Please contact the organizer if you think this was a mistake.
-								</p>
-								<div className="text-center ml-4">
+								) : (
 									<button
-										className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
-										onClick={handleOK}>
-										OK
+										type="submit"
+										className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+										onClick={() => {
+											if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit) {
+												handleSubmit
+											}
+										}}
+										disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit}>
+										Submit
 									</button>
-								</div>
-							</div>
-						</Modal> */}
-					</form>
-				</div>
-			) : (
-				<>
-					<div className="flex flex-col items-center min-h-screen bg-slate-100">
-						<form
-							onSubmit={() => setFormSubmitted(true)}
-							className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
+								)} */}
 
-							<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
-								<div className="ml-1 mr-1">
-									<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
-										Event Attendance
+
+										<div>
+											{userType === 'visitor' ? (
+												<button
+													type="submit"
+													className={`${info.attFormsStaffName && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													onClick={() => {
+														if (info.attFormsStaffName && !formSubmitted && !isSubmitting) {
+															handleSubmit();
+														}
+													}}
+													disabled={!info.attFormsStaffName || formSubmitted || isSubmitting}>
+													Submit
+												</button>
+											) : (
+												<button
+													type="submit"
+													className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													onClick={() => {
+														if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
+															handleSubmit();
+														}
+													}}
+													disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
+													Submit
+												</button>
+											)}
+										</div>
+									</div>
+								</Fragment>
+
+								{/* <Modal
+								isVisible={showModalSuccess}
+								onClose={() => setShowModalSuccess(false)}>
+								<div className="p-4">
+									<Image
+										src="/images/tick_mark.png"
+										alt="cross_mark"
+										width={200}
+										height={250}
+										className="mx-auto -mt-[39px] lg:-mt-[45px]"
+									/>
+									<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+										Success!
+									</h3>
+									<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+										Your attendance has been successfully recorded!
 									</p>
-									<div className="pt-4 mt-1 text-xs lg:text-sm">
-										<p>Your response has been recorded.</p>
-										<br />
-										<button onClick={() => window.location.reload()} className="pt-4 -mt-[2px] text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
+									<div className="text-center ml-4">
+										<button
+											className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
+											onClick={handleOK}>
+											OK
+										</button>
 									</div>
 								</div>
+							</Modal>
+	
+							<Modal
+								isVisible={showModalFailure}
+								onClose={() => setShowModalFailure(false)}>
+								<div className="p-4">
+									<Image
+										src="/images/cross_mark.png"
+										alt="cross_mark"
+										width={200}
+										height={250}
+										className="mx-auto -mt-[39px] lg:-mt-[45px]"
+									/>
+									<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+										Failed.
+									</h3>
+									<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+										An attendance form already exists associated with your staff/ student ID. Please contact the organizer if you think this was a mistake.
+									</p>
+									<div className="text-center ml-4">
+										<button
+											className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
+											onClick={handleOK}>
+											OK
+										</button>
+									</div>
+								</div>
+							</Modal> */}
+							</form>
+						</div>
+					) : (
+						<>
+							<div className="flex flex-col items-center min-h-screen bg-slate-100">
+								<form
+									onSubmit={() => setFormSubmitted(true)}
+									className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
+
+									<div className="mb-4 p-2 py-10 pl-5 bg-white rounded-lg border-slate-600 border-t-[9px]">
+										<div className="ml-1 mr-1">
+											<p className="block text-black font-medium text-xl lg:text-2xl mb-3 -mt-3">
+												Event Attendance
+											</p>
+											<div className="pt-4 mt-1 text-xs lg:text-sm">
+												<p>Your response has been recorded.</p>
+												<br />
+												<button onClick={() => window.location.reload()} className="pt-4 -mt-[2px] text-xs lg:text-sm text-[#0000EE]"><u>Submit another response</u></button>
+											</div>
+										</div>
+									</div>
+								</form>
 							</div>
-						</form>
-					</div>
-				</>
+						</>
+					)}
+				</div>
+			) : (
+				<div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
+					<img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
+				</div>
 			)}
-		</div>
+		</>
 	);
 }
