@@ -6,7 +6,6 @@ import { useParams, useRouter } from "next/navigation";
 import cookie from 'js-cookie';
 import toast from "react-hot-toast";
 import loadingGIF from "@/public/loading_bird.gif";
-import background from "@/public/images/background.png";
 
 type Info = {
 	attFormsAttendanceID: string;
@@ -539,9 +538,8 @@ export default function AttendanceForm() {
 		<>
 			{isLoaded ? (
 				<div>
-					<img src={background.src} alt="" className="fixed z-[-1]" />
 					{!formSubmitted ? (
-						<div className="flex flex-col items-center min-h-screen">
+						<div className="flex flex-col items-center min-h-screen bg-slate-100">
 							<form
 								onSubmit={handleSubmit}
 								className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
