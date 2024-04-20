@@ -14,6 +14,7 @@ import { format, set } from "date-fns";
 import toast from "react-hot-toast";
 import { getAuth } from "firebase/auth";
 import { sendContactForm } from "@/lib/api";
+import { v4 as uuidv4 } from "uuid";
 
 import AuditLog from "@/components/ntf/AuditLog";
 import { BsFiletypePdf } from "react-icons/bs";
@@ -269,9 +270,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	}
 
 	async function onRevertSubmit(values: z.infer<typeof revertSchema>) {
+		const securityKeyUID = uuidv4();
 		if (externalForm.formStage === 2) {
 			const { revertComment } = values;
-			const updatedExternalForm = { ...externalForm, revertComment, formStage: 1 };
+			const updatedExternalForm = { ...externalForm, revertComment, formStage: 1, securityKey: securityKeyUID };
 
 			const { data, error } = await supabase
 				.from("external_forms")
@@ -286,7 +288,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 				toast.error("Error reverting external form");
 				return;
 			} else {
-				sendContactForm([externalForm]);
+				sendContactForm(data);
 				toast.success("External form reverted successfully");
 				setExternalForm(data![0]);
 				setRevertOpen(false);
@@ -316,8 +318,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	}
 
 	async function onUndoSubmit(values: z.infer<typeof undoSchema>) {
+		const securityKeyUID = uuidv4();
 		const { formStage, revertComment } = values;
-		const updatedExternalForm = { ...externalForm, formStage, revertComment };
+		const updatedExternalForm = { ...externalForm, formStage, revertComment, securityKey: securityKeyUID };
 
 		const { data, error } = await supabase
 			.from("external_forms")
@@ -332,7 +335,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			toast.error("Error undoing external form");
 			return;
 		} else {
-			sendContactForm([externalForm]);
+			sendContactForm(data);
 			toast.success("External form undone successfully");
 			setUndoOpen(false);
 			setExternalForm(data![0]);
@@ -355,8 +358,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	}
 
 	async function onForwardSubmit(values: z.infer<typeof forwardSchema>) {
+		const securityKeyUID = uuidv4();
 		const { verification_email, approval_email } = values;
-		const updatedExternalForm = { ...externalForm, verification_email, approval_email };
+		const updatedExternalForm = { ...externalForm, verification_email, approval_email, securityKey: securityKeyUID };
 		console.log(updatedExternalForm);
 
 		const { data, error } = await supabase
@@ -373,7 +377,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			toast.error("Error forwarding external form");
 			return;
 		} else {
-			sendContactForm([externalForm]);
+			sendContactForm(data);
 			toast.success("External form forwarded successfully");
 			setForwardOpen(false);
 			setExternalForm(data![0]);
@@ -410,28 +414,28 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 								{externalForm.formStage === 1 && (
 									<div className="flex gap-3 text-red-500 items-center">
 										<CircleX size={20} />
-										<h1 className="text-xl font-semibold">Reverted to staff</h1>
+										<h1 className="text-xl font-semibold">Reverted to Staff</h1>
 									</div>
 								)}
 
 								{externalForm.formStage === 2 && (
 									<div className="flex gap-3 text-blue-500 items-center">
 										<CircleDashed size={20} />
-										<h1 className="text-xl font-semibold">Reviewing by AAO</h1>
+										<h1 className="text-xl font-semibold">Reviewing by Academic Administration Office</h1>
 									</div>
 								)}
 
 								{externalForm.formStage === 3 && (
 									<div className="flex gap-3 text-blue-500 items-center">
 										<CircleDashed size={20} />
-										<h1 className="text-xl font-semibold">Pending for verification</h1>
+										<h1 className="text-xl font-semibold">Pending for Verification</h1>
 									</div>
 								)}
 
 								{externalForm.formStage === 4 && (
 									<div className="flex gap-3 text-blue-500 items-center">
 										<CircleDashed size={20} />
-										<h1 className="text-xl font-semibold">Pending for approval</h1>
+										<h1 className="text-xl font-semibold">Pending for Approval</h1>
 									</div>
 								)}
 
@@ -1653,13 +1657,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 						<section className="section-5 bg-white rounded-lg p-4 dark:bg-dark_mode_card">
 							<div className="flex gap-3 mb-8">
 								<div className="rounded-sm bg-orange-400 w-4 h-8"></div>
-								<h1 className="text-xl font-semibold">Supporting Documents</h1>
+								<h1 className="text-xl font-semibold">Supporting Document(s)</h1>
 							</div>
 							<div className="w-full">
 								<Document documents={externalForm.supporting_documents ?? []} />
 								{externalForm.supporting_documents?.length === 0 && (
 									<div className="flex items-center justify-center h-96">
-										<p className="text-gray-500">No supporting documents uploaded</p>
+										<p className="text-gray-500">No supporting documents uploaded.</p>
 									</div>
 								)}
 							</div>
