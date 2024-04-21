@@ -361,7 +361,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			<AddAdmin_Modal isVisible={showModalAddAdmin} onClose={() => setShowModalAddAdmin(false)}>
 				<div className="flex">
 
-					<div className="mt-[30px] ml-[50px] mr-[50px] overflow-y-auto">
+					<div className="mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
 						<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Account Details</p>
 						<table className="min-w-full divide-y divide-gray-200">
 							<thead className="bg-gray-50 dark:bg-gray-800">
