@@ -308,7 +308,12 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
-	const handleDelete = async (user) => {
+	interface User {
+		firebase_uid: string;
+		email_address: string;
+	}
+
+	const handleDelete = async (user: User) => {
 		try {
 			const { email_address } = user; // Assuming 'email_address' is the unique identifier for the user
 
