@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 }
 
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
-function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string) {
+function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string, optionalFields3?: string) {
     const link = `${url}/form/external/${formID}`;
     const linkForAAO = `<span style="font-weight: bold;">Link:</span> ${url}/external/${formID}`;
 
@@ -35,6 +35,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
         if (optionalFields2 && optionalFields2.trim() !== "") {
             staffDetails = optionalFields2;
         }
+
+        let aaoEmail = optionalFields3 ? optionalFields3 : 'Email not found. Please contact the Academic Administration Office for further support.';
 
         return `
         <html>
@@ -63,6 +65,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
                     ${securityKey}
+                    <br/>
+                    <p class="no-p-m">If you have inquiries regarding the forms, you may contact the Academic Admin Officer handling this form: ${aaoEmail}</p>
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
                     <br/>
@@ -98,6 +102,9 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <br/>
             `;
         }
+
+        let aaoEmail = optionalFields2 ? optionalFields2 : 'Email not found. Please contact the Academic Administration Office for further support.';
+
         return `
         <html>
             <head>
@@ -125,6 +132,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     Link: <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     ${rejectMessage}
+                    <p class="no-p-m">If you have inquiries regarding the forms, you may contact the Academic Admin Officer handling this form: ${aaoEmail}</p>
+                    <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
                     <br/>
                     Process Level: ${process}
@@ -213,6 +222,9 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields2} </p>
             `;
         }
+
+        let aaoEmail = optionalFields3 ? optionalFields3 : 'Email not found. Please contact the Academic Administration Office for further support.';
+
         return `
         <html>
             <head>
@@ -243,6 +255,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <p class="no-p-m" style="font-weight:bold;"> Reason(s) of Reverting: </p>
                     <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
+                    <br/>
+                    <p class="no-p-m">If you have inquiries regarding the forms, you may contact the Academic Admin Officer handling this form: ${aaoEmail}</p>
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
                     <br/>
@@ -392,14 +406,15 @@ export async function POST(request: Request) {
         const approvalEmail = requestData.approval_email;
         const staffName = requestData.full_name;
         const staffID = requestData.staff_id;
+        const aaoEmail = requestData.aao_email;
 
         // Debugging statements,
         // console.log("Debugging Form Stage: " + formStage);
         // console.log('Received request data:', requestData);
 
         if (formStage === 2) {
-            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
-            // const recipients = ['jadpichoo@outlook.com', staffEmail];
+            // const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
+            const recipients = ['jadpichoo@outlook.com', staffEmail];
             const formIDs = [6, 5];
             // Debugging statements,
             // console.log("Started sending email process: ")
@@ -439,7 +454,7 @@ export async function POST(request: Request) {
                 ...mailOptionsCopy,
                 subject: `[NTF - TO VERIFY & SUPPORT REMINDER] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-                html: generateEmailHTML("[Verifier Level: Review & Approval Reminder to to HOS/ACDR/MGR]", formID, 1, requestData.securityKey, formDetails)
+                html: generateEmailHTML("[Verifier Level: Review & Approval Reminder to to HOS/ACDR/MGR]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
             });
 
         } else if (formStage === 4) {
@@ -451,7 +466,7 @@ export async function POST(request: Request) {
                 ...mailOptionsCopy,
                 subject: `[NTF - TO REVIEW & APPROVE REMINDER] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-                html: generateEmailHTML("[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails)
+                html: generateEmailHTML("[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
             });
         } else if (formStage === 6) {
             const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
@@ -462,7 +477,7 @@ export async function POST(request: Request) {
                     ...mailOptionsCopy,
                     subject: `[NTF - REJECTED APPLICATION] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Applicant Level: Rejected Nomination/Traveling Form Application]",
-                    html: generateEmailHTML("[Applicant Level: Rejected Nomination/Traveling Form Application]", formID, 2, requestData.revertComment)
+                    html: generateEmailHTML("[Applicant Level: Rejected Nomination/Traveling Form Application]", formID, 2, requestData.revertComment, aaoEmail)
                 });
             }
         } else if (formStage === 1) {
@@ -474,7 +489,7 @@ export async function POST(request: Request) {
                 ...mailOptionsCopy,
                 subject: `[NTF - REVERTED TO STAFF] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Applicant Level - Academic Administration Office to Staff]",
-                html: generateEmailHTML("[Applicant Level - Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey)
+                html: generateEmailHTML("[Applicant Level - Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey, aaoEmail)
             });
         } else if (formStage === 5) {
             const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];

@@ -292,7 +292,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							>
 								Undo Action
 							</DropdownMenuItem>
-							<DropdownMenuItem
+							{/* <DropdownMenuItem
 								onMouseUp={() => {
 									sendContactForm([row.original]);
 									console.log(row.original);
@@ -300,7 +300,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								}}
 							>
 								Send
-							</DropdownMenuItem>
+							</DropdownMenuItem> */}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);
