@@ -308,16 +308,14 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
-
 	interface User {
 		firebase_uid: string;
 		email_address: string;
+		created_at: string;
 	}
-	interface UserForDelete {
-		id: string;
-		email: string;
-	}
-	
+
+	const [user, setUser] = useState<User[]>([]);
+
 	const handleDelete = async (user: User) => {
 		try {
 			const { email_address } = user; // Assuming 'email_address' is the unique identifier for the user
@@ -350,14 +348,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
-
-	interface UserData {
-		email_address: string;
-		created_at: string;
-	}
-
-	const [userData, setUserData] = useState<UserData[]>([]);
-
 	useEffect(() => {
 		fetchUserData();
 	}, []);
@@ -372,7 +362,15 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 				throw error;
 			}
 
-			setUserData(data || []);
+			// Map the fetched data to match the User interface
+			const mappedData: User[] = data.map((item: any) => ({
+				firebase_uid: item.firebase_uid,
+				email_address: item.email_address,
+				created_at: item.created_at,
+			}));
+
+			setUser(mappedData || []);
+
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				console.error('Error fetching user data:', error.message);
@@ -381,7 +379,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			}
 		}
 	};
-
 
 	const formatDateTime = (dateTimeString: string) => {
 		const dateTime = new Date(dateTimeString);
@@ -423,7 +420,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900">
-								{userData.map((user, index) => (
+								{user.map((user, index) => (
 									<tr key={index}>
 										<td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
 										<td className="px-6 py-4 whitespace-nowrap">{user.email_address}</td>
@@ -431,14 +428,13 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 											{formatDateTime(user.created_at)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
-											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user: UserForDelete)}>Delete</button>
+											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>Delete</button>
 										</td>
 									</tr>
 								))}
 							</tbody>
 						</table>
 					</div>
-
 
 					<form onSubmit={e => handleCreateAccount(e)}>
 						<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
