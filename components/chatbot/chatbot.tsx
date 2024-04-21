@@ -46,7 +46,7 @@ const Chatbot = () => {
     }, [openChat, isInitialMessage]);
 
     const openai = new OpenAI({
-        apiKey: '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',
+        apiKey: process.env.OPENAI_API_KEY,
         dangerouslyAllowBrowser: true
     });
 

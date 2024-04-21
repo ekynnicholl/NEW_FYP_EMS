@@ -55,7 +55,14 @@ const AttendanceList: React.FC<AttendanceListProps> = ({ atIdentifier, atIdentif
                 }
 
                 // Combine the results
-                const attendanceForms = [...attendanceFormsEmail, ...attendanceFormsID];
+                const attendanceForms = [
+                    ...attendanceFormsEmail,
+                    ...attendanceFormsID.filter(formID =>
+                        !attendanceFormsEmail.some(formEmail => formEmail.attFSubEventID === formID.attFSubEventID)
+                    )
+                ];
+
+                // console.log(attendanceForms);
 
                 // Fetch data from sub_events
                 const subEventIDs = attendanceForms.map((form) => form.attFSubEventID);
