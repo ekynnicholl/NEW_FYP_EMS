@@ -43,13 +43,7 @@ import {
 	DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -78,6 +72,7 @@ const showSuccessToast = (message: string) => {
 };
 
 export default function DataTable({ data }: { data: ExternalForm[] }) {
+	console.log(data);
 	const router = useRouter();
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -121,8 +116,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 			const securityKey = values.undoOption === "2" ? null : securityKeyUID;
 
-			// console.log("test", values.undoOption)
-
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update({
@@ -161,7 +154,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					toast.error("Failed to send email. Please contact server administrator.");
 				}
 
-				console.log("latest data", latestFormsData)
+				console.log("latest data", latestFormsData);
 
 				sendContactForm(latestFormsData);
 				router.refresh();
@@ -220,6 +213,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		{
 			accessorKey: "formStage",
 			sortingFn: "auto",
+			filterFn: "equals",
 			header: ({ column }) => (
 				<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					Form Status
@@ -249,7 +243,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		{
 			accessorKey: "created_at",
 			sortingFn: "datetime",
-			filterFn: isWithinRange,
+			filterFn: "includesString",
 			header: ({ column }) => {
 				return (
 					<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -427,7 +421,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					className="max-w-sm mr-5"
 				/>
 
-				<Popover>
+				{/* <Popover>
 					<PopoverTrigger asChild>
 						<Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal text-muted-foreground")}>
 							<CalendarIcon className="mr-2 h-4 w-4" />
@@ -444,35 +438,131 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							toYear={new Date().getFullYear()}
 						/>
 					</PopoverContent>
-				</Popover>
+				</Popover> */}
 
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="outline" className="ml-auto dark:text-dark_text">
-							Columns <ChevronDown className="ml-2 h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						{table
-							.getAllColumns()
-							.filter(column => column.getCanHide())
-							.map(column => {
-								return (
-									<DropdownMenuCheckboxItem
-										key={column.id}
-										className="capitalize"
-										checked={column.getIsVisible()}
-										onCheckedChange={value => column.toggleVisibility(!!value)}
+				<div className="ml-auto flex gap-2">
+					{/* Filter by year by checking the created_at column */}
+					{/* The dropdown will check which year is available and show in the dropdown list */}
+					{/* When user select the year, it will filter the data based on the selected year */}
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" className="dark:text-dark_text">
+								Year <ChevronDown className="ml-2 h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("created_at")?.setFilterValue(undefined);
+								}}
+							>
+								View All
+							</DropdownMenuItem>
+							{data
+								.map(row => new Date(row.created_at).getFullYear())
+								.filter((value, index, self) => self.indexOf(value) === index)
+								.map(year => (
+									<DropdownMenuItem
+										key={year}
+										onClick={() => {
+											table.getColumn("created_at")?.setFilterValue(year.toString());
+											console.log("year: ", year);
+										}}
 									>
-										{column.id
-											.split("_")
-											.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-											.join(" ")}
-									</DropdownMenuCheckboxItem>
-								);
-							})}
-					</DropdownMenuContent>
-				</DropdownMenu>
+										{year}
+									</DropdownMenuItem>
+								))}
+						</DropdownMenuContent>
+					</DropdownMenu>
+
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" className="dark:text-dark_text">
+								Form Status <ChevronDown className="ml-2 h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(undefined);
+								}}
+							>
+								View All
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(1);
+								}}
+							>
+								Reverted to Staff
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(2);
+								}}
+							>
+								Reviewing by AAO
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(3);
+								}}
+							>
+								Reviewing by HOS/ ADCR/ MGR
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(4);
+								}}
+							>
+								Reviewing by HMU/ Dean
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(5);
+								}}
+							>
+								Approved
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(6);
+								}}
+							>
+								Rejected
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" className="dark:text-dark_text">
+								Columns <ChevronDown className="ml-2 h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							{table
+								.getAllColumns()
+								.filter(column => column.getCanHide())
+								.map(column => {
+									return (
+										<DropdownMenuCheckboxItem
+											key={column.id}
+											className="capitalize"
+											checked={column.getIsVisible()}
+											onCheckedChange={value => column.toggleVisibility(!!value)}
+										>
+											{column.id
+												.split("_")
+												.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+												.join(" ")}
+										</DropdownMenuCheckboxItem>
+									);
+								})}
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
+				{/* filter by form status */}
 			</div>
 			<div className="rounded-md border">
 				<Table>

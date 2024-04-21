@@ -361,7 +361,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		const securityKeyUID = uuidv4();
 		const { verification_email, approval_email } = values;
 		const updatedExternalForm = { ...externalForm, verification_email, approval_email, securityKey: securityKeyUID };
-		console.log(updatedExternalForm);
+		console.log(user?.email);
 
 		const { data, error } = await supabase
 			.from("external_forms")
@@ -369,6 +369,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 				...updatedExternalForm,
 				formStage: 3,
 				last_updated: new Date(),
+				aao_email: user?.email,
 			})
 			.eq("id", externalForm.id)
 			.select();
@@ -631,7 +632,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														<SelectItem value="aeroplane">Aerophone</SelectItem>
+														<SelectItem value="aeroplane">Aeroplane</SelectItem>
 														<SelectItem value="company vehicle">Company vehicle</SelectItem>
 														<SelectItem value="own transport">Own transport</SelectItem>
 													</SelectContent>
@@ -842,13 +843,17 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<FormLabel className="font-semibold text-sm text-gray-500">Total Hours</FormLabel>
 												<FormControl>
 													<Input
+														type="number"
 														{...field}
 														onChange={e => {
 															field.onChange(e);
+															console.log(field.value);
 															if (e.target.value === "") {
 																field.onChange(0);
 															} else {
-																field.onChange(parseInt(e.target.value));
+																field.onChange(parseFloat(e.target.value));
+																field.value = parseFloat(e.target.value);
+																console.log(field.value);
 															}
 														}}
 														value={field.value || ""}
@@ -1247,7 +1252,19 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												Total Hours <span className="text-red-500"> (Fill in by AAO)</span>
 											</FormLabel>
 											<FormControl>
-												<Input {...field} value={field.value || ""} />
+												<Input
+													type="number"
+													{...field}
+													onBlur={e => {
+														if (e.target.value === "") {
+															field.onChange(0);
+														} else {
+															field.onChange(parseFloat(e.target.value));
+															console.log(field.value);
+														}
+													}}
+													value={field.value || ""}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
