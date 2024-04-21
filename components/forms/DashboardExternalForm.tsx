@@ -290,6 +290,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 				.update({
 					...updatedExternalForm,
 					last_updated: new Date(),
+					aao_email: user?.email,
 				})
 				.eq("id", externalForm.id)
 				.select();

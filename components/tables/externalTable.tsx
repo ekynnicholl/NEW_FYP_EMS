@@ -292,6 +292,15 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							>
 								Undo Action
 							</DropdownMenuItem>
+							{/* <DropdownMenuItem
+								onMouseUp={() => {
+									sendContactForm([row.original]);
+									console.log(row.original);
+									router.refresh();
+								}}
+							>
+								Send
+							</DropdownMenuItem> */}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);
@@ -459,13 +468,16 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								View All
 							</DropdownMenuItem>
 							{data
-								.map(row => new Date(row.created_at).getFullYear())
+								.map(row => {
+									const dateValue = row.created_at ? new Date(row.created_at) : null;
+									return dateValue ? dateValue.getFullYear() : null;
+								})
 								.filter((value, index, self) => self.indexOf(value) === index)
 								.map(year => (
 									<DropdownMenuItem
 										key={year}
 										onClick={() => {
-											table.getColumn("created_at")?.setFilterValue(year.toString());
+											table.getColumn("created_at")?.setFilterValue(year?.toString());
 											console.log("year: ", year);
 										}}
 									>
