@@ -983,11 +983,12 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Flight Date <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Popover disabled={!edit}>
+															<Popover>
 																<PopoverTrigger asChild>
 																	<FormControl>
 																		<Button
 																			variant={"outline"}
+																			disabled={!edit}
 																			className={cn(
 																				"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
 																				!field.value && "text-muted-foreground",

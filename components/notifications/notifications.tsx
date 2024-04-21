@@ -190,7 +190,7 @@ const NotificationsPage = () => {
 	};
 
 	return (
-		<div className="h-screen dark:bg-dark_mode_bg">
+		<div className="min-h-screen dark:bg-dark_mode_bg">
 			<div className="flex-1 w-full lg:w-1/2 ">
 				<div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
 					<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card max-h-screen overflow-auto">
@@ -199,17 +199,15 @@ const NotificationsPage = () => {
 							<div className="border-t border-gray-300 my-2"></div>
 							<div className="flex items-center my-2 mt-2">
 								<button
-									className={`mr-2 py-2 px-4 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 hover:text-white ${
-										selectedTab === "all" ? "bg-red-600 text-white" : "bg-gray-200"
-									}`}
+									className={`mr-2 py-2 px-4 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 hover:text-white ${selectedTab === "all" ? "bg-red-600 text-white" : "bg-gray-200"
+										}`}
 									onClick={() => setSelectedTab("all")}
 								>
 									All
 								</button>
 								<button
-									className={`py-2 px-4 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 hover:text-white ${
-										selectedTab === "unread" ? "bg-red-600 text-white" : "bg-gray-200"
-									}`}
+									className={`py-2 px-4 rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 hover:text-white ${selectedTab === "unread" ? "bg-red-600 text-white" : "bg-gray-200"
+										}`}
 									onClick={() => setSelectedTab("unread")}
 								>
 									Unread

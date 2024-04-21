@@ -60,7 +60,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="bg-slate-100 dark:bg-dark_mode_bg h-screen">
+            <div className="bg-slate-100 dark:bg-dark_mode_bg min-h-screen">
                 {!isValidToken ? (
                     <div className="flex-1">
                         <RequestNTF />

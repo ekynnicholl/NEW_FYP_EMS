@@ -8,7 +8,7 @@ import AttendanceTiming from "@/components/settings/attendance_timing";
 
 export default function Home() {
 	return (
-		<div className="px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg h-full">
+		<div className="px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg min-h-screen">
 			<div className="flex flex-col space-y-4">
 				<div className="flex-1">
 					<CreateAdminAccount />

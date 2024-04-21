@@ -341,7 +341,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 			handleLogoutClick();
 		} catch (error) {
-			console.error('Error deleting user:', error.message);
+			console.error('Error deleting user:', error);
 		}
 	};
 
