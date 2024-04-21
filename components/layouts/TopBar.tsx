@@ -6,7 +6,7 @@ import MobileTopBar from "./MobileTopBar";
 import AddAdmin_Modal from "@/components/AddAdmin_Modal";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { auth, provider } from "../../google_config";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, deleteUser as deleteUserFromFirebase } from "firebase/auth";
 
 import Link from "next/link";
 import ProfileIcon from "@/components/icons/ProfileIcon";
@@ -308,6 +308,38 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
+	const handleDelete = async (user) => {
+		try {
+			const { email_address } = user; // Assuming 'email_address' is the unique identifier for the user
+
+			// Reauthenticate user before deleting account
+			const firebaseUser = auth.currentUser;
+			if (!firebaseUser) {
+				throw new Error('User not authenticated');
+			}
+
+			// Delete user from Firebase
+			await deleteUserFromFirebase(firebaseUser); // Use delete method directly on the user object
+
+			// Delete user from Supabase
+			const { error } = await supabase
+				.from('login')
+				.delete()
+				.eq('email_address', email_address);
+
+			if (error) {
+				throw error;
+			}
+
+			// Refresh user data after deletion
+			fetchUserData();
+
+			handleLogoutClick();
+		} catch (error) {
+			// console.error('Error deleting user:', error.message);
+		}
+	};
+
 
 	interface UserData {
 		email_address: string;
@@ -389,7 +421,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 											{formatDateTime(user.created_at)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
-											<button className="text-red-600 hover:text-red-900">Delete</button>
+											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user)}>Delete</button>
 										</td>
 									</tr>
 								))}
