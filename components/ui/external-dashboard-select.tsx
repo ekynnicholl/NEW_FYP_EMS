@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
 	<SelectPrimitive.Trigger
 		ref={ref}
 		className={cn(
-			"flex w-full items-center justify-between border border-gray-200 bg-white px-3 py-2 placeholder:text-gray-500 focus:ring-gray-950 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 h-12 rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none text-sm font-semibold focus:ring-0 focus:ring-offset-0 focus:ring-transparent ring-offset-transparent transition-all",
+			"flex w-full items-center justify-between border border-gray-200 bg-white px-3 py-2 placeholder:text-gray-500 focus:ring-gray-950 disabled:cursor-not-allowed disabled:opacity-80 disabled:hover:shadow-[0_0_0_2px_#EFEFEF_inset] dark:border-gray-800 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 h-12 rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none text-sm font-semibold focus:ring-0 focus:ring-offset-0 focus:ring-transparent ring-offset-transparent transition-all",
 			className,
 		)}
 		{...props}

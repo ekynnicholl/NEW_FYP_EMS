@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 
 import Image from "next/image";
@@ -78,6 +78,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 	const [applicantName, setApplicantName] = useState("");
 	const [applicantPosition, setApplicantPosition] = useState("");
+	const [saving, setSaving] = useState(false);
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -258,6 +259,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	}, [form, form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
+		setSaving(true);
 		console.log("Form sent");
 
 		if (values.commencement_date !== null) {
@@ -321,6 +323,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			])
 			.select();
 
+		setSaving(false);
 		if (error) {
 			console.log(error);
 			toast.error("Error submitting form");
@@ -534,6 +537,17 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																field.onChange(e);
 																if (e === "own transport" || e === "company vehicle") {
 																	setUseOwnTransport(true);
+																	form.setValue("flight_date", null);
+																	form.setValue("flight_time", null);
+																	form.setValue("flight_number", "");
+																	form.setValue("destination_from", "");
+																	form.setValue("destination_to", "");
+
+																	form.setValue("transit_flight_date", null);
+																	form.setValue("transit_flight_time", null);
+																	form.setValue("transit_flight_number", "");
+																	form.setValue("transit_destination_from", "");
+																	form.setValue("transit_destination_to", "");
 																} else {
 																	setUseOwnTransport(false);
 																}
@@ -570,6 +584,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																	setGroup(true);
 																} else {
 																	setGroup(false);
+																	form.setValue("other_members", "");
 																}
 															}}
 															value={field.value}
@@ -1695,8 +1710,11 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												<DialogClose asChild>
 													<Button variant="outline">Cancel</Button>
 												</DialogClose>
-												<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
-													{/* // onClick={(e) => { e.preventDefault(); form.handleSubmit(onSubmit) }}> */}
+												<Button
+													onMouseUp={checkFormStatus}
+													onClick={form.handleSubmit(onSubmit)}
+													disabled={form.formState.isSubmitting}
+												>
 													Submit
 												</Button>
 											</DialogFooter>

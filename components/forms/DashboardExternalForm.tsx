@@ -30,6 +30,7 @@ import {
 	CircleDashed,
 	CircleX,
 	Forward,
+	Pencil,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -91,6 +92,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [undoOpen, setUndoOpen] = useState(false);
 	const [forwardOpen, setForwardOpen] = useState(false);
+	const [edit, setEdit] = useState(false);
+	const [editSaveLoading, setEditSaveLoading] = useState(false);
+	const [forwardSaveLoading, setForwardSaveLoading] = useState(false);
+	const [revertSaveLoading, setRevertSaveLoading] = useState(false);
 
 	const [courseFee, setCourseFee] = useState(0);
 	const [airfareFee, setAirfareFee] = useState(0);
@@ -249,7 +254,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		},
 	});
 
-	async function onSubmit(values: z.infer<typeof adminExternalFormSchema>) {
+	async function onSaveSubmit(values: z.infer<typeof adminExternalFormSchema>) {
+		setEditSaveLoading(true);
 		const { verification_email, approval_email, ...rest } = values;
 		const updatedExternalForm = { ...externalForm, ...rest };
 
@@ -261,6 +267,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			})
 			.eq("id", externalForm.id);
 
+		setEditSaveLoading(false);
+		setEdit(false);
 		if (error) {
 			toast.error("Error updating external form");
 			return;
@@ -270,6 +278,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	}
 
 	async function onRevertSubmit(values: z.infer<typeof revertSchema>) {
+		setRevertOpen(false);
+		setRevertSaveLoading(true);
 		const securityKeyUID = uuidv4();
 		if (externalForm.formStage === 2) {
 			const { revertComment } = values;
@@ -286,7 +296,6 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 			if (error) {
 				toast.error("Error reverting external form");
-				return;
 			} else {
 				sendContactForm(data);
 				toast.success("External form reverted successfully");
@@ -309,12 +318,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			}
 		} else if (externalForm.formStage === 1) {
 			toast.error("External form is already reverted to staff");
-			setRevertOpen(false);
 		} else {
 			toast.error("External form cannot be reverted");
-			setRevertOpen(false);
 		}
 		revertForm.reset();
+		setRevertSaveLoading(false);
 	}
 
 	async function onUndoSubmit(values: z.infer<typeof undoSchema>) {
@@ -358,6 +366,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	}
 
 	async function onForwardSubmit(values: z.infer<typeof forwardSchema>) {
+		setForwardSaveLoading(true);
 		const securityKeyUID = uuidv4();
 		const { verification_email, approval_email } = values;
 		const updatedExternalForm = { ...externalForm, verification_email, approval_email, securityKey: securityKeyUID };
@@ -376,7 +385,6 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 		if (error) {
 			toast.error("Error forwarding external form");
-			return;
 		} else {
 			sendContactForm(data);
 			toast.success("External form forwarded successfully");
@@ -398,13 +406,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			}
 		}
 		forwardForm.reset();
+		setForwardSaveLoading(false);
 	}
 
 	return (
 		<>
 			<div className="flex-1">
 				<Form {...form}>
-					<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+					<form className="space-y-4" onSubmit={form.handleSubmit(onSaveSubmit)}>
 						<div className="flex justify-between items-center bg-white p-3 pr-8 pl-4 rounded-xl">
 							<div className="flex gap-3">
 								<Link href="/external" className="px-4 flex h-10 items-center gap-2">
@@ -455,18 +464,55 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 							</div>
 
 							<div className="flex gap-3">
-								<Button
-									variant="outline"
-									className="shadow-[0_0_0_2px_#EFEFEF_inset] border-none px-5 h-12 text-[15px] rounded-xl font-bold"
-									asChild
-								>
-									<Link href="/external" className="px-4 flex h-10 items-center gap-2">
-										Cancel
-									</Link>
-								</Button>
-								<Button variant="default" className="px-5 h-12 text-[15px] rounded-xl font-bold" type="submit">
-									Save / Update
-								</Button>
+								{edit && (
+									<>
+										<Button
+											variant="outline"
+											className="flex items-center gap-2 shadow-[0_0_0_2px_#EFEFEF_inset] border-none px-5 h-12 text-[15px] rounded-xl font-bold"
+											onClick={() => {
+												setEdit(false);
+											}}
+										>
+											Cancel
+										</Button>
+										<Button
+											variant="default"
+											className="px-5 h-12 text-[15px] rounded-xl font-bold"
+											type="submit"
+											disabled={editSaveLoading}
+										>
+											Save / Update
+										</Button>
+									</>
+								)}
+
+								{externalForm.formStage === 2 && !edit && (
+									<>
+										<Button
+											variant="destructive"
+											type="button"
+											className="px-5 h-12 text-[15px] rounded-xl font-bold flex gap-2"
+											onClick={() => {
+												setRevertOpen(true);
+											}}
+											disabled={revertSaveLoading}
+										>
+											<Undo2 size={20} />
+											Revert to Staff
+										</Button>
+										<Button
+											type="button"
+											className="px-5 h-12 text-[15px] rounded-xl font-bold flex gap-2 bg-green-500"
+											onClick={() => {
+												setForwardOpen(true);
+											}}
+											disabled={forwardSaveLoading}
+										>
+											<Forward size={20} />
+											Forward
+										</Button>
+									</>
+								)}
 								<DropdownMenu>
 									<DropdownMenuTrigger className="text-gray-500 outline-none">
 										<div className="border-2 p-2 rounded-xl hover:bg-slate-100 transition-all">
@@ -477,20 +523,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										<DropdownMenuItem
 											className="p-3 cursor-pointer rounded-xl flex gap-2"
 											onClick={() => {
-												setForwardOpen(true);
+												setEdit(true);
 											}}
 										>
-											<Forward size={20} />
-											Forward
-										</DropdownMenuItem>
-										<DropdownMenuItem
-											className="p-3 cursor-pointer rounded-xl flex gap-2"
-											onClick={() => {
-												setRevertOpen(true);
-											}}
-										>
-											<Undo2 size={20} />
-											Revert to Staff
+											<Pencil size={20} />
+											Edit
 										</DropdownMenuItem>
 										<DropdownMenuItem
 											className="p-3 cursor-pointer rounded-xl flex gap-2"
@@ -529,7 +566,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												Email <span className="text-red-500"> *</span>
 											</FormLabel>
 											<FormControl>
-												<Input type="email" {...field} />
+												<Input type="email" {...field} disabled={!edit} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -545,7 +582,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -560,7 +597,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Staff ID / Student No. <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -575,7 +612,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Designation / Course <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -590,7 +627,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Faculty / School / Unit <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Select onValueChange={field.onChange} value={field.value}>
+													<Select onValueChange={field.onChange} value={field.value} disabled={!edit}>
 														<SelectTrigger>
 															<SelectValue placeholder="Please select an option" />
 														</SelectTrigger>
@@ -616,10 +653,22 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Type of Transportation <span className="text-red-500"> *</span>
 												</FormLabel>
 												<Select
+													disabled={!edit}
 													onValueChange={e => {
 														field.onChange(e);
 														if (e === "own transport" || e === "company vehicle") {
 															setUseOwnTransport(true);
+															form.setValue("flight_date", null);
+															form.setValue("flight_time", null);
+															form.setValue("flight_number", "");
+															form.setValue("destination_from", "");
+															form.setValue("destination_to", "");
+
+															form.setValue("transit_flight_date", null);
+															form.setValue("transit_flight_time", null);
+															form.setValue("transit_flight_number", "");
+															form.setValue("transit_destination_from", "");
+															form.setValue("transit_destination_to", "");
 														} else {
 															setUseOwnTransport(false);
 														}
@@ -650,12 +699,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Traveling in <span className="text-red-500"> *</span>
 												</FormLabel>
 												<Select
+													disabled={!edit}
 													onValueChange={e => {
 														field.onChange(e);
 														if (e === "group") {
 															setGroup(true);
 														} else {
 															setGroup(false);
+															form.setValue("other_members", "");
 														}
 													}}
 													value={field.value}
@@ -710,7 +761,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												Program title / Event <span className="text-red-500"> *</span>
 											</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input {...field} disabled={!edit} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -725,7 +776,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												Description <span className="text-red-500"> *</span>
 											</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input {...field} disabled={!edit} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -743,6 +794,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<PopoverTrigger asChild>
 													<FormControl>
 														<Button
+															disabled={!edit}
 															variant="outline"
 															className={cn(
 																"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
@@ -787,6 +839,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<PopoverTrigger asChild>
 													<FormControl>
 														<Button
+															disabled={!edit}
 															variant={"outline"}
 															className={cn(
 																"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
@@ -828,7 +881,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												Organiser <span className="text-red-500"> *</span>
 											</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input {...field} disabled={!edit} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -840,9 +893,12 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										name="total_hours"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel className="font-semibold text-sm text-gray-500">Total Hours</FormLabel>
+												<FormLabel className="font-semibold text-sm text-gray-500">
+													Total Hours <span className="text-red-500"> (Fill in by AAO)</span>
+												</FormLabel>
 												<FormControl>
 													<Input
+														disabled={!edit}
 														type="number"
 														{...field}
 														onChange={e => {
@@ -873,7 +929,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												Venue <span className="text-red-500"> *</span>
 											</FormLabel>
 											<FormControl>
-												<Input {...field} value={field.value || ""} />
+												<Input {...field} value={field.value || ""} disabled={!edit} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -887,7 +943,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormLabel className="font-semibold text-sm text-gray-500">
 												HDRF Claimable <span className="text-red-500"> *</span>
 											</FormLabel>
-											<Select onValueChange={field.onChange} defaultValue={field.value}>
+											<Select onValueChange={field.onChange} defaultValue={field.value} disabled={!edit}>
 												<FormControl>
 													<SelectTrigger>
 														<SelectValue placeholder="Please select an option" />
@@ -926,7 +982,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Flight Date <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Popover>
+															<Popover disabled={!edit}>
 																<PopoverTrigger asChild>
 																	<FormControl>
 																		<Button
@@ -972,7 +1028,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Flight Time <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input type="time" {...field} value={field.value || ""} />
+															<Input type="time" {...field} value={field.value || ""} disabled={!edit} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -989,7 +1045,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														Flight Number <span className="text-red-500"> *</span>
 													</FormLabel>
 													<FormControl>
-														<Input {...field} />
+														<Input {...field} disabled={!edit} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1008,7 +1064,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																From <span className="text-red-500"> *</span>
 															</FormLabel>
 															<FormControl>
-																<Input {...field} />
+																<Input {...field} disabled={!edit} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -1023,7 +1079,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																To <span className="text-red-500"> *</span>
 															</FormLabel>
 															<FormControl>
-																<Input {...field} />
+																<Input {...field} disabled={!edit} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -1044,6 +1100,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																<PopoverTrigger asChild>
 																	<FormControl>
 																		<Button
+																			disabled={!edit}
 																			variant={"outline"}
 																			className={cn(
 																				"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
@@ -1087,7 +1144,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														<FormItem>
 															<FormLabel>Transit Flight Time</FormLabel>
 															<FormControl>
-																<Input type="time" {...field} value={field.value || ""} />
+																<Input type="time" {...field} value={field.value || ""} disabled={!edit} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -1101,7 +1158,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<FormItem>
 														<FormLabel>Transit Flight Number</FormLabel>
 														<FormControl>
-															<Input {...field} />
+															<Input {...field} disabled={!edit} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -1115,7 +1172,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														<FormItem>
 															<FormLabel>Transit From</FormLabel>
 															<FormControl>
-																<Input placeholder="" {...field} />
+																<Input placeholder="" {...field} disabled={!edit} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -1128,7 +1185,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														<FormItem>
 															<FormLabel>Transit To</FormLabel>
 															<FormControl>
-																<Input placeholder="" {...field} />
+																<Input placeholder="" {...field} disabled={!edit} />
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -1146,7 +1203,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										<FormItem>
 											<FormLabel className="font-semibold text-sm text-gray-500">Hotel Name</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input {...field} disabled={!edit} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -1164,6 +1221,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<PopoverTrigger asChild>
 														<FormControl>
 															<Button
+																disabled={!edit}
 																variant={"outline"}
 																className={cn(
 																	"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
@@ -1206,6 +1264,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<PopoverTrigger asChild>
 														<FormControl>
 															<Button
+																disabled={!edit}
 																variant={"outline"}
 																className={cn(
 																	"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
@@ -1243,33 +1302,6 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										)}
 									/>
 								</div>
-								<FormField
-									control={form.control}
-									name="total_hours"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="font-semibold text-sm text-gray-500">
-												Total Hours <span className="text-red-500"> (Fill in by AAO)</span>
-											</FormLabel>
-											<FormControl>
-												<Input
-													type="number"
-													{...field}
-													onBlur={e => {
-														if (e.target.value === "") {
-															field.onChange(0);
-														} else {
-															field.onChange(parseFloat(e.target.value));
-															console.log(field.value);
-														}
-													}}
-													value={field.value || ""}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
 							</div>
 						</section>
 
@@ -1293,12 +1325,16 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
+														type="number"
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															// write a regex that only allows numbers and decimal points
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setCourseFee(Number(e.target.value));
 															}
@@ -1324,12 +1360,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setAirfareFee(Number(e.target.value));
 															}
@@ -1355,12 +1393,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setAccommodationFee(Number(e.target.value));
 															}
@@ -1386,12 +1426,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setPerDiemFee(Number(e.target.value));
 															}
@@ -1417,12 +1459,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setTransportationFee(Number(e.target.value));
 															}
@@ -1448,12 +1492,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setTravelInsuranceFee(Number(e.target.value));
 															}
@@ -1479,12 +1525,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														</div>
 													</div>
 													<Input
+														disabled={!edit}
 														className="bg-white border border-gray-200 pl-14"
 														{...field}
 														value={field.value === 0 ? "" : field.value.toString()}
 														onChange={e => {
 															const value = e.target.value;
-															if (/^\d*$/.test(value)) {
+															let regex = /^\d*\.?\d*$/;
+															if (regex.test(value)) {
 																field.onChange(value === "" ? 0 : Number(value));
 																setOtherFees(Number(value));
 															}
@@ -1528,7 +1576,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormItem>
 												<FormLabel className="font-semibold text-sm text-gray-500">Staff Development Fund</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1541,7 +1589,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormItem>
 												<FormLabel className="font-semibold text-sm text-gray-500">Consolidated Pool Fund</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1554,7 +1602,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormItem>
 												<FormLabel className="font-semibold text-sm text-gray-500">Research Fund</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1567,7 +1615,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormItem>
 												<FormLabel className="font-semibold text-sm text-gray-500">Travel Fund</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1580,7 +1628,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormItem>
 												<FormLabel className="font-semibold text-sm text-gray-500">Student Council Fund</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1593,7 +1641,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											<FormItem>
 												<FormLabel className="font-semibold text-sm text-gray-500">Other Fund</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1613,7 +1661,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<span className="text-red-500"> (Fill in by AAO)</span>
 											</FormLabel>
 											<FormControl>
-												<RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-1">
+												<RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-1" disabled={!edit}>
 													<FormItem className="flex items-center space-x-3 space-y-0">
 														<FormControl>
 															<RadioGroupItem value="Yes" />
@@ -1652,7 +1700,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<Input
 														type="text"
 														className="bg-white border border-gray-200 pl-14 disabled:cursor-not-allowed"
-														disabled={form.getValues("expenditure_cap") !== "Yes"}
+														disabled={form.getValues("expenditure_cap") !== "Yes" || !edit}
 														{...field}
 														value={field.value === 0 ? "" : field.value?.toString() ?? ""}
 														onChange={e => {
@@ -1702,7 +1750,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Name <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1717,7 +1765,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Position Title <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input {...field} disabled={!edit} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -1737,6 +1785,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<PopoverTrigger asChild>
 													<FormControl>
 														<Button
+															disabled={!edit}
 															variant={"outline"}
 															className={cn(
 																"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden",
@@ -1816,7 +1865,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														Name <span className="text-red-500"> *</span>
 													</FormLabel>
 													<FormControl>
-														<Input {...field} />
+														<Input {...field} disabled={!edit} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1831,7 +1880,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														Position Title <span className="text-red-500"> *</span>
 													</FormLabel>
 													<FormControl>
-														<Input {...field} />
+														<Input {...field} disabled={!edit} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -1851,6 +1900,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													<PopoverTrigger asChild>
 														<FormControl>
 															<Button
+																disabled={!edit}
 																variant={"outline"}
 																className={cn(
 																	"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden",
@@ -1932,7 +1982,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Name <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input {...field} />
+															<Input {...field} disabled={!edit} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -1947,7 +1997,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Position Title <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input {...field} />
+															<Input {...field} disabled={!edit} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -1967,6 +2017,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														<PopoverTrigger asChild>
 															<FormControl>
 																<Button
+																	disabled={!edit}
 																	variant={"outline"}
 																	className={cn(
 																		"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden",
@@ -2045,7 +2096,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Name <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input {...field} />
+															<Input {...field} disabled={!edit} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -2060,7 +2111,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															Position Title <span className="text-red-500"> *</span>
 														</FormLabel>
 														<FormControl>
-															<Input {...field} />
+															<Input {...field} disabled={!edit} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
@@ -2080,6 +2131,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														<PopoverTrigger asChild>
 															<FormControl>
 																<Button
+																	disabled={!edit}
 																	variant={"outline"}
 																	className={cn(
 																		"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden",
@@ -2184,7 +2236,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 					</div>
 				)}
 
-				<div className="flex flex-col gap-3 sticky top-3 bg-white rounded-lg p-4">
+				<div className="flex flex-col gap-3 top-3 bg-white rounded-lg p-4">
 					<aside className="flex flex-col justify-between">
 						<div className="flex gap-3">
 							<div className="rounded-sm bg-cyan-400 w-4 h-8"></div>
