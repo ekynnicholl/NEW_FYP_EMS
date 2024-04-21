@@ -339,12 +339,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 				throw error;
 			}
 
-			// Refresh user data after deletion
-			fetchUserData();
-
 			handleLogoutClick();
 		} catch (error) {
-			// console.error('Error deleting user:', error.message);
+			console.error('Error deleting user:', error.message);
 		}
 	};
 

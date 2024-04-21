@@ -168,9 +168,6 @@ const CreateAdminAccount = () => {
 				throw error;
 			}
 
-			// Refresh user data after deletion
-			fetchUserData();
-
 			handleLogoutClick();
 		} catch (error) {
 			// console.error('Error deleting user:', error.message);
@@ -238,6 +235,7 @@ const CreateAdminAccount = () => {
 					)}
 				</div>
 			</div>
+
 			<div className="border-t border-gray-300 my-2"></div>
 			{isExpanded ? (
 				<div className="flex">
