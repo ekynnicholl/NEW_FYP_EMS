@@ -308,11 +308,16 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
+
 	interface User {
 		firebase_uid: string;
 		email_address: string;
 	}
-
+	interface UserForDelete {
+		id: string;
+		email: string;
+	}
+	
 	const handleDelete = async (user: User) => {
 		try {
 			const { email_address } = user; // Assuming 'email_address' is the unique identifier for the user
@@ -426,7 +431,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 											{formatDateTime(user.created_at)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
-											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user)}>Delete</button>
+											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user: UserForDelete)}>Delete</button>
 										</td>
 									</tr>
 								))}
