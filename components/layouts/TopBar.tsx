@@ -308,88 +308,175 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		}
 	};
 
+
+	interface UserData {
+		email_address: string;
+		created_at: string;
+	}
+
+	const [userData, setUserData] = useState<UserData[]>([]);
+
+	useEffect(() => {
+		fetchUserData();
+	}, []);
+
+	const fetchUserData = async () => {
+		try {
+			const { data, error } = await supabase
+				.from('login')
+				.select('email_address, created_at');
+
+			if (error) {
+				throw error;
+			}
+
+			setUserData(data || []);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error('Error fetching user data:', error.message);
+			} else {
+				console.error('Error fetching user data:', error);
+			}
+		}
+	};
+
+
+	const formatDateTime = (dateTimeString: string) => {
+		const dateTime = new Date(dateTimeString);
+
+		const day = String(dateTime.getDate()).padStart(2, '0');
+		const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+		const year = dateTime.getFullYear();
+		const hours = String(dateTime.getHours()).padStart(2, '0');
+		const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+		const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+		return `${day}-${month}-${year} `;
+	};
+
+
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
 		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card max-md:flex-row-reverse">
 			<AddAdmin_Modal isVisible={showModalAddAdmin} onClose={() => setShowModalAddAdmin(false)}>
-				<form onSubmit={e => handleCreateAccount(e)}>
-					<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
-						<div className="mx-auto max-w-xs ">
-							<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
-							<input
-								className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-								type="email"
-								placeholder="Email address"
-								name="email"
-								required
-							/>
-							<p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
+				<div className="flex">
 
-							<div className="relative">
-								<input
-									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-									type={showPassword ? "password" : "text"}
-									placeholder="Password"
-									id="password"
-									name="password"
-									required
-									onChange={handlePasswordChange}
-								/>
-								<button
-									className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4"
-									type="button"
-									id="password-toggle"
-									onClick={togglePasswordVisibility}
-								>
-									{showPassword ? (
-										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									) : (
-										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									)}
-								</button>
-
-								<p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
-							</div>
-							<div className="relative">
-								<input
-									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-									type={showConfirmPassword ? "password" : "text"}
-									placeholder="Confirm password"
-									id="confirmPassword"
-									onChange={handleConfirmPasswordChange}
-									required
-								/>
-
-								<button
-									className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4"
-									type="button"
-									id="confirm-password-toggle"
-									onClick={toggleConfirmPasswordVisibility}
-								>
-									{showConfirmPassword ? (
-										<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									) : (
-										<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-									)}
-								</button>
-
-								<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
-								<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
-							</div>
-							<button className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
-								<svg
-									className="w-6 h-6 -ml-2"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								></svg>
-								<span className="mr-4 text-[16px]">Register</span>
-							</button>
-						</div>
+					<div className="mt-[30px] ml-[50px] mr-[50px] overflow-y-auto">
+						<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Account Details</p>
+						<table className="min-w-full divide-y divide-gray-200">
+							<thead className="bg-gray-50 dark:bg-gray-800">
+								<tr>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										ID
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Email Address
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Created At
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900">
+								{userData.map((user, index) => (
+									<tr key={index}>
+										<td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+										<td className="px-6 py-4 whitespace-nowrap">{user.email_address}</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											{formatDateTime(user.created_at)}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											<button className="text-red-600 hover:text-red-900">Delete</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
 					</div>
-				</form>
+
+
+					<form onSubmit={e => handleCreateAccount(e)}>
+						<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
+							<div className="mx-auto max-w-xs">
+								<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
+								<input
+									className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+									type="email"
+									placeholder="Email address"
+									name="email"
+									required
+								/>
+								<p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
+
+								<div className="relative">
+									<input
+										className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+										type={showPassword ? "password" : "text"}
+										placeholder="Password"
+										id="password"
+										name="password"
+										required
+										onChange={handlePasswordChange}
+									/>
+									<button
+										className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4"
+										type="button"
+										id="password-toggle"
+										onClick={togglePasswordVisibility}
+									>
+										{showPassword ? (
+											<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+										) : (
+											<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+										)}
+									</button>
+
+									<p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
+								</div>
+								<div className="relative">
+									<input
+										className="w-full px-8 py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+										type={showConfirmPassword ? "password" : "text"}
+										placeholder="Confirm password"
+										id="confirmPassword"
+										onChange={handleConfirmPasswordChange}
+										required
+									/>
+
+									<button
+										className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4"
+										type="button"
+										id="confirm-password-toggle"
+										onClick={toggleConfirmPasswordVisibility}
+									>
+										{showConfirmPassword ? (
+											<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+										) : (
+											<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+										)}
+									</button>
+
+									<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
+									<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
+								</div>
+								<button className="mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
+									<svg
+										className="w-6 h-6 -ml-2"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									></svg>
+									<span className="mr-4 text-[16px]">Register</span>
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</AddAdmin_Modal>
 
 			<div className="max-md:hidden">
