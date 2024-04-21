@@ -1,11 +1,11 @@
 "use client";
 
 import { IoMdArrowDroprightCircle, IoMdArrowDropleftCircle } from "react-icons/io";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { auth, provider } from "../../google_config";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, deleteUser as deleteUserFromFirebase } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from "js-cookie";
 
@@ -126,11 +126,107 @@ const CreateAdminAccount = () => {
 		}
 	};
 
+	const handleLogoutClick = () => {
+		// Clear user data from localStorage
+		localStorage.removeItem("concatenatedID");
+
+		// Remove the cookies,
+		cookie.remove("authToken");
+
+		// Redirect to the login page after logout
+		window.location.href = "/login"; // You can replace with the actual login page URL
+	};
+
+	interface User {
+		firebase_uid: string;
+		email_address: string;
+		created_at: string;
+	}
+
+	const [user, setUser] = useState<User[]>([]);
+
+	const handleDelete = async (user: User) => {
+		try {
+			const { email_address } = user; // Assuming 'email_address' is the unique identifier for the user
+
+			// Reauthenticate user before deleting account
+			const firebaseUser = auth.currentUser;
+			if (!firebaseUser) {
+				throw new Error('User not authenticated');
+			}
+
+			// Delete user from Firebase
+			await deleteUserFromFirebase(firebaseUser); // Use delete method directly on the user object
+
+			// Delete user from Supabase
+			const { error } = await supabase
+				.from('login')
+				.delete()
+				.eq('email_address', email_address);
+
+			if (error) {
+				throw error;
+			}
+
+			// Refresh user data after deletion
+			fetchUserData();
+
+			handleLogoutClick();
+		} catch (error) {
+			// console.error('Error deleting user:', error.message);
+		}
+	};
+
+	useEffect(() => {
+		fetchUserData();
+	}, []);
+
+	const fetchUserData = async () => {
+		try {
+			const { data, error } = await supabase
+				.from('login')
+				.select('email_address, created_at');
+
+			if (error) {
+				throw error;
+			}
+
+			// Map the fetched data to match the User interface
+			const mappedData: User[] = data.map((item: any) => ({
+				firebase_uid: item.firebase_uid,
+				email_address: item.email_address,
+				created_at: item.created_at,
+			}));
+
+			setUser(mappedData || []);
+
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error('Error fetching user data:', error.message);
+			} else {
+				console.error('Error fetching user data:', error);
+			}
+		}
+	};
+
+	const formatDateTime = (dateTimeString: string) => {
+		const dateTime = new Date(dateTimeString);
+
+		const day = String(dateTime.getDate()).padStart(2, '0');
+		const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+		const year = dateTime.getFullYear();
+		const hours = String(dateTime.getHours()).padStart(2, '0');
+		const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+		const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+		return `${day}-${month}-${year} `;
+	};
+
+
 	return (
 		<div
-			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${
-				isExpanded ? "lg:max-w-[30%]" : "max-w-[400px]"
-			}`}
+			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? "lg:max-w-[62%]" : "max-w-[400px]"
+				}`}
 		>
 			<div className="flex items-center">
 				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
@@ -144,85 +240,123 @@ const CreateAdminAccount = () => {
 			</div>
 			<div className="border-t border-gray-300 my-2"></div>
 			{isExpanded ? (
-				<div className="overflow-y-auto max-h-80">
-					<form onSubmit={e => handleCreateAccount(e)}>
-						<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
-							<div className="mx-auto max-w-xs ">
-								<p className="text-xl lg:text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
-								<input
-									className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]" 
-									type="email"
-									placeholder="Email address"
-									name="email"
-									required
-								/>
-								<p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
+				<div className="flex">
+					<div className="mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
+						<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Account Details</p>
+						<table className="min-w-full divide-y divide-gray-200">
+							<thead className="bg-gray-50 dark:bg-gray-800">
+								<tr>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										ID
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Registered Email Address
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Created At
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900">
+								{user.map((user, index) => (
+									<tr key={index}>
+										<td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+										<td className="px-6 py-4 whitespace-nowrap">{user.email_address}</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											{formatDateTime(user.created_at)}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>Delete</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 
-								<div className="relative">
+					<div className="max-h-90">
+						<form onSubmit={e => handleCreateAccount(e)}>
+							<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
+								<div className="mx-auto max-w-xs mr-5">
+									<p className="text-xl lg:text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
 									<input
-										className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-4 lg:mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-										type={showPassword ? "password" : "text"}
-										placeholder="Password"
-										id="password"
-										name="password"
-										required
-										onChange={handlePasswordChange}
-									/>
-									<button
-										className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4"
-										type="button"
-										id="password-toggle"
-										onClick={togglePasswordVisibility}
-									>
-										{showPassword ? (
-											<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-										) : (
-											<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-										)}
-									</button>
-
-									<p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
-								</div>
-								<div className="relative">
-									<input
-										className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-4 lg:mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
-										type={showConfirmPassword ? "password" : "text"}
-										placeholder="Confirm password"
-										id="confirmPassword"
-										onChange={handleConfirmPasswordChange}
+										className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+										type="email"
+										placeholder="Email address"
+										name="email"
 										required
 									/>
+									<p className="text-red-500 text-left ml-[6px] mt-0 text-xs">{errorMessageEmailAddress}</p>
 
-									<button
-										className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4"
-										type="button"
-										id="confirm-password-toggle"
-										onClick={toggleConfirmPasswordVisibility}
-									>
-										{showConfirmPassword ? (
-											<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-										) : (
-											<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
-										)}
+									<div className="relative">
+										<input
+											className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-4 lg:mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+											type={showPassword ? "password" : "text"}
+											placeholder="Password"
+											id="password"
+											name="password"
+											required
+											onChange={handlePasswordChange}
+										/>
+										<button
+											className="btn btn-outline-secondary absolute top-4 right-0 mt-5 mr-4"
+											type="button"
+											id="password-toggle"
+											onClick={togglePasswordVisibility}
+										>
+											{showPassword ? (
+												<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+											) : (
+												<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+											)}
+										</button>
+
+										<p className="text-red-500 text-left ml-2 mt-1 text-sm">{errorMessagePassword}</p>
+									</div>
+									<div className="relative">
+										<input
+											className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-4 lg:mt-5 dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+											type={showConfirmPassword ? "password" : "text"}
+											placeholder="Confirm password"
+											id="confirmPassword"
+											onChange={handleConfirmPasswordChange}
+											required
+										/>
+
+										<button
+											className="btn btn-outline-secondary absolute top-4 right-0 mt-[18px] mr-4"
+											type="button"
+											id="confirm-password-toggle"
+											onClick={toggleConfirmPasswordVisibility}
+										>
+											{showConfirmPassword ? (
+												<FaEyeSlash className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+											) : (
+												<FaEye className="text-lg lg:text-xl lg:mt-[2.5px] dark:text-[#D6D2CD]" />
+											)}
+										</button>
+
+										<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
+										<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
+									</div>
+									<button className="mt-6 lg:mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-3 lg:py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
+										<svg
+											className="w-6 h-6 -ml-2"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										></svg>
+										<span className="mr-4 text-[15px] lg:text-[16px]">Register</span>
 									</button>
-
-									<p className="text-red-500 text-left ml-[6px] mt-1 text-xs">{errorMessageConfirmPassword}</p>
-									<p className="text-green-500 text-left ml-[6px] mt-1 text-xs">{successMessageEmailVerification}</p>
 								</div>
-								<button className="mt-6 lg:mt-10 tracking-wide font-semibold bg-slate-800 text-gray-100 w-full py-3 lg:py-4 rounded-lg hover:bg-slate-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none dark:hover:bg-slate-800">
-									<svg
-										className="w-6 h-6 -ml-2"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									></svg>
-									<span className="mr-4 text-[15px] lg:text-[16px]">Register</span>
-								</button>
 							</div>
-						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			) : (
 				<div>
