@@ -312,7 +312,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		firebase_uid: string;
 		email_address: string;
 		created_at: string;
-		activation: boolean;
+		activation: string;
 	}
 
 	const [user, setUser] = useState<User[]>([]);
