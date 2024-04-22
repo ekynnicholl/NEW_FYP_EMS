@@ -141,6 +141,7 @@ const CreateAdminAccount = () => {
 		firebase_uid: string;
 		email_address: string;
 		created_at: string;
+		activation: boolean;
 	}
 
 	const [user, setUser] = useState<User[]>([]);
@@ -182,7 +183,7 @@ const CreateAdminAccount = () => {
 		try {
 			const { data, error } = await supabase
 				.from('login')
-				.select('email_address, created_at');
+				.select('email_address, created_at, activation');
 
 			if (error) {
 				throw error;
@@ -193,6 +194,7 @@ const CreateAdminAccount = () => {
 				firebase_uid: item.firebase_uid,
 				email_address: item.email_address,
 				created_at: item.created_at,
+				activation: item.activation,
 			}));
 
 			setUser(mappedData || []);
@@ -219,10 +221,48 @@ const CreateAdminAccount = () => {
 		return `${day}-${month}-${year} `;
 	};
 
+	const formatActivationStatus = (activation: boolean) => {
+		return activation ? 'Activated' : 'Not Activated'; // Convert boolean to string
+	};
+
+	const getActivationColor = (activation: boolean) => {
+		return activation ? 'text-green-600' : 'text-red-600';
+	};
+
+	const handleActivate = async (user: User) => {
+		try {
+			await supabase
+				.from('login')
+				.update({ activation: true })
+				.eq('firebase_uid', user.firebase_uid);
+
+			// Reload the current page
+			window.location.reload();
+
+		} catch (error) {
+			// console.error('Error activating user:', error.message);
+		}
+	};
+
+	const handleDeactivate = async (user: User) => {
+		try {
+			await supabase
+				.from('login')
+				.update({ activation: false })
+				.eq('firebase_uid', user.firebase_uid);
+
+			// Reload the current page
+			window.location.reload();
+
+		} catch (error) {
+			// console.error('Error deactivating user:', error.message);
+		}
+	};
+
 
 	return (
 		<div
-			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? "lg:max-w-[62%]" : "max-w-[400px]"
+			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? "lg:max-w-[75%]" : "max-w-[400px]"
 				}`}
 		>
 			<div className="flex items-center">
@@ -255,6 +295,9 @@ const CreateAdminAccount = () => {
 										Created At
 									</th>
 									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Status
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 										Action
 									</th>
 								</tr>
@@ -267,15 +310,23 @@ const CreateAdminAccount = () => {
 										<td className="px-6 py-4 whitespace-nowrap">
 											{formatDateTime(user.created_at)}
 										</td>
+										<td className={`px-6 py-4 whitespace-nowrap ${getActivationColor(user.activation)}`}>
+											{formatActivationStatus(user.activation)}
+										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>Delete</button>
+											{user.activation ? (
+												<button className="text-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDeactivate(user)}>Deactivate</button>
+											) : (
+												<button className="text-green-600 hover:text-green-900 ml-[6px]" onClick={() => handleActivate(user)}>Activate</button>
+											)}
 										</td>
 									</tr>
 								))}
 							</tbody>
-						
+
 						</table>
-						
+
 					</div>
 
 					<div className="max-h-90">
