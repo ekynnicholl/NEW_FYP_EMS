@@ -15,8 +15,9 @@ import toast from 'react-hot-toast';
 import loadingGIF from "@/public/loading_bird.gif";
 
 type Info = {
-	id: string
+	id: string;
 	firebase_uid: string;
+	activation: string;
 };
 
 export default function Login() {
@@ -49,7 +50,7 @@ export default function Login() {
 		}
 
 		const fetchInfos = async () => {
-			const { data } = await supabase.from("login").select("id, firebase_uid");
+			const { data } = await supabase.from("login").select("id, firebase_uid, activation");
 			setInfos(data || []); // Ensure data is not null
 			if (data && data.length > 0) {
 				// Assuming you want to use the first item in the 'data' array
@@ -125,7 +126,7 @@ export default function Login() {
 
 			const { data, error } = await supabase
 				.from('login')
-				.select('firebase_uid, email_address')
+				.select('firebase_uid, email_address, activation')
 				.eq('firebase_uid', userId);
 
 			if (error) {
@@ -135,10 +136,10 @@ export default function Login() {
 
 			if (data && data.length > 0) {
 				const userInfo = data[0];
-				const { firebase_uid, email_address: dbEmailAddress } = userInfo;
+				const { firebase_uid, email_address: dbEmailAddress, activation } = userInfo;
 
 				// Redirect to the dashboard or another page after successful login
-				if (firebase_uid === userId && dbEmailAddress === email_address && email_address_verified == true) {
+				if (firebase_uid === userId && dbEmailAddress === email_address && email_address_verified == true && activation === true) {
 					setIsLoading(true);
 					toast.success('You have logged in successfully.');
 					router.push("/homepage");
