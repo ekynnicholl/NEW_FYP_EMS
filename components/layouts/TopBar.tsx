@@ -475,7 +475,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 											{user.activation ? (
 												<button className="text-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDeactivate(user)}>Deactivate</button>
 											) : (
-												<button className="text-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleActivate(user)}>Activate</button>
+												<button className="text-green-600 hover:text-green-900 ml-[6px]" onClick={() => handleActivate(user)}>Activate</button>
 											)}
 										</td>
 									</tr>
