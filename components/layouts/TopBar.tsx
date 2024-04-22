@@ -312,6 +312,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		firebase_uid: string;
 		email_address: string;
 		created_at: string;
+		activation: boolean;
 	}
 
 	const [user, setUser] = useState<User[]>([]);
@@ -353,7 +354,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		try {
 			const { data, error } = await supabase
 				.from('login')
-				.select('email_address, created_at');
+				.select('email_address, created_at, activation');
 
 			if (error) {
 				throw error;
@@ -364,6 +365,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 				firebase_uid: item.firebase_uid,
 				email_address: item.email_address,
 				created_at: item.created_at,
+				activation: item.activation,
 			}));
 
 			setUser(mappedData || []);
@@ -412,6 +414,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 										Created At
 									</th>
 									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										Status
+									</th>
+									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 										Action
 									</th>
 								</tr>
@@ -424,6 +429,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 										<td className="px-6 py-4 whitespace-nowrap">
 											{formatDateTime(user.created_at)}
 										</td>
+										<td className="px-6 py-4 whitespace-nowrap">{user.activation}</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>Delete</button>
 										</td>
