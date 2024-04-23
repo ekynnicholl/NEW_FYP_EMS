@@ -413,8 +413,8 @@ export async function POST(request: Request) {
         // console.log('Received request data:', requestData);
 
         if (formStage === 2) {
-            // const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
-            const recipients = ['jadpichoo@outlook.com', staffEmail];
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
+            // const recipients = ['jadpichoo@outlook.com', staffEmail];
             const formIDs = [6, 5];
             // Debugging statements,
             // console.log("Started sending email process: ")
