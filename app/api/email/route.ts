@@ -28,15 +28,21 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             securityKey = `
                 <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields} </p>
             `;
+        } else {
+            securityKeySentence = 'Security key not found. Please refer to user manual for more assistance (ERRNTF_3).'
+
+            securityKey = securityKeySentence;
         }
 
         let staffDetails = "";
 
         if (optionalFields2 && optionalFields2.trim() !== "") {
             staffDetails = optionalFields2;
+        } else {
+            staffDetails = 'Staff details not found. Please refer to user manual for more assistance (ERRNTF_1_T1).'
         }
 
-        let aaoEmail = optionalFields3 ? optionalFields3 : 'Email not found. Please contact the Academic Administration Office for further support.';
+        let aaoEmail = optionalFields3 ? optionalFields3 : 'Officer email not found. Please refer to user manual for more assistance (ERRNTF_2_T1).';
 
         return `
         <html>
@@ -101,9 +107,11 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
                 <br/>
             `;
+        } else {
+            rejectMessage = 'Failed to retrieve reason. Please refer to user manual for more assistance (ERRNTF_4_T2).'
         }
 
-        let aaoEmail = optionalFields2 ? optionalFields2 : 'Email not found. Please contact the Academic Administration Office for further support.';
+        let aaoEmail = optionalFields2 ? optionalFields2 : 'OFficer email not found. Please refer to user manual for more assistance (ERRNTF_2_T2).';
 
         return `
         <html>
@@ -221,9 +229,13 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             securityKey = `
                 <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields2} </p>
             `;
+        } else {
+            securityKeySentence = 'Security key not found. Please refer to user manual for more assistance (ERRNTF_3_T4).'
+
+            securityKey = securityKeySentence;
         }
 
-        let aaoEmail = optionalFields3 ? optionalFields3 : 'Email not found. Please contact the Academic Administration Office for further support.';
+        let aaoEmail = optionalFields3 ? optionalFields3 : 'Officer email not found. Please refer to user manual for more assistance (ERRNTF_2_T4).';
 
         return `
         <html>
@@ -299,10 +311,12 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     
-                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
+                    <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m" style="text-align: justify;">This email serves to inform you that your Nominations/ Travelling Form has been received at our end. You will only be updated if there are any changes required to be made,
-                    approved or rejected. If you have any questions, please do not hesitate to contact us at fypemsmaster369@gmail.com</p>
+                    <p class="no-p-m">Please be informed that your Nominations/ Travelling Form application has been submitted. The Academic Administration Office
+                    will assign an officer to process your application. Please allow us some time to process within 2 to 3 working days.</p>
+                    <br/>
+                    <p class="no-p-m">If you have any questions, please do not hesitate to contact us at fypemsmaster369@gmail.com</p>
                     <br/>
                     <p class="no-p-m">You may review your submitted form here:</p>
                     <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
@@ -336,6 +350,8 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields2 && optionalFields2.trim() !== "") {
             staffDetails = optionalFields2;
+        } else {
+            staffDetails = "Staff details not found. Please refer to user manual for more assistance (ERRNTF_1_T6)."
         }
 
         return `
@@ -361,7 +377,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     <h2 class="no-p-m">Dear Academic Administration Office Staff,</h2>
                     <br/>
-                    <p class="no-p-m">There is currently a Nominations/ Travelling Form (NTF) pending for your review and confirmation with the applicant before forwarding it ot the respective Verifier/ Approver from <span style="font-weight: bold;">${staffDetails}</span>. You may view the applicant submission via the Event
+                    <p class="no-p-m">There is currently a Nominations/ Travelling Form (NTF) pending for your review and confirmation with the applicant before forwarding it to the respective Verifier/ Approver from <span style="font-weight: bold;">${staffDetails}</span>. You may view the applicant submission via the Event
                     Management System or you can click the link below to take the next action: </p>
                     <br/>
                     <p class="no-p-m">${linkForAAO}</p>
@@ -385,6 +401,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             <body>
                 <div class="email-container">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="250px">
+                    <p>There was no email template specified when creating this email.</p>
                     <p>ERROR. Please contact the server administrator! </p>
                 </div>
             </body>

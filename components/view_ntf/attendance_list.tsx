@@ -34,7 +34,7 @@ const AttendanceList: React.FC<AttendanceListProps> = ({ atIdentifier, atIdentif
                     .eq('attFormsStaffEmail', atIdentifier);
 
                 let attendanceFormsID: any[] = [];
-                if (atIdentifier2) {
+                if (atIdentifier2 && atIdentifier2 != '0') {
                     const queryID = supabase
                         .from("attendance_forms")
                         .select("attFSubEventID, attDateSubmitted")

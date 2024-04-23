@@ -59,12 +59,19 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
     const [rowSelection, setRowSelection] = useState({});
     const [selectedRow, setSelectedRow] = useState<any>({});
     const [open, setOpen] = useState(false);
-    const [confirmOpen, setConfirmOpen] = useState(false);
     const [confirmOpenAll, setConfirmOpenAll] = useState(false);
+    const [openReminderDialogs, setOpenReminderDialogs] = useState<{ [key: string]: boolean }>({});
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(2022, 0, 20),
         to: addDays(new Date(2022, 0, 20), 20),
     });
+
+    const toggleReminderDialog = (formId: string) => {
+        setOpenReminderDialogs((prev) => ({
+            ...prev,
+            [formId]: !prev[formId],
+        }));
+    };
 
     const isWithinRange = (row: { getValue: (arg0: any) => string | number | Date }, columnId: any, value: any) => {
         console.log("row: ", row.getValue(columnId));
@@ -184,11 +191,14 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 return (
                     // <Button onClick={() => sendReminder(row.original)}>REMIND</Button>
 
-                    <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                    <Dialog
+                        open={openReminderDialogs[row.original.id]}
+                        onOpenChange={() => toggleReminderDialog(row.original.id)}
+                    >
                         <DialogTrigger asChild>
                             <Button
                                 type="button">
-                                REMIND
+                                Remind
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -204,7 +214,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                                 </DialogClose>
                                 <Button
                                     onMouseUp={() => {
-                                        setConfirmOpen(false);
+                                        toggleReminderDialog(row.original.id);
                                         sendReminder(row.original);
                                     }}>
                                     Confirm
@@ -240,8 +250,6 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
         const today = new Date();
         const todayDateString = today.toISOString().split('T')[0];
 
-        console.log("testing");
-
         const { data, error } = await supabase
             .from("external_forms")
             .update({ last_updated: todayDateString })
@@ -252,7 +260,6 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
             toast.error("Failed to send reminder.")
         } else {
             toast.success("Successfully sent a reminder for the selected forms.")
-            console.log("testing1");
             sendReminderEmail(data[0]);
             router.refresh();
         }
@@ -343,8 +350,9 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 <Dialog open={confirmOpenAll} onOpenChange={setConfirmOpenAll}>
                     <DialogTrigger asChild>
                         <Button
+                            className="p-[22px]"
                             type="button">
-                            REMIND ALL
+                            Remind All
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
