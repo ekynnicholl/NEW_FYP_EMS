@@ -176,9 +176,8 @@ export default function NTFPDF({ id }: { id: string }) {
 									Full Name in CAPITAL LETTERS &#40;as per I.C. / Passport&#41;
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.full_name}
 								</p>
@@ -190,18 +189,16 @@ export default function NTFPDF({ id }: { id: string }) {
 									Designation / Course
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.course}
 								</p>
 
 								<label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Faculty / School / Unit</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
-										details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.faculty}
 								</p>
@@ -222,9 +219,8 @@ export default function NTFPDF({ id }: { id: string }) {
 									Name of other staff / student travelling together in group<sup>1</sup>
 								</label>
 								<p
-									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${
-										details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{(details && details.other_members?.length) ?? 0 > 0 ? details.other_members : ""}
 								</p>
@@ -270,18 +266,16 @@ export default function NTFPDF({ id }: { id: string }) {
 									Organiser
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details && details.organiser?.length ? details.organiser : ""}
 								</p>
 
 								<label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Venue</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
-										details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.venue}
 								</p>
@@ -693,7 +687,7 @@ export default function NTFPDF({ id }: { id: string }) {
 									{details && details.approval_signature === null ? (
 										<></>
 									) : (
-										<img src={details.approval_signature ?? ""} className="absolute w-9 h-9 ml-[52vh] -mt-8" />
+										<img src={details.approval_signature ?? ""} className="absolute w-9 h-9 ml-[575px] -mt-8" />
 									)}
 
 									<input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />

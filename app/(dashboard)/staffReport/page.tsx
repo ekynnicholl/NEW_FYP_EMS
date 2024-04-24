@@ -38,7 +38,7 @@ type mainEvents = {
 };
 
 type subEvents = {
-	sub_eventsMainID: string; 
+	sub_eventsMainID: string;
 	sub_eventsID: string;
 	sub_eventsName: string;
 	sub_eventsVenue: string;
@@ -69,7 +69,7 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		allEventsAttended: { programName: string; totalHours: number; startDate: string; endDate: string; }[];
-        grandTotalHours: number;
+		grandTotalHours: number;
 	}[]>([]);
 
 	const [aggregatedInfo, setAggregatedInfo] = useState<{
@@ -78,7 +78,7 @@ export default function Home() {
 		staffFaculty: string;
 		totalSubEvents: number;
 		allEventsAttended: { programName: string; totalHours: number; startDate: string; endDate: string; }[];
-        grandTotalHours: number;
+		grandTotalHours: number;
 	}[]>([]);
 
 	const fetchInfos = async () => {
@@ -119,31 +119,31 @@ export default function Home() {
 		}
 
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-        const groupedData = staffData.reduce((result, form) => {
+		const groupedData = staffData.reduce((result, form) => {
 
-            const uniqueStaffID = form.attFormsStaffID;
+			const uniqueStaffID = form.attFormsStaffID;
 
-            if (!result[uniqueStaffID]) {
-                result[uniqueStaffID] = {
-                    staffID: form.attFormsStaffID,
-                    staffName: form.attFormsStaffName,
-                    staffFaculty: form.attFormsFacultyUnit,
-                    totalSubEvents: 0,
+			if (!result[uniqueStaffID]) {
+				result[uniqueStaffID] = {
+					staffID: form.attFormsStaffID,
+					staffName: form.attFormsStaffName,
+					staffFaculty: form.attFormsFacultyUnit,
+					totalSubEvents: 0,
 					allEventsAttended: [],
-                    grandTotalHours: 0,
-                };		
-				
+					grandTotalHours: 0,
+				};
+
 				result[uniqueStaffID].allEventsAttended.push(
 					...externalEvents
 						.filter(event => event.staff_id === uniqueStaffID)
 						.map(event => ({
-							programName: event.program_title, 
-							totalHours: event.total_hours, 
-							startDate: event.commencement_date,  
-							endDate: event.completion_date,							
+							programName: event.program_title,
+							totalHours: event.total_hours,
+							startDate: event.commencement_date,
+							endDate: event.completion_date,
 						}))
 				)
-            }
+			}
 
 			result[uniqueStaffID].totalSubEvents++;
 
@@ -159,15 +159,15 @@ export default function Home() {
 						startDate: event.intFEventStartDate,
 						endDate: event.intFEventEndDate,
 					}))
-			)					
+			)
 
 			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
-    		result[uniqueStaffID].grandTotalHours = totalHours;
+			result[uniqueStaffID].grandTotalHours = totalHours;
 
-            return result;
+			return result;
 
 		}, {});
-        setAggregatedInfo(Object.values(groupedData));
+		setAggregatedInfo(Object.values(groupedData));
 	};
 
 	// Fetch data from database
@@ -333,9 +333,9 @@ export default function Home() {
 
 			// const facultyStudents = data.map((item) => item.attsName);
 			const facultyStudentsData = data.map((item: any) => ({
-                facultyName: item.attsName, 
-                facultyCategory: item.attsCategory,
-            }));
+				facultyName: item.attsName,
+				facultyCategory: item.attsCategory,
+			}));
 
 			setFacultyStudents(facultyStudentsData);
 		};
@@ -400,27 +400,28 @@ export default function Home() {
 	}
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
-		
+
 		setSearchQuery(query);
 
 		// Clear the data results
 		setDataResults([]);
 
 		const filterByFacultyUnit = (facultyUnit: string) => {
-			if(facultyUnit !== 'all'){
+			if (facultyUnit !== 'all') {
 				filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
-			}			
-		} 
+			}
+		}
 
 		let filteredUserData = [...aggregatedInfo];
 
 		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));			
+			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
 			if (selectedFilterStaff.length > 0) {
 				filterByFacultyUnit(selectedFilterStaff);
 			}
 			setSelectedFacultyUnit('');
 			setSelectedFilterStudent('');
+			setCurrentPage(1);
 
 		} else if (tab === 'student') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
@@ -429,9 +430,11 @@ export default function Home() {
 			}
 			setSelectedFacultyUnit('');
 			setSelectedFilterStaff('');
+			setCurrentPage(1);
 
 		} else if (tab === 'visitor') {
 			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
+			setCurrentPage(1);
 
 		} else if (tab === 'all') {
 			filteredUserData = [...aggregatedInfo];
@@ -440,6 +443,7 @@ export default function Home() {
 			}
 			setSelectedFilterStaff('');
 			setSelectedFilterStudent('');
+			setCurrentPage(1);
 		}
 
 		if (query) {
@@ -459,6 +463,7 @@ export default function Home() {
 
 	useEffect(() => {
 		filterUserData(activeTab, searchQuery);
+		setCurrentPage(1);
 	}, [activeTab, searchQuery, selectedFacultyUnit, selectedFilterStudent, selectedFilterStaff, aggregatedInfo]);
 
 	// Show Sort Options
@@ -526,9 +531,9 @@ export default function Home() {
 	}, [selectedYear, eventsAttended])
 
 	const filterEventByYear = () => {
-		if(eventsAttended.length > 0){
+		if (eventsAttended.length > 0) {
 			let filteredEventsAttended = [...eventsAttended];
-			if(selectedYear.length > 0 && selectedYear !== 'all'){
+			if (selectedYear.length > 0 && selectedYear !== 'all') {
 				filteredEventsAttended = eventsAttended.filter(
 					event => {
 						return (
@@ -539,7 +544,7 @@ export default function Home() {
 			}
 
 			setFilteredEventResults(filteredEventsAttended || []);
-		}		
+		}
 	}
 
 	return (
@@ -706,16 +711,16 @@ export default function Home() {
 
 								<div className="flex flex-row">
 
-								
-								{activeTab === "all" && (
-									<div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFacultyUnit(event.target.value)}
+
+									{activeTab === "all" && (
+										<div>
+											<select
+												name="facultyUnit"
+												id="facultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit
@@ -739,21 +744,21 @@ export default function Home() {
 																		{subcategory.name}
 																	</option>
 																))))
-																
-												))}     
-										</select>
-									</div>
-								)}
-								
-								{activeTab === "staff" && (
-									<div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFilterStaff(event.target.value)}
+
+												))}
+											</select>
+										</div>
+									)}
+
+									{activeTab === "staff" && (
+										<div>
+											<select
+												name="facultyUnit"
+												id="facultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
 												<option value="" disabled>
 													Select Faculty/ Unit (Staff)
@@ -765,47 +770,47 @@ export default function Home() {
 													<option key={index} value={faculty}>
 														{faculty}
 													</option>
-												))}												
-										</select>
-									</div>
-								)}
+												))}
+											</select>
+										</div>
+									)}
 
-								{activeTab === "student" && (
-									<div className="flex flex-row">
-										<select
-											name="studentFacultyUnit"
-											id="studentFacultyUnit"
-											defaultValue=""
-											className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
-											required
-											onChange={event => setSelectedFilterStudent(event.target.value)}
-										>					
-											<option value="" disabled>Select Faculty/ Unit (Student)</option>
-											<option value="all">
+									{activeTab === "student" && (
+										<div className="flex flex-row">
+											<select
+												name="studentFacultyUnit"
+												id="studentFacultyUnit"
+												defaultValue=""
+												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												required
+												onChange={event => setSelectedFilterStudent(event.target.value)}
+											>
+												<option value="" disabled>Select Faculty/ Unit (Student)</option>
+												<option value="all">
 													All
-											</option>
-											{facultyStudents.map((faculty) => (
-                                                categories
-                                                    .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
-                                                    .map((cat) => (
-                                                        cat.subcategories
-                                                            .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
-                                                            .map((subcategory, index) => (
-                                                                <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
-                                                                    {subcategory.name}
-                                                                </option>
-                                                            ))))
-                                                            
-                                            ))}       
-										</select>
-									</div>
-								)}								
+												</option>
+												{facultyStudents.map((faculty) => (
+													categories
+														.filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+														.map((cat) => (
+															cat.subcategories
+																.filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+																.map((subcategory, index) => (
+																	<option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+																		{subcategory.name}
+																	</option>
+																))))
+
+												))}
+											</select>
+										</div>
+									)}
 								</div>
 							</div>
 
-						<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                            <div className="inline-block lg:w-full shadow rounded-sm ">
-                                <table className="lg:w-full w-auto overflow-x-auto min-h-[500px] cursor-pointer">
+							<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+								<div className="inline-block lg:w-full shadow rounded-sm ">
+									<table className="lg:w-full w-auto overflow-x-auto min-h-[500px] cursor-pointer">
 										{/* Table Header */}
 										<thead>
 											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
@@ -818,59 +823,59 @@ export default function Home() {
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="ml-16 lg:ml-1">Staff / Student ID</span>
 												</th>
-												
+
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="ml-1">Faculty / Unit</span>
 												</th>
-												
+
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="">Grand Total Hours (H)</span>
 												</th>
 											</tr>
 										</thead>
 
-                                        {/* Table Body */}
-                                        <tbody>
-										{dataResults.length === 0 ? (
-                                        	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
-                                    	) : (
-                                            sortedData
-                                                .slice(
-                                                    (currentPage - 1) * entriesToShow,
-                                                    currentPage * entriesToShow,
-                                                )
-                                                .map((info, index) => (
-											<tr  
-												key={info.staffID}	
-												className="flex"											
-												onClick={() => {
-													openModal(info.allEventsAttended);
-												}}
-											>
-												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">                                                
-													<div className="flex items-center">
-                                                        <div className="ml-[34px]">
-                                                            <p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
-                                                                {(currentPage - 1) * entriesToShow + index + 1} 
-                                                            </p>
-                                                        </div>
-                                                    </div>
-												</td>
-												<td className="flex-1 px-6 lg:-ml-3 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="-ml-3 lg:-ml-0">{info.staffName}</span>
-												</td>
-												<td className="flex-1 px-6 lg:-ml-10 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
-												</td>
-												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="lg:-ml-0">{info.staffFaculty}</span>
-												</td>
-												<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-													<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
-												</td>
-											</tr>
-											))
-										)}
+										{/* Table Body */}
+										<tbody>
+											{dataResults.length === 0 ? (
+												<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+											) : (
+												sortedData
+													.slice(
+														(currentPage - 1) * entriesToShow,
+														currentPage * entriesToShow,
+													)
+													.map((info, index) => (
+														<tr
+															key={info.staffID}
+															className="flex"
+															onClick={() => {
+																openModal(info.allEventsAttended);
+															}}
+														>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+																<div className="flex items-center">
+																	<div className="ml-[34px]">
+																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
+																			{(currentPage - 1) * entriesToShow + index + 1}
+																		</p>
+																	</div>
+																</div>
+															</td>
+															<td className="flex-1 px-6 lg:-ml-3 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-3 lg:-ml-0">{info.staffName}</span>
+															</td>
+															<td className="flex-1 px-6 lg:-ml-10 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
+															</td>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="lg:-ml-0">{info.staffFaculty}</span>
+															</td>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
+															</td>
+														</tr>
+													))
+											)}
 
 											{/* pagination */}
 											{Array.from({
@@ -963,7 +968,7 @@ export default function Home() {
 													className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
 													onClick={() => handlePageChange(1)}
 													disabled={currentPage === 1}
-												>													
+												>
 													<MdKeyboardDoubleArrowLeft className="text-3xl" />
 												</button>
 												<button
@@ -1006,7 +1011,7 @@ export default function Home() {
 								</div>
 							</div>
 
-							
+
 							{/*mobile view pagination */}
 							<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
 								<button
@@ -1030,8 +1035,8 @@ export default function Home() {
 										className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
 										onClick={() => handlePageChange(currentPage)}
 									>
-                                		{currentPage}/ {pageCount}
-                            		</button>
+										{currentPage}/ {pageCount}
+									</button>
 								</div>
 
 								<button
@@ -1052,9 +1057,9 @@ export default function Home() {
 						</div>
 					</div>
 
-					<EventModal isVisible={showModal} 
+					<EventModal isVisible={showModal}
 						onClose={() => {
-							setShowModal(false); 
+							setShowModal(false);
 							setSelectedYear('');
 						}}>
 						<div>
@@ -1074,7 +1079,7 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="bg-white h-[520px] w-[360px] lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg pb-5">                   
+							<div className="bg-white h-[520px] w-[360px] lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg pb-5">
 								<table className="leading-normal lg:w-full mx-auto dark:bg-[#1D2021]">
 									<thead>
 										<tr className="flex">
@@ -1088,10 +1093,10 @@ export default function Home() {
 												Start Date
 											</th>
 											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-												End Date 
+												End Date
 											</th>
 											<th className="flex-1 px-[33px] lg:pr-[120px] py-3 border-b-2 border-gray-200 bg-gray-100 lg:text-left text-sm whitespace-nowrap lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:text-dark_text dark:border-[#363B3D]">
-												Total Hour (h) 
+												Total Hour (H)
 											</th>
 										</tr>
 									</thead>
@@ -1099,53 +1104,53 @@ export default function Home() {
 										{/* {subEventsAttended */}
 										{/* {eventsAttended */}
 										{filteredEventResults.length === 0 ? (
-                                        	<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
-                                    	) : (
-										filteredEventResults
-											.map((event, index) => (														
-												<tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-												<td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
-													<div>
-														<div className="ml-2">
-															<p className="ml-2 text-gray-900 dark:text-dark_text">
-																{(currentPage - 1) *
-																	entriesToShow +
-																	index +
-																	1
-																}
+											<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+										) : (
+											filteredEventResults
+												.map((event, index) => (
+													<tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
+														<td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
+															<div>
+																<div className="ml-2">
+																	<p className="ml-2 text-gray-900 dark:text-dark_text">
+																		{(currentPage - 1) *
+																			entriesToShow +
+																			index +
+																			1
+																		}
+																	</p>
+																</div>
+															</div>
+														</td>
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 -ml-16 dark:text-dark_text w-60">
+																{event.programName}
 															</p>
-														</div>
-													</div>
-												</td>
-												<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-													<p className="text-gray-900 -ml-16 dark:text-dark_text w-60">
-														{event.programName}
-													</p>
-												</td>
-	
-												<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-													<p className="text-gray-900 -ml-10 dark:text-dark_text">
-														{event.startDate}
-													</p>
-												</td>
-	
-												<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-													<p className="text-gray-900 -ml-6 dark:text-dark_text">
-														{event.endDate}
-													</p>
-												</td>
-	
-												<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-													<p className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
-														{event.totalHours ?? 0}
-													</p>
-												</td>
-											</tr>
-											)))}
-										</tbody>
-									</table>
-								</div>
+														</td>
+
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 -ml-10 dark:text-dark_text">
+																{event.startDate}
+															</p>
+														</td>
+
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900 -ml-6 dark:text-dark_text">
+																{event.endDate}
+															</p>
+														</td>
+
+														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<p className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
+																{event.totalHours ?? 0}
+															</p>
+														</td>
+													</tr>
+												)))}
+									</tbody>
+								</table>
 							</div>
+						</div>
 					</EventModal>
 				</div>
 			</div>
