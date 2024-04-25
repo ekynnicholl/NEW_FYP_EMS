@@ -262,11 +262,9 @@ const CreateAdminAccount = () => {
 
 
 	return (
-		<div
-			className="text-left transition-max-h duration-300 ease-in-out w-full"
-		>
-			<div className="flex">
-				<div onClick={toggleExpansion} className="mr-2 cursor-pointer">
+		<div>
+			<div onClick={toggleExpansion} className="flex cursor-pointer">
+				<div className="mr-2">
 					{isExpanded ? (
 						<IoMdArrowDropdownCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					) : (

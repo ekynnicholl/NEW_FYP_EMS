@@ -66,11 +66,9 @@ const AttendanceTiming = () => {
     };
 
     return (
-        <div
-            className="text-left transition-max-h duration-300 ease-in-out w-full"
-        >
-            <div className="flex">
-                <div onClick={toggleExpansion} className="mr-2 cursor-pointer">
+        <div>
+            <div onClick={toggleExpansion} className="flex cursor-pointer">
+                <div className="mr-2">
                     {isExpanded ? (
                         <IoMdArrowDropdownCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
                     ) : (
@@ -82,7 +80,7 @@ const AttendanceTiming = () => {
 
             {isExpanded ? (
                 <div className="transition-max-h duration-300 ease-linear w-full">
-                    <div className="overflow-y-auto max-h-80 flex flex-col justify-between mt-1">
+                    <div className="overflow-y-auto max-h-80 flex flex-col justify-between mt-1 pl-10">
                         <div className="text-slate-900 dark:text-dark_text mb-3 text-justify text-sm lg:text-base">
                             <p>Please take note,</p>
                             <br />
@@ -92,7 +90,7 @@ const AttendanceTiming = () => {
                             </p>
                         </div>
                         <div className="flex">
-                            <label htmlFor="startTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base">
+                            <label htmlFor="startTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base mt-2">
                                 Start Time:
                             </label>
                             <select id="startTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base" value={selectedStartTime} onChange={handleStartTimeChange}>
@@ -103,7 +101,7 @@ const AttendanceTiming = () => {
                             </select>
                         </div>
                         <div className="flex mt-3 lg:mt-2">
-                            <label htmlFor="endTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base">
+                            <label htmlFor="endTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base mt-2">
                                 End Time:
                             </label>
                             <select id="endTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-12 text-sm lg:text-base" value={selectedEndTime} onChange={handleEndTimeChange}>

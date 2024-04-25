@@ -119,11 +119,9 @@ const AttendanceSettings = () => {
 	}
 
 	return (
-		<div
-			className=""
-		>
-			<div className="flex">
-				<div onClick={toggleExpansion} className="mr-2 cursor-pointer">
+		<div>
+			<div onClick={toggleExpansion} className="flex cursor-pointer">
+				<div className="mr-2">
 					{isExpanded ? (
 						<IoMdArrowDropdownCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					) : (
@@ -135,7 +133,7 @@ const AttendanceSettings = () => {
 
 			{isExpanded ? (
 				<div className="transition-max-h duration-300 ease-linear w-full">
-					<div className="overflow-y-auto max-h-[500px] mt-1">
+					<div className="overflow-y-auto max-h-[500px] mt-1 pl-10 pb-10">
 						<div className="text-slate-900 dark:text-dark_text mb-3 text-sm lg:text-base">
 							<p>Please take note,</p>
 							<p>Verification - Head of School/ Manager/ Associate Dean of Research</p>

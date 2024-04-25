@@ -5,6 +5,7 @@ import AttendanceSettings from "@/components/settings/attendance_settings";
 import CreateAdminAccount from "@/components/settings/create_account";
 import ExternalEmails from "@/components/settings/external_emails";
 import AttendanceTiming from "@/components/settings/attendance_timing";
+import ExternalSettings from "@/components/settings/external_settings";
 
 export default function Home() {
 	return (
@@ -23,19 +24,21 @@ export default function Home() {
 					<AttendanceTiming />
 				</div>
 			</div> */}
-			<div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+			<div className="pl-5 pr-5 pt-4 pb-6 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
 				<div className="font-bold text-[18px] lg:text-[24px] dark:text-dark_text">
 					<p>System Settings</p>
 				</div>
 				<div className="space-y-4">
 					<div className="border-t border-gray-300 my-2"></div>
-					<CreateAdminAccount />
+					<AttendanceTiming />
 					<div className="border-t border-gray-300 my-2"></div>
 					<AttendanceSettings />
 					<div className="border-t border-gray-300 my-2"></div>
+					<CreateAdminAccount />
+					<div className="border-t border-gray-300 my-2"></div>
 					<ExternalEmails />
 					<div className="border-t border-gray-300 my-2"></div>
-					<AttendanceTiming />
+					<ExternalSettings />
 				</div>
 			</div>
 		</div>

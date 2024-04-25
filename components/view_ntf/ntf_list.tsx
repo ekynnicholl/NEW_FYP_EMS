@@ -102,6 +102,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [totalHours, setTotalHours] = useState<number>(0);
     const [activeTab, setActiveTab] = useState("Timeline");
     const router = useRouter();
+    const [applicantDuration, setApplicantDuration] = useState(1);
 
     const [openReminderDialogs, setOpenReminderDialogs] = useState<{ [key: string]: boolean }>({});
     const toggleReminderDialog = (formId: string) => {
@@ -137,6 +138,27 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
             router.refresh();
         }
     }
+
+    useEffect(() => {
+        const fetchExternalReminderSettings = async () => {
+            const { data, error } = await supabase
+                .from("external_reminder")
+                .select("extSID, extSType, extSDays")
+                .eq("extSType", "Applicant");
+
+            if (error) {
+                toast.error("There was an error fetching the times.")
+            } else {
+                const applicantData = data.find(item => item.extSType === "Applicant");
+
+                if (applicantData) {
+                    setApplicantDuration(applicantData.extSDays);
+                }
+            }
+        }
+
+        fetchExternalReminderSettings();
+    }, [])
 
     const fetchData = async () => {
         try {
@@ -201,7 +223,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
         const diffInMilliseconds = currentDate.getTime() - lastUpdated.getTime();
         const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
 
-        return diffInDays > 2;
+        return diffInDays > (applicantDuration - 1);
     };
 
     return (
@@ -360,7 +382,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                                     <DialogTitle>Send Reminder</DialogTitle>
                                                                 </DialogHeader>
                                                                 <DialogDescription>
-                                                                    Sorry! You are only allowed to send a reminder <span className="font-bold"> after 3 working days </span> from the last updated date, {form.last_updated}.
+                                                                    Sorry! You are only allowed to send a reminder <span className="font-bold"> after {applicantDuration} working day(s) </span> from the last updated date, {form.last_updated}.
                                                                 </DialogDescription>
                                                                 <DialogFooter>
                                                                     <DialogClose asChild>
