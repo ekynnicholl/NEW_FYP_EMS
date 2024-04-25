@@ -364,21 +364,23 @@ const AttendanceSettings = () => {
     };
 
     return (
-        <div className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? 'max-w-full' : 'max-w-[400px]'}`}>
-            <div className="flex items-center">
-                <h1 className="font-bold dark:text-dark_text text-[18px] lg:text-[20px]">Attendance Forms Settings</h1>
-                <div onClick={toggleExpansion} className="ml-auto cursor-pointer">
+        <div
+            className="text-left transition-max-h duration-300 ease-in-out w-full"
+        >
+            <div className="flex">
+                <div onClick={toggleExpansion} className="mr-2 cursor-pointer">
                     {isExpanded ? (
-                        <IoMdArrowDropleftCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
+                        <IoMdArrowDropdownCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
                     ) : (
                         <IoMdArrowDroprightCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
                     )}
                 </div>
+                <h1 className="font-bold dark:text-dark_text text-[18px] lg:text-[20px]">Attendance Forms Settings</h1>
             </div>
-            <div className="border-t border-gray-300 my-2"></div>
+
             {isExpanded ? (
-                <div className="overflow-y-auto max-h-fit">
-                    <div className="overflow-y-auto max-h-[500px]">
+                <div className="transition-max-h duration-300 ease-linear w-full">
+                    <div className="overflow-y-auto max-h-[500px] mt-1">
                         <div>
                             <Tab.Group>
                                 <Tab.List className="">
@@ -732,7 +734,7 @@ const AttendanceSettings = () => {
                     </AddFacultyUnitModal>
                 </div>
             ) : (
-                <div>
+                <div className="ml-[38px]">
                     <p className="text-slate-900 dark:text-dark_text text-sm lg:text-base">Change the options for the drop-down menu for students and staff in the attendance forms.</p>
                 </div>
             )}

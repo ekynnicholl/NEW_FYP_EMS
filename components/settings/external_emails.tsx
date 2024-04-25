@@ -120,293 +120,294 @@ const AttendanceSettings = () => {
 
 	return (
 		<div
-			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out overflow-y-auto max-h-[500px] ${isExpanded ? "max-w-full" : "max-w-[400px]"
-				}`}
+			className=""
 		>
-			<div className="flex items-center">
-				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">External Forms Emails</h1>
-				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
+			<div className="flex">
+				<div onClick={toggleExpansion} className="mr-2 cursor-pointer">
 					{isExpanded ? (
-						<IoMdArrowDropleftCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
+						<IoMdArrowDropdownCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					) : (
 						<IoMdArrowDroprightCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					)}
 				</div>
+				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">External Forms Emails</h1>
 			</div>
-			<div className="border-t border-gray-300 my-2"></div>
+
 			{isExpanded ? (
-				<div>
-					<div className="text-slate-900 dark:text-dark_text mb-3 text-sm lg:text-base">
-						<p>Please take note,</p>
-						<p>Verification - Head of School/ Manager/ Associate Dean of Research</p>
-						<p>Approval - Head of Management Unit/ Dean</p>
-					</div>
-					<Tab.Group>
-						<Tab.List className="">
-							<Tab
-								className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 focus:outline-none
+				<div className="transition-max-h duration-300 ease-linear w-full">
+					<div className="overflow-y-auto max-h-[500px] mt-1">
+						<div className="text-slate-900 dark:text-dark_text mb-3 text-sm lg:text-base">
+							<p>Please take note,</p>
+							<p>Verification - Head of School/ Manager/ Associate Dean of Research</p>
+							<p>Approval - Head of Management Unit/ Dean</p>
+						</div>
+						<Tab.Group>
+							<Tab.List className="">
+								<Tab
+									className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 focus:outline-none
                                         ${activeTab === "Verification"
-										? "bg-red-600 text-white"
-										: "bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]"
-									}`}
-								onClick={() => setActiveTab("Verification")}
-							>
-								Verification
-							</Tab>
-							<Tab
-								className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 focus:outline-none
+											? "bg-red-600 text-white"
+											: "bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]"
+										}`}
+									onClick={() => setActiveTab("Verification")}
+								>
+									Verification
+								</Tab>
+								<Tab
+									className={`font-bold items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 mr-2 focus:outline-none
                                         ${activeTab === "Approval"
-										? "bg-red-600 text-white"
-										: "bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]"
-									}`}
-								onClick={() => setActiveTab("Approval")}
-							>
-								Approval
-							</Tab>
-						</Tab.List>
+											? "bg-red-600 text-white"
+											: "bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]"
+										}`}
+									onClick={() => setActiveTab("Approval")}
+								>
+									Approval
+								</Tab>
+							</Tab.List>
 
-						<Tab.Panels>
-							<Tab.Panel>
+							<Tab.Panels>
+								<Tab.Panel>
 
-								<table className="lg:float-left">
-									<thead>
-										<tr>
-											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-												No
-											</th>
+									<table className="lg:float-left">
+										<thead>
+											<tr>
+												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+													No
+												</th>
 
-											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-												<p className="-ml-56">Email</p>
-											</th>
+												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+													<p className="-ml-56">Email</p>
+												</th>
 
-											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-												Action
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{emails
-											.filter(emails => emails.extECategory === 1)
-											.map((emails, index) =>
-												emails.extEID === editOption && updateOption && !cancelOptionUpdate && 1 ? (
-													<tr key={index} className="">
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
-															{index + 1}
-														</td>
+												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+													Action
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{emails
+												.filter(emails => emails.extECategory === 1)
+												.map((emails, index) =>
+													emails.extEID === editOption && updateOption && !cancelOptionUpdate && 1 ? (
+														<tr key={index} className="">
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
+																{index + 1}
+															</td>
 
-														<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
-															<input
-																type="text"
-																placeholder="Enter Email..."
-																className="border-2 ml-3 px-2 py-1 text-base w-full"
-																value={editedEmail}
-																onChange={e => setEditedEmail(e.target.value)}
-															/>
-														</td>
+															<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
+																<input
+																	type="text"
+																	placeholder="Enter Email..."
+																	className="border-2 ml-3 px-2 py-1 text-base w-full"
+																	value={editedEmail}
+																	onChange={e => setEditedEmail(e.target.value)}
+																/>
+															</td>
 
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-															<button
-																className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
-																onClick={() => {
-																	if (editedEmail.length > 0) {
-																		setEmails(prevEmail => {
-																			const updatedEmails = [...prevEmail];
-																			updatedEmails[index].extEMail = editedEmail;
-																			return updatedEmails;
-																		});
-
-																		handleUpdateEmail(emails.extEID, editedEmail);
-																	}
-
-																	setUpdateOption(!updateOption);
-																}}
-															>
-																Update
-															</button>
-															<button
-																className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
-																onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
-															>
-																Cancel
-															</button>
-														</td>
-													</tr>
-												) : (
-													<tr key={index}>
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-															{index + 1}
-														</td>
-
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-															<p className="ml-4">{emails.extEMail}</p>
-														</td>
-
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-															<div className="flex ml-12">
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
 																<button
+																	className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
 																	onClick={() => {
-																		handleEditOption(emails.extEID, emails.extEMail);
+																		if (editedEmail.length > 0) {
+																			setEmails(prevEmail => {
+																				const updatedEmails = [...prevEmail];
+																				updatedEmails[index].extEMail = editedEmail;
+																				return updatedEmails;
+																			});
+
+																			handleUpdateEmail(emails.extEID, editedEmail);
+																		}
+
+																		setUpdateOption(!updateOption);
 																	}}
 																>
-																	<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	Update
 																</button>
 																<button
-																	onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
+																	className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
+																	onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
 																>
-																	<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	Cancel
 																</button>
-															</div>
-														</td>
-													</tr>
-												),
-											)}
-									</tbody>
-								</table>
+															</td>
+														</tr>
+													) : (
+														<tr key={index}>
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																{index + 1}
+															</td>
 
-								<div className="lg:float-right border-2 p-7 lg:mr-[550px] shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0">
-									<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Verifier Email</p>
-									<input type="text"
-										placeholder="e.g., hos@gmail.com"
-										value={newEmail}
-										className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
-										onChange={e => setNewEmail(e.target.value)}
-									/><br />
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<p className="ml-4">{emails.extEMail}</p>
+															</td>
 
-									<div className="flex justify-end">
-										<button
-											className={`mt-4 lg:mt-7 rounded-lg py-[9px] lg:py-3 px-[28px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
-											onClick={() => { createNewEmail(newEmail, 1); }}
-											disabled={!newEmail}
-										>
-											Add
-										</button>
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<div className="flex ml-12">
+																	<button
+																		onClick={() => {
+																			handleEditOption(emails.extEID, emails.extEMail);
+																		}}
+																	>
+																		<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	</button>
+																	<button
+																		onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
+																	>
+																		<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	</button>
+																</div>
+															</td>
+														</tr>
+													),
+												)}
+										</tbody>
+									</table>
+
+									<div className="lg:float-right border-2 p-7 lg:mr-[550px] shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0">
+										<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Verifier Email</p>
+										<input type="text"
+											placeholder="e.g., hos@gmail.com"
+											value={newEmail}
+											className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
+											onChange={e => setNewEmail(e.target.value)}
+										/><br />
+
+										<div className="flex justify-end">
+											<button
+												className={`mt-4 lg:mt-7 rounded-lg py-[9px] lg:py-3 px-[28px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+												onClick={() => { createNewEmail(newEmail, 1); }}
+												disabled={!newEmail}
+											>
+												Add
+											</button>
+										</div>
 									</div>
-								</div>
 
-							</Tab.Panel>
+								</Tab.Panel>
 
-							<Tab.Panel>
-								<table className="lg:w-1/2 float-left mb-5 lg:mr-10">
-									<thead>
-										<tr>
-											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-												No
-											</th>
+								<Tab.Panel>
+									<table className="lg:w-1/2 float-left mb-5 lg:mr-10">
+										<thead>
+											<tr>
+												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+													No
+												</th>
 
-											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-												<p className="-ml-72">Email</p>
-											</th>
+												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+													<p className="-ml-72">Email</p>
+												</th>
 
-											<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-												Action
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{emails
-											.filter(emails => emails.extECategory === 2)
-											.map((emails, index) =>
-												emails.extEID === editOption && updateOption && !cancelOptionUpdate ? (
-													<tr key={index} className="">
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
-															{index + 1}
-														</td>
+												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+													Action
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{emails
+												.filter(emails => emails.extECategory === 2)
+												.map((emails, index) =>
+													emails.extEID === editOption && updateOption && !cancelOptionUpdate ? (
+														<tr key={index} className="">
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
+																{index + 1}
+															</td>
 
-														<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
-															<input
-																type="text"
-																placeholder="Enter Email..."
-																className="border-2 ml-3 px-2 py-1 text-base w-full"
-																value={editedEmail}
-																onChange={e => setEditedEmail(e.target.value)}
-															/>
-														</td>
+															<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
+																<input
+																	type="text"
+																	placeholder="Enter Email..."
+																	className="border-2 ml-3 px-2 py-1 text-base w-full"
+																	value={editedEmail}
+																	onChange={e => setEditedEmail(e.target.value)}
+																/>
+															</td>
 
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-															<button
-																className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
-																onClick={() => {
-																	if (editedEmail.length > 0) {
-																		setEmails(prevEmail => {
-																			const updatedEmails = [...prevEmail];
-																			updatedEmails[index].extEMail = editedEmail;
-																			return updatedEmails;
-																		});
-
-																		handleUpdateEmail(emails.extEID, editedEmail);
-																	}
-
-																	setUpdateOption(!updateOption);
-																}}
-															>
-																Update
-															</button>
-															<button
-																className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
-																onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
-															>
-																Cancel
-															</button>
-														</td>
-													</tr>
-												) : (
-													<tr key={index}>
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-															{index + 1}
-														</td>
-
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-															<p className="ml-4">{emails.extEMail}</p>
-														</td>
-
-														<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-															<div className="flex ml-12">
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
 																<button
+																	className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
 																	onClick={() => {
-																		handleEditOption(emails.extEID, emails.extEMail);
+																		if (editedEmail.length > 0) {
+																			setEmails(prevEmail => {
+																				const updatedEmails = [...prevEmail];
+																				updatedEmails[index].extEMail = editedEmail;
+																				return updatedEmails;
+																			});
+
+																			handleUpdateEmail(emails.extEID, editedEmail);
+																		}
+
+																		setUpdateOption(!updateOption);
 																	}}
 																>
-																	<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	Update
 																</button>
 																<button
-																	onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
+																	className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
+																	onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
 																>
-																	<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	Cancel
 																</button>
-															</div>
-														</td>
-													</tr>
-												),
-											)}
-									</tbody>
-								</table>
+															</td>
+														</tr>
+													) : (
+														<tr key={index}>
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																{index + 1}
+															</td>
 
-								<div className="border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
-									<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Approver Email</p>
-									<input type="text"
-										placeholder="e.g., hmu@gmail.com"
-										value={newEmail}
-										className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
-										onChange={e => setNewEmail(e.target.value)}
-									/><br />
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<p className="ml-4">{emails.extEMail}</p>
+															</td>
 
-									<div className="flex justify-end">
-										<button
-											className={`-mt-2 lg:mt-2 rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
-											onClick={() => { createNewEmail(newEmail, 2); }}
-											disabled={!newEmail}
-										>
-											Add
-										</button>
+															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<div className="flex ml-12">
+																	<button
+																		onClick={() => {
+																			handleEditOption(emails.extEID, emails.extEMail);
+																		}}
+																	>
+																		<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	</button>
+																	<button
+																		onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
+																	>
+																		<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																	</button>
+																</div>
+															</td>
+														</tr>
+													),
+												)}
+										</tbody>
+									</table>
+
+									<div className="border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
+										<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Approver Email</p>
+										<input type="text"
+											placeholder="e.g., hmu@gmail.com"
+											value={newEmail}
+											className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
+											onChange={e => setNewEmail(e.target.value)}
+										/><br />
+
+										<div className="flex justify-end">
+											<button
+												className={`-mt-2 lg:mt-2 rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
+												onClick={() => { createNewEmail(newEmail, 2); }}
+												disabled={!newEmail}
+											>
+												Add
+											</button>
+										</div>
 									</div>
-								</div>
 
-							</Tab.Panel>
-						</Tab.Panels>
-					</Tab.Group>
+								</Tab.Panel>
+							</Tab.Panels>
+						</Tab.Group>
+					</div>
 				</div>
 			) : (
-				<div>
+				<div className="ml-[38px]">
 					<p className="text-slate-900 dark:text-dark_text text-sm lg:text-base">
 						Change the email options for HOS/ MGR/ ADCR/ HMU/ Dean in Nominations/ Travelling Form&apos;s (NTF) for verification and
 						approval.

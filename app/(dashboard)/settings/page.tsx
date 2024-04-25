@@ -9,7 +9,7 @@ import AttendanceTiming from "@/components/settings/attendance_timing";
 export default function Home() {
 	return (
 		<div className="px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg min-h-screen">
-			<div className="flex flex-col space-y-4">
+			{/* <div className="flex flex-col space-y-4">
 				<div className="flex-1">
 					<CreateAdminAccount />
 				</div>
@@ -20,6 +20,21 @@ export default function Home() {
 					<ExternalEmails />
 				</div>
 				<div className="flex-1">
+					<AttendanceTiming />
+				</div>
+			</div> */}
+			<div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+				<div className="font-bold text-[18px] lg:text-[28px] dark:text-dark_text">
+					<p>System Settings</p>
+				</div>
+				<div className="space-y-4">
+					<div className="border-t border-gray-300 my-2"></div>
+					<CreateAdminAccount />
+					<div className="border-t border-gray-300 my-2"></div>
+					<AttendanceSettings />
+					<div className="border-t border-gray-300 my-2"></div>
+					<ExternalEmails />
+					<div className="border-t border-gray-300 my-2"></div>
 					<AttendanceTiming />
 				</div>
 			</div>

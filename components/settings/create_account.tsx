@@ -1,6 +1,6 @@
 "use client";
 
-import { IoMdArrowDroprightCircle, IoMdArrowDropleftCircle } from "react-icons/io";
+import { IoMdArrowDroprightCircle, IoMdArrowDropleftCircle, IoMdArrowDropdownCircle } from "react-icons/io";
 import React, { useState, useEffect } from "react";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -8,6 +8,7 @@ import { auth, provider } from "../../google_config";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, deleteUser as deleteUserFromFirebase } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from "js-cookie";
+import { Button } from "@/components/ui/button";
 
 const CreateAdminAccount = () => {
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -222,7 +223,7 @@ const CreateAdminAccount = () => {
 	};
 
 	const formatActivationStatus = (activation: boolean) => {
-		return activation ? 'Activated' : 'Not Activated'; // Convert boolean to string
+		return activation ? 'Active' : 'Inactive'; // Convert boolean to string
 	};
 
 	const getActivationColor = (activation: boolean) => {
@@ -262,42 +263,40 @@ const CreateAdminAccount = () => {
 
 	return (
 		<div
-			className={`pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card text-left transition-max-w duration-300 ease-in-out ${isExpanded ? "lg:max-w-[75%]" : "max-w-[400px]"
-				}`}
+			className="text-left transition-max-h duration-300 ease-in-out w-full"
 		>
-			<div className="flex items-center">
-				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
-				<div onClick={toggleExpansion} className="ml-auto cursor-pointer">
+			<div className="flex">
+				<div onClick={toggleExpansion} className="mr-2 cursor-pointer">
 					{isExpanded ? (
-						<IoMdArrowDropleftCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
+						<IoMdArrowDropdownCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					) : (
 						<IoMdArrowDroprightCircle className="text-[27px] lg:text-[30px] dark:text-dark_text" />
 					)}
 				</div>
+				<h1 className="font-bold text-[18px] lg:text-[20px] dark:text-dark_text">Administrator Account Registration</h1>
 			</div>
 
-			<div className="border-t border-gray-300 my-2"></div>
 			{isExpanded ? (
-				<div className="lg:flex">
-					<div className="mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
+				<div className="transition-max-h duration-300 ease-linear w-full lg:flex">
+					<div className="w-1/2 mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
 						<p className="text-xl lg:text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Account Details</p>
 
 						<table className="min-w-full divide-y divide-gray-200">
 							<thead className="bg-gray-50 dark:bg-gray-800">
 								<tr>
-									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
 										ID
 									</th>
-									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
 										Registered Email Address
 									</th>
-									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
 										Created At
 									</th>
-									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
 										Status
 									</th>
-									<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
 										Action
 									</th>
 								</tr>
@@ -305,21 +304,21 @@ const CreateAdminAccount = () => {
 							<tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900">
 								{user.map((user, index) => (
 									<tr key={index}>
-										<td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-										<td className="px-6 py-4 whitespace-nowrap">{user.email_address}</td>
-										<td className="px-6 py-4 whitespace-nowrap">
+										<td className="text-center px-6 py-4 whitespace-nowrap">{index + 1}</td>
+										<td className=" text-center px-6 py-4 whitespace-nowrap">{user.email_address}</td>
+										<td className="text-center px-6 py-4 whitespace-nowrap">
 											{formatDateTime(user.created_at)}
 										</td>
-										<td className={`px-6 py-4 whitespace-nowrap ${getActivationColor(user.activation)}`}>
+										<td className={`text-center px-6 py-4 whitespace-nowrap uppercase font-bold ${getActivationColor(user.activation)}`}>
 											{formatActivationStatus(user.activation)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
-											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>Delete</button>
 											{user.activation ? (
-												<button className="text-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDeactivate(user)}>Deactivate</button>
+												<Button className="bg-red-600 hover:text-red-900" onClick={() => handleDeactivate(user)}>Deactivate</Button>
 											) : (
-												<button className="text-green-600 hover:text-green-900 ml-[6px]" onClick={() => handleActivate(user)}>Activate</button>
+												<Button className="bg-green-600 hover:text-green-900" onClick={() => handleActivate(user)}>Activate</Button>
 											)}
+											<Button className="bg-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDelete(user as User)}>Delete</Button>
 										</td>
 									</tr>
 								))}
@@ -329,10 +328,10 @@ const CreateAdminAccount = () => {
 
 					</div>
 
-					<div className="max-h-90">
+					<div className="w-1/2">
 						<form onSubmit={e => handleCreateAccount(e)}>
 							<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
-								<div className="mx-auto max-w-xs mr-5">
+								<div className="">
 									<p className="text-xl lg:text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Create an Account</p>
 									<input
 										className="w-full py-3 lg:py-4 pl-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-xs lg:text-sm focus:outline-none focus:border-gray-400 focus:bg-white dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
@@ -411,7 +410,7 @@ const CreateAdminAccount = () => {
 					</div>
 				</div>
 			) : (
-				<div>
+				<div className="ml-[38px]">
 					<p className="text-slate-800 dark:text-dark_text text-sm lg:text-base">Register an account for new administrator with their own email and password.</p>
 				</div>
 			)}
