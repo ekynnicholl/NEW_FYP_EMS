@@ -313,7 +313,7 @@ export default function NTFPDF({ id }: { id: string }) {
 							{/* Section 3: Logistic Arrangement */}
 							<fieldset className=" text-[13px] bg-slate-950 h-[155px]">
 								<span className="text-slate-50 font-semibold uppercase ml-2">
-									Section 3: Logistic Arrangement<sup>2</sup>
+									Section 3: Logistic Arrangement
 								</span>
 								<div className="grid grid-cols-2 grid-rows-5 normal-case bg-gray-200 text-[12px] font-semibold leading-3">
 									<label className="col-start-1 col-span-1 row-span-1 p-1 flex items-center justify-center border border-slate-950 border-t-0">
@@ -570,7 +570,7 @@ export default function NTFPDF({ id }: { id: string }) {
 								</fieldset>
 								<fieldset className="p-[0.5px] text-[13px] bg-slate-950">
 									<span className="text-slate-50 font-semibold uppercase ml-2">
-										Section 6: Verification<sup>5</sup>
+										Section 6: Verification
 									</span>
 								</fieldset>
 								<div className="col-span-1 normal-case text-[11.5px] bg-gray-200 leading-3 border-r border-l border-slate-950">
