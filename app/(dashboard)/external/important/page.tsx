@@ -49,7 +49,7 @@ export default async function Important() {
 			<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
 				<div>
 					<h1 className="font-bold text-[26px]">Important!</h1>
-					<p>These form&apos;s have not been updated for a day. You may manually trigger an email to the relevant party.</p>
+					<p>These form&apos;s have not been updated for {aaoDuration} day(s) - this can be changed in the Settings Page. You may manually trigger an email to the relevant party.</p>
 				</div>
 				<ImportantForms data={data ? data : []} />
 			</div>

@@ -437,7 +437,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             setShowDeleteModal(false);
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -479,6 +479,10 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         updatedSelectedData[index] = !updatedSelectedData[index];
         setSelectedAttendanceData(updatedSelectedData);
     };
+
+    // Determine whether there are more than 1 sub-events,
+    const uniqueSubEventNames = new Set(attendanceData.map(item => item.sub_eventName));
+    const hasMultipleSubEvents = uniqueSubEventNames.size > 1;
 
     return (
         <div>
@@ -567,7 +571,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Faculty/ Unit
                                     </th>
-                                    {isAllTabActive && (
+                                    {isAllTabActive && hasMultipleSubEvents && (
                                         <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
                                             Sub-Event
                                         </th>
@@ -605,7 +609,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     defaultValue={editedFacultyUnit}
                                                     className="w-28 px-4 py-2 border border-gray-300 focus:outline-none mt-1 text-xs lg:text-base"
                                                     required
-                                                    onChange={event => { setEditedFacultyUnit(event.target.value); console.log(event.target.value); }
+                                                    onChange={event => { setEditedFacultyUnit(event.target.value); }
                                                     }
 
                                                 >
@@ -682,7 +686,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsFacultyUnit}
                                             </td>
-                                            {isAllTabActive && (
+                                            {isAllTabActive && hasMultipleSubEvents && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>

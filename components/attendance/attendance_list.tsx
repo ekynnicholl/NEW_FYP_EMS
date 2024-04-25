@@ -100,7 +100,8 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             const { data: attendanceForms, error: formsError } = await supabase
                 .from("attendance_forms")
                 .select()
-                .in("attFSubEventID", subEventIDs);
+                .in("attFSubEventID", subEventIDs)
+                .order("attDateSubmitted", { ascending: true });
 
             if (formsError) {
                 // console.error("Error fetching attendance forms:", formsError);
@@ -168,7 +169,8 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         const { data: attendanceForms, error: formsError } = await supabase
             .from("attendance_forms")
             .select()
-            .in("attFSubEventID", subEventIDs);
+            .in("attFSubEventID", subEventIDs)
+            .order("attDateSubmitted", { ascending: true });
 
         if (formsError) {
             console.error("Error fetching attendance forms:", formsError);
