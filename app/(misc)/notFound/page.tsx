@@ -11,6 +11,7 @@ const PageNotFound = () => {
   const time = searchParams.get("time");
   const event_id = searchParams.get("event_id");
   const event_name = searchParams.get("event_name");
+  console.log(event_name);
 
   const [countdown, setCountdown] = useState<{ days: number, hours: number, minutes: number, seconds: number } | null>(null);
 

@@ -77,7 +77,7 @@ export default function AttendanceForm() {
 			const beforeMinutes = timingData?.[0]?.timStartTime ?? 15;
 			const afterMinutes = timingData?.[0]?.timEndTime ?? 15;
 
-			console.log(beforeMinutes, afterMinutes);
+			// console.log(beforeMinutes, afterMinutes);
 
 			const eventStartDate = new Date(attendanceListData[0].sub_eventsStartDate);
 			const currentStartDate = new Date(eventStartDate.toDateString());
@@ -114,24 +114,30 @@ export default function AttendanceForm() {
 			const event_id = attendanceListData[0]?.sub_eventsMainID;
 
 			// Check if the current time is AFTER the event start date and time,
-			if (currentTime > endTimeWindow) {
-				const { data: eventDetails, error: eventError } = await supabase
-					.from('internal_events')
-					.select('intFEventName')
-					.eq('intFID', event_id);
-				router.push(`/notFound?from=end_att&event_name=${eventDetails![0].intFEventName}`);
-				return;
+			if (afterMinutes != 0) {
+				if (currentTime > endTimeWindow) {
+					const { data: eventDetails, error: eventError } = await supabase
+						.from('internal_events')
+						.select('intFEventName')
+						.eq('intFID', event_id);
+					const encodedEventName = encodeURIComponent(eventDetails![0].intFEventName);
+					router.push(`/notFound?from=end_att&event_name=${encodedEventName}`);
+					return;
+				}
 			}
 
 			// Check if the current time is BEFORE the event start date and time,
-			if (currentTime < startTimeWindow) {
-				const { data: eventDetails, error: eventError } = await supabase
-					.from('internal_events')
-					.select('intFEventName')
-					.eq('intFID', event_id);
-				const eventStartTimeString = startTimeWindow.toISOString();
-				router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}&event_name=${eventDetails![0].intFEventName}`);
-				return;
+			if (beforeMinutes != 0) {
+				if (currentTime < startTimeWindow) {
+					const { data: eventDetails, error: eventError } = await supabase
+						.from('internal_events')
+						.select('intFEventName')
+						.eq('intFID', event_id);
+					const eventStartTimeString = startTimeWindow.toISOString();
+					const encodedEventName = encodeURIComponent(eventDetails![0].intFEventName);
+					router.push(`/notFound?from=start_att&time=${eventStartTimeString}&event_id=${sub_id}&event_name=${encodedEventName}`);
+					return;
+				}
 			}
 
 			setEventData(attendanceListData);
@@ -352,7 +358,7 @@ export default function AttendanceForm() {
 				}));
 
 				setCategories(categoriesArray);
-				console.log(categoriesArray);
+				// console.log(categoriesArray);
 			}
 		};
 

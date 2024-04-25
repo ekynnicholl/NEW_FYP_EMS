@@ -94,6 +94,7 @@ const AttendanceTiming = () => {
                                 Start Time:
                             </label>
                             <select id="startTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base" value={selectedStartTime} onChange={handleStartTimeChange}>
+                                <option value={0}>Never</option>
                                 <option value={15}>15 minutes</option>
                                 <option value={30}>30 minutes</option>
                                 <option value={45}>45 minutes</option>
@@ -105,6 +106,7 @@ const AttendanceTiming = () => {
                                 End Time:
                             </label>
                             <select id="endTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-12 text-sm lg:text-base" value={selectedEndTime} onChange={handleEndTimeChange}>
+                                <option value={0}>Never</option>
                                 <option value={15}>15 minutes</option>
                                 <option value={30}>30 minutes</option>
                                 <option value={45}>45 minutes</option>
