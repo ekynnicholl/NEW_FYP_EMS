@@ -9,6 +9,18 @@ import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailA
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from "js-cookie";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+} from "@/components/ui/dialog";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const CreateAdminAccount = () => {
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -16,6 +28,8 @@ const CreateAdminAccount = () => {
 	const toggleExpansion = () => {
 		setIsExpanded(!isExpanded);
 	};
+
+	const router = useRouter();
 
 	const [showModalAddAdmin, setShowModalAddAdmin] = useState(false);
 
@@ -171,6 +185,7 @@ const CreateAdminAccount = () => {
 			}
 
 			handleLogoutClick();
+			router.refresh();
 		} catch (error) {
 			// console.error('Error deleting user:', error.message);
 		}
@@ -184,7 +199,7 @@ const CreateAdminAccount = () => {
 		try {
 			const { data, error } = await supabase
 				.from('login')
-				.select('email_address, created_at, activation');
+				.select('email_address, created_at, activation, firebase_uid');
 
 			if (error) {
 				throw error;
@@ -232,13 +247,19 @@ const CreateAdminAccount = () => {
 
 	const handleActivate = async (user: User) => {
 		try {
-			await supabase
+			const { data, error } = await supabase
 				.from('login')
 				.update({ activation: true })
 				.eq('firebase_uid', user.firebase_uid);
 
-			// Reload the current page
-			window.location.reload();
+			if (error) {
+				toast.error(`Error activating ${user.email_address}.`)
+				return;
+			}
+
+			toast.success(`Successfully activated ${user.email_address}!`);
+			fetchUserData();
+			router.refresh();
 
 		} catch (error) {
 			// console.error('Error activating user:', error.message);
@@ -247,19 +268,51 @@ const CreateAdminAccount = () => {
 
 	const handleDeactivate = async (user: User) => {
 		try {
-			await supabase
+			const { data, error } = await supabase
 				.from('login')
 				.update({ activation: false })
 				.eq('firebase_uid', user.firebase_uid);
 
+			if (error) {
+				toast.error(`Error de-activating ${user.email_address}.`)
+				return;
+			}
+
+			toast.success(`Successfully de-activated ${user.email_address}!`);
+			fetchUserData();
+			router.refresh();
+
 			// Reload the current page
-			window.location.reload();
+			// window.location.reload();
 
 		} catch (error) {
-			// console.error('Error deactivating user:', error.message);
+			// console.error('Error deactivating user:', error);
 		}
 	};
 
+	const [openDeactivateDialog, setOpenDeactivateDialog] = useState<{ [key: string]: boolean }>({});
+	const toggleDeactivateDialog = (formId: string) => {
+		setOpenDeactivateDialog((prev) => ({
+			...prev,
+			[formId]: !prev[formId],
+		}));
+	};
+
+	const [openDeleteDialog, setOpenDeleteDialog] = useState<{ [key: string]: boolean }>({});
+	const toggleDeleteDialog = (formId: string) => {
+		setOpenDeleteDialog((prev) => ({
+			...prev,
+			[formId]: !prev[formId],
+		}));
+	};
+
+	const [openActivateDialog, setOpenActivateDialog] = useState<{ [key: string]: boolean }>({});
+	const toggleActivateDialog = (formId: string) => {
+		setOpenActivateDialog((prev) => ({
+			...prev,
+			[formId]: !prev[formId],
+		}));
+	};
 
 	return (
 		<div>
@@ -312,11 +365,101 @@ const CreateAdminAccount = () => {
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-center">
 											{user.activation ? (
-												<Button className="bg-red-600 hover:text-red-900" onClick={() => handleDeactivate(user)}>Deactivate</Button>
+												<Button className="bg-red-600 hover:bg-red-900" onClick={() => toggleDeactivateDialog(user.firebase_uid)}>Deactivate</Button>
 											) : (
-												<Button className="bg-green-600 hover:text-green-900" onClick={() => handleActivate(user)}>Activate</Button>
+												<Button className="bg-green-600 hover:bg-green-900 pl-6 pr-6" onClick={() => toggleActivateDialog(user.firebase_uid)}>Activate</Button>
 											)}
-											<Button className="bg-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDelete(user as User)}>Delete</Button>
+
+											<Dialog
+												open={openDeactivateDialog[user.firebase_uid]}
+												onOpenChange={() => toggleDeactivateDialog(user.firebase_uid)}
+											>
+												<DialogTrigger asChild>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>De-activation Confirmation</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														Are you sure you want to de-activate this account? You may opt to re-activate anytime later.
+													</DialogDescription>
+													<DialogFooter>
+														<DialogClose asChild>
+															Close
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																toggleDeactivateDialog(user.firebase_uid);
+																handleDeactivate(user);
+															}}>
+															De-activate
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+
+											<Dialog
+												open={openActivateDialog[user.firebase_uid]}
+												onOpenChange={() => toggleActivateDialog(user.firebase_uid)}
+											>
+												<DialogTrigger asChild>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Activation Confirmation</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														Are you sure you want to activate this account? The user will have access to the system again.
+													</DialogDescription>
+													<DialogFooter>
+														<DialogClose asChild>
+															Close
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																toggleActivateDialog(user.firebase_uid);
+																handleActivate(user);
+															}}>
+															Activate
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+											{/* <Button className="bg-red-600 hover:bg-red-900 ml-[6px]" onClick={() => handleDelete(user as User)}>Delete</Button> */}
+											<Dialog
+												open={openDeleteDialog[user.firebase_uid]}
+												onOpenChange={() => toggleDeleteDialog(user.firebase_uid)}
+											>
+												<DialogTrigger asChild>
+													<Button
+														className="bg-red-600 hover:bg-red-900 ml-[6px]"
+														type="button"
+													>
+														Delete
+													</Button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Deletion Confirmation</DialogTitle>
+													</DialogHeader>
+													<DialogDescription>
+														Are you sure you want to delete this account? The user will no longer have access to this system and they will not be able to register with this
+														email again. If unsure, please de-activate account instead.
+													</DialogDescription>
+													<DialogFooter>
+														<DialogClose asChild>
+															Close
+														</DialogClose>
+														<Button
+															onMouseUp={() => {
+																toggleDeleteDialog(user.firebase_uid);
+																handleDelete(user as User);
+															}}>
+															Delete
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
 										</td>
 									</tr>
 								))}

@@ -147,6 +147,9 @@ export default function Login() {
 					// Set the cookies
 					cookie.set('authToken', userId);
 				} else {
+					if (activation == false) {
+						toast.error("Your account has been de-activated. Please contact the Academic Administration Office for more information.");
+					}
 					setErrorMessageLogin("Unauthorized user.");
 				}
 			} else {
