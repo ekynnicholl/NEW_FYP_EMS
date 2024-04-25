@@ -278,7 +278,7 @@ const CreateAdminAccount = () => {
 
 			{isExpanded ? (
 				<div className="transition-max-h duration-300 ease-linear w-full lg:flex">
-					<div className="w-1/2 mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
+					<div className="w-3/4 mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
 						<p className="text-xl lg:text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Account Details</p>
 
 						<table className="min-w-full divide-y divide-gray-200">
@@ -328,7 +328,7 @@ const CreateAdminAccount = () => {
 
 					</div>
 
-					<div className="w-1/2">
+					<div className="w-1/4">
 						<form onSubmit={e => handleCreateAccount(e)}>
 							<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
 								<div className="">

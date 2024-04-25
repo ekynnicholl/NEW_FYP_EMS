@@ -24,7 +24,7 @@ export default function Home() {
 				</div>
 			</div> */}
 			<div className="pl-5 pr-5 pt-4 pb-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
-				<div className="font-bold text-[18px] lg:text-[28px] dark:text-dark_text">
+				<div className="font-bold text-[18px] lg:text-[24px] dark:text-dark_text">
 					<p>System Settings</p>
 				</div>
 				<div className="space-y-4">
