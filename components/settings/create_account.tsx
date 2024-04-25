@@ -310,7 +310,7 @@ const CreateAdminAccount = () => {
 										<td className={`text-center px-6 py-4 whitespace-nowrap uppercase font-bold ${getActivationColor(user.activation)}`}>
 											{formatActivationStatus(user.activation)}
 										</td>
-										<td className="px-6 py-4 whitespace-nowrap">
+										<td className="px-6 py-4 whitespace-nowrap text-center">
 											{user.activation ? (
 												<Button className="bg-red-600 hover:text-red-900" onClick={() => handleDeactivate(user)}>Deactivate</Button>
 											) : (
