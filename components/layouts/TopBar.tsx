@@ -471,12 +471,13 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 											{formatActivationStatus(user.activation)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
-											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>Delete</button>
 											{user.activation ? (
-												<button className="text-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDeactivate(user)}>Deactivate</button>
+												<button className="bg-red-600 text-white hover:bg-red-700 hover:font-bold rounded-md px-[13px] py-2" onClick={() => handleDeactivate(user)}>Deactivate</button>
 											) : (
-												<button className="text-green-600 hover:text-green-900 ml-[6px]" onClick={() => handleActivate(user)}>Activate</button>
+												<button className="bg-green-600 text-white hover:bg-green-700 hover:font-bold rounded-md px-[13px] py-2" onClick={() => handleActivate(user)}>Activate</button>
 											)}
+											<button className="bg-red-600 text-white hover:bg-red-700 hover:font-bold ml-[6px] rounded-md px-[13px] py-2" onClick={() => handleDelete(user as User)}>Delete</button>
+
 										</td>
 									</tr>
 								))}
