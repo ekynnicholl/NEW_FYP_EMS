@@ -363,7 +363,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                     </div>
                                                 )}
 
-                                                {
+                                                {applicantDuration !== 0 && (
                                                     form.formStage === 2 && !isRemindButtonEnabled(form.last_updated) ? (
                                                         <Dialog
                                                             open={openReminderDialogs[form.id]}
@@ -391,44 +391,46 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                                 </DialogFooter>
                                                             </DialogContent>
                                                         </Dialog>
-                                                    ) : form.formStage === 2 && isRemindButtonEnabled(form.last_updated) ? (
-                                                        <Dialog
-                                                            open={openReminderDialogs[form.id]}
-                                                            onOpenChange={() => toggleReminderDialog(form.id)}
-                                                        >
-                                                            <DialogTrigger asChild>
-                                                                <Button
-                                                                    className={`p-2 bg-green-600`}
-                                                                    type="button"
-                                                                >
-                                                                    Remind
-                                                                </Button>
-                                                            </DialogTrigger>
-                                                            <DialogContent>
-                                                                <DialogHeader>
-                                                                    <DialogTitle>Send Reminder</DialogTitle>
-                                                                </DialogHeader>
-                                                                <DialogDescription>
-                                                                    <div className="text-left lg:text-justify">
-                                                                        The last updated date of this form is {form.last_updated}, and I hereby send an email reminder to the Academic Administration Office to remind them regarding my forms because it is urgent and not just for the sake of spamming.
-                                                                    </div>
-                                                                </DialogDescription>
-                                                                <DialogFooter>
-                                                                    <DialogClose asChild>
-                                                                        <Button>Cancel</Button>
-                                                                    </DialogClose>
+                                                    ) : (
+                                                        form.formStage === 2 && isRemindButtonEnabled(form.last_updated) ? (
+                                                            <Dialog
+                                                                open={openReminderDialogs[form.id]}
+                                                                onOpenChange={() => toggleReminderDialog(form.id)}
+                                                            >
+                                                                <DialogTrigger asChild>
                                                                     <Button
-                                                                        onMouseUp={() => {
-                                                                            toggleReminderDialog(form.id);
-                                                                            sendReminder(form);
-                                                                        }}>
-                                                                        Agree
+                                                                        className={`p-2 bg-green-600`}
+                                                                        type="button"
+                                                                    >
+                                                                        Remind
                                                                     </Button>
-                                                                </DialogFooter>
-                                                            </DialogContent>
-                                                        </Dialog>
-                                                    ) : null
-                                                }
+                                                                </DialogTrigger>
+                                                                <DialogContent>
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Send Reminder</DialogTitle>
+                                                                    </DialogHeader>
+                                                                    <DialogDescription>
+                                                                        <div className="text-left lg:text-justify">
+                                                                            The last updated date of this form is {form.last_updated}, and I hereby send an email reminder to the Academic Administration Office to remind them regarding my forms because it is urgent and not just for the sake of spamming.
+                                                                        </div>
+                                                                    </DialogDescription>
+                                                                    <DialogFooter>
+                                                                        <DialogClose asChild>
+                                                                            <Button>Cancel</Button>
+                                                                        </DialogClose>
+                                                                        <Button
+                                                                            onMouseUp={() => {
+                                                                                toggleReminderDialog(form.id);
+                                                                                sendReminder(form);
+                                                                            }}>
+                                                                            Agree
+                                                                        </Button>
+                                                                    </DialogFooter>
+                                                                </DialogContent>
+                                                            </Dialog>
+                                                        ) : null
+                                                    )
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

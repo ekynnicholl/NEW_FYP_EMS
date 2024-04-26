@@ -378,7 +378,7 @@ const AttendanceSettings = () => {
 
             {isExpanded ? (
                 <div className="transition-max-h duration-300 ease-linear w-full">
-                    <div className="overflow-y-auto max-h-[500px] mt-1 pl-10">
+                    <div className="overflow-y-auto max-h-fit mt-1 pl-10">
                         <div>
                             <Tab.Group>
                                 <Tab.List className="">

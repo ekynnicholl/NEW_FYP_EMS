@@ -62,14 +62,14 @@ const ExternalSettings = () => {
         const applicantData = settingsData.find(item => item.extSType === "Applicant");
         const aaoData = settingsData.find(item => item.extSType === "AAO");
 
-        if (applicantData) {
+        if (applicantData && (settingsData.find(item => item.extSType === "Applicant").extSDays !== applicantData)) {
             await supabase
                 .from("external_reminder")
                 .update({ extSDays: applicantDuration })
                 .eq("extSID", applicantData.extSID);
         }
 
-        if (aaoData) {
+        if (aaoData && (settingsData.find(item => item.extSType === "AAO").extSDays !== aaoData)) {
             await supabase
                 .from("external_reminder")
                 .update({ extSDays: aaoDuration })
@@ -95,7 +95,7 @@ const ExternalSettings = () => {
 
             {isExpanded ? (
                 <div className="transition-max-h duration-300 ease-linear w-full">
-                    <div className="overflow-y-auto max-h-80 flex flex-col justify-between mt-1 space-y-4 pl-10">
+                    <div className="overflow-y-auto max-h-fit flex flex-col justify-between mt-1 space-y-4 pl-10">
                         <div className="pr-10">
                             <div className="text-slate-900 dark:text-dark_text mb-3 text-justify text-sm lg:text-base">
                                 <p className="font-bold underline text-[18px]">Applicants</p>
@@ -104,20 +104,23 @@ const ExternalSettings = () => {
                                     the applicant will only be able to remind the Academic Administration Office Staff after 3 working days (or the number of days you have selected)
                                     excluding Saturday and Sunday, which will be on 23 April 2024 (Tuesday).
                                 </p>
+                                <br />
+                                <p>You can disable this feature by setting it to 0 days. Please ensure that the days you input are integers i.e., 1, 2, 3, 4...</p>
                             </div>
                             <div className="flex">
-                                <label htmlFor="startTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base mt-2">
+                                <label htmlFor="durationInput" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base mt-2">
                                     Duration
                                 </label>
-                                <select id="startTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base" value={applicantDuration} onChange={handleApplicantDurationChange}>
-                                    <option value={1}>1 day</option>
-                                    <option value={2}>2 days</option>
-                                    <option value={3}>3 days</option>
-                                    <option value={4}>4 days</option>
-                                    <option value={5}>5 days</option>
-                                    <option value={6}>6 days</option>
-                                    <option value={7}>1 week</option>
-                                </select>
+                                <input
+                                    id="durationInput"
+                                    type="number"
+                                    className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base mr-3"
+                                    value={applicantDuration}
+                                    onChange={handleApplicantDurationChange}
+                                    min={0}
+                                    max={365}
+                                />
+                                <span className="mt-2">day(s)</span>
                             </div>
                         </div>
                         <div>
@@ -127,20 +130,23 @@ const ExternalSettings = () => {
                                     For this, you may navigate to the Nominations/ Travelling Forms Page and look for the <span className="italic">Important</span> tab.
                                     This option allows you to specify how many day(s) later will you be able to remind the relevant party.
                                 </p>
+                                <br />
+                                <p>You can disable this feature by setting it to 0 days. Please ensure that the days you input are integers i.e., 1, 2, 3, 4...</p>
                             </div>
                             <div className="flex">
-                                <label htmlFor="startTime" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base mt-2">
+                                <label htmlFor="durationInputAAO" className="text-slate-800 dark:text-dark_text font-bold text-sm lg:text-base mt-2">
                                     Duration
                                 </label>
-                                <select id="startTime" className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base" value={aaoDuration} onChange={handleAAODurationChange}>
-                                    <option value={1}>1 day</option>
-                                    <option value={2}>2 days</option>
-                                    <option value={3}>3 days</option>
-                                    <option value={4}>4 days</option>
-                                    <option value={5}>5 days</option>
-                                    <option value={6}>6 days</option>
-                                    <option value={7}>1 week</option>
-                                </select>
+                                <input
+                                    id="durationInputAAO"
+                                    type="number"
+                                    className="border border-gray-300 p-[6px] lg:p-2 rounded-md ml-10 text-sm lg:text-base mr-3"
+                                    value={aaoDuration}
+                                    onChange={handleAAODurationChange}
+                                    min={0}
+                                    max={365}
+                                />
+                                <span className="mt-2">day(s)</span>
                             </div>
                         </div>
                         <Button className="mt-4 lg:self-end" onClick={handleSaveChanges}>
