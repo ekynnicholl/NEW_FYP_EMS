@@ -62,7 +62,7 @@ const PastAttended = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.scrollY;
-            const isScrolled = currentScrollPos > 1500 || currentScrollPos < prevScrollPos;
+            const isScrolled = currentScrollPos > 1700 || currentScrollPos < prevScrollPos;
 
             if (isScrolled !== isVisible) {
                 setIsVisible(isScrolled);
@@ -77,6 +77,7 @@ const PastAttended = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [isVisible, prevScrollPos]);
+
     return (
         <div className="flex flex-col items-center justify-center">
             <animated.div style={fadeIn_textTop} className="flex items-center justify-center mb-4">

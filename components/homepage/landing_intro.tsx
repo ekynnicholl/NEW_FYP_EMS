@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Link, Element } from 'react-scroll';
+import { Element } from 'react-scroll';
 import { useSpring, animated, config } from '@react-spring/web';
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const LandingIntro = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -84,9 +85,11 @@ const LandingIntro = () => {
                         <p className="text-[20px] mb-4">Here&apos;s all you need to know!</p>
                     </animated.div>
                     <animated.div style={fadeIn_Text4}>
-                        <Button>
-                            View Upcoming Event(s)
-                        </Button>
+                        <Link href="#upcomingEvents">
+                            <Button>
+                                View Upcoming Event(s)
+                            </Button>
+                        </Link>
                     </animated.div>
                 </div>
             </div>

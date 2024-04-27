@@ -8,10 +8,27 @@ import BestExperience from "@/components/homepage/best_experience";
 import UpcomingEventsLanding from "@/components/homepage/upcoming_events";
 import LandingIntro from "@/components/homepage/landing_intro";
 import PastAttended from "@/components/homepage/past_attended";
+import { useEffect } from "react";
 
 export default function LandingPage() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+
+        const links = document.querySelectorAll('a[href^="#"]');
+        links.forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href')?.substring(1);
+                const targetElement = document.getElementById(targetId ?? '');
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }, []);
+
     return (
-        <div>
+        <div className="scroll-smooth">
             <nav className="text-black font-bold flex justify-between items-center px-4 py-2 mt-2">
                 <div className="flex items-center ml-28">
                     <Image
@@ -32,7 +49,7 @@ export default function LandingPage() {
                         <a className="hover:text-slate-500" target="_blank" >Nominations/ Travelling Form</a>
                     </Link>
                     <Link legacyBehavior href="/login">
-                        <Button className="bg-white text-black border-2 border-black-500 font-bold hover:bg-slate-200">
+                        <Button className="bg-white text-black border-2 border-black-500 font-bold hover:bg-slate-200 transition-all ease-in-out">
                             Login as Admin
                         </Button>
                     </Link>
