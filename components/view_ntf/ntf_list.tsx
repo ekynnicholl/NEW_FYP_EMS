@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import ViewNTF_Modal from "@/components/ViewNTF_Modal";
 import { BsFiletypePdf } from "react-icons/bs";
 import Link from "next/link";
+import { ChevronDown } from 'lucide-react';
 import FormsView from "@/components/view_ntf/ntf_forms_view"
 import { Tab } from "@headlessui/react";
 import TimelineNTF from "@/components/view_ntf/timeline_ntf";
@@ -103,6 +105,8 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const [activeTab, setActiveTab] = useState("Timeline");
     const router = useRouter();
     const [applicantDuration, setApplicantDuration] = useState(1);
+    const [selectedYear, setSelectedYear] = useState<number | null>(null);
+    const [selectedFormStatus, setSelectedFormStatus] = useState<string | null>(null);
 
     const [openReminderDialogs, setOpenReminderDialogs] = useState<{ [key: string]: boolean }>({});
     const toggleReminderDialog = (formId: string) => {
@@ -118,6 +122,20 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
         setSelectedFormId(formId);
         setShowModalViewNTF(true);
     };
+
+      
+      const getFormStatus = (formStage: number) => {
+        if (formStage === 1) {
+          return "Reverted to Staff";
+        } else if (formStage >= 2 && formStage <= 4) {
+          return "Under Review";
+        } else if (formStage === 5) {
+          return "Approved";
+        } else if (formStage === 6) {
+          return "Rejected";
+        }
+        return "Unknown";
+      };
 
     const sendReminder = async (row: Form) => {
         const today = new Date();
@@ -159,6 +177,16 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
 
         fetchExternalReminderSettings();
     }, [])
+
+    const filteredForms = forms.filter((form) => {
+        const formYear = new Date(form.commencement_date).getFullYear();
+        const formStatus = getFormStatus(form.formStage);
+      
+        return (
+          (selectedYear === null || formYear === selectedYear) &&
+          (selectedFormStatus === null || formStatus === selectedFormStatus)
+        );
+      });
 
     const fetchData = async () => {
         try {
@@ -270,56 +298,102 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                 <p className="text-[16px] italic">Total Event(s) Attended Count: {forms.length}</p>
                 <p className="text-[16px] italic">Total Hours: {totalHours}</p>
             </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                        Year <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setSelectedYear(null)}>
+                        View All
+                    </DropdownMenuItem>
+                    {Array.from(new Set(forms.map((form) => new Date(form.commencement_date).getFullYear()))).map(
+                        (year) => (
+                            <DropdownMenuItem key={year} onClick={() => setSelectedYear(year)}>
+                            {year}
+                            </DropdownMenuItem>
+                        )
+                        )}
+                    </DropdownMenuContent>
+                    </DropdownMenu>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                        Form Status <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setSelectedFormStatus(null)}>
+                        View All
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Reverted to Staff")}>
+                        Reverted to Staff
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Under Review")}>
+                        Under Review
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Approved")}>
+                        Approved
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Rejected")}>
+                        Rejected
+                    </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
 
             <div className="mt-5">
                 {forms.length > 0 && (
                     <div className="max-w-screen-lg max-h-[400px] overflow-x-auto">
-                        <table className="table-auto">
+                        <table className="table-auto w-full">
                             <thead>
                                 <tr>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Program Title
+                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Program Title
                                     </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Commencement Date
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Commencement Date
                                     </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Completion Date
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Completion Date
                                     </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Organiser
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Organiser
                                     </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Venue
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Venue
                                     </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Status
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Status
                                     </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/6">
-                                        Action
-                                    </th>
-                                </tr>
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                    Action
+                                    </th>                                         
+                                     </tr>
                             </thead>
 
                             <tbody>
-                                {forms.map((form) => (
+                                {filteredForms.map((form) => (
                                     <tr key={form.id}>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             {form.program_title}
                                         </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             {form.commencement_date}
                                         </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             {form.completion_date}
                                         </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             {form.organiser}
                                         </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             {form.venue}
                                         </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             {(() => {
                                                 switch (form.formStage) {
                                                     case 1:
@@ -339,7 +413,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                 }
                                             })()}
                                         </td>
-                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                        <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center w-1/7">
                                             <div className="flex items-center justify-between gap-x-2">
                                                 {form.formStage !== 5 && form.formStage !== 6 ? (
                                                     <Button
@@ -363,7 +437,7 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                     </div>
                                                 )}
 
-                                                {
+                                                {applicantDuration !== 0 && (
                                                     form.formStage === 2 && !isRemindButtonEnabled(form.last_updated) ? (
                                                         <Dialog
                                                             open={openReminderDialogs[form.id]}
@@ -391,44 +465,46 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                                                 </DialogFooter>
                                                             </DialogContent>
                                                         </Dialog>
-                                                    ) : form.formStage === 2 && isRemindButtonEnabled(form.last_updated) ? (
-                                                        <Dialog
-                                                            open={openReminderDialogs[form.id]}
-                                                            onOpenChange={() => toggleReminderDialog(form.id)}
-                                                        >
-                                                            <DialogTrigger asChild>
-                                                                <Button
-                                                                    className={`p-2 bg-green-600`}
-                                                                    type="button"
-                                                                >
-                                                                    Remind
-                                                                </Button>
-                                                            </DialogTrigger>
-                                                            <DialogContent>
-                                                                <DialogHeader>
-                                                                    <DialogTitle>Send Reminder</DialogTitle>
-                                                                </DialogHeader>
-                                                                <DialogDescription>
-                                                                    <div className="text-left lg:text-justify">
-                                                                        The last updated date of this form is {form.last_updated}, and I hereby send an email reminder to the Academic Administration Office to remind them regarding my forms because it is urgent and not just for the sake of spamming.
-                                                                    </div>
-                                                                </DialogDescription>
-                                                                <DialogFooter>
-                                                                    <DialogClose asChild>
-                                                                        <Button>Cancel</Button>
-                                                                    </DialogClose>
+                                                    ) : (
+                                                        form.formStage === 2 && isRemindButtonEnabled(form.last_updated) ? (
+                                                            <Dialog
+                                                                open={openReminderDialogs[form.id]}
+                                                                onOpenChange={() => toggleReminderDialog(form.id)}
+                                                            >
+                                                                <DialogTrigger asChild>
                                                                     <Button
-                                                                        onMouseUp={() => {
-                                                                            toggleReminderDialog(form.id);
-                                                                            sendReminder(form);
-                                                                        }}>
-                                                                        Agree
+                                                                        className={`p-2 bg-green-600`}
+                                                                        type="button"
+                                                                    >
+                                                                        Remind
                                                                     </Button>
-                                                                </DialogFooter>
-                                                            </DialogContent>
-                                                        </Dialog>
-                                                    ) : null
-                                                }
+                                                                </DialogTrigger>
+                                                                <DialogContent>
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Send Reminder</DialogTitle>
+                                                                    </DialogHeader>
+                                                                    <DialogDescription>
+                                                                        <div className="text-left lg:text-justify">
+                                                                            The last updated date of this form is {form.last_updated}, and I hereby send an email reminder to the Academic Administration Office to remind them regarding my forms because it is urgent and not just for the sake of spamming.
+                                                                        </div>
+                                                                    </DialogDescription>
+                                                                    <DialogFooter>
+                                                                        <DialogClose asChild>
+                                                                            <Button>Cancel</Button>
+                                                                        </DialogClose>
+                                                                        <Button
+                                                                            onMouseUp={() => {
+                                                                                toggleReminderDialog(form.id);
+                                                                                sendReminder(form);
+                                                                            }}>
+                                                                            Agree
+                                                                        </Button>
+                                                                    </DialogFooter>
+                                                                </DialogContent>
+                                                            </Dialog>
+                                                        ) : null
+                                                    )
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

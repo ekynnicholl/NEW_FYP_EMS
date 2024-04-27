@@ -80,7 +80,7 @@ const AttendanceTiming = () => {
 
             {isExpanded ? (
                 <div className="transition-max-h duration-300 ease-linear w-full">
-                    <div className="overflow-y-auto max-h-80 flex flex-col justify-between mt-1 pl-10">
+                    <div className="overflow-y-auto max-h-fit flex flex-col justify-between mt-1 pl-10">
                         <div className="text-slate-900 dark:text-dark_text mb-3 text-justify text-sm lg:text-base">
                             <p>Please take note,</p>
                             <br />

@@ -141,23 +141,31 @@ const VerifyAccess: React.FC<VerifyAccessProps> = ({ token, ptoken }) => {
                     </div>
                 </div>
             ) : (
-                <div className="flex items-center justify-center min-h-screen bg-slate-100">
-                    <div className="p-5">
-                        <div className={`lg:w-full space-y-5 mx-auto ${(atIdentifier2 && atIdentifier2.startsWith('SS')) ? 'w-5/12' : 'w-full'}`}>
-                            <div className="lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
-                                <VerifiedAccess atExpiredAt={atExpiredAt} token={token} atCreatedAt={atCreatedAt} atIdentifier={atIdentifier} />
-                            </div>
-                            {atIdentifier2 && atIdentifier2.startsWith('SS') && (
-                                <div className="lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
-                                    <NTFList atIdentifier={atIdentifier} />
-                                </div>
-                            )}
-                            <div className="lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
-                                <AttendanceList atIdentifier={atIdentifier} atIdentifier2={atIdentifier2} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div className="flex items-center justify-center bg-slate-100">
+  <div className="min-h-full w-full md:mx-auto">
+    <div className="space-y-5 md:space-y-5 p-4 md:p-5">
+      <div className="w-full lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+        <VerifiedAccess
+          atExpiredAt={atExpiredAt}
+          token={token}
+          atCreatedAt={atCreatedAt}
+          atIdentifier={atIdentifier}
+        />
+      </div>
+      {atIdentifier2 && atIdentifier2.startsWith('SS') && (
+        <div className="w-full lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+          <NTFList atIdentifier={atIdentifier} />
+        </div>
+      )}
+      <div className="w-full lg:p-8 p-5 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
+        <AttendanceList
+          atIdentifier={atIdentifier}
+          atIdentifier2={atIdentifier2}
+        />
+      </div>
+    </div>
+  </div>
+</div>
             )}
         </>
 
