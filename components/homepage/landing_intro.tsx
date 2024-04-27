@@ -72,8 +72,8 @@ const LandingIntro = () => {
     }, [isVisible, prevScrollPos]);
 
     return (
-        <div className="flex justify-center items-center px-4 py-2 mt-2">
-            <div className="flex justify-center items-center w-1/2 ml-20">
+        <div className="flex flex-col sm:flex-row justify-center items-center px-4 py-2 mt-2">
+            <div className="flex justify-center items-center w-full sm:w-1/2 sm:ml-20 mb-8 sm:mb-0">
                 <div>
                     <animated.div style={fadeIn_Text1}>
                         <h1 className="text-[72px] text-black font-bold">Great Events</h1>
@@ -93,12 +93,13 @@ const LandingIntro = () => {
                     </animated.div>
                 </div>
             </div>
-            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-1/2">
+            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2">
                 <Image
                     src="/images/man-planning-on-calendar-vector.png"
                     alt="Event Manager"
                     width={850}
                     height={50}
+                    className="mx-auto"
                 />
             </animated.div>
         </div>

@@ -87,16 +87,17 @@ const PastAttended = () => {
             <animated.div style={fadeIn_textTop1}>
                 <p className="text-center font-bold text-[26px]">Attended Event(s)</p>
             </animated.div>
-            <div className="flex justify-center items-center px-4 py-2 mt-2">
-                <animated.div style={fadeIn_imageLeft} className="flex justify-center items-center">
+            <div className="flex flex-col sm:flex-row justify-center items-center px-4 py-2 mt-2">
+                <animated.div style={fadeIn_imageLeft} className="flex justify-center items-center w-full sm:w-1/2 mb-8 sm:mb-0">
                     <Image
                         src="/images/appointment-booking-with-smartphone-man_23-2148576384.png"
                         alt="Event Manager"
                         width={850}
                         height={50}
+                        className="mx-auto"
                     />
                 </animated.div>
-                <div className="flex justify-center items-center ml-20">
+                <div className="flex justify-center items-center sm:ml-20">
                     <div>
                         <animated.div style={fadeIn_text1}>
                             <p className="text-[32px] font-bold mb-2 italic">- Just One Click Away -</p>

@@ -85,9 +85,9 @@ const BestExperience = () => {
                 <animated.div style={fadeIn_Top2}>
                     <p className="text-center font-bold text-[26px]">We are setting the best experience in Swinburne University.</p>
                 </animated.div>
-                <div className="cards-container flex items-center justify-center overflow-hidden mt-4 relative w-7/12">
-                    <div className="slider flex items-center justify-center">
-                        <animated.div style={fadeIn_Card1} className={`h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 m-4 w-full space-y-4 pl-4 pt-4 pr-4`}>
+                <div className="cards-container flex items-center justify-center overflow-hidden mt-4 relative w-full sm:w-7/12">
+                <div className="slider flex flex-col sm:flex-row items-center justify-center">
+                <animated.div style={fadeIn_Card1} className={`h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
                             <div className="flex items-center justify-center">
                                 <Image
                                     src="/images/appointment-booking-with-calendar_23-2148553115.png"
@@ -106,12 +106,12 @@ const BestExperience = () => {
                                     </Button>
                                 </Link>
                                 <p>or,</p>
-                                <div className="flex">
-                                    <QRCodeCanvas value={`${origin}/attended_events`} size={128} />
+                                <div className="flex justify-center">
+                                <QRCodeCanvas value={`${origin}/attended_events`} size={128} className="mx-auto" />
                                 </div>
                             </div>
                         </animated.div>
-                        <animated.div style={fadeIn_Card2} className={`h-[520px] pb-5 card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full m-4 space-y-4 pl-4 pt-4 pr-4 my-auto`}>
+                        <animated.div style={fadeIn_Card2} className={`h-[520px] pb-5 card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4 my-auto`}>
                             <div className="flex items-center justify-center my-auto">
                                 <Image
                                     src="/images/work-chat-concept-illustration_114360-1229.png"
@@ -127,7 +127,7 @@ const BestExperience = () => {
                                 <p className="text-sm font-bold mt-1"></p>
                             </div>
                         </animated.div>
-                        <animated.div style={fadeIn_Card3} className={`h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 m-4 w-full space-y-4 pl-4 pt-4 pr-4`}>
+                        <animated.div style={fadeIn_Card3} className={`h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
                             <div className="flex items-center justify-center">
                                 <Image
                                     src="/images/happy-boy-with-casual-clothes-smartphone_24640-46929.png"
@@ -146,8 +146,8 @@ const BestExperience = () => {
                                     </Button>
                                 </Link>
                                 <p>or,</p>
-                                <div className="flex">
-                                    <QRCodeCanvas value={`${origin}/form/external`} size={128} />
+                                <div className="flex justify-center">
+                                    <QRCodeCanvas value={`${origin}/form/external`} size={128} className="mx-auto" />
                                 </div>
                             </div>
                         </animated.div>
