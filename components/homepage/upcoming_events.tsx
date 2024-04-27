@@ -20,7 +20,8 @@ const UpcomingEventsLanding = () => {
             .from("internal_events")
             .select("*")
             .gte("intFEventEndDate", new Date().toISOString())
-            .order("intFEventEndDate", { ascending: true });
+            .order("intFEventEndDate", { ascending: true })
+            .eq("intFIsHidden", 0);
 
         if (error) {
             console.error("Error fetching events:", error.message);
