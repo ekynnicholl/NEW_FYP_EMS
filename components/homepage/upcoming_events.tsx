@@ -96,7 +96,7 @@ const UpcomingEventsLanding = () => {
     const cardWidths = ['w-1/4', 'w-4/12', 'w-1/4'];
     const cardHeights = ['h-[425px]', 'h-[525px]', 'h-[425px]'];
 
-    const cardStyles = (index: number) => `card bg-white rounded-lg shadow-lg border-1 border-black-500 sm:w-1/3 sm:m-4 ${cardWidths[index]} ${cardHeights[index]} transition-all ease-in-out space-y-4`;
+    const cardStyles = (index: number) => `card bg-white rounded-lg shadow-lg border-1 border-black-500 sm:w-1/3 sm:m-4 ${cardWidths[index]} ${cardHeights[index]} transition-all ease-in-out space-y-4 w-full sm:w-auto`;
 
     const transitions = useTransition(upcomingEvents[startIndex], {
         from: { opacity: 0, transform: 'translateX(-100%)' },
@@ -109,11 +109,11 @@ const UpcomingEventsLanding = () => {
         <div className="flex flex-col items-center justify-center">
             <animated.div style={fadeIn_Text1}>
                 <p className="text-center font-bold text-[26px]">Upcoming Event(s)</p>
-                <p className="text-[18px]">Are you looking for event&apos;s to partake in? We got you covered!</p>
+                <p className="text-[18px] text-center">Are you looking for event&apos;s to partake in? We got you covered!</p>
             </animated.div>
-            <animated.div style={fadeIn_Card} className="cards-container overflow-hidden mt-4 relative w-full sm:w-3/4">
-                <div className="slider flex flex-col sm:flex-row items-center justify-center">
-                    {upcomingEvents.slice(startIndex, startIndex + 3).map((event, index) => {
+            <animated.div style={fadeIn_Card} className="cards-container overflow-hidden mt-4 relative w-full sm:w-3/4 px-4 sm:px-0">
+            <div className="slider flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0">
+                    {upcomingEvents.slice(startIndex, startIndex + (window.innerWidth < 640 ? 1 : 3)).map((event, index) => {
                         const truncatedDescription = event.intFEventDescription.length > 100
                             ? `${event.intFEventDescription.substring(0, 100)}...`
                             : event.intFEventDescription;
@@ -129,7 +129,7 @@ const UpcomingEventsLanding = () => {
                                         height={50}
                                     />
                                 </div>
-                                <div className="content-container pl-6 pr-6">
+                                <div className="content-container pl-6 pr-6 break-words">
                                     <h2 className="text-lg font-bold text-justify">{event.intFEventName}</h2>
                                     <p className="text-gray-600 text-justify">{truncatedDescription}</p>
                                     <div className="flex mt-4">
