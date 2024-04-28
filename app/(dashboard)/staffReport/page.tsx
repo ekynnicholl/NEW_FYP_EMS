@@ -15,40 +15,20 @@ import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "reac
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ExpenditureUser from "@/components/tables/expenditureUser";
 import { CiCalendar } from "react-icons/ci";
+import * as XLSX from 'xlsx';
+import { Info } from "lucide-react";
 
 type Info = {
-	attFormsAttendanceID: string;
-	attFormsStaffName: string;
-	attFormsStaffID: string;
-	attFormsStaffEmail: string;
-	attFormsFacultyUnit: string;
-};
-
-type mainEvents = {
-	intFID: string;
-	intFEventName: string;
-	intFEventDescription: string;
-	intFEventStartDate: string;
-	intFEventEndDate: string;
-	intFTrainerName: string;
-	intFTrainingProvider: string;
-	intFDurationCourse: number;
-	intFlsHidden: number;
-	intFTotalHours: number;
-};
-
-type subEvents = {
-	sub_eventsMainID: string;
-	sub_eventsID: string;
-	sub_eventsName: string;
-	sub_eventsVenue: string;
-	sub_eventsStartDate: string;
-	sub_eventsEndDate: string;
-	sub_eventsStartTime: string;
-	sub_eventsEndTime: string;
-	sub_eventsOrganizer: string;
-	sub_eventsFaculty: string;
-	sub_eventsMaxSeats: string;
+	staffID: string;
+	staffName: string;
+	staffFaculty: string;
+	totalSubEvents: number;
+	allEventsAttended: { 
+		programName: string; 
+		totalHours: number; 
+		startDate: string; 
+		endDate: string; }[];
+	grandTotalHours: number;
 }
 
 export default function Home() {
@@ -63,23 +43,8 @@ export default function Home() {
 
 	const [showModal, setShowModal] = useState(false);
 
-	const [dataResults, setDataResults] = useState<{
-		staffID: string;
-		staffName: string;
-		staffFaculty: string;
-		totalSubEvents: number;
-		allEventsAttended: { programName: string; totalHours: number; startDate: string; endDate: string; }[];
-		grandTotalHours: number;
-	}[]>([]);
-
-	const [aggregatedInfo, setAggregatedInfo] = useState<{
-		staffID: string;
-		staffName: string;
-		staffFaculty: string;
-		totalSubEvents: number;
-		allEventsAttended: { programName: string; totalHours: number; startDate: string; endDate: string; }[];
-		grandTotalHours: number;
-	}[]>([]);
+	const [dataResults, setDataResults] = useState<Info[]>([]);
+	const [aggregatedInfo, setAggregatedInfo] = useState<Info[]>([]);
 
 	const fetchInfos = async () => {
 		const { data: staffData, error: attendedEventError } = await supabase
@@ -205,31 +170,42 @@ export default function Home() {
 	};
 
 	const columnMapping: ColumnMapping = {
-		attFormsStaffID: 'Staff/ Student ID',
-		attFormsStaffName: 'Staff Name',
-		attFormsFacultyUnit: 'Faculty/Unit',
-		totalSubEvents: 'Total Events Attended'
+		staffID: 'Staff/ Student ID',
+		staffName: 'Full Name',
+		staffFaculty: 'Faculty / Unit',
+		totalSubEvents: 'Total Event(s) Attended',
+		grandTotalHours: 'Grand Total Hours (H)',
 	};
 
-	//export to CSV format
-	const exportToCSV = () => {
-		// Generate header row
-		const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
-		// Combine header and data rows
-		const csvContent = `${header}\n${aggregatedInfo.map(row => {
-			// Exclude the eventsAttended field
-			const { allEventsAttended, ...rowWithoutEvents } = row;
-			return Object.values(rowWithoutEvents).map(value => `"${value}"`).join(",");
-		}).join("\n")}`;
+	const convertToXLSX = (data: Info[], columnMapping: ColumnMapping) => {
+		const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
+		const body = data.map((row) => {
+			const newRow: any = {...row};
+			return Object.keys(columnMapping).map((key) => newRow[key as keyof Info]);
+		});
 
-		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-		const link = document.createElement("a");
+		const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'Staff Report');
 
-		link.href = URL.createObjectURL(blob);
-		link.setAttribute("download", "staff_attendance_data.csv");
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
+		const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Change type to 'array'
+
+		return wbout;
+	};
+
+	const downloadXLSX = (data: Info[]) => {
+		const xlsxContent = convertToXLSX(data, columnMapping);
+		const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+		const url = URL.createObjectURL(blob);
+
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'Staff Report.xlsx';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+
+		URL.revokeObjectURL(url);
 	};
 
 	// Handle page change
@@ -351,7 +327,6 @@ export default function Home() {
 				.select('attsID, attsName, attsCategory, attsSubcategory, attsType, attsPosition, attsFacultyUnit')
 				.eq('attsType', 2)
 				.order('attsCategory, attsName');
-			// .order('attsCategory, attsPosition');
 
 			if (error) {
 				// console.error('Error fetching faculty units:', error);
@@ -665,14 +640,14 @@ export default function Home() {
 									<button
 										type="button"
 										className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
-										onClick={exportToCSV}>
+										onClick={( )=> downloadXLSX(aggregatedInfo)}>
 										<img
 											src={exportCSV.src}
 											alt=""
 											width={20}
 											className="text-slate-800"
 										/>
-										<span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+										<span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
 									</button>
 								</div>
 							</div>
@@ -710,7 +685,6 @@ export default function Home() {
 								</div>
 
 								<div className="flex flex-row">
-
 
 									{activeTab === "all" && (
 										<div>
@@ -885,17 +859,17 @@ export default function Home() {
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
 														<div className="flex items-center">
 															<div className="ml-[14px]">
-																<p className="text-gray-900 whitespace-no-wrap"></p>
+																<span className="text-gray-900 whitespace-no-wrap"></span>
 															</div>
 														</div>											</td>
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<p className="text-gray-900 whitespace-no-wrap ml-3"></p>
+														<span className="text-gray-900 whitespace-no-wrap ml-3"></span>
 													</td>
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<p className="text-gray-900 whitespace-no-wrap"></p>
+														<span className="text-gray-900 whitespace-no-wrap"></span>
 													</td>
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<p className="text-gray-900 whitespace-no-wrap ml-1"></p>
+														<span className="text-gray-900 whitespace-no-wrap ml-1"></span>
 													</td>
 													<td
 														className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
