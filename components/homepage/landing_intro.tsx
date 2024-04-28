@@ -55,7 +55,7 @@ const LandingIntro = () => {
 
         const handleScroll = () => {
             const currentScrollPos = window.scrollY;
-            const isScrolled = currentScrollPos > 50 || currentScrollPos < prevScrollPos;
+            const isScrolled = currentScrollPos > 0 || currentScrollPos < prevScrollPos;
 
             if (isScrolled !== isVisible) {
                 setIsVisible(isScrolled);
