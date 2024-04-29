@@ -33,7 +33,7 @@ import darkLightStorage from '@/components/zustand/darkLightStorage';
 // PLEASE DON'T DELETE MY COMMENTED LINES UNTIL FINAL PHASE OF DEVELOPMENT, TQ.
 
 const NavLinks = [
-	{ id: 1, name: "Home", icon: FaHome, link: "/homepage" },
+	{ id: 1, name: "Home", icon: FaHome, link: "/dashboard" },
 	{ id: 2, name: "Analytical Visualization", icon: IoAnalyticsOutline, link: "/analytics" },
 	{ id: 3, name: "Reports", icon: TbReportSearch, link: "/staffReport" },
 	// { id: 4, name: "Chatbot", icon: HiOutlineChatBubbleBottomCenterText, link: "/chatbot" },

@@ -501,10 +501,6 @@ export default function Home() {
 			return 0;
 		});
 
-	useEffect(() => {
-		filterEventByYear();
-	}, [selectedYear, eventsAttended])
-
 	const filterEventByYear = () => {
 		if (eventsAttended.length > 0) {
 			let filteredEventsAttended = [...eventsAttended];
@@ -522,6 +518,10 @@ export default function Home() {
 		}
 	}
 
+	useEffect(() => {
+		filterEventByYear();
+	}, [selectedYear, eventsAttended])
+
 	return (
 		<div>
 			<div className="">
@@ -529,7 +529,7 @@ export default function Home() {
 					<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
 						<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
 							<div className="inline-flex">
-								<span className="mt-[7px]"><a href="/homepage"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" /></a></span>
+								<span className="mt-[7px]"><Link href="/dashboard"><IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" /></Link></span>
 								<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Reports</span></h1>
 							</div>
 							<Fragment>

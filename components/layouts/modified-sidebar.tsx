@@ -17,7 +17,7 @@ import { FaRegLightbulb } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 
 const NavLinks = [
-	{ id: 1, name: "Home", icon: FaHome, link: "/homepage" },
+	{ id: 1, name: "Home", icon: FaHome, link: "/dashboard" },
 	{ id: 2, name: "Analytical Visualization", icon: IoAnalyticsOutline, link: "/analytics" },
 	{ id: 3, name: "Reports", icon: TbReportSearch, link: "/staffReport" },
 	// { id: 4, name: "Chatbot", icon: HiOutlineChatBubbleBottomCenterText, link: "/chatbot" },

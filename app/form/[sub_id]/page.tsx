@@ -3,9 +3,10 @@
 import { Fragment, useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useParams, useRouter } from "next/navigation";
-import cookie from 'js-cookie';
 import toast from "react-hot-toast";
 import loadingGIF from "@/public/loading_bird.gif";
+import { getAuth } from "firebase/auth";
+import Image from "next/image";
 
 type Info = {
 	attFormsAttendanceID: string;
@@ -29,15 +30,9 @@ export default function AttendanceForm() {
 	const supabase = createClientComponentClient();
 	const [info, setInfo] = useState<Info>({} as Info);
 	const [eventData, setEventData] = useState<any>(null);
-	const [authToken, setAuthToken] = useState<any>("")
 	const [isLoaded, setIsLoaded] = useState<Boolean>(false);
+	const auth = getAuth()
 
-	const [showModalSuccess, setShowModalSuccess] = useState(false);
-	const [showModalFailure, setShowModalFailure] = useState(false);
-
-	const [attendance_id, setAttendanceID] = useState("");
-
-	// Get the Event ID from the link,
 	const { sub_id } = useParams();
 	const router = useRouter();
 
@@ -49,7 +44,6 @@ export default function AttendanceForm() {
 	};
 
 	useEffect(() => {
-		setAuthToken(cookie.get('authToken'))
 
 		const fetchEventData = async () => {
 			// Fetch the event_id associated with the given attendance_list ID
@@ -224,7 +218,7 @@ export default function AttendanceForm() {
 			.eq("attFormsStaffID", attFormsStaffID);
 
 		if (existingForms && existingForms.length > 0 && userType != 'visitor') {
-			setShowModalFailure(true);
+			// setShowModalFailure(true);
 			return;
 		} else {
 			const { data: oldForms, error } = await supabase
@@ -873,12 +867,12 @@ export default function AttendanceForm() {
 
 								<Fragment>
 									<div className="flex justify-end">
-										{authToken && (
+										{auth.currentUser?.uid && (
 											<button
 												type="button"
 												className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base mr-3"
 												onClick={() => {
-													router.push("/homepage")
+													router.push("/dashboard")
 												}}
 											>
 												Cancel
@@ -1022,7 +1016,7 @@ export default function AttendanceForm() {
 				</div>
 			) : (
 				<div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
-					<img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
+					<Image src={loadingGIF.src} alt="loading..." width={100} height={100} className="w-[100px] lg:w-[100px]" />
 				</div>
 			)}
 		</>

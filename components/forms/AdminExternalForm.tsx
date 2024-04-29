@@ -10,7 +10,6 @@ import { format } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
-import cookie from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
 import NTFPDF from "@/components/forms/NTFPDF";
 import TooltipIcon from "@/components/icons/TooltipIcon";
@@ -93,6 +92,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
 
+	const auth = getAuth();
+	const user = auth.currentUser;
+
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [submitOpen, setSubmitOpen] = useState(false);
 	const [applicantOpen, setApplicantOpen] = useState(false);
@@ -103,15 +105,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	const [showCommentInput, setShowCommentInput] = useState(false);
 
-	const [authToken, setAuthToken] = useState<string | undefined>("");
-	useEffect(() => {
-		setAuthToken(cookie.get("authToken"));
-	}, [authToken]);
+	const [authToken, setAuthToken] = useState<string | undefined>(auth.currentUser?.uid);
 
 	let displayName: string | null = null;
 	let email: string | null = null;
-	const auth = getAuth();
-	const user = auth.currentUser;
+
 	if (user !== null) {
 		displayName = user.displayName;
 		email = user.email;
@@ -256,7 +254,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		};
 
 		fetchEmails();
-	}, [])
+	}, [supabase])
 
 	const checkFormStatus = () => {
 		setApplicantOpen(false);
