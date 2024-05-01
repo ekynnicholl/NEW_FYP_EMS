@@ -114,7 +114,8 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
                     <p>which was held at</p>
                     <h2>${atVenue}</h2>
                     <p>on ${formattedDate(dateSubmitted)}</p>
-                    <p style="margin-top: 160px;">System Generated</p>
+                    <p style="margin-top: 160px;">This is a computer generated certificate
+                    and requires no signature.</p>
                     </div>
                     <div class="right-div">
                     <img src="https://cdn.freebiesupply.com/logos/large/2x/swinburne-university-of-technology-3-logo-png-transparent.png" alt="Logo Image">
