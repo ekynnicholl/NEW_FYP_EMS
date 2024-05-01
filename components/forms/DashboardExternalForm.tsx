@@ -401,9 +401,13 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
 	const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
-	
+
 	// console.log(externalForm);
 	// console.log(form.getValues("logistic_arrangement"));
+
+	useEffect(() => {
+		console.log(form.formState.errors);
+	}, [form.formState.errors]);
 
 	return (
 		<>
@@ -1002,11 +1006,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																		<Button
 																			disabled={!edit}
 																			variant={"outline"}
-																			className={cn("w-full text-left font-normal border-none")}
+																			className={cn(
+																				"w-full text-left font-normal border-none disabled:opacity-100",
+																			)}
 																		>
-																			{field.value &&
-																			field.value[i] &&
-																			field.value[i].flight_date ? (
+																			{field.value && field.value[i] && field.value[i].flight_date ? (
 																				format(new Date(field.value[i].flight_date!), "PPP")
 																			) : (
 																				<span>Pick a date</span>
@@ -1049,7 +1053,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															<FormControl>
 																<Input
 																	disabled={!edit}
-																	className="border-none shadow-none focus:shadow-none focus:ring-transparent focus:border-none"
+																	className="border-none shadow-none disabled:hover:shadow-none"
 																	type="time"
 																	value={field.value?.[i]?.flight_time || ""}
 																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1072,7 +1076,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															<FormControl>
 																<Input
 																	disabled={!edit}
-																	className="border-none focus:ring-transparent shadow-none"
+																	className="border-none shadow-none disabled:hover:shadow-none"
 																	value={field.value?.[i]?.flight_number || ""}
 																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 																		const newValue = field.value?.map((item, index) =>
@@ -1094,7 +1098,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															<FormControl>
 																<Input
 																	disabled={!edit}
-																	className="border-none focus:ring-transparent shadow-none"
+																	className="border-none shadow-none disabled:hover:shadow-none"
 																	value={field.value?.[i]?.destination_from || ""}
 																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 																		const newValue = field.value?.map((item, index) =>
@@ -1116,7 +1120,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															<FormControl>
 																<Input
 																	disabled={!edit}
-																	className="border-none focus:ring-transparent shadow-none"
+																	className="border-none shadow-none disabled:hover:shadow-none"
 																	value={field.value?.[i]?.destination_to || ""}
 																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 																		const newValue = field.value?.map((item, index) =>
@@ -1139,7 +1143,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															<FormControl>
 																<Input
 																	disabled={!edit}
-																	className="border-none focus:ring-transparent shadow-none"
+																	className="border-none shadow-none disabled:hover:shadow-none"
 																	value={field.value?.[i]?.hotel_name || ""}
 																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 																		const newValue = field.value?.map((item, index) =>
@@ -1166,13 +1170,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			disabled={!edit}
 																			variant={"outline"}
 																			className={cn(
-																				"w-full text-left font-normal rounded-none border-none pl-2",
+																				"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
 																				!field.value && "text-muted-foreground",
 																			)}
 																		>
-																			{field.value &&
-																			field.value[i] &&
-																			field.value[i].check_in_date instanceof Date ? (
+																			{field.value && field.value[i] && field.value[i].check_in_date ? (
 																				format(new Date(field.value?.[i].check_in_date!), "PPP")
 																			) : (
 																				<span>Pick a date</span>
@@ -1223,12 +1225,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			disabled={!edit}
 																			variant={"outline"}
 																			className={cn(
-																				"w-full text-left font-normal rounded-none border-none pl-2",
+																				"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
 																			)}
 																		>
-																			{field.value &&
-																			field.value[i] &&
-																			field.value[i].check_out_date ? (
+																			{field.value && field.value[i] && field.value[i].check_out_date ? (
 																				format(new Date(field.value?.[i].check_out_date!), "PPP")
 																			) : (
 																				<span>Pick a date</span>
@@ -1278,8 +1278,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 												<div className="grid place-items-center">
 													<X
-														className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
+														className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${
+															edit ? "cursor-pointer" : "cursor-not-allowed"
+														}`}
 														onClick={() => {
+															if (!edit) return;
 															const values = form.getValues("logistic_arrangement");
 															if (values?.length! <= 2) {
 																toast.error("2 flights are needed for go and return");
@@ -1322,7 +1325,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																		<Input
 																			disabled={!edit}
 																			placeholder="Hotel Name"
-																			className="border-none focus:ring-transparent shadow-none"
+																			className="border-none shadow-none disabled:hover:shadow-none"
 																			value={field.value?.[i]?.hotel_name || ""}
 																			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 																				const newValue = field.value?.map((item, index) =>
@@ -1349,13 +1352,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					disabled={!edit}
 																					variant={"outline"}
 																					className={cn(
-																						"w-full text-left font-normal rounded-none border-none pl-2",
+																						"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
 																						!field.value && "text-muted-foreground",
 																					)}
 																				>
-																					{field.value &&
-																					field.value[i] &&
-																					field.value[i].check_in_date ? (
+																					{field.value && field.value[i] && field.value[i].check_in_date ? (
 																						format(new Date(field.value?.[i].check_in_date!), "PPP")
 																					) : (
 																						<span>Pick a date</span>
@@ -1374,9 +1375,12 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																				onSelect={date => {
 																					if (date !== undefined) {
 																						date.setHours(date.getHours() + 8);
+																						console.log(new Date(date));
 																						field.onChange(
 																							field.value?.map((item, index) =>
-																								index === i ? { ...item, check_in_date: date } : item,
+																								index === i
+																									? { ...item, check_in_date: new Date(date) }
+																									: item,
 																							),
 																						);
 																					}
@@ -1406,7 +1410,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					disabled={!edit}
 																					variant={"outline"}
 																					className={cn(
-																						"w-full text-left font-normal rounded-none border-none pl-2",
+																						"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
 																					)}
 																				>
 																					{field.value &&
@@ -1436,15 +1440,14 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																						field.onChange(
 																							field.value?.map((item, index) =>
 																								index === i
-																									? { ...item, check_out_date: date }
+																									? { ...item, check_out_date: new Date(date) }
 																									: item,
 																							),
 																						);
 																					}
 																				}}
 																				disabled={date => {
-																					let today = form.getValues("logistic_arrangement")?.[i]
-																						.check_out_date;
+																					let today = new Date(form.getValues("logistic_arrangement")?.[i].check_out_date ?? "");
 																					if (today === undefined) {
 																						today = new Date();
 																						today.setHours(0, 0, 0, 0);
@@ -1464,7 +1467,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 														<div className="grid place-items-center">
 															<X
-																className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${edit ? "cursor-pointer" : "cursor-not-allowed"}`}
+																className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${
+																	edit ? "cursor-pointer" : "cursor-not-allowed"
+																}`}
 																onClick={() => {
 																	if (!edit) return;
 																	const values = form.getValues("logistic_arrangement");
