@@ -145,6 +145,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					formStage: selectedStage,
 				}));
 
+				createNotifications(selectedRow, values.undoOption, values.revertComment);
+
 				const { data: latestFormsData, error: latestFormsError } = await supabase
 					.from("external_forms")
 					.select()
@@ -154,8 +156,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					toast.error("Failed to send email. Please contact server administrator.");
 				}
 
+<<<<<<< Updated upstream
 				console.log("latest data", latestFormsData);
 
+=======
+>>>>>>> Stashed changes
 				sendContactForm(latestFormsData);
 				router.refresh();
 			}
@@ -277,7 +282,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem
-								onClick={() => {
+								onClick={e => {
+									e.preventDefault();
 									router.push(`/form/external/${row.original.id}`);
 								}}
 							>
@@ -285,7 +291,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={e => {
+<<<<<<< Updated upstream
 									e.stopPropagation();
+=======
+									e.preventDefault();
+>>>>>>> Stashed changes
 									setOpen(true);
 									setSelectedRow(row.original);
 								}}
@@ -343,6 +353,44 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			rowSelection,
 		},
 	});
+
+	const createNotifications = async (form: ExternalForm, stage: string, comment: string) => {
+		let formStage = "";
+		if (stage === "1") {
+			formStage = "Reverted to Staff";
+		} else if (stage === "2") {
+			formStage = "Reviewing by AAO";
+		} else if (stage === "3") {
+			formStage = "Reviewing by HOS/ ADCR/ MGR";
+		} else if (stage === "4") {
+			formStage = "Reviewing by HMU/ Dean";
+		} else if (stage === "5") {
+			formStage = "Approved";
+		} else if (stage === "6") {
+			formStage = "Rejected";
+		} else {
+			formStage = "Unknown";
+		}
+		let message = `The Nominations/ Travelling Form for ${form.program_title}, submitted by ${form.full_name} (${form.staff_id}) has been undo to "${formStage}" with reason(s): ${comment}`;
+
+		const notifDesc = message;
+		const notifType = "Nominations/ Travelling Form";
+		const notifLink = `/form/external/${form.id}`;
+
+		const { error: notificationError } = await supabase.from("notifications").insert([
+			{
+				notifDesc,
+				notifType,
+				notifLink,
+			},
+		]);
+
+		if (notificationError) {
+			toast.error("Failed to send email. Please contact server administrator.");
+		} else {
+			sendContactForm(form);
+		}
+	};
 
 	return (
 		<div className="w-full">
@@ -597,7 +645,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								<ContextMenu key={row.id}>
 									<ContextMenuTrigger asChild>
 										<TableRow
-											onClick={() => {
+											onClick={e => {
+												e.preventDefault();
 												router.push(`/external/${row.original.id}`);
 											}}
 											data-state={row.getIsSelected() && "selected"}
@@ -610,14 +659,16 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									</ContextMenuTrigger>
 									<ContextMenuContent>
 										<ContextMenuItem
-											onClick={() => {
+											onClick={e => {
+												e.preventDefault();
 												router.push(`/external/${row.original.id}`);
 											}}
 										>
 											View
 										</ContextMenuItem>
 										<ContextMenuItem
-											onClick={() => {
+											onClick={e => {
+												e.preventDefault();
 												setOpen(true);
 												setSelectedRow(row.original);
 											}}

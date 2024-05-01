@@ -171,8 +171,14 @@ const adminExternalFormSchema = z
 			.optional(),
 
 		// Section 9
-		verification_email: z.string().optional(),
-		approval_email: z.string().optional(),
+		verification_email: z
+			.string()
+			.optional()
+			.nullable(),
+		approval_email: z
+			.string()
+			.optional()
+			.nullable(),
 	})
 	// .refine(
 	// 	data => {

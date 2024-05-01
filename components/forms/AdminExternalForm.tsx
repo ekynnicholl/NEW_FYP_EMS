@@ -464,41 +464,54 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const createNotifications = async (message: string, formId: string) => {
-		try {
-			const notifDesc = message;
-			const notifType = "Nominations/ Travelling Form";
-			const notifLink = `/form/external/${formId}`;
+		const notifDesc = message;
+		const notifType = "Nominations/ Travelling Form";
+		const notifLink = `/form/external/${formId}`;
 
-			const { data: notificationData, error: notificationError } = await supabase
-				.from("notifications")
-				.insert([
-					{
-						notifDesc,
-						notifType,
-						notifLink,
-					},
-				]);
+		const { data: notificationData, error: notificationError } = await supabase
+			.from("notifications")
+			.insert([
+				{
+					notifDesc,
+					notifType,
+					notifLink,
+				},
+			]);
 
-			if (notificationError) {
+		if (notificationError) {
 
-			} else {
-
-			}
-		} catch (error) {
+		} else {
 
 		}
 	};
 
 	const fetchAndUpdateFormData = async (formId: string, formStage: string) => {
-		try {
-			const { data: updatedData, error: updatedError } = await supabase
-				.from("external_forms")
-				.select("*")
-				.eq("id", formId);
+		const { data: updatedData, error: updatedError } = await supabase
+			.from("external_forms")
+			.select("*")
+			.eq("id", formId);
 
-			if (updatedError) {
-				// console.error("Error fetching updated data:", updatedError);
+		if (updatedError) {
+			// console.error("Error fetching updated data:", updatedError);
+		} else {
+			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+
+			let message = "";
+
+			if (formStage == "to_1") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reverted back to the user with reason(s): ${updatedData[0].revertComment}`;
+			} else if (formStage == "to_2") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been re-submitted by the user.`;
+			} else if (formStage == "to_3") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reviewed by AAO and submitted to HOS/ ADCR/ MGR.`;
+			} else if (formStage == "to_4") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reviewed by HOS/ ADCR/ MGR and submitted to HMU/ Dean.`;
+			} else if (formStage == "to_5") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been approved.`;
+			} else if (formStage == "to_6") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been rejected with reason(s): ${updatedData[0].revertComment}`;
 			} else {
+<<<<<<< Updated upstream
 				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
 				let message = "";
@@ -524,9 +537,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				sendContactForm(updatedData);
 
 				router.push("/external_status");
+=======
+				message = `Notifications error. Please contact the webmaster.`;
+>>>>>>> Stashed changes
 			}
-		} catch (error) {
-			// console.error("Error in fetchAndUpdateFormData:", error);
+
+			createNotifications(message, updatedData[0].id);
+
+			sendContactForm(updatedData);
+
+			router.push("/external_status");
 		}
 	};
 
