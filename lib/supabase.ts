@@ -39,30 +39,6 @@ export type Database = {
         }
         Relationships: []
       }
-      approvers: {
-        Row: {
-          created_at: string
-          email: string
-          id: number
-          name: string
-          type: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: number
-          name: string
-          type?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: number
-          name?: string
-          type?: string | null
-        }
-        Relationships: []
-      }
       attendance_forms: {
         Row: {
           attDateSubmitted: string | null
@@ -137,6 +113,27 @@ export type Database = {
         }
         Relationships: []
       }
+      attendance_timing: {
+        Row: {
+          timCreatedAt: string
+          timEndTime: number | null
+          timID: string
+          timStartTime: number | null
+        }
+        Insert: {
+          timCreatedAt?: string
+          timEndTime?: number | null
+          timID?: string
+          timStartTime?: number | null
+        }
+        Update: {
+          timCreatedAt?: string
+          timEndTime?: number | null
+          timID?: string
+          timStartTime?: number | null
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           created_at: string
@@ -195,6 +192,7 @@ export type Database = {
       }
       external_forms: {
         Row: {
+          aao_email: string | null
           accommodation_fee: number | null
           airfare_fee: number | null
           applicant_declaration_date: string | null
@@ -229,7 +227,9 @@ export type Database = {
           hotel_name: string | null
           hrdf_claimable: string | null
           id: string
+          isHidden: number | null
           last_updated: string | null
+          logistic_arrangement: Json[] | null
           organiser: string | null
           other_fees: number | null
           other_funds: string | null
@@ -264,6 +264,7 @@ export type Database = {
           verification_signature: string | null
         }
         Insert: {
+          aao_email?: string | null
           accommodation_fee?: number | null
           airfare_fee?: number | null
           applicant_declaration_date?: string | null
@@ -298,7 +299,9 @@ export type Database = {
           hotel_name?: string | null
           hrdf_claimable?: string | null
           id?: string
+          isHidden?: number | null
           last_updated?: string | null
+          logistic_arrangement?: Json[] | null
           organiser?: string | null
           other_fees?: number | null
           other_funds?: string | null
@@ -333,6 +336,7 @@ export type Database = {
           verification_signature?: string | null
         }
         Update: {
+          aao_email?: string | null
           accommodation_fee?: number | null
           airfare_fee?: number | null
           applicant_declaration_date?: string | null
@@ -367,7 +371,9 @@ export type Database = {
           hotel_name?: string | null
           hrdf_claimable?: string | null
           id?: string
+          isHidden?: number | null
           last_updated?: string | null
+          logistic_arrangement?: Json[] | null
           organiser?: string | null
           other_fees?: number | null
           other_funds?: string | null
@@ -400,6 +406,27 @@ export type Database = {
           verification_name?: string | null
           verification_position_title?: string | null
           verification_signature?: string | null
+        }
+        Relationships: []
+      }
+      external_reminder: {
+        Row: {
+          extSCreatedAt: string
+          extSDays: number | null
+          extSID: string
+          extSType: string | null
+        }
+        Insert: {
+          extSCreatedAt?: string
+          extSDays?: number | null
+          extSID?: string
+          extSType?: string | null
+        }
+        Update: {
+          extSCreatedAt?: string
+          extSDays?: number | null
+          extSID?: string
+          extSType?: string | null
         }
         Relationships: []
       }
@@ -544,6 +571,7 @@ export type Database = {
         Row: {
           accHomeView: number | null
           accIsDarkMode: boolean | null
+          activation: boolean | null
           created_at: string | null
           email_address: string | null
           firebase_uid: string | null
@@ -552,6 +580,7 @@ export type Database = {
         Insert: {
           accHomeView?: number | null
           accIsDarkMode?: boolean | null
+          activation?: boolean | null
           created_at?: string | null
           email_address?: string | null
           firebase_uid?: string | null
@@ -560,6 +589,7 @@ export type Database = {
         Update: {
           accHomeView?: number | null
           accIsDarkMode?: boolean | null
+          activation?: boolean | null
           created_at?: string | null
           email_address?: string | null
           firebase_uid?: string | null
@@ -679,27 +709,6 @@ export type Database = {
           suggCreated?: string
           suggDesc?: string | null
           suggID?: string
-        }
-        Relationships: []
-      }
-      verifiers: {
-        Row: {
-          created_at: string
-          email: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: number
-          name?: string
         }
         Relationships: []
       }
