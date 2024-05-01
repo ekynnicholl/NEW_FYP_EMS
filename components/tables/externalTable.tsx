@@ -145,7 +145,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					formStage: selectedStage,
 				}));
 
-				createNotifications(selectedRow, values.undoOption, values.revertComment);
+				createNotifications(selectedRow, values.undoOption, values.revertComment!);
 
 				const { data: latestFormsData, error: latestFormsError } = await supabase
 					.from("external_forms")
@@ -156,11 +156,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					toast.error("Failed to send email. Please contact server administrator.");
 				}
 
-<<<<<<< Updated upstream
 				console.log("latest data", latestFormsData);
 
-=======
->>>>>>> Stashed changes
 				sendContactForm(latestFormsData);
 				router.refresh();
 			}
@@ -291,11 +288,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={e => {
-<<<<<<< Updated upstream
 									e.stopPropagation();
-=======
-									e.preventDefault();
->>>>>>> Stashed changes
 									setOpen(true);
 									setSelectedRow(row.original);
 								}}

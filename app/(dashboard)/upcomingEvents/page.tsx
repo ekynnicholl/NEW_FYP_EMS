@@ -31,6 +31,7 @@ import QRCodeModal from "@/components/EditSubEvent_Modal";
 import AttendanceList from "@/components/attendance/attendance_list";
 import toast from "react-hot-toast";
 import * as XLSX from 'xlsx';
+import Link from "next/link";
 
 type mainEvent = {
     intFID: string;

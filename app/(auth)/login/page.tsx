@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import login_bg from "@/public/images/event_manager.png";
 import swin_logo from "@/public/swinburne_logo.png"
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { auth, provider } from "../../../google_config";
+import { provider } from "../../../google_config";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from 'js-cookie';
@@ -154,7 +154,7 @@ export default function Login() {
 		<>
 			{isLoading ? (
 				<div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
-					<img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
+					<Image width={100} height={100} src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
 				</div>
 			) : (
 				<div>

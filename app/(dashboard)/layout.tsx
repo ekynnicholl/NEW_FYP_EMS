@@ -11,6 +11,7 @@ import loadingGIF from "@/public/loading_bird.gif";
 import { useRouter } from "next/navigation";
 import Chatbot from "@/components/chatbot/chatbot";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Image from "next/image";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	const setViewMode = useViewModeStore(state => state.setViewMode);
@@ -45,7 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 		<>
 			{isLoading && (
 				<div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
-					<img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
+					<Image width={100} height={100} src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
 				</div>
 			)}
 			{!isLoading && isAuthenticated && (

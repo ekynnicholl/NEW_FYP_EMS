@@ -507,7 +507,7 @@ export default function Homepage() {
 			setEventDates(Array.from(uniqueEventDates));
 		};
 		fetchGridView();
-	}, []);
+	}, [supabase]);
 
 	// This is needed for the attendance data to show,
 	const [attendanceID, setAttendanceID] = useState<string>("");
@@ -1819,7 +1819,9 @@ export default function Homepage() {
 
 					<ViewEvent_Modal isVisible={showModalViewEvent} onClose={() => setShowModalViewEvent(false)}>
 						<div className="py-[30px] lg:py-[100px] relative z-[50] dark:bg-dark_mode_card">
-							<img
+							<Image
+								width={200}
+								height={200}
 								src={selectedEventImage}
 								alt="Random"
 								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm"
@@ -2789,7 +2791,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 								{latestEvent[0] && (
@@ -3076,7 +3078,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 								{latestEvent[1] && (
@@ -3650,7 +3652,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 								{latestEvent[3] && (
@@ -4222,7 +4224,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 								{latestEvent[5] && (
@@ -4511,7 +4513,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -4741,7 +4743,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -4971,7 +4973,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -5201,7 +5203,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
@@ -5662,7 +5664,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image fill src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 
