@@ -237,8 +237,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	// }, [form, form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
-		toast.loading("Submitting form...");
 		console.log("Form sent");
+		console.log(values);
 
 		if (values.commencement_date !== null) {
 			if (values.commencement_date.getHours() < 8) {
