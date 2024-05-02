@@ -97,7 +97,7 @@ export default function LandingPage() {
                 <div id="navbar" className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-[16px] bg-white z-50 transition-all duration-300 lg:hidden">
                     <div>
                         <h1 className="text-xl font-bold text-slate-900 font-Nudito">
-                            <span className="text-slate-900">SWINBURNE</span>
+                            <span className="text-slate-900"><span className="text-[#014167]">&lt;</span><span className="text-slate-900">SWINBURNE</span><span className="text-[#014167]">/&gt;</span></span>
                         </h1>
                     </div>
 
@@ -197,15 +197,15 @@ export default function LandingPage() {
 
             </div >
 
-            <footer className="mt-10 sm:mt-32">
+            {/* <footer className="mt-10 sm:mt-32 bg-[#2c3033] mb-10">
                 <div className="relative">
-                    <div className="sm:inset-0 sm:transform sm:skew-y-3 h-20 bg-[#2c3033]"></div>
-                    <div className="sm:absolute sm:mt-14 sm:inset-0 sm:transform sm:skew-y-3 h-20 bg-[#2c3033]"></div>
-                    <div className="bg-[#2c3033] px-4 sm:pl-32 pt-7">
+                    <div className="sm:inset-0 sm:transform sm:skew-y-3 h-20"></div>
+                    <div className="sm:absolute sm:mt-14 sm:inset-0 sm:transform sm:skew-y-3 h-20"></div>
+                    <div className="px-4 sm:pl-32 pt-7">
                         <div className="flex items-center justify-center sm:items-start sm:justify-start -mt-[150px] lg:mt-0">
                             <Image src="/swinburne_logo.png" alt="Swinburne Logo" width={250} height={50} />
                         </div>
-                        <div className="pb-4 text-white pt-4 text-justify sm:text-left sm:w-1/4">
+                        <div className="text-sm lg:text-base pb-4 text-white pt-4 text-justify sm:text-left sm:w-1/4">
                             <p>
                                 The Event Management and Attendance Tracking (EMAT) System is developed by a group of students for their Final Year Project (FYP) since August/ September 2023.
                             </p>
@@ -215,7 +215,35 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </footer>
+            </footer> */}
+
+            <div className="flex flex-col lg:flex-row py-24 bg-[#18202A] mt-19 px-8">
+
+                <div className="lg:w-1/2">
+                    <div className="-mt-10">
+                        <Image src="/swinburne_logo.png" alt="Swinburne Logo" width={250} height={50} />
+                    </div>
+                    <h1 className="text-[25px] mt-5 font-extrabold text-[#f5f5f5] font-JetBrains"><span className="text-[#6366F1]">&lt;</span>Swinburne University of Technology Sarawak <span className="text-[#6366F1]">/&gt;</span></h1>
+                    <p className="text-[#bfc2c8] font-light text-base mt-3"> The Event Management and Attendance Tracking (EMAT) System is developed by a group of students for their Final Year Project (FYP) since August/ September 2023.</p>
+                </div>
+
+                <div className="lg:w-1/2 flex flex-col justify-start lg:ml-[150px] mt-10 lg:mt-0">
+                    <div className="mb-4">
+                        <h2 className="text-[#5EEAD4] text-[19px] font-semibold tracking-wide mt-0 lg:-mt-12">NAVIGATION</h2>
+                        <ul className="mt-[10px] text-[#f5f5f5] tracking-wide text-lg">
+                            <li className=""><a href="#">Home</a></li>
+                            <li className="mt-1"><a href="#upcomingEvents">Upcoming Event</a></li>
+                            <li className="mt-1"><a href="#pastAttended">Past Attended Events</a></li>
+                            <li className="mt-1"><a href="/form/external">Notification Travelling Form</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <hr className="border-b border-[#f5f5f5]"></hr>
+            <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[40px]">
+                <p>© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
+            </div>
         </div>
     )
 };
