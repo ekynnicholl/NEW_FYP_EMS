@@ -125,12 +125,12 @@ export default function LandingPage() {
                                         onClick={() => setMenuOpen(false)}
                                         aria-label="Close menu"
                                     >
-                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
 
-                                    <div className="p-4 text-right mt-3">
+                                    <div className="p-4 text-right mt-6">
                                         <Link legacyBehavior href="#home">
                                             <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Home</a>
                                         </Link>
