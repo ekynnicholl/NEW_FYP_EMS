@@ -92,7 +92,6 @@ export default function LandingPage() {
             </nav>
 
             {/* Mobile Responsiveness */}
-
             <div id="navbar" className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-[14px] bg-white z-50 transition-all duration-300 lg:hidden">
                 <div>
                     <h1 className="text-xl font-bold text-slate-900 font-Nudito">
