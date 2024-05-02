@@ -240,7 +240,7 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            <hr className="border-b border-[#f5f5f5]"></hr>
+            <div className="border-b border-[#f5f5f5]"></div>
             <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[40px]">
                 <p>© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
             </div>
