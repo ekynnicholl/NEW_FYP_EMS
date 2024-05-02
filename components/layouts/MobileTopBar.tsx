@@ -88,7 +88,7 @@ export default function MobileTopBar() {
 								>
 									<button
 										type="button"
-										className="text-gray-600 hover:text-gray-800 absolute top-2 right-2 mr-[2px]"
+										className="text-gray-600 hover:text-gray-800 absolute top-2 right-2 mr-[2px] mt-1"
 										onClick={() => setMenuOpen(false)}
 										aria-label="Close menu"
 									>

@@ -123,7 +123,7 @@ export default function LandingPage() {
                                     >
                                         <button
                                             type="button"
-                                            className="text-gray-600 hover:text-gray-800 absolute top-2 right-2"
+                                            className="text-gray-600 hover:text-gray-800 absolute top-2 right-2 mt-1"
                                             onClick={() => setMenuOpen(false)}
                                             aria-label="Close menu"
                                         >
