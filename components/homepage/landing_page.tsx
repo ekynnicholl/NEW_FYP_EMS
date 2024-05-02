@@ -217,7 +217,7 @@ export default function LandingPage() {
                 </div>
             </footer> */}
 
-            <div className="flex flex-col lg:flex-row py-24 bg-[#18202A] mt-19 px-8">
+            <div className="flex flex-col lg:flex-row py-24 bg-[#18202A] mt-[40px] lg:mt-19 px-8">
 
                 <div className="lg:w-1/2">
                     <div className="-mt-10">
@@ -242,7 +242,7 @@ export default function LandingPage() {
 
             <div className="border-b border-[#f5f5f5]"></div>
             <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[40px]">
-                <p>© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
+                <p className="">© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
             </div>
         </div>
     )
