@@ -108,17 +108,17 @@ export default function MobileTopBar() {
 											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Report</a>
 										</Link>
 										<Link legacyBehavior href="/external">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
+											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
 												External Event
 											</a>
 										</Link>
 										<Link legacyBehavior href="/suggestions">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
+											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
 												Suggestions
 											</a>
 										</Link>
 										<Link legacyBehavior href="/settings">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
+											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 mb-4" target="_blank" onClick={() => setMenuOpen(false)}>
 												Settings
 											</a>
 										</Link>
