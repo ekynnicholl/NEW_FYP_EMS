@@ -97,7 +97,7 @@ export default function Home() {
 			</div>
 			<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0">
 				<div className="text-center">
-					<h1 className="font-bold p-5 text-[20px] dark:text-dark_text">Budget Expenditure/ Faculty/ School/ Unit</h1>
+					<h1 className="font-bold p-5 text-[17px] lg:text-[20px] dark:text-dark_text">Budget Expenditure/ Faculty/ School/ Unit</h1>
 					<div className="flex items-center justify-center gap-3">
 						<div>
 							<Label htmlFor="month" className="text-light dark:text-dark_text">
@@ -141,7 +141,7 @@ export default function Home() {
 					selectedYear={parseInt(selectedYear, 10)}
 					onTotalGrandTotalChange={handleTotalGrandTotalChange}
 				/>
-				<div className="text-center p-5 text-[20px] font-bold dark:text-dark_text">
+				<div className="text-center p-5 text-[17px] lg:text-[20px] font-bold dark:text-dark_text">
 					<h2>
 						Total Expenditure for {getMonthText(selectedMonth)}, {selectedYear}: RM{totalGrandTotal}
 					</h2>
@@ -149,12 +149,12 @@ export default function Home() {
 			</div>
 
 			<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
-				<div className="text-center font-bold p-5 text-slate-800 dark:text-dark_text text-[20px]">
+				<div className="text-center font-bold p-5 text-slate-800 dark:text-dark_text text-[17px] lg:text-[20px]">
 					<h1>Number of Attendees each Faculty/ Unit by Date</h1>
 				</div>
-				<div className="justify-center items-center flex text-slate-800 dark:text-dark_text">
+				<div className="justify-center items-center lg:flex text-slate-800 dark:text-dark_text">
 					<div className="">
-						<label htmlFor="startDate" className="mr-2">
+						<label htmlFor="startDate" className="mr-2 text-sm lg:text-base">
 							Start Date:
 						</label>
 						<input
@@ -166,8 +166,9 @@ export default function Home() {
 							className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 						/>
 					</div>
+					
 					<div className="ml-4">
-						<label htmlFor="endDate" className="mr-2">
+						<label htmlFor="endDate" className="mr-2 text-sm lg:text-base">
 							End Date:
 						</label>
 						<input
@@ -179,8 +180,9 @@ export default function Home() {
 							className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 						/>
 					</div>
+
 					<div className="ml-4">
-						<label htmlFor="category" className="mr-2">
+						<label htmlFor="category" className="mr-2 text-sm lg:text-base">
 							Category:
 						</label>
 						<select
@@ -197,7 +199,7 @@ export default function Home() {
 					</div>
 				</div>
 				<div>
-					<p className="lg:text-xs font-medium text-gray-600 -ml-[6px] text-center dark:text-slate-200 italic">
+					<p className="text-[10px] lg:text-xs font-medium text-gray-600 -ml-[6px] text-center dark:text-slate-200 italic">
 						Tip: You can change whether you want to view staff, student, or both using the &apos;Category&apos; filter.
 					</p>
 				</div>

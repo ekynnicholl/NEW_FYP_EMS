@@ -58,7 +58,7 @@ export default function MobileTopBar() {
 		// 		</DropdownMenuContent>
 		// 	</DropdownMenu>
 		// </div>
-		<div>
+		<div className="hidden max-md:block">
 			<div id="navbar" className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-[16px] bg-white z-50 transition-all duration-300 lg:hidden mb-10">
 				<div>
 					<h1 className="text-xl font-bold text-slate-900 font-Nudito -ml-5">
