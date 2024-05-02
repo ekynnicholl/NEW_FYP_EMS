@@ -100,7 +100,7 @@ const PastAttended = () => {
                 <div className="flex justify-center items-center sm:ml-20">
                     <div>
                         <animated.div style={fadeIn_text1}>
-                            <p className="text-[24px] lg:text-[32px] font-bold mb-2 italic">- Just One Click Away -</p>
+                            <p className="text-[24px] lg:text-[32px] font-bold mb-2 italic -mt-8 lg:mt-0">- Just One Click Away -</p>
                         </animated.div>
                         <animated.div style={fadeIn_text2}>
                             <p className="text-base lg:text-[22px] font-bold mb-2">View Past Attended Event(s)</p>
