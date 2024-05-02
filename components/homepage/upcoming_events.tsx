@@ -178,8 +178,8 @@ const UpcomingEventsLanding = () => {
             <animated.div style={fadeIn_Arrows}>
                 {upcomingEvents.length > 3 && (
                     <div className="slider-controls flex space-x-4 cursor-pointer mt-5">
-                        <FaArrowCircleLeft onClick={prevSlide} className="text-2xl lg:text-3xl" />
-                        <FaArrowCircleRight onClick={nextSlide} className="text-2xl lg:text-3xl" />
+                        <FaArrowCircleLeft onClick={prevSlide} className="text-3xl lg:text-3xl" />
+                        <FaArrowCircleRight onClick={nextSlide} className="text-3xl lg:text-3xl" />
                     </div>
                 )}
             </animated.div>
