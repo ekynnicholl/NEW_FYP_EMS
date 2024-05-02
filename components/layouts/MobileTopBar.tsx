@@ -3,6 +3,15 @@
 import { useEffect, useState, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+	signOut,
+	getAuth,
+	createUserWithEmailAndPassword,
+	sendEmailVerification,
+	signInWithEmailAndPassword,
+	deleteUser as deleteUserFromFirebase,
+} from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 import {
 	DropdownMenu,
@@ -13,10 +22,14 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import toast from "react-hot-toast";
+
 import Link from "next/link";
 
 export default function MobileTopBar() {
 	const [isOpen, setIsOpen] = useState(false);
+	const router = useRouter();
+	const auth = getAuth();
 
 	useEffect(() => {
 		console.log("isOpen", isOpen);
@@ -25,6 +38,17 @@ export default function MobileTopBar() {
 
 	const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
+
+	const handleLogoutClick = () => {
+		signOut(auth)
+			.then(() => {
+				router.push("/login");
+				toast.success("Signed out successfully");
+			})
+			.catch(error => {
+				toast.error("Error signing out");
+			});
+	};
 
 	return (
 		// <div className="hidden max-md:block">
@@ -123,7 +147,7 @@ export default function MobileTopBar() {
 											</a>
 										</Link>
 										<Link legacyBehavior href="/logout">
-											<Button className="bg-white text-black border-2 border-black-500 font-bold hover:bg-slate-200 transition-all ease-in-out whitespace-nowrap px-2 py-1 text-[12px]" onClick={() => setMenuOpen(false)}>
+											<Button className="bg-white text-black border-2 border-black-500 font-bold hover:bg-slate-200 transition-all ease-in-out whitespace-nowrap px-2 py-1 text-[12px]" onClick={handleLogoutClick}>
 												Logout
 											</Button>
 										</Link>
