@@ -529,34 +529,34 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             </DialogTitle>
                                         </DialogHeader>
                                         <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-                                        Please confirm you are about to distribute certificates to these emails:
-                                        <div className="flex items-center mb-2">
-                                            <input
-                                            type="checkbox"
-                                            checked={selectedAttendanceData.every(Boolean)}
-                                            onChange={() => {
-                                                const allSelected = selectedAttendanceData.every(Boolean);
-                                                setSelectedAttendanceData(attendanceData.map(() => !allSelected));
-                                            }}
-                                            className="mr-3"
-                                            />
-                                            <span>Select/Deselect All</span>
-                                        </div>
-                                        <div className="max-h-[200px] overflow-auto">
-                                            {attendanceData.map((attendee, index) => (
-                                            <div key={index} className="flex items-center text-left">
+                                            Please confirm you are about to distribute certificates to these emails:
+                                            <div className="flex items-center mb-2">
                                                 <input
-                                                type="checkbox"
-                                                checked={selectedAttendanceData[index]}
-                                                onChange={() => toggleSelection(index)}
-                                                className="mr-3 ml-5"
+                                                    type="checkbox"
+                                                    checked={selectedAttendanceData.every(Boolean)}
+                                                    onChange={() => {
+                                                        const allSelected = selectedAttendanceData.every(Boolean);
+                                                        setSelectedAttendanceData(attendanceData.map(() => !allSelected));
+                                                    }}
+                                                    className="mr-3 ml-5"
                                                 />
-                                                <span>
-                                                {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
-                                                </span>
+                                                <span>Select/ Deselect All</span>
                                             </div>
-                                            ))}
-                                        </div>
+                                            <div className="max-h-[200px] overflow-auto">
+                                                {attendanceData.map((attendee, index) => (
+                                                    <div key={index} className="flex items-center text-left">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedAttendanceData[index]}
+                                                            onChange={() => toggleSelection(index)}
+                                                            className="mr-3 ml-5"
+                                                        />
+                                                        <span>
+                                                            {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </DialogDescription>
                                         <DialogFooter className="sm:justify-center">
                                             <DialogClose asChild>

@@ -120,9 +120,9 @@ export default function LandingPage() {
                         <div className="flex items-center justify-center sm:items-start sm:justify-start">
                             <Image src="/swinburne_logo.png" alt="Swinburne Logo" width={250} height={50} />
                         </div>
-                        <div className="pb-4 text-white pt-4 text-justify text-center sm:text-left sm:w-1/4">
+                        <div className="pb-4 text-white pt-4 text-justify sm:text-left sm:w-1/4">
                             <p>
-                                The Event Management and Attendance (EMAT) System is developed by a group of students for their Final Year Project (FYP) since August/ September 2023.
+                                The Event Management and Attendance Tracking (EMAT) System is developed by a group of students for their Final Year Project (FYP) since August/ September 2023.
                             </p>
                         </div>
                         <div className="text-center bottom-0 text-white pt-4 text-xs">
