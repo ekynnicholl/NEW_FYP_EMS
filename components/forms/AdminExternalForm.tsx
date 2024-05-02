@@ -45,6 +45,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAuth } from "firebase/auth";
 import { X } from "lucide-react"
 
+import _ from "lodash";
+
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
 		duration: 3500,
@@ -87,11 +89,15 @@ const Document = ({ documents }: { documents?: string[] }) => {
 	);
 };
 
+let files: any[] = [];
+
 export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
+	files = data.supporting_documents ?? [];
+	console.log(files);
 
 	const auth = getAuth();
 	const user = auth.currentUser;
@@ -114,6 +120,16 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	if (user !== null) {
 		displayName = user.displayName;
 		email = user.email;
+	}
+
+	function convertToReadableName(url: string) {
+		console.log(url);
+		const split = url.split("supporting_documents/");
+		const fileName = split[split.length - 1];
+		const firstUnderscorePosition = fileName.indexOf("_");
+		let readableName = fileName.substring(firstUnderscorePosition + 1);
+		readableName = readableName.replaceAll("%20", " ");
+		return readableName;
 	}
 
 	const [securityKeyError, setSecurityKeyError] = useState(false);
@@ -346,6 +362,42 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				return;
 			}
 
+			let documentPaths: string[] = [];
+			const uniqueName = uuidv4();
+			if (values.supporting_documents && values.supporting_documents.length > 0) {
+				for (const file of values.supporting_documents) {
+					console.log(file);
+
+					if (file instanceof File) {
+						const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
+							cacheControl: "3600",
+							upsert: false,
+						});
+		
+						if (upload.data) {
+							const { data } = supabase.storage.from("supporting_documents").getPublicUrl(upload?.data.path);
+		
+							if (data) {
+								documentPaths.push(data.publicUrl);
+							}
+						}
+		
+						if (upload.error) {
+							console.log(upload.error);
+						}
+					}
+				}
+			}
+
+			//  merge the files to the documentPath, first is files, second is the new files, but only the path not the file
+			let mergedFilesPath = [];
+			for (let i = 0; i < files.length; i++) {
+				if (_.isString(files[i])) {
+					mergedFilesPath.push(files[i]);
+				}
+			}
+			mergedFilesPath = mergedFilesPath.concat(documentPaths);
+
 			console.log("Updating...");
 			const { error } = await supabase
 				.from("external_forms")
@@ -355,6 +407,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 						formStage: 2,
 						securityKey: null,
 						last_updated: new Date(),
+						supporting_documents: mergedFilesPath,
 					},
 				])
 				.eq("id", externalForm.id);
@@ -649,6 +702,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px]";
 	const colHotelClass = "grid grid-cols-[1fr_200px_200px]";
+
+	console.log(form.getValues("supporting_documents"));
 
 	return (
 		<div>
@@ -1940,8 +1995,110 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										name="supporting_documents"
 										render={({ field }) => (
 											<FormItem>
-												<Document documents={field.value} />
+												<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+													<div className="flex flex-col items-center justify-center pt-5 pb-6">
+														<svg
+															className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+															aria-hidden="true"
+															xmlns="http://www.w3.org/2000/svg"
+															fill="none"
+															viewBox="0 0 20 16"
+														>
+															<path
+																stroke="currentColor"
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																strokeWidth="2"
+																d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+															/>
+														</svg>
+														<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
+															<span className="font-semibold">Click or drag to upload</span>
+														</p>
+														<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
+														{field?.value?.length! > 0 && (
+															<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
+														)}
+													</div>
+													<FormControl className="absolute">
+														<Input
+															multiple
+															className="absolute w-full h-full opacity-0 cursor-pointer"
+															type="file"
+															accept=".pdf"
+															{...form.register("supporting_documents", {
+																required: false,
+															})}
+															onChange={event => {
+																if (event.target.files) {
+																	const newFiles = Array.from(event.target.files as FileList);
+																	newFiles.forEach(newFile => {
+																		if (!files.some(file => file.name === newFile.name)) {
+																			files.push(newFile);
+																		} else {
+																			toast.error("File already exists");
+																		}
+																	});
+																	field.onChange(files);
+																	form.trigger("supporting_documents");
+																	console.log(form.getValues("supporting_documents"));
+																}
+															}}
+														/>
+													</FormControl>
+												</FormLabel>
 												<FormMessage />
+												<div className="grid gap-2 mt-2 items-start">
+													{form.getValues("supporting_documents") &&
+														Array.from(form.getValues("supporting_documents")!).map((file: any, index: number) => (
+															<div key={file}>
+																{_.isString(file) ? (
+																	<div className="grid grid-cols-[400px_100px]">
+																		<Link href={file} target="_blank" className="flex gap-2 p-2 items-start text-ellipsis overflow-hidden whitespace-nowrap">
+																			<BsFiletypePdf className="w-6 h-6 text-red-500" />
+																			{convertToReadableName(file)}
+																		</Link>
+																		<div className="grid place-ite">
+																			<X
+																				className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
+																				onClick={() => {
+																					let supporting_documents = form.getValues("supporting_documents"); // FileList
+																					supporting_documents = Array.from(supporting_documents);
+																					supporting_documents.splice(index, 1);
+																					files.splice(index, 1);
+																					form.setValue("supporting_documents", supporting_documents);
+																					form.trigger("supporting_documents");
+																				}}
+																			/>
+																		</div>
+																	</div>
+																) : (
+																	<div className="grid grid-cols-[400px_100px]">
+																		<div className="flex gap-2 p-2 items-start text-ellipsis overflow-hidden whitespace-nowrap">
+																			<BsFiletypePdf className="w-6 h-6 text-red-500" />
+																			{file.name}
+																		</div>
+																		<div className="grid place-ite">
+																			<X
+																				className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
+																				onClick={() => {
+																					let supporting_documents = form.getValues("supporting_documents"); // FileList
+																					supporting_documents = Array.from(supporting_documents);
+																					supporting_documents.splice(index, 1);
+																					files.splice(index, 1);
+																					form.setValue("supporting_documents", supporting_documents);
+																					form.trigger("supporting_documents");
+																				}}
+																			/>
+																		</div>
+																	</div>
+																)
+															
+															}
+																
+															</div>
+														))}
+												</div>
 											</FormItem>
 										)}
 									/>
