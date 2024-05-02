@@ -1336,7 +1336,7 @@ export default function Homepage() {
 					</div>
 
 					{/* Mobile View */}
-					<div className="bg-white border border-slate-200 rounded px-2 pt-2 pb-3 gap-2 w-full md:hidden dark:bg-dark_mode_card dark:border-[#27374C]">
+					<div className="mt-7 bg-white border border-slate-200 rounded px-2 pt-2 pb-3 gap-2 w-full md:hidden dark:bg-dark_mode_card dark:border-[#27374C]">
 						<div className="grid grid-cols-2 gap-2 h-[49px]">
 							<div className="text-left transition transform hover:scale-105 h-[53px]">
 								<a
