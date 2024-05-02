@@ -148,7 +148,7 @@ const LandingIntro = () => {
                         <h1 className="text-[50px] lg:text-[72px] text-black font-bold"><span className="italic">{eventsCount}</span> Event(s)</h1>
                     </animated.div>
                     <animated.div style={fadeIn_Text2}>
-                        <h1 className="text-[50px] lg:text-[72px] text-black font-bold">Created</h1>
+                        <h1 className="text-[50px] lg:text-[72px] text-black font-bold -mt-5 lg:mt-0">Created</h1>
                     </animated.div>
                     <animated.div style={fadeIn_Text3}>
                         <p className="text-[20px] lg:text-[30px] mb-4"><span className="italic">{attendanceCount}</span> participants recorded so far!</p>

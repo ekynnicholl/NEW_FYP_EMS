@@ -6,6 +6,7 @@ import Image from "next/image";
 import { HiMiniCalendarDays } from "react-icons/hi2";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { FaArrowCircleRight } from "react-icons/fa";
+import { PiTriangleBold } from "react-icons/pi";
 import { useSpring, animated, config, useTransition } from '@react-spring/web';
 
 const UpcomingEventsLanding = () => {
@@ -135,9 +136,13 @@ const UpcomingEventsLanding = () => {
 
     return (
         <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center mb-4">
+                <PiTriangleBold className="transform -rotate-90 text-[23px] lg:text-[38px]" />
+                <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
+            </div>
             <animated.div style={fadeIn_Text1}>
-                <p className="text-center font-bold text-[26px]">Upcoming Event(s)</p>
-                <p className="text-[18px] text-center">Are you looking for event&apos;s to partake in? We got you covered!</p>
+                <p className="text-center font-bold text-[22px] lg:text-[26px]">Upcoming Event(s)</p>
+                <p className="mt-2 lg:mt-0 text-sm lg:text-[18px] text-center">Are you looking for event&apos;s to partake in? We got you covered!</p>
             </animated.div>
             <animated.div style={fadeIn_Card} className="cards-container overflow-visible mt-4 relative w-full sm:w-3/4 px-4 sm:px-0">
                 <div className="slider flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0">
@@ -158,11 +163,11 @@ const UpcomingEventsLanding = () => {
                                     />
                                 </div>
                                 <div className={`content-container pl-6 pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
-                                    <h2 className="text-lg font-bold text-justify">{event.intFEventName}</h2>
-                                    <p className={`text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
+                                    <h2 className="text-base lg:text-lg font-bold text-justify">{event.intFEventName}</h2>
+                                    <p className={`mt-3 lg:mt-0 text-sm lg:text-base text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
                                     <div className="flex mt-4">
-                                        <HiMiniCalendarDays className="text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
-                                        <p className="text-sm font-bold mt-1">{event.intFEventStartDate}</p>
+                                        <HiMiniCalendarDays className="text-[22px] lg:text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+                                        <p className="text-xs lg:text-sm font-bold mt-[3px] lg:mt-1">{event.intFEventStartDate}</p>
                                     </div>
                                 </div>
                             </div>
@@ -173,8 +178,8 @@ const UpcomingEventsLanding = () => {
             <animated.div style={fadeIn_Arrows}>
                 {upcomingEvents.length > 3 && (
                     <div className="slider-controls flex space-x-4 cursor-pointer mt-5">
-                        <FaArrowCircleLeft onClick={prevSlide} size={32} />
-                        <FaArrowCircleRight onClick={nextSlide} size={32} />
+                        <FaArrowCircleLeft onClick={prevSlide} className="text-2xl lg:text-3xl" />
+                        <FaArrowCircleRight onClick={nextSlide} className="text-2xl lg:text-3xl" />
                     </div>
                 )}
             </animated.div>

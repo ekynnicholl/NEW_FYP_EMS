@@ -81,11 +81,11 @@ const PastAttended = () => {
     return (
         <div className="flex flex-col items-center justify-center">
             <animated.div style={fadeIn_textTop} className="flex items-center justify-center mb-4">
-                <PiTriangleBold className="transform -rotate-90" size={36} />
-                <PiTriangleBold className="transform rotate-90" size={36} />
+                <PiTriangleBold className="transform -rotate-90 text-[23px] lg:text-[38px]" />
+                <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
             </animated.div>
             <animated.div style={fadeIn_textTop1}>
-                <p className="text-center font-bold text-[26px]">Attended Event(s)</p>
+                <p className="text-center font-bold text-[22px] lg:text-[26px]">Attended Event(s)</p>
             </animated.div>
             <div className="flex flex-col sm:flex-row justify-center items-center px-4 py-2 mt-2">
                 <animated.div style={fadeIn_imageLeft} className="flex justify-center items-center w-full sm:w-1/2 mb-8 sm:mb-0">
@@ -100,17 +100,17 @@ const PastAttended = () => {
                 <div className="flex justify-center items-center sm:ml-20">
                     <div>
                         <animated.div style={fadeIn_text1}>
-                            <p className="text-[32px] font-bold mb-2 italic">- Just One Click Away -</p>
+                            <p className="text-[24px] lg:text-[32px] font-bold mb-2 italic">- Just One Click Away -</p>
                         </animated.div>
                         <animated.div style={fadeIn_text2}>
-                            <p className="text-[22px] font-bold mb-2">View Past Attended Event(s)</p>
+                            <p className="text-base lg:text-[22px] font-bold mb-2">View Past Attended Event(s)</p>
                         </animated.div>
                         <animated.div style={fadeIn_text3}>
-                            <p className="pr-5">Are you looking to view your past attended event(s) to see how many hour(s) are claim-able for this year?</p>
+                            <p className="text-sm lg:text-base pr-5">Are you looking to view your past attended event(s) to see how many hour(s) are claim-able for this year?</p>
                         </animated.div>
                         <animated.div style={fadeIn_text4}>
                             <a href="attended_events" target="_blank">
-                                <Button className="mt-5">
+                                <Button className="mt-3 lg:mt-5">
                                     View
                                 </Button>
                             </a>
