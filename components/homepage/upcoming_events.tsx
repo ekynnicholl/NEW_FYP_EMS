@@ -162,7 +162,7 @@ const UpcomingEventsLanding = () => {
                                         height={50}
                                     />
                                 </div>
-                                <div className={`content-container pl-6 pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
+                                <div className={`content-container lg:pl-6 lg:pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
                                     <h2 className="text-base lg:text-lg font-bold text-justify">{event.intFEventName}</h2>
                                     <p className={`mt-3 lg:mt-0 text-sm lg:text-base text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
                                     <div className="flex mt-4">
