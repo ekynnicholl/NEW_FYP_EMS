@@ -106,7 +106,7 @@ const PastAttended = () => {
                             <p className="text-base lg:text-[22px] font-bold mb-2">View Past Attended Event(s)</p>
                         </animated.div>
                         <animated.div style={fadeIn_text3}>
-                            <p className="text-sm lg:text-base pr-5">Are you looking to view your past attended event(s) to see how many hour(s) are claim-able for this year?</p>
+                            <p className="text-sm lg:text-base pr-5 text-slate-700">Are you looking to view your past attended event(s) to see how many hour(s) are claim-able for this year?</p>
                         </animated.div>
                         <animated.div style={fadeIn_text4}>
                             <a href="attended_events" target="_blank">
