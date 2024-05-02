@@ -61,7 +61,7 @@ export default function MobileTopBar() {
 		<div>
 			<div id="navbar" className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-[16px] bg-white z-50 transition-all duration-300 lg:hidden mb-10">
 				<div>
-					<h1 className="text-xl font-bold text-slate-900 font-Nudito">
+					<h1 className="text-xl font-bold text-slate-900 font-Nudito -ml-5">
 						<span className="text-slate-900"><span className="text-[#014167]">&lt;</span><span className="text-slate-900">SWINBURNE</span><span className="text-[#014167]">/&gt;</span></span>
 					</h1>
 				</div>
@@ -70,7 +70,7 @@ export default function MobileTopBar() {
 					<div className="relative">
 						<button
 							type="button"
-							className="text-slate-900 hover:text-gray-800 focus:outline-none focus:text-gray-800 -mt-[4px] float-right"
+							className="text-slate-900 hover:text-gray-800 focus:outline-none focus:text-gray-800 -mt-[4px] float-right -mr-5"
 							onClick={() => setMenuOpen(!menuOpen)}
 							aria-label="Toggle menu"
 						>
