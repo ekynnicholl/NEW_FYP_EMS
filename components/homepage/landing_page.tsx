@@ -134,17 +134,17 @@ export default function LandingPage() {
 
                                         <div className="p-4 text-right mt-6">
                                             <Link legacyBehavior href="#home">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Home</a>
+                                                <a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>HOME</a>
                                             </Link>
                                             <Link legacyBehavior href="#upcomingEvents">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Upcoming Event(s)</a>
+                                                <a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>UPCOMING EVENTS</a>
                                             </Link>
                                             <Link legacyBehavior href="#pastAttended">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Past Attended Event(s)</a>
+                                                <a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>PAST ATTENDED EVENTS</a>
                                             </Link>
                                             <Link legacyBehavior href="/form/external">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
-                                                    Nominations/ Travelling Form
+                                                <a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
+                                                    NOMINATIONS TRAVELLING FORM
                                                 </a>
                                             </Link>
                                             <Link legacyBehavior href="/login">
