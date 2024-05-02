@@ -5,28 +5,20 @@ import { useEffect, useRef, useState } from "react";
 import MobileTopBar from "./MobileTopBar";
 import AddAdmin_Modal from "@/components/AddAdmin_Modal";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { auth, provider } from "../../google_config";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, deleteUser as deleteUserFromFirebase } from "firebase/auth";
+import {
+	signOut,
+	getAuth,
+	createUserWithEmailAndPassword,
+	sendEmailVerification,
+	signInWithEmailAndPassword,
+	deleteUser as deleteUserFromFirebase,
+} from "firebase/auth";
 
 import Link from "next/link";
-import ProfileIcon from "@/components/icons/ProfileIcon";
-import NotifIcon from "@/components/icons/NotifIcon";
-import LightIcon from "@/components/icons/LightIcon";
-import DarkIcon from "@/components/icons/DarkIcon";
-import ArrowDownIcon from "@/components/icons/ArrowDownIcon";
-import ThreeDotIcon from "@/components/icons/ThreeDotIcon";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import useViewModeStore from "@/components/zustand/viewModeStorage";
-import LogoutIcon from "@/components/icons/LogoutIcon";
-import SettingsIcon from "@/components/icons/SettingsIcon";
-import ProfileRoundIcon from "@/components/icons/ProfileRoundIcon";
-import PropTypes from "prop-types";
-import { useRouter } from "next/navigation";
-import cookie from "js-cookie";
 import useDarkLight from "@/components/zustand/darkLightStorage";
 import { IoIosArrowDown } from "react-icons/io";
-import { MdNotificationsActive } from "react-icons/md";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BiSun } from "react-icons/bi";
 import { HiOutlineMoon } from "react-icons/hi";
@@ -41,7 +33,20 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+} from "@/components/ui/dialog";
+
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const User = () => {
 	return (
@@ -61,19 +66,19 @@ const User = () => {
 const BreadCrumb = () => {
 	const pathname = usePathname();
 
-	if (pathname === "/homepage") {
+	if (pathname === "/dashboard") {
 		return (
 			<div className="flex items-center space-x-2 text-[15px] ml-[11px] text-slate-800 dark:text-dark_text">
-				<Link href="/homepage">Home</Link>
+				<Link href="/dashboard">Home</Link>
 				<p>/</p>
-				<Link href="/homepage" className="underline underline-offset-4 font-medium">
+				<Link href="/dashboard" className="underline underline-offset-4 font-medium">
 					Dashboard
 				</Link>
 			</div>
 		);
 	}
 
-	// convert /homepage to Homepage
+	// convert /dashboard to Dashboard
 	const path = pathname.substring(1, pathname.length);
 	const pathArray = path.split("/");
 	const pathArrayLength = pathArray.length;
@@ -83,7 +88,7 @@ const BreadCrumb = () => {
 
 	return (
 		<div className="flex items-center space-x-2 text-[15px] ml-[11px] text-slate-800 dark:text-dark_text">
-			<Link href="/homepage">Home</Link>
+			<Link href="/dashboard">Home</Link>
 			<p>/</p>
 			<Link href={pathname} className="underline underline-offset-4 font-medium">
 				{lastPathSpaced}
@@ -98,17 +103,10 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange }) => {
-	const [userId, setUserId] = useState<string | null>(null);
 	const [homepageView, setHomepageView] = useState(1);
 	const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-	const authToken = cookie.get("authToken");
-
-	useEffect(() => {
-		const storedUserId = localStorage.getItem("concatenatedID");
-		if (storedUserId) {
-			setUserId(storedUserId);
-		}
-	}, []);
+	const router = useRouter();
+	const auth = getAuth();
 
 	useEffect(() => {
 		fetchHomepageView();
@@ -119,7 +117,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		const { data, error } = await supabase
 			.from("login")
 			.select("accHomeView")
-			.eq("firebase_uid", authToken); // Use the appropriate accID
+			.eq("firebase_uid", auth.currentUser?.uid);
 
 		if (error) {
 			console.error("Error fetching homepageView:", error);
@@ -135,7 +133,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		const { data, error } = await supabase
 			.from("login")
 			.select("accIsDarkMode")
-			.eq("firebase_uid", authToken); // Use the appropriate accID
+			.eq("firebase_uid", auth.currentUser?.uid); // Use the appropriate accID
 
 		if (error) {
 			console.error("Error fetching IsDarkMode:", error);
@@ -160,7 +158,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 		const { data, error } = await supabase
 			.from("login")
 			.update({ accIsDarkMode: status })
-			.eq("firebase_uid", authToken)
+			.eq("firebase_uid", auth.currentUser?.uid)
 			.select();
 
 		if (error) {
@@ -173,21 +171,21 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 	};
 
 	const handleLogoutClick = () => {
-		// Clear user data from localStorage
-		localStorage.removeItem("concatenatedID");
-
-		// Remove the cookies,
-		cookie.remove("authToken");
-
-		// Redirect to the login page after logout
-		window.location.href = "/login"; // You can replace with the actual login page URL
+		signOut(auth)
+			.then(() => {
+				router.push("/login");
+				toast.success("Signed out successfully");
+			})
+			.catch(error => {
+				toast.error("Error signing out");
+			});
 	};
 
 	const updateHomepageView = async (id: number) => {
-		const { data, error } = await supabase
+		const { error } = await supabase
 			.from("login")
 			.update({ accHomeView: id })
-			.eq("firebase_uid", authToken);
+			.eq("firebase_uid", auth.currentUser?.uid);
 
 		if (error) {
 			console.error("Update failed:", error);
@@ -202,7 +200,6 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [value, setValue] = useState<string | null>(null);
 	const [errorMessageEmailAddress, setErrorMessageEmailAddress] = useState<string | null>(null);
 	const [errorMessagePassword, setErrorMessagePassword] = useState<string | null>(null);
 	const [errorMessageConfirmPassword, setErrorMessageConfirmPassword] = useState<string | null>(null);
@@ -324,7 +321,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			// Reauthenticate user before deleting account
 			const firebaseUser = auth.currentUser;
 			if (!firebaseUser) {
-				throw new Error('User not authenticated');
+				throw new Error("User not authenticated");
 			}
 
 			// Delete user from Firebase
@@ -332,9 +329,9 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 			// Delete user from Supabase
 			const { error } = await supabase
-				.from('login')
+				.from("login")
 				.delete()
-				.eq('email_address', email_address);
+				.eq("email_address", email_address);
 
 			if (error) {
 				throw error;
@@ -342,7 +339,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 			handleLogoutClick();
 		} catch (error) {
-			console.error('Error deleting user:', error);
+			console.error("Error deleting user:", error);
 		}
 	};
 
@@ -352,9 +349,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 
 	const fetchUserData = async () => {
 		try {
-			const { data, error } = await supabase
-				.from('login')
-				.select('firebase_uid, email_address, created_at, activation');
+			const { data, error } = await supabase.from("login").select("firebase_uid, email_address, created_at, activation");
 
 			if (error) {
 				throw error;
@@ -369,12 +364,11 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			}));
 
 			setUser(mappedData || []);
-
-		} catch (error: unknown) {
+		} catch (error) {
 			if (error instanceof Error) {
-				console.error('Error fetching user data:', error.message);
+				console.error("Error fetching user data:", error.message);
 			} else {
-				console.error('Error fetching user data:', error);
+				console.error("Error fetching user data:", error);
 			}
 		}
 	};
@@ -382,61 +376,55 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 	const formatDateTime = (dateTimeString: string) => {
 		const dateTime = new Date(dateTimeString);
 
-		const day = String(dateTime.getDate()).padStart(2, '0');
-		const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+		const day = String(dateTime.getDate()).padStart(2, "0");
+		const month = String(dateTime.getMonth() + 1).padStart(2, "0");
 		const year = dateTime.getFullYear();
-		const hours = String(dateTime.getHours()).padStart(2, '0');
-		const minutes = String(dateTime.getMinutes()).padStart(2, '0');
-		const seconds = String(dateTime.getSeconds()).padStart(2, '0');
 
 		return `${day}-${month}-${year} `;
 	};
 
 	const formatActivationStatus = (activation: boolean) => {
-		return activation ? 'Activated' : 'Not Activated'; // Convert boolean to string
+		return activation ? "Activated" : "Not Activated";
 	};
 
 	const getActivationColor = (activation: boolean) => {
-		return activation ? 'text-green-600' : 'text-red-600';
+		return activation ? "text-green-600" : "text-red-600";
 	};
 
 	const handleActivate = async (user: User) => {
-		try {
-			await supabase
-				.from('login')
-				.update({ activation: true })
-				.eq('firebase_uid', user.firebase_uid);
+		const { error } = await supabase
+			.from("login")
+			.update({ activation: true })
+			.eq("firebase_uid", user.firebase_uid);
 
-			// Reload the current page
-			window.location.reload();
-
-		} catch (error) {
-			// console.error('Error activating user:', error.message);
+		if (error) {
+			toast.error("Error activating user");
+		} else {
+			toast.success("User activated successfully");
+			router.refresh();
 		}
+
 	};
 
 	const handleDeactivate = async (user: User) => {
-		try {
-			await supabase
-				.from('login')
-				.update({ activation: false })
-				.eq('firebase_uid', user.firebase_uid);
+		const { error } = await supabase
+		.from("login")
+		.update({ activation: false })
+		.eq("firebase_uid", user.firebase_uid);
 
-			// Reload the current page
-			window.location.reload();
-
-		} catch (error) {
-			// console.error('Error deactivating user:', error.message);
+		if (error) {
+			toast.error("Error deactivating user");
+		} else {
+			toast.success("User deactivated successfully");
+			router.refresh();
 		}
 	};
-
 
 	return (
 		// <div className={`top-0 left-0 w-full ${isDarkMode ? 'bg-black-500' : 'bg-white border-b'} p-4 flex justify-end items-center`}>
 		<div className="w-full p-4 flex justify-between items-center bg-white dark:bg-dark_mode_card max-md:flex-row-reverse">
 			<AddAdmin_Modal isVisible={showModalAddAdmin} onClose={() => setShowModalAddAdmin(false)}>
 				<div className="flex">
-
 					<div className="mt-[30px] ml-[50px] mr-[50px] overflow-y-auto border-r-2 border-slate-200 pr-8">
 						<p className="text-2xl font-medium mb-6 text-center text-slate-800 dark:text-[#E8E6E3]">Account Details</p>
 						<table className="min-w-full divide-y divide-gray-200">
@@ -464,17 +452,22 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 									<tr key={index}>
 										<td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
 										<td className="px-6 py-4 whitespace-nowrap">{user.email_address}</td>
-										<td className="px-6 py-4 whitespace-nowrap">
-											{formatDateTime(user.created_at)}
-										</td>
+										<td className="px-6 py-4 whitespace-nowrap">{formatDateTime(user.created_at)}</td>
 										<td className={`px-6 py-4 whitespace-nowrap ${getActivationColor(user.activation)}`}>
 											{formatActivationStatus(user.activation)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
+											<button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(user as User)}>
+												Delete
+											</button>
 											{user.activation ? (
-												<button className="bg-red-600 text-white hover:bg-red-700 hover:font-bold rounded-md px-[13px] py-2" onClick={() => handleDeactivate(user)}>Deactivate</button>
+												<button className="text-red-600 hover:text-red-900 ml-[6px]" onClick={() => handleDeactivate(user)}>
+													Deactivate
+												</button>
 											) : (
-												<button className="bg-green-600 text-white hover:bg-green-700 hover:font-bold rounded-md px-[13px] py-2" onClick={() => handleActivate(user)}>Activate</button>
+												<button className="text-green-600 hover:text-green-900 ml-[6px]" onClick={() => handleActivate(user)}>
+													Activate
+												</button>
 											)}
 											<button className="bg-red-600 text-white hover:bg-red-700 hover:font-bold ml-[6px] rounded-md px-[13px] py-2" onClick={() => handleDelete(user as User)}>Delete</button>
 
@@ -607,11 +600,8 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
-							<button onClick={() => setShowModalAddAdmin(true)}>
-								<DropdownMenuLabel>Admin Registration</DropdownMenuLabel>
-							</button>
-
-							<DropdownMenuSeparator />
+							<DropdownMenuLabel>{auth.currentUser?.email}</DropdownMenuLabel>
+							<DropdownMenuItem onClick={() => setShowModalAddAdmin(true)}>Admin Registration</DropdownMenuItem>
 							<DropdownMenuItem onClick={handleLogoutClick}>Logout</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

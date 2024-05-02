@@ -5,6 +5,18 @@ today.setHours(0, 0, 0, 0);
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
 
+export const LogisticArrangement = z.object({
+	flight_date: z.date().nullable(),
+	flight_time: z.string().nullable(),
+	flight_number: z.string().optional(),
+	destination_from: z.string().optional(),
+	destination_to: z.string().optional(),
+	hotel_name: z.string().optional(),
+	check_in_date: z.date().nullable(),
+	check_out_date: z.date().nullable(),
+});
+
+
 const adminExternalFormSchema = z
 	.object({
 		// Additional Fields,
@@ -48,37 +60,7 @@ const adminExternalFormSchema = z
 		hrdf_claimable: z.string().min(1, { message: "Please select one of the option." }),
 
 		// Section 3
-		flight_date: z
-			.date()
-			.optional()
-			.nullable(),
-		flight_time: z
-			.string()
-			.optional()
-			.nullable(),
-		flight_number: z.string().optional(),
-		destination_from: z.string().optional(),
-		destination_to: z.string().optional(),
-		transit_flight_date: z
-			.date()
-			.optional()
-			.nullable(),
-		transit_flight_time: z
-			.string()
-			.optional()
-			.nullable(),
-		transit_flight_number: z.string().optional(),
-		transit_destination_from: z.string().optional(),
-		transit_destination_to: z.string().optional(),
-		check_in_date: z
-			.date()
-			.optional()
-			.nullable(),
-		check_out_date: z
-			.date()
-			.optional()
-			.nullable(),
-		hotel_name: z.string().optional(),
+		logistic_arrangement: z.array(LogisticArrangement).nullable(),
 
 		// Section 4
 		course_fee: z
@@ -189,8 +171,14 @@ const adminExternalFormSchema = z
 			.optional(),
 
 		// Section 9
-		verification_email: z.string().optional(),
-		approval_email: z.string().optional(),
+		verification_email: z
+			.string()
+			.optional()
+			.nullable(),
+		approval_email: z
+			.string()
+			.optional()
+			.nullable(),
 	})
 	// .refine(
 	// 	data => {

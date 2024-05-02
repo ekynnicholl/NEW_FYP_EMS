@@ -5,16 +5,33 @@ today.setHours(0, 0, 0, 0);
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
 
+const LogisticArrangement = z.object({
+	flight_date: z.date().nullable(),
+	flight_time: z.string().nullable(),
+	flight_number: z.string().optional(),
+	destination_from: z.string().optional(),
+	destination_to: z.string().optional(),
+	hotel_name: z.string().optional(),
+	check_in_date: z.date().nullable(),
+	check_out_date: z.date().nullable(),
+});
+
 const externalFormSchema = z
 	.object({
 		// Additional Fields,
 		formStage: z.number().optional(),
 
 		// Section 1
-		email: z.string().email({ message: "Please enter a valid email address." }).nonempty({
-			message: "Email is required",
-		}),
-		full_name: z.string().nonempty({ message: "Name is required" }).toUpperCase(),
+		email: z
+			.string()
+			.email({ message: "Please enter a valid email address." })
+			.nonempty({
+				message: "Email is required",
+			}),
+		full_name: z
+			.string()
+			.nonempty({ message: "Name is required" })
+			.toUpperCase(),
 		staff_id: z.string().nonempty({ message: "Staff ID / Student No. is required" }),
 		course: z.string().nonempty({ message: "Designation / Course is required" }),
 		faculty: z.string().nonempty({ message: "Faculty is required" }),
@@ -43,19 +60,7 @@ const externalFormSchema = z
 		hrdf_claimable: z.string().nonempty({ message: "Please select one of the option." }),
 
 		// Section 3
-		flight_date: z.date().optional().nullable(),
-		flight_time: z.string().optional().nullable(),
-		flight_number: z.string().optional(),
-		destination_from: z.string().optional(),
-		destination_to: z.string().optional(),
-		transit_flight_date: z.date().optional().nullable(),
-		transit_flight_time: z.string().optional().nullable(),
-		transit_flight_number: z.string().optional(),
-		transit_destination_from: z.string().optional(),
-		transit_destination_to: z.string().optional(),
-		check_in_date: z.date().optional().nullable(),
-		check_out_date: z.date().optional().nullable(),
-		hotel_name: z.string().optional(),
+		logistic_arrangement: z.array(LogisticArrangement).nullable(),
 
 		// Section 4
 		course_fee: z
@@ -99,7 +104,10 @@ const externalFormSchema = z
 				invalid_type_error: "Oops that's not a number!",
 			})
 			.nonnegative({ message: "Other fee cannot be negative value." }),
-		grand_total_fees: z.number().nonnegative({ message: "Total fee cannot be negative value." }).optional(),
+		grand_total_fees: z
+			.number()
+			.nonnegative({ message: "Total fee cannot be negative value." })
+			.optional(),
 		staff_development_fund: z.string().optional(),
 		consolidated_pool_fund: z.string().optional(),
 		research_fund: z.string().optional(),
@@ -107,7 +115,10 @@ const externalFormSchema = z
 		student_council_fund: z.string().optional(),
 		other_funds: z.string().optional(),
 		expenditure_cap: z.enum(["Yes", "No"]).optional(),
-		expenditure_cap_amount: z.number().nonnegative({ message: "Expenditure cap cannot be negative value." }).optional(),
+		expenditure_cap_amount: z
+			.number()
+			.nonnegative({ message: "Expenditure cap cannot be negative value." })
+			.optional(),
 
 		// Section 5
 		supporting_documents: z
@@ -139,20 +150,6 @@ const externalFormSchema = z
 		}),
 		applicant_declaration_signature: z.string(),
 	})
-	// if check in date is before check out date, then return true
-	// else return false
-	.refine(
-		data => {
-			if (data.check_in_date && data.check_out_date) {
-				return data.check_in_date <= data.check_out_date;
-			}
-			return true;
-		},
-		{
-			message: "Check-in date must be before Check-out date.",
-			path: ["check_in_date"],
-		},
-	)
 	// if commencement date is before completion date, then return true
 	// else return false
 	.refine(

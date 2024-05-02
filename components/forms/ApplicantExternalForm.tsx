@@ -7,11 +7,11 @@ import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import SignaturePad from "react-signature-canvas";
+import NTFHeader from "@/components/layouts/NTFHeader";
 
 import Image from "next/image";
-import SuccessIMG from "@/public/images/success_image.jpg";
 
 import { BsFiletypePdf } from "react-icons/bs";
 
@@ -39,6 +39,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
+import { X } from "lucide-react";
 
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
@@ -58,7 +59,6 @@ const showSuccessToast = (message: string) => {
 
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const supabase = createClientComponentClient();
-	const [formIsSuccess, setFormIsSuccess] = useState<boolean>(false);
 	const router = useRouter();
 
 	const [open, setOpen] = useState(false);
@@ -78,7 +78,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 	const [applicantName, setApplicantName] = useState("");
 	const [applicantPosition, setApplicantPosition] = useState("");
-	const [saving, setSaving] = useState(false);
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -109,19 +108,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			venue: "",
 			hrdf_claimable: "",
 
-			flight_date: null,
-			flight_time: null,
-			flight_number: "",
-			destination_from: "",
-			destination_to: "",
-			transit_flight_date: null,
-			transit_flight_time: null,
-			transit_flight_number: "",
-			transit_destination_from: "",
-			transit_destination_to: "",
-			check_in_date: null,
-			check_out_date: null,
-			hotel_name: "",
+			logistic_arrangement: null,
 
 			course_fee: 0,
 			airfare_fee: 0,
@@ -157,10 +144,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			form.reset(parsedForm);
 			form.setValue("commencement_date", parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null);
 			form.setValue("completion_date", parsedForm.completion_date ? new Date(parsedForm.completion_date) : null);
-			form.setValue("flight_date", parsedForm.flight_date ? new Date(parsedForm.flight_date) : null);
-			form.setValue("transit_flight_date", parsedForm.transit_flight_date ? new Date(parsedForm.transit_flight_date) : null);
-			form.setValue("check_in_date", parsedForm.check_in_date ? new Date(parsedForm.check_in_date) : null);
-			form.setValue("check_out_date", parsedForm.check_out_date ? new Date(parsedForm.check_out_date) : null);
 			form.setValue("applicant_declaration_date", new Date(parsedForm.applicant_declaration_date));
 			setUseOwnTransport(parsedForm.transport === "own transport" || parsedForm.transport === "company vehicle");
 
@@ -171,19 +154,26 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const checkFormStatus = () => {
 		setOpen(false);
 
-		// Extracting dates from form values
-		const checkOutDate = form.getValues("check_out_date");
-		const checkInDate = form.getValues("check_in_date");
+		if (form.getValues("logistic_arrangement") !== undefined) {
+			if ((form.getValues("logistic_arrangement")?.length ?? 0) > 0) {
+				for (let i = 0; i < (form.getValues("logistic_arrangement")?.length ?? 0); i++) {
+					const checkOutDate = form.getValues("logistic_arrangement")?.[i]?.flight_date;
+					const checkInDate = form.getValues("logistic_arrangement")?.[i]?.check_in_date;
+
+					if (checkOutDate && checkInDate && checkOutDate < checkInDate) {
+						toast.error("Check out date cannot be earlier than check in date");
+					}
+				}
+			}
+		}
+
 		const completionDate = form.getValues("completion_date");
 		const commencementDate = form.getValues("commencement_date");
 
-		// Performing null checks and comparisons
-		if (checkOutDate && checkInDate && checkOutDate < checkInDate) {
-			toast.error("Check out date cannot be earlier than check in date");
-		}
 		if (completionDate && commencementDate && completionDate < commencementDate) {
 			toast.error("Commencement date must be before completion date.");
 		}
+
 		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
 			toast.error("Please enter the name of other members traveling together");
 		}
@@ -209,19 +199,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			venue: "",
 			hrdf_claimable: "",
 
-			flight_date: null,
-			flight_time: null,
-			flight_number: "",
-			destination_from: "",
-			destination_to: "",
-			transit_flight_date: null,
-			transit_flight_time: null,
-			transit_flight_number: "",
-			transit_destination_from: "",
-			transit_destination_to: "",
-			check_in_date: null,
-			check_out_date: null,
-			hotel_name: "",
+			logistic_arrangement: null,
 
 			course_fee: 0,
 			airfare_fee: 0,
@@ -252,15 +230,15 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		router.refresh();
 	};
 
-	useEffect(() => {
-		if (form.formState.isDirty) {
-			sessionStorage.setItem("form", JSON.stringify(form.getValues()));
-		}
-	}, [form, form.formState]);
+	// useEffect(() => {
+	// 	if (form.formState.isDirty) {
+	// 		sessionStorage.setItem("form", JSON.stringify(form.getValues()));
+	// 	}
+	// }, [form, form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
-		setSaving(true);
 		console.log("Form sent");
+		console.log(values);
 
 		if (values.commencement_date !== null) {
 			if (values.commencement_date.getHours() < 8) {
@@ -268,9 +246,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			}
 		}
 
-		if (values.check_in_date?.getHours()! < 8) {
-			new Date(values.check_in_date?.setHours(values.check_in_date?.getHours() + 8)!);
-		}
+		// if (values.logistic_arrangement?.check_in_date.getHours()! < 8) {
+		// 	new Date(values.logistic_arrangement?.check_in_date?.setHours(values.logistic_arrangement?.check_in_date?.getHours() + 8)!);
+		// }
 
 		// Upload supporting documents to the bucket and return an array of paths
 		let documentPaths: string[] = [];
@@ -323,7 +301,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			])
 			.select();
 
-		setSaving(false);
 		if (error) {
 			console.log(error);
 			toast.error("Error submitting form");
@@ -363,7 +340,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 				// Send email
 				sendContactForm(fetchedForms);
-				setFormIsSuccess(true);
+				router.push("/form/external/success");
 			}
 			router.refresh();
 		}
@@ -378,485 +355,530 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		setApplicantPosition(form.getValues("course"));
 	}, [form.getValues("full_name"), form.getValues("course")]);
 
+	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
+	const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
+
 	return (
-		<div>
-			{formIsSuccess === false ? (
-				<div className="mx-auto max-w-6xl px-8 mt-6 mb-[200px]">
-					<div className="ml-10">
-						<div className="flex ml-[13px]">
-							<div>
-								<Image src="/swinburne_logo.png" alt="" width={200} height={300} />
-							</div>
-							<div className="ml-8 mt-2">
-								<p className="font-medium">Human Resources</p>
-								<h1 className="text-3xl font-bold text-slate-800 mb-4 mt-4 -ml-[1px]">Nomination / Travelling Application Form</h1>
-							</div>
-						</div>
-
-						<div className="mb-4 text-slate-800 mt-2">
-							<p className="mb-2">
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">*</span>
-								<span>
-									Before completing this form, please refer to the separate document on “General Instructions for completing
-									Nomination / Travelling Application Form”, which is available on SharePoint.
-								</span>
-							</p>
-							<p className="mb-2">
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">*</span>
-								<span>All fields are mandatory to complete as required for each applicable section.</span>
-							</p>
-							<p>
-								<span className="text-[12px] lg:text-[14px] text-red-500 ml-[2px] mr-[6px]">*</span>
-								<span>
-									This form is also to be used for any contracted individual as consultant, and is to be completed where applicable.
-								</span>
-							</p>
-						</div>
-					</div>
-					<hr className="mt-8" />
-					<div className="grid gap-8 place-items-center">
-						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8 max-w-4xl">
-								<section className="section-1" id="Personal Details">
-									<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
-									<div className="grid gap-8">
-										<FormField
-											control={form.control}
-											name="email"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Email <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Input type="email" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<div className="grid grid-auto-fit-lg gap-8">
-											<FormField
-												control={form.control}
-												name="full_name"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Input
-																// {...field}
-																onChange={e => {
-																	setApplicantName(e.target.value);
-																	field.onChange(e.target.value);
-																	form.setValue("applicant_declaration_name", e.target.value);
-																	field.value = e.target.value;
-																}}
-																value={field.value}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="staff_id"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Staff ID / Student No. <span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="course"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Designation / Course <span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Input
-																{...field}
-																onChange={e => {
-																	setApplicantPosition(e.target.value);
-																	field.onChange(e.target.value);
-																	form.setValue("applicant_declaration_position_title", e.target.value);
-																}}
-																value={field.value}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="faculty"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Faculty / School / Unit <span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Select onValueChange={field.onChange} value={field.value}>
-																<SelectTrigger>
-																	<SelectValue placeholder="Please select an option" />
-																</SelectTrigger>
-																<SelectContent className="h-[300px] overflow-y-auto">
-																	{faculties.map((faculty, index) => (
-																		<SelectItem key={index} value={faculty}>
-																			{faculty}
-																		</SelectItem>
-																	))}
-																</SelectContent>
-															</Select>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="transport"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Type of Transportation <span className="text-red-500"> *</span>
-														</FormLabel>
-														<Select
-															onValueChange={e => {
-																field.onChange(e);
-																if (e === "own transport" || e === "company vehicle") {
-																	setUseOwnTransport(true);
-																	form.setValue("flight_date", null);
-																	form.setValue("flight_time", null);
-																	form.setValue("flight_number", "");
-																	form.setValue("destination_from", "");
-																	form.setValue("destination_to", "");
-
-																	form.setValue("transit_flight_date", null);
-																	form.setValue("transit_flight_time", null);
-																	form.setValue("transit_flight_number", "");
-																	form.setValue("transit_destination_from", "");
-																	form.setValue("transit_destination_to", "");
-																} else {
-																	setUseOwnTransport(false);
-																}
-															}}
-															value={field.value}
-														>
-															<FormControl>
-																<SelectTrigger>
-																	<SelectValue placeholder="Please select an option" />
-																</SelectTrigger>
-															</FormControl>
-															<SelectContent>
-																<SelectItem value="aeroplane">Aeroplane</SelectItem>
-																<SelectItem value="company vehicle">Company vehicle</SelectItem>
-																<SelectItem value="own transport">Own transport</SelectItem>
-															</SelectContent>
-														</Select>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="travelling"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Traveling in <span className="text-red-500"> *</span>
-														</FormLabel>
-														<Select
-															onValueChange={e => {
-																field.onChange(e);
-																if (e === "group") {
-																	setGroup(true);
-																} else {
-																	setGroup(false);
-																	form.setValue("other_members", "");
-																}
-															}}
-															value={field.value}
-														>
-															<FormControl>
-																<SelectTrigger>
-																	<SelectValue placeholder="Please select an option" />
-																</SelectTrigger>
-															</FormControl>
-															<SelectContent>
-																<SelectItem value="alone">Alone</SelectItem>
-																<SelectItem value="group">Group</SelectItem>
-															</SelectContent>
-														</Select>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-										{group && (
-											<FormField
-												control={form.control}
-												name="other_members"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Name of other staff / student traveling together in group{" "}
-															<span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
+		<div className="mx-auto max-w-7xl px-8 mt-6 mb-[200px]">
+			<NTFHeader />
+			<Separator className="mt-8" />
+			<div className="grid gap-8 place-items-center">
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+						<section className="section-1" id="Personal Details">
+							<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
+							<div className="grid gap-8">
+								<FormField
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												Email <span className="text-red-500"> *</span>
+											</FormLabel>
+											<FormControl>
+												<Input type="email" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<div className="grid grid-auto-fit-lg gap-8">
+									<FormField
+										control={form.control}
+										name="full_name"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Full Name (Same as I.C / Passport) <span className="text-red-500"> *</span>
+												</FormLabel>
+												<FormControl>
+													<Input
+														// {...field}
+														onChange={e => {
+															setApplicantName(e.target.value);
+															field.onChange(e.target.value);
+															form.setValue("applicant_declaration_name", e.target.value);
+															field.value = e.target.value;
+														}}
+														value={field.value}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
 										)}
-									</div>
-								</section>
-
-								<Separator className="my-8" />
-
-								<section className="section-2" id="Travel Details">
-									<h2 className="text-2xl font-bold mb-4">2. Travel Details</h2>
-									<div className="grid grid-auto-fit-lg gap-8">
-										<FormField
-											control={form.control}
-											name="program_title"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Program title / Event <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Input placeholder="" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="program_description"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Description <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Textarea placeholder="" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="commencement_date"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>
-														Commencement Date <span className="text-red-500"> *</span>
-													</FormLabel>
-													<Popover>
-														<PopoverTrigger asChild>
-															<FormControl>
-																<Button
-																	variant={"outline"}
-																	className={cn(
-																		"w-full pl-3 text-left font-normal",
-																		!field.value && "text-muted-foreground",
-																	)}
-																>
-																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-																</Button>
-															</FormControl>
-														</PopoverTrigger>
-														<PopoverContent className="w-auto p-0" align="start">
-															<Calendar
-																mode="single"
-																selected={field.value!}
-																onSelect={date => {
-																	if (date !== undefined) {
-																		date.setHours(8, 0, 0, 0);
-																		field.onChange(date);
-																		field.value = new Date(date);
-																	}
-																}}
-																disabled={date => {
-																	const today = new Date();
-																	today.setHours(0, 0, 0, 0);
-																	return date < today;
-																}}
-																fromYear={1960}
-																toYear={2030}
-																initialFocus
-															/>
-														</PopoverContent>
-													</Popover>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="completion_date"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>
-														Completion Date <span className="text-red-500"> *</span>
-													</FormLabel>
-													<Popover>
-														<PopoverTrigger asChild>
-															<FormControl>
-																<Button
-																	variant={"outline"}
-																	className={cn(
-																		"w-full pl-3 text-left font-normal",
-																		!field.value && "text-muted-foreground",
-																	)}
-																>
-																	{field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
-																</Button>
-															</FormControl>
-														</PopoverTrigger>
-														<PopoverContent className="w-auto p-0" align="start">
-															<Calendar
-																mode="single"
-																selected={field.value!}
-																onSelect={date => {
-																	if (date !== undefined) {
-																		date.setHours(date.getHours() + 8);
-																		field.onChange(date);
-																		field.value = new Date(date);
-																	}
-																}}
-																disabled={date => {
-																	let today = form.getValues("commencement_date");
-																	if (today === undefined) {
-																		today = new Date();
-																		today.setHours(0, 0, 0, 0);
-																	} else {
-																		today?.setHours(0, 0, 0, 0);
-																	}
-																	return date < today!;
-																}}
-																initialFocus
-															/>
-														</PopoverContent>
-													</Popover>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="organiser"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Organiser <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Input placeholder="" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="venue"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Venue <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Input placeholder="" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="hrdf_claimable"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														HDRF Claimable <span className="text-red-500"> *</span>
-													</FormLabel>
+									/>
+									<FormField
+										control={form.control}
+										name="staff_id"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Staff ID / Student No. <span className="text-red-500"> *</span>
+												</FormLabel>
+												<FormControl>
+													<Input {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="course"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Designation / Course <span className="text-red-500"> *</span>
+												</FormLabel>
+												<FormControl>
+													<Input
+														{...field}
+														onChange={e => {
+															setApplicantPosition(e.target.value);
+															field.onChange(e.target.value);
+															form.setValue("applicant_declaration_position_title", e.target.value);
+														}}
+														value={field.value}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="faculty"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Faculty / School / Unit <span className="text-red-500"> *</span>
+												</FormLabel>
+												<FormControl>
 													<Select onValueChange={field.onChange} value={field.value}>
-														<FormControl>
-															<SelectTrigger>
-																<SelectValue placeholder="Please select an option" />
-															</SelectTrigger>
-														</FormControl>
-														<SelectContent>
-															<SelectItem value="yes">Yes</SelectItem>
-															<SelectItem value="no">No</SelectItem>
-															<SelectItem value="not indicated in event brochure / registration form">
-																Not indicated in event brochure / registration form
-															</SelectItem>
+														<SelectTrigger>
+															<SelectValue placeholder="Please select an option" />
+														</SelectTrigger>
+														<SelectContent className="h-[300px] overflow-y-auto">
+															{faculties.map((faculty, index) => (
+																<SelectItem key={index} value={faculty}>
+																	{faculty}
+																</SelectItem>
+															))}
 														</SelectContent>
 													</Select>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-								</section>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="transport"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Type of Transportation <span className="text-red-500"> *</span>
+												</FormLabel>
+												<Select
+													onValueChange={e => {
+														field.onChange(e);
+														if (e === "own transport" || e === "company vehicle") {
+															setUseOwnTransport(true);
+															form.setValue("logistic_arrangement", null);
+														} else {
+															const logisticObject = {
+																flight_date: null,
+																flight_time: null,
+																flight_number: "",
+																destination_from: "",
+																destination_to: "",
+																hotel_name: "",
+																check_in_date: null,
+																check_out_date: null,
+															};
+															form.setValue("logistic_arrangement", [logisticObject, logisticObject]);
+															setUseOwnTransport(false);
+														}
+													}}
+													value={field.value}
+												>
+													<FormControl>
+														<SelectTrigger>
+															<SelectValue placeholder="Please select an option" />
+														</SelectTrigger>
+													</FormControl>
+													<SelectContent>
+														<SelectItem value="aeroplane">Aeroplane</SelectItem>
+														<SelectItem value="company vehicle">Company vehicle</SelectItem>
+														<SelectItem value="own transport">Own transport</SelectItem>
+													</SelectContent>
+												</Select>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="travelling"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Traveling in <span className="text-red-500"> *</span>
+												</FormLabel>
+												<Select
+													onValueChange={e => {
+														field.onChange(e);
+														if (e === "group") {
+															setGroup(true);
+														} else {
+															setGroup(false);
+															form.setValue("other_members", "");
+														}
+													}}
+													value={field.value}
+												>
+													<FormControl>
+														<SelectTrigger>
+															<SelectValue placeholder="Please select an option" />
+														</SelectTrigger>
+													</FormControl>
+													<SelectContent>
+														<SelectItem value="alone">Alone</SelectItem>
+														<SelectItem value="group">Group</SelectItem>
+													</SelectContent>
+												</Select>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+								{group && (
+									<FormField
+										control={form.control}
+										name="other_members"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Name of other staff / student traveling together in group <span className="text-red-500"> *</span>
+												</FormLabel>
+												<FormControl>
+													<Input {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								)}
+							</div>
+						</section>
 
-								<Separator className="my-8" />
+						<Separator className="my-8" />
 
-								<section className="section-3" id="Logistic Arrangement">
-									<h2 className="text-2xl font-bold mb-4">3. Logistic Arrangement</h2>
-									<div className="grid gap-8">
-										{useOwnTransport !== null && useOwnTransport === false && (
-											<>
-												<div className="grid grid-auto-fit-lg gap-8">
+						<section className="section-2" id="Travel Details">
+							<h2 className="text-2xl font-bold mb-4">2. Travel Details</h2>
+							<FormField
+								control={form.control}
+								name="program_title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>
+											Program title / Event <span className="text-red-500"> *</span>
+										</FormLabel>
+										<FormControl>
+											<Input placeholder="" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="program_description"
+								render={({ field }) => (
+									<FormItem className="my-8">
+										<FormLabel>
+											Description <span className="text-red-500"> *</span>
+										</FormLabel>
+										<FormControl>
+											<Textarea placeholder="" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<div className="grid grid-auto-fit-lg gap-8">
+								<FormField
+									control={form.control}
+									name="commencement_date"
+									render={({ field }) => (
+										<FormItem className="flex flex-col gap-2">
+											<FormLabel>
+												Commencement Date <span className="text-red-500"> *</span>
+											</FormLabel>
+											<Popover>
+												<PopoverTrigger asChild>
+													<FormControl>
+														<Button
+															variant={"outline"}
+															className={cn(
+																"w-full pl-3 text-left font-normal",
+																!field.value && "text-muted-foreground",
+															)}
+														>
+															{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+														</Button>
+													</FormControl>
+												</PopoverTrigger>
+												<PopoverContent className="w-auto p-0" align="start">
+													<Calendar
+														mode="single"
+														selected={field.value!}
+														onSelect={date => {
+															if (date !== undefined) {
+																date.setHours(8, 0, 0, 0);
+																field.onChange(date);
+																field.value = new Date(date);
+															}
+														}}
+														disabled={date => {
+															const today = new Date();
+															today.setHours(0, 0, 0, 0);
+															return date < today;
+														}}
+														fromYear={1960}
+														toYear={2030}
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="completion_date"
+									render={({ field }) => (
+										<FormItem className="flex flex-col gap-2">
+											<FormLabel>
+												Completion Date <span className="text-red-500"> *</span>
+											</FormLabel>
+											<Popover>
+												<PopoverTrigger asChild>
+													<FormControl>
+														<Button
+															variant={"outline"}
+															className={cn(
+																"w-full pl-3 text-left font-normal",
+																!field.value && "text-muted-foreground",
+															)}
+														>
+															{field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
+														</Button>
+													</FormControl>
+												</PopoverTrigger>
+												<PopoverContent className="w-auto p-0" align="start">
+													<Calendar
+														mode="single"
+														selected={field.value!}
+														onSelect={date => {
+															if (date !== undefined) {
+																date.setHours(date.getHours() + 8);
+																field.onChange(date);
+																field.value = new Date(date);
+															}
+														}}
+														disabled={date => {
+															let today = form.getValues("commencement_date");
+															if (today === undefined) {
+																today = new Date();
+																today.setHours(0, 0, 0, 0);
+															} else {
+																today?.setHours(0, 0, 0, 0);
+															}
+															return date < today!;
+														}}
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="organiser"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												Organiser <span className="text-red-500"> *</span>
+											</FormLabel>
+											<FormControl>
+												<Input placeholder="" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="venue"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												Venue <span className="text-red-500"> *</span>
+											</FormLabel>
+											<FormControl>
+												<Input placeholder="" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="hrdf_claimable"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												HDRF Claimable <span className="text-red-500"> *</span>
+											</FormLabel>
+											<Select onValueChange={field.onChange} value={field.value}>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Please select an option" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													<SelectItem value="yes">Yes</SelectItem>
+													<SelectItem value="no">No</SelectItem>
+													<SelectItem value="not indicated in event brochure / registration form">
+														Not indicated in event brochure / registration form
+													</SelectItem>
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+						</section>
+
+						<Separator className="my-8" />
+
+						<section className="section-3" id="Logistic Arrangement">
+							<div className="mb-4 flex justify-between">
+								<h2 className="text-2xl font-bold">3. Logistic Arrangement</h2>
+								{useOwnTransport !== null && useOwnTransport === false ? (
+									<Button
+										type="button"
+										onClick={() => {
+											const old = form.getValues("logistic_arrangement") ?? [];
+											old.push({
+												flight_date: null,
+												flight_time: null,
+												flight_number: "",
+												destination_from: "",
+												destination_to: "",
+												hotel_name: "",
+												check_in_date: null,
+												check_out_date: null,
+											});
+											form.setValue("logistic_arrangement", old);
+											form.trigger("logistic_arrangement");
+											console.log(form.getValues("logistic_arrangement"));
+										}}
+									>
+										Add Flight
+									</Button>
+								) : (
+									<>
+										<Button
+											type="button"
+											onClick={() => {
+												const old = form.getValues("logistic_arrangement") ?? [];
+												old.push({
+													flight_date: null,
+													flight_time: null,
+													flight_number: "",
+													destination_from: "",
+													destination_to: "",
+													hotel_name: "",
+													check_in_date: null,
+													check_out_date: null,
+												});
+												form.setValue("logistic_arrangement", old);
+												form.trigger("logistic_arrangement");
+												console.log(form.getValues("logistic_arrangement"));
+											}}
+										>
+											Add Hotel
+										</Button>
+									</>
+								)}
+							</div>
+							<div className="grid">
+								{useOwnTransport !== null && useOwnTransport === false ? (
+									<>
+										<div className={colFlightClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+											<div>
+												Flight Date <span className="text-red-500"> *</span>
+											</div>
+											<div>
+												Flight Time <span className="text-red-500"> *</span>
+											</div>
+											<div>
+												Flight No. <span className="text-red-500"> *</span>
+											</div>
+											<div>
+												From <span className="text-red-500"> *</span>
+											</div>
+											<div>
+												To <span className="text-red-500"> *</span>
+											</div>
+											<div>Hotel Name</div>
+											<div>Check In</div>
+											<div>Check Out</div>
+										</div>
+										<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
+											{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+												<div key={i} className={colFlightClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
 													<FormField
 														control={form.control}
-														name="flight_date"
+														name="logistic_arrangement"
 														render={({ field }) => (
 															<FormItem>
-																<FormLabel>
-																	Flight Date <span className="text-red-500"> *</span>
-																</FormLabel>
 																<Popover>
 																	<PopoverTrigger asChild>
 																		<FormControl>
 																			<Button
 																				variant={"outline"}
-																				className={cn(
-																					"w-full pl-3 text-left font-normal",
-																					!field.value && "text-muted-foreground",
-																				)}
+																				className={cn("w-full text-left font-normal border-none")}
 																			>
-																				{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+																				{field.value &&
+																				field.value[i] &&
+																				field.value[i].flight_date instanceof Date ? (
+																					format(new Date(field.value[i].flight_date!), "PPP")
+																				) : (
+																					<span>Pick a date</span>
+																				)}
 																			</Button>
 																		</FormControl>
 																	</PopoverTrigger>
 																	<PopoverContent className="w-auto p-0" align="start">
 																		<Calendar
 																			mode="single"
-																			selected={field.value!}
+																			selected={field.value?.[i]?.flight_date!}
 																			onSelect={date => {
 																				if (date !== undefined) {
 																					date.setHours(date.getHours() + 8);
-																					field.onChange(date);
-																					field.value = new Date(date);
+																					field.onChange(
+																						field.value?.map((item, index) =>
+																							index === i ? { ...item, flight_date: date } : item,
+																						),
+																					);
 																				}
 																			}}
 																			disabled={date => {
@@ -874,94 +896,316 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													/>
 													<FormField
 														control={form.control}
-														name="flight_time"
+														name="logistic_arrangement"
 														render={({ field }) => (
 															<FormItem>
-																<FormLabel>
-																	Flight Time <span className="text-red-500"> *</span>
-																</FormLabel>
 																<FormControl>
-																	<Input type="time" {...field} value={field.value || ""} />
+																	<Input
+																		className="border-none"
+																		type="time"
+																		value={field.value?.[i]?.flight_time || ""}
+																		onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																			const newValue = field.value?.map((item, index) =>
+																				index === i ? { ...item, flight_time: e.target.value } : item,
+																			);
+																			field.onChange(newValue);
+																		}}
+																	/>
 																</FormControl>
 																<FormMessage />
 															</FormItem>
 														)}
 													/>
-												</div>
+													<FormField
+														control={form.control}
+														name="logistic_arrangement"
+														render={({ field }) => (
+															<FormItem>
+																<FormControl>
+																	<Input
+																		placeholder="FD 3261"
+																		className="border-none focus:ring-transparent"
+																		value={field.value?.[i]?.flight_number || ""}
+																		onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																			const newValue = field.value?.map((item, index) =>
+																				index === i ? { ...item, flight_number: e.target.value } : item,
+																			);
+																			field.onChange(newValue);
+																		}}
+																	/>
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name="logistic_arrangement"
+														render={({ field }) => (
+															<FormItem>
+																<FormControl>
+																	<Input
+																		className="border-none focus:ring-transparent"
+																		placeholder="From"
+																		value={field.value?.[i]?.destination_from || ""}
+																		onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																			const newValue = field.value?.map((item, index) =>
+																				index === i ? { ...item, destination_from: e.target.value } : item,
+																			);
+																			field.onChange(newValue);
+																		}}
+																	/>
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name="logistic_arrangement"
+														render={({ field }) => (
+															<FormItem>
+																<FormControl>
+																	<Input
+																		className="border-none focus:ring-transparent"
+																		placeholder="To"
+																		value={field.value?.[i]?.destination_to || ""}
+																		onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																			const newValue = field.value?.map((item, index) =>
+																				index === i ? { ...item, destination_to: e.target.value } : item,
+																			);
+																			field.onChange(newValue);
+																		}}
+																	/>
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
 
-												<FormField
-													control={form.control}
-													name="flight_number"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel>
-																Flight Number <span className="text-red-500"> *</span>
-															</FormLabel>
-															<FormControl>
-																<Input {...field} />
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
+													<FormField
+														control={form.control}
+														name="logistic_arrangement"
+														render={({ field }) => (
+															<FormItem>
+																<FormControl>
+																	<Input
+																		placeholder="Hotel Name"
+																		className="border-none focus:ring-transparent"
+																		value={field.value?.[i]?.hotel_name || ""}
+																		onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																			const newValue = field.value?.map((item, index) =>
+																				index === i ? { ...item, hotel_name: e.target.value } : item,
+																			);
+																			field.onChange(newValue);
+																		}}
+																	/>
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
 
-												<div>
-													<div className="grid grid-auto-fit-lg gap-8 ">
-														<FormField
-															control={form.control}
-															name="destination_from"
-															render={({ field }) => (
-																<FormItem>
-																	<FormLabel>
-																		From <span className="text-red-500"> *</span>
-																	</FormLabel>
-																	<FormControl>
-																		<Input placeholder="" {...field} />
-																	</FormControl>
-																	<FormMessage />
-																</FormItem>
-															)}
-														/>
-														<FormField
-															control={form.control}
-															name="destination_to"
-															render={({ field }) => (
-																<FormItem>
-																	<FormLabel>
-																		To <span className="text-red-500"> *</span>
-																	</FormLabel>
-																	<FormControl>
-																		<Input placeholder="" {...field} />
-																	</FormControl>
-																	<FormMessage />
-																</FormItem>
-															)}
+													<FormField
+														control={form.control}
+														name="logistic_arrangement"
+														render={({ field }) => (
+															<FormItem>
+																<Popover>
+																	<PopoverTrigger asChild>
+																		<FormControl>
+																			<Button
+																				variant={"outline"}
+																				className={cn(
+																					"w-full text-left font-normal rounded-none border-none pl-2",
+																					!field.value && "text-muted-foreground",
+																				)}
+																			>
+																				{field.value &&
+																				field.value[i] &&
+																				field.value[i].check_in_date instanceof Date ? (
+																					format(new Date(field.value?.[i].check_in_date!), "PPP")
+																				) : (
+																					<span>Pick a date</span>
+																				)}
+																			</Button>
+																		</FormControl>
+																	</PopoverTrigger>
+																	<PopoverContent className="w-auto p-0" align="start">
+																		<Calendar
+																			mode="single"
+																			selected={
+																				field.value && field.value[i]
+																					? (field.value[i].check_in_date as Date)
+																					: undefined
+																			}
+																			onSelect={date => {
+																				if (date !== undefined) {
+																					date.setHours(date.getHours() + 8);
+																					field.onChange(
+																						field.value?.map((item, index) =>
+																							index === i ? { ...item, check_in_date: date } : item,
+																						),
+																					);
+																				}
+																			}}
+																			disabled={date => {
+																				const today = new Date();
+																				today.setHours(0, 0, 0, 0);
+																				return date < today;
+																			}}
+																			initialFocus
+																		/>
+																	</PopoverContent>
+																</Popover>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name="logistic_arrangement"
+														render={({ field }) => (
+															<FormItem>
+																<Popover>
+																	<PopoverTrigger asChild>
+																		<FormControl>
+																			<Button
+																				variant={"outline"}
+																				className={cn(
+																					"w-full text-left font-normal rounded-none border-none pl-2",
+																				)}
+																			>
+																				{field.value &&
+																				field.value[i] &&
+																				field.value[i].check_out_date instanceof Date ? (
+																					format(new Date(field.value?.[i].check_out_date!), "PPP")
+																				) : (
+																					<span>Pick a date</span>
+																				)}
+																			</Button>
+																		</FormControl>
+																	</PopoverTrigger>
+																	<PopoverContent className="w-auto p-0" align="start">
+																		<Calendar
+																			mode="single"
+																			selected={
+																				field.value &&
+																				field.value[i] &&
+																				field.value[i].check_out_date !== null &&
+																				field.value[i].check_out_date instanceof Date
+																					? (field.value[i].check_out_date as Date)
+																					: undefined
+																			}
+																			onSelect={date => {
+																				if (date !== undefined) {
+																					date.setHours(date.getHours() + 8);
+																					field.onChange(
+																						field.value?.map((item, index) =>
+																							index === i ? { ...item, check_out_date: date } : item,
+																						),
+																					);
+																				}
+																			}}
+																			disabled={date => {
+																				let today = form.getValues("logistic_arrangement")?.[i]
+																					.check_out_date;
+																				if (today === undefined) {
+																					today = new Date();
+																					today.setHours(0, 0, 0, 0);
+																				} else {
+																					today?.setHours(0, 0, 0, 0);
+																				}
+																				return date < today!;
+																			}}
+																			initialFocus
+																		/>
+																	</PopoverContent>
+																</Popover>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+
+													<div className="grid place-items-center">
+														<X
+															className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
+															onClick={() => {
+																const values = form.getValues("logistic_arrangement");
+																if (values?.length! <= 2) {
+																	toast.error("2 flights are needed for go and return");
+																	return;
+																}
+																if (Array.isArray(values) && i >= 0 && i < values.length) {
+																	values.splice(i, 1);
+																	form.setValue("logistic_arrangement", values);
+																	form.trigger("logistic_arrangement");
+																	console.log(form.getValues("logistic_arrangement"));
+																}
+															}}
 														/>
 													</div>
 												</div>
-
-												<div>
-													<h2 className="font-medium mb-3">Transit (if any)</h2>
-													<div className="grid gap-8">
-														<div className="grid grid-auto-fit-lg gap-8">
+											))}
+										</div>
+									</>
+								) : (
+									<>
+										{form.getValues("logistic_arrangement") && form.getValues("logistic_arrangement")?.length! > 0 ? (
+											<>
+												<div className={colHotelClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+													<div>Hotel Name</div>
+													<div>Check In</div>
+													<div>Check Out</div>
+												</div>
+												<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
+													{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+														<div
+															key={i}
+															className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
+														>
 															<FormField
 																control={form.control}
-																name="transit_flight_date"
+																name="logistic_arrangement"
 																render={({ field }) => (
 																	<FormItem>
-																		<FormLabel>Transit Flight Date</FormLabel>
+																		<FormControl>
+																			<Input
+																				placeholder="Hotel Name"
+																				className="border-none focus:ring-transparent"
+																				value={field.value?.[i]?.hotel_name || ""}
+																				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																					const newValue = field.value?.map((item, index) =>
+																						index === i ? { ...item, hotel_name: e.target.value } : item,
+																					);
+																					field.onChange(newValue);
+																				}}
+																			/>
+																		</FormControl>
+																		<FormMessage />
+																	</FormItem>
+																)}
+															/>
+
+															<FormField
+																control={form.control}
+																name="logistic_arrangement"
+																render={({ field }) => (
+																	<FormItem>
 																		<Popover>
 																			<PopoverTrigger asChild>
 																				<FormControl>
 																					<Button
 																						variant={"outline"}
 																						className={cn(
-																							"w-full pl-3 text-left font-normal",
+																							"w-full text-left font-normal rounded-none border-none pl-2",
 																							!field.value && "text-muted-foreground",
 																						)}
 																					>
-																						{field.value ? (
-																							format(new Date(field.value), "PPP")
+																						{field.value &&
+																						field.value[i] &&
+																						field.value[i].check_in_date instanceof Date ? (
+																							format(new Date(field.value?.[i].check_in_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
 																						)}
@@ -971,12 +1215,21 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			<PopoverContent className="w-auto p-0" align="start">
 																				<Calendar
 																					mode="single"
-																					selected={field.value!}
+																					selected={
+																						field.value && field.value[i]
+																							? (field.value[i].check_in_date as Date)
+																							: undefined
+																					}
 																					onSelect={date => {
 																						if (date !== undefined) {
 																							date.setHours(date.getHours() + 8);
-																							field.onChange(date);
-																							field.value = new Date(date);
+																							field.onChange(
+																								field.value?.map((item, index) =>
+																									index === i
+																										? { ...item, check_in_date: date }
+																										: item,
+																								),
+																							);
 																						}
 																					}}
 																					disabled={date => {
@@ -994,755 +1247,647 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 															/>
 															<FormField
 																control={form.control}
-																name="transit_flight_time"
+																name="logistic_arrangement"
 																render={({ field }) => (
 																	<FormItem>
-																		<FormLabel>Transit Flight Time</FormLabel>
-																		<FormControl>
-																			<Input type="time" {...field} value={field.value || ""} />
-																		</FormControl>
+																		<Popover>
+																			<PopoverTrigger asChild>
+																				<FormControl>
+																					<Button
+																						variant={"outline"}
+																						className={cn(
+																							"w-full text-left font-normal rounded-none border-none pl-2",
+																						)}
+																					>
+																						{field.value &&
+																						field.value[i] &&
+																						field.value[i].check_out_date instanceof Date ? (
+																							format(new Date(field.value?.[i].check_out_date!), "PPP")
+																						) : (
+																							<span>Pick a date</span>
+																						)}
+																					</Button>
+																				</FormControl>
+																			</PopoverTrigger>
+																			<PopoverContent className="w-auto p-0" align="start">
+																				<Calendar
+																					mode="single"
+																					selected={
+																						field.value &&
+																						field.value[i] &&
+																						field.value[i].check_out_date !== null &&
+																						field.value[i].check_out_date instanceof Date
+																							? (field.value[i].check_out_date as Date)
+																							: undefined
+																					}
+																					onSelect={date => {
+																						if (date !== undefined) {
+																							date.setHours(date.getHours() + 8);
+																							field.onChange(
+																								field.value?.map((item, index) =>
+																									index === i
+																										? { ...item, check_out_date: date }
+																										: item,
+																								),
+																							);
+																						}
+																					}}
+																					disabled={date => {
+																						let today = form.getValues("logistic_arrangement")?.[i]
+																							.check_out_date;
+																						if (today === undefined) {
+																							today = new Date();
+																							today.setHours(0, 0, 0, 0);
+																						} else {
+																							today?.setHours(0, 0, 0, 0);
+																						}
+																						return date < today!;
+																					}}
+																					initialFocus
+																				/>
+																			</PopoverContent>
+																		</Popover>
 																		<FormMessage />
 																	</FormItem>
 																)}
 															/>
+
+															<div className="grid place-items-center">
+																<X
+																	className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
+																	onClick={() => {
+																		const values = form.getValues("logistic_arrangement");
+																		if (Array.isArray(values) && i >= 0 && i < values.length) {
+																			values.splice(i, 1);
+																			form.setValue("logistic_arrangement", values);
+																			form.trigger("logistic_arrangement");
+																		}
+
+																		// set null if the array is empty
+																		if (values?.length === 0) {
+																			form.setValue("logistic_arrangement", null);
+																		}
+																	}}
+																/>
+															</div>
 														</div>
-														<FormField
-															control={form.control}
-															name="transit_flight_number"
-															render={({ field }) => (
-																<FormItem>
-																	<FormLabel>Transit Flight Number</FormLabel>
-																	<FormControl>
-																		<Input {...field} />
-																	</FormControl>
-																	<FormMessage />
-																</FormItem>
-															)}
-														/>
-														<div className="grid grid-auto-fit-lg gap-8 ">
-															<FormField
-																control={form.control}
-																name="transit_destination_from"
-																render={({ field }) => (
-																	<FormItem>
-																		<FormLabel>Transit From</FormLabel>
-																		<FormControl>
-																			<Input placeholder="" {...field} />
-																		</FormControl>
-																		<FormMessage />
-																	</FormItem>
-																)}
-															/>
-															<FormField
-																control={form.control}
-																name="transit_destination_to"
-																render={({ field }) => (
-																	<FormItem>
-																		<FormLabel>Transit To</FormLabel>
-																		<FormControl>
-																			<Input placeholder="" {...field} />
-																		</FormControl>
-																		<FormMessage />
-																	</FormItem>
-																)}
-															/>
-														</div>
-													</div>
+													))}
 												</div>
 											</>
+										) : (
+											<div className="text-center text-muted-foreground w-full h-48 rounded-xl grid place-items-center bg-gray-100">
+												No logistic arrangement added
+											</div>
 										)}
+									</>
+								)}
+							</div>
+						</section>
 
-										<FormField
-											control={form.control}
-											name="hotel_name"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Hotel Name <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Input {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
+						<Separator className="my-8" />
 
-										<div className="grid grid-auto-fit-lg gap-8 ">
-											<FormField
-												control={form.control}
-												name="check_in_date"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Hotel Check In <span className="text-red-500"> *</span>
-														</FormLabel>
-														<Popover>
-															<PopoverTrigger asChild>
-																<FormControl>
-																	<Button
-																		variant={"outline"}
-																		className={cn(
-																			"w-full pl-3 text-left font-normal",
-																			!field.value && "text-muted-foreground",
-																		)}
-																	>
-																		{field.value ? (
-																			format(new Date(field.value), "PPP")
-																		) : (
-																			<span>Pick a date</span>
-																		)}
-																	</Button>
-																</FormControl>
-															</PopoverTrigger>
-															<PopoverContent className="w-auto p-0" align="start">
-																<Calendar
-																	mode="single"
-																	selected={field.value!}
-																	onSelect={date => {
-																		if (date !== undefined) {
-																			date.setHours(date.getHours() + 8);
-																			field.onChange(date);
-																			field.value = new Date(date);
-																		}
-																	}}
-																	disabled={date => {
-																		const today = new Date();
-																		today.setHours(0, 0, 0, 0);
-																		return date < today;
-																	}}
-																	initialFocus
-																/>
-															</PopoverContent>
-														</Popover>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="check_out_date"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Hotel Check Out <span className="text-red-500"> *</span>
-														</FormLabel>
-														<Popover>
-															<PopoverTrigger asChild>
-																<FormControl>
-																	<Button
-																		variant={"outline"}
-																		className={cn(
-																			"w-full pl-3 text-left font-normal",
-																			!field.value && "text-muted-foreground",
-																		)}
-																	>
-																		{field.value ? (
-																			format(new Date(field.value), "PPP")
-																		) : (
-																			<span>Pick a date</span>
-																		)}
-																	</Button>
-																</FormControl>
-															</PopoverTrigger>
-															<PopoverContent className="w-auto p-0" align="start">
-																<Calendar
-																	mode="single"
-																	selected={field.value!}
-																	onSelect={date => {
-																		if (date !== undefined) {
-																			date.setHours(date.getHours() + 8);
-																			field.onChange(date);
-																			field.value = new Date(date);
-																		}
-																	}}
-																	disabled={date => {
-																		let today = form.getValues("check_in_date");
-																		if (today === undefined) {
-																			today = new Date();
-																			today.setHours(0, 0, 0, 0);
-																		} else {
-																			today?.setHours(0, 0, 0, 0);
-																		}
-																		return date < today!;
-																	}}
-																	initialFocus
-																/>
-															</PopoverContent>
-														</Popover>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-									</div>
-								</section>
+						<section className="section-4" id="Funding">
+							<h2 className="text-2xl font-bold mb-4">4. Funding</h2>
+							<div className="grid grid-auto-fit-lg gap-8">
+								<FormField
+									control={form.control}
+									name="course_fee"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Course Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setCourseFee(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="airfare_fee"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Airfare Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setAirfareFee(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="accommodation_fee"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Accommodation Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setAccommodationFee(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="per_diem_fee"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Per Diem Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setPerDiemFee(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="transportation_fee"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Transportation Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setTransportationFee(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="travel_insurance_fee"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Travel Insurance Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setTravelInsuranceFee(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="other_fees"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Other Fee</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													value={field.value === 0 ? "" : field.value.toString()}
+													onChange={e => {
+														const value = e.target.value;
+														if (/^\d*$/.test(value)) {
+															field.onChange(value === "" ? 0 : Number(value));
+															setOtherFees(Number(value));
+														}
+													}}
+													onBlur={() => {
+														field.onChange(field.value || 0);
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									name="grand_total_fees"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Total Fee</FormLabel>
+											<FormControl>
+												<Input disabled value={grandTotal} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
 
-								<Separator className="my-8" />
-
-								<section className="section-4" id="Funding">
-									<h2 className="text-2xl font-bold mb-4">4. Funding</h2>
-									<div className="grid grid-auto-fit-lg gap-8">
-										<FormField
-											control={form.control}
-											name="course_fee"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Course Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setCourseFee(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="airfare_fee"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Airfare Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setAirfareFee(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="accommodation_fee"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Accommodation Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setAccommodationFee(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="per_diem_fee"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Per Diem Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setPerDiemFee(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="transportation_fee"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Transportation Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setTransportationFee(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="travel_insurance_fee"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Travel Insurance Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setTravelInsuranceFee(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="other_fees"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Other Fee</FormLabel>
-													<FormControl>
-														<Input
-															type="text"
-															value={field.value === 0 ? "" : field.value.toString()}
-															onChange={e => {
-																const value = e.target.value;
-																if (/^\d*$/.test(value)) {
-																	field.onChange(value === "" ? 0 : Number(value));
-																	setOtherFees(Number(value));
-																}
-															}}
-															onBlur={() => {
-																field.onChange(field.value || 0);
-															}}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											name="grand_total_fees"
-											control={form.control}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Total Fee</FormLabel>
-													<FormControl>
-														<Input disabled value={grandTotal} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-
-									<div className="mt-8">
-										<h2 className="font-medium mb-3">
-											Source of Fund -
-											<span className="text-gray-500 text-sm">
-												Details of account(s) to be debited. (It is encouraged to have a single source of funding)
-											</span>
-										</h2>
-										<div className="grid grid-auto-fit-lg gap-8">
-											<FormField
-												name="staff_development_fund"
-												control={form.control}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Staff Development Fund</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												name="consolidated_pool_fund"
-												control={form.control}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Consolidated Pool Fund</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												name="research_fund"
-												control={form.control}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Research Fund</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												name="travel_fund"
-												control={form.control}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Travel Fund</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												name="student_council_fund"
-												control={form.control}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Student Council Fund</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												name="other_funds"
-												control={form.control}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Other Fund</FormLabel>
-														<FormControl>
-															<Input placeholder="" {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-									</div>
-								</section>
-
-								<Separator className="my-8" />
-
-								<section className="section-5" id="Supporting Documents">
-									<h1 className="text-2xl font-bold mb-4">
-										5. Supporting Documents <span className="text-red-500"> *</span>
-									</h1>
+							<div className="mt-8">
+								<h2 className="font-medium mb-3">
+									Source of Fund -
+									<span className="text-gray-500 text-sm">
+										Details of account(s) to be debited. (It is encouraged to have a single source of funding)
+									</span>
+								</h2>
+								<div className="grid grid-auto-fit-lg gap-8">
 									<FormField
+										name="staff_development_fund"
 										control={form.control}
-										name="supporting_documents"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-													<div className="flex flex-col items-center justify-center pt-5 pb-6">
-														<svg
-															className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-															aria-hidden="true"
-															xmlns="http://www.w3.org/2000/svg"
-															fill="none"
-															viewBox="0 0 20 16"
-														>
-															<path
-																stroke="currentColor"
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth="2"
-																d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-															/>
-														</svg>
-														<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
-															<span className="font-semibold">Click or drag to upload</span>
-														</p>
-														<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
-														{field?.value?.length! > 0 && (
-															<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
-														)}
-													</div>
-													<FormControl className="absolute">
-														<Input
-															multiple
-															className="absolute w-full h-full opacity-0 cursor-pointer"
-															type="file"
-															accept=".pdf"
-															{...form.register("supporting_documents", {
-																required: false,
-															})}
-														/>
-													</FormControl>
-												</FormLabel>
+												<FormLabel>Staff Development Fund</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
 												<FormMessage />
-												<div className="flex flex-col gap-2 mt-2 items-start">
-													{form.getValues("supporting_documents") &&
-														Array.from(form.getValues("supporting_documents")!).map((file: any) => (
-															<div key={file.name}>
-																{
-																	<div className="flex gap-2 p-2 items-start">
-																		<BsFiletypePdf className="w-6 h-6 text-red-500" />
-																		{file.name}
-																	</div>
-																}
-															</div>
-														))}
-												</div>
 											</FormItem>
 										)}
 									/>
-								</section>
-
-								<Separator className="my-8" />
-
-								<section className="section-6" id="Applicant Declaration">
-									<h1 className="text-2xl font-bold mb-4">6. Applicant Declaration</h1>
-									<p className="text-gray-500 dark:text-gray-400 mb-8">
-										I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including
-										any attachments) provided for this application.
-									</p>
-									<div className="grid gap-8">
-										<div className="grid grid-auto-fit-lg gap-8">
-											<FormField
-												control={form.control}
-												name="applicant_declaration_name"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Name <span className="text-gray-500"> (Auto filled) </span>
-														</FormLabel>
-														<FormControl>
-															<Input disabled {...field} value={applicantName} className="disabled:opacity-90" />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="applicant_declaration_position_title"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>
-															Position title <span className="text-gray-500"> (Auto filled) </span>
-														</FormLabel>
-														<FormControl>
-															<Input disabled {...field} value={applicantPosition} className="disabled:opacity-90" />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-
-										<FormField
-											control={form.control}
-											name="applicant_declaration_date"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>
-														Declaration Date <span className="text-red-500"> *</span>
-													</FormLabel>
-													<Popover>
-														<PopoverTrigger asChild>
-															<FormControl>
-																<Button
-																	variant={"outline"}
-																	className={cn(
-																		"w-full pl-3 text-left font-normal",
-																		!field.value && "text-muted-foreground",
-																	)}
-																>
-																	{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-																</Button>
-															</FormControl>
-														</PopoverTrigger>
-														<PopoverContent className="w-auto p-0" align="start">
-															<Calendar
-																mode="single"
-																selected={field.value}
-																onSelect={date => {
-																	if (date !== undefined) {
-																		date.setHours(date.getHours() + 8);
-																		field.onChange(date);
-																		field.value = date;
-																	}
-																}}
-																disabled={date => {
-																	const today = new Date();
-																	today.setHours(0, 0, 0, 0);
-																	return date < today;
-																}}
-																initialFocus
-															/>
-														</PopoverContent>
-													</Popover>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="applicant_declaration_signature"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														Signature <span className="text-red-500"> *</span>
-													</FormLabel>
-													<Dialog>
-														<FormControl>
-															<DialogTrigger asChild>
-																<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-																	{imageURL && <Image src={imageURL} width={300} height={200} alt="Signature" />}
-																</div>
-															</DialogTrigger>
-														</FormControl>
-														<DialogContent>
-															<DialogHeader>
-																<DialogTitle>Signature</DialogTitle>
-																<DialogClose />
-															</DialogHeader>
-															<DialogDescription>Please sign below</DialogDescription>
-															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-																<SignaturePad
-																	// @ts-ignore
-																	ref={sigCanvas}
-																	canvasProps={{
-																		className: "w-full h-full",
-																	}}
-																/>
-															</div>
-															<DialogFooter>
-																<Button variant="outline" onClick={clear}>
-																	Clear
-																</Button>
-																<DialogClose asChild>
-																	<Button
-																		onClick={() => {
-																			save();
-																			field.onChange(
-																				sigCanvas.current
-																					// @ts-ignore
-																					.getTrimmedCanvas()
-																					.toDataURL("image/png"),
-																			);
-																			field.value = sigCanvas.current
-																				// @ts-ignore
-																				.getTrimmedCanvas()
-																				.toDataURL("image/png");
-																		}}
-																	>
-																		Save
-																	</Button>
-																</DialogClose>
-															</DialogFooter>
-														</DialogContent>
-														<FormMessage />
-													</Dialog>
-												</FormItem>
-											)}
-										/>
-									</div>
-								</section>
-
-								<div className="flex justify-end items-end gap-4">
-									<Button type="reset" onClick={formReset}>
-										Reset
-									</Button>
-
-									<Dialog open={open} onOpenChange={setOpen}>
-										<DialogTrigger asChild>
-											<Button type="button">Submit for Review</Button>
-										</DialogTrigger>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>Please re-confirm your details!</DialogTitle>
-												<DialogDescription>
-													Please confirm your email is correct: {form.getValues("email")}. <br />
-													Wrong email will result in you not receiving any updates of your form status.
-												</DialogDescription>
-											</DialogHeader>
-											<DialogFooter>
-												<DialogClose asChild>
-													<Button variant="outline">Cancel</Button>
-												</DialogClose>
-												<Button
-													onMouseUp={checkFormStatus}
-													onClick={form.handleSubmit(onSubmit)}
-													disabled={form.formState.isSubmitting}
-												>
-													Submit
-												</Button>
-											</DialogFooter>
-										</DialogContent>
-									</Dialog>
+									<FormField
+										name="consolidated_pool_fund"
+										control={form.control}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Consolidated Pool Fund</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										name="research_fund"
+										control={form.control}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Research Fund</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										name="travel_fund"
+										control={form.control}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Travel Fund</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										name="student_council_fund"
+										control={form.control}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Student Council Fund</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										name="other_funds"
+										control={form.control}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Other Fund</FormLabel>
+												<FormControl>
+													<Input placeholder="" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
 								</div>
-							</form>
-						</Form>
-					</div>
-				</div>
-			) : formIsSuccess === true ? (
-				<div className="min-h-screen flex flex-col justify-center items-center -mt-12 lg:-mt-5 py-20">
-					<img src={SuccessIMG.src} alt="" className="w-[300px] lg:w-[500px] mt-10" />
-					<p className="text-center mt-5">
-						<span className="font-bold text-[20px]">We have received your form successfully!</span> <br />
-						<br /> You should receive an email with a confirmation at <span className="font-bold">{form.getValues("email")}</span>.
-						<br />
-						Please ensure to check your spam/ junk folder as well.
-						<br />
-						<br />
-						Contact/ email us at <span className="font-bold">827-823</span> OR <span className="font-bold">emat@gmail.com</span> if you
-						have not received anything within the next hour.
-					</p>
-					<Button className="mt-5" onClick={() => window.location.reload()}>
-						Return
-					</Button>
-				</div>
-			) : null}
+							</div>
+						</section>
+
+						<Separator className="my-8" />
+
+						<section className="section-5" id="Supporting Documents">
+							<h1 className="text-2xl font-bold mb-4">
+								5. Supporting Documents <span className="text-red-500"> *</span>
+							</h1>
+							<FormField
+								control={form.control}
+								name="supporting_documents"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+											<div className="flex flex-col items-center justify-center pt-5 pb-6">
+												<svg
+													className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+													aria-hidden="true"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 20 16"
+												>
+													<path
+														stroke="currentColor"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth="2"
+														d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+													/>
+												</svg>
+												<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
+													<span className="font-semibold">Click or drag to upload</span>
+												</p>
+												<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
+												{field?.value?.length! > 0 && (
+													<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
+												)}
+											</div>
+											<FormControl className="absolute">
+												<Input
+													multiple
+													className="absolute w-full h-full opacity-0 cursor-pointer"
+													type="file"
+													accept=".pdf"
+													{...form.register("supporting_documents", {
+														required: false,
+													})}
+												/>
+											</FormControl>
+										</FormLabel>
+										<FormMessage />
+										<div className="flex flex-col gap-2 mt-2 items-start">
+											{form.getValues("supporting_documents") &&
+												Array.from(form.getValues("supporting_documents")!).map((file: any) => (
+													<div key={file.name}>
+														{
+															<div className="flex gap-2 p-2 items-start">
+																<BsFiletypePdf className="w-6 h-6 text-red-500" />
+																{file.name}
+															</div>
+														}
+													</div>
+												))}
+										</div>
+									</FormItem>
+								)}
+							/>
+						</section>
+
+						<Separator className="my-8" />
+
+						<section className="section-6" id="Applicant Declaration">
+							<h1 className="text-2xl font-bold mb-4">6. Applicant Declaration</h1>
+							<p className="text-gray-500 dark:text-gray-400 mb-8">
+								I (or acting as representative of group travelling) hereby confirm the accuracy of the information (including any
+								attachments) provided for this application.
+							</p>
+							<div className="grid gap-8">
+								<div className="grid grid-auto-fit-lg gap-8">
+									<FormField
+										control={form.control}
+										name="applicant_declaration_name"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Name <span className="text-gray-500"> (Auto filled) </span>
+												</FormLabel>
+												<FormControl>
+													<Input disabled {...field} value={applicantName} className="disabled:opacity-90" />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="applicant_declaration_position_title"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Position title <span className="text-gray-500"> (Auto filled) </span>
+												</FormLabel>
+												<FormControl>
+													<Input disabled {...field} value={applicantPosition} className="disabled:opacity-90" />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+
+								<FormField
+									control={form.control}
+									name="applicant_declaration_date"
+									render={({ field }) => (
+										<FormItem className="flex flex-col">
+											<FormLabel>
+												Declaration Date <span className="text-red-500"> *</span>
+											</FormLabel>
+											<Popover>
+												<PopoverTrigger asChild>
+													<FormControl>
+														<Button
+															variant={"outline"}
+															className={cn(
+																"w-full pl-3 text-left font-normal",
+																!field.value && "text-muted-foreground",
+															)}
+														>
+															{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+														</Button>
+													</FormControl>
+												</PopoverTrigger>
+												<PopoverContent className="w-auto p-0" align="start">
+													<Calendar
+														mode="single"
+														selected={field.value}
+														onSelect={date => {
+															if (date !== undefined) {
+																date.setHours(date.getHours() + 8);
+																field.onChange(date);
+																field.value = date;
+															}
+														}}
+														disabled={date => {
+															const today = new Date();
+															today.setHours(0, 0, 0, 0);
+															return date < today;
+														}}
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="applicant_declaration_signature"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												Signature <span className="text-red-500"> *</span>
+											</FormLabel>
+											<Dialog>
+												<FormControl>
+													<DialogTrigger asChild>
+														<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
+															{imageURL && <Image src={imageURL} width={300} height={200} alt="Signature" />}
+														</div>
+													</DialogTrigger>
+												</FormControl>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Signature</DialogTitle>
+														<DialogClose />
+													</DialogHeader>
+													<DialogDescription>Please sign below</DialogDescription>
+													<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
+														<SignaturePad
+															// @ts-ignore
+															ref={sigCanvas}
+															canvasProps={{
+																className: "w-full h-full",
+															}}
+														/>
+													</div>
+													<DialogFooter>
+														<Button variant="outline" onClick={clear}>
+															Clear
+														</Button>
+														<DialogClose asChild>
+															<Button
+																onClick={() => {
+																	save();
+																	field.onChange(
+																		sigCanvas.current
+																			// @ts-ignore
+																			.getTrimmedCanvas()
+																			.toDataURL("image/png"),
+																	);
+																	field.value = sigCanvas.current
+																		// @ts-ignore
+																		.getTrimmedCanvas()
+																		.toDataURL("image/png");
+																}}
+															>
+																Save
+															</Button>
+														</DialogClose>
+													</DialogFooter>
+												</DialogContent>
+												<FormMessage />
+											</Dialog>
+										</FormItem>
+									)}
+								/>
+							</div>
+						</section>
+
+						<div className="flex justify-end items-end gap-4">
+							<Button type="reset" onClick={formReset}>
+								Reset
+							</Button>
+
+							<Dialog open={open} onOpenChange={setOpen}>
+								<DialogTrigger asChild>
+									<Button type="button" disabled={form.formState.isSubmitting}>
+										{form.formState.isSubmitting ? <span>Submitting...</span> : <span>Submit for Review</span>}
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Please re-confirm your details!</DialogTitle>
+										<DialogDescription>
+											Please confirm your email is correct: {form.getValues("email")}. <br />
+											Wrong email will result in you not receiving any updates of your form status.
+										</DialogDescription>
+									</DialogHeader>
+									<DialogFooter>
+										<DialogClose asChild>
+											<Button variant="outline">Cancel</Button>
+										</DialogClose>
+										<Button onMouseUp={checkFormStatus} onClick={form.handleSubmit(onSubmit)}>
+											Submit
+										</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
+						</div>
+					</form>
+				</Form>
+			</div>
 		</div>
 	);
 }

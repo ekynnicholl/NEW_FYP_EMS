@@ -16,20 +16,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<body>
 				{children}
 				<ProgressBar height="4px" color="#ab0c12" options={{ showSpinner: false }} shallowRouting />
-				{/* <Toaster position="top-right"
-					toastOptions={{
-						className: '',
-						duration: 5000,
-						style: {
-							background: '#363636',
-							color: '#fff',
-						},
-
-						success: {
-							duration: 5000
-						},
-					}}
-				/> */}
 				<Toaster position="top-right" />
 			</body>
 		</html>

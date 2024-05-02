@@ -24,7 +24,7 @@ export default async function Important() {
 		const aaoData = externalSettingsData.find(item => item.extSType === "AAO");
 
 		if (aaoData) {
-			aaoDuration = aaoData.extSDays;
+			aaoDuration = aaoData.extSDays!;
 		}
 	}
 

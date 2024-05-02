@@ -31,6 +31,7 @@ import QRCodeModal from "@/components/EditSubEvent_Modal";
 import AttendanceList from "@/components/attendance/attendance_list";
 import toast from "react-hot-toast";
 import * as XLSX from 'xlsx';
+import Link from "next/link";
 
 type mainEvent = {
     intFID: string;
@@ -503,9 +504,9 @@ export default function Home() {
                     <div className="bg-white rounded p-8 dark:bg-dark_mode_card">
                         <div className="inline-flex">
                             <span className="mt-[7px]">
-                                <a href="/homepage">
+                                <Link href="/dashboard">
                                     <IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" />
-                                </a>
+                                </Link>
                             </span>
                             <h1 className="text-xl lg:text-2xl font-bold"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Upcoming Events</span></h1>
                         </div>

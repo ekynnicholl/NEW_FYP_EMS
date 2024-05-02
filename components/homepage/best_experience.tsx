@@ -86,8 +86,8 @@ const BestExperience = () => {
                     <p className="text-center font-bold text-[26px]">We are setting the best experience in Swinburne University.</p>
                 </animated.div>
                 <div className="cards-container flex items-center justify-center overflow-hidden mt-4 relative w-full sm:w-7/12">
-                <div className="slider flex flex-col sm:flex-row items-center justify-center">
-                <animated.div style={fadeIn_Card1} className={`h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
+                    <div className="slider flex flex-col sm:flex-row items-center justify-center">
+                        <animated.div style={fadeIn_Card1} className={`h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
                             <div className="flex items-center justify-center">
                                 <Image
                                     src="/images/appointment-booking-with-calendar_23-2148553115.png"
@@ -107,7 +107,7 @@ const BestExperience = () => {
                                 </Link>
                                 <p>or,</p>
                                 <div className="flex justify-center">
-                                <QRCodeCanvas value={`${origin}/attended_events`} size={128} className="mx-auto" />
+                                    <QRCodeCanvas value={`${origin}/attended_events`} size={128} className="mx-auto" />
                                 </div>
                             </div>
                         </animated.div>

@@ -30,7 +30,7 @@ export default function MobileTopBar() {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="mt-3 border-0 shadow-none w-screen h-screen">
 					<DropdownMenuItem className="h-12 border-b-2 border-gray-200" asChild>
-						<Link href="/homepage">Dashboard</Link>
+						<Link href="/dashboard">Dashboard</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem className="h-12 border-b-2 border-gray-200" asChild>
 						<Link href="/analytics">Analytic</Link>

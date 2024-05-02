@@ -145,6 +145,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					formStage: selectedStage,
 				}));
 
+				createNotifications(selectedRow, values.undoOption, values.revertComment!);
+
 				const { data: latestFormsData, error: latestFormsError } = await supabase
 					.from("external_forms")
 					.select()
@@ -277,7 +279,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem
-								onClick={() => {
+								onClick={e => {
+									e.preventDefault();
 									router.push(`/form/external/${row.original.id}`);
 								}}
 							>
@@ -344,6 +347,44 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 		},
 	});
 
+	const createNotifications = async (form: ExternalForm, stage: string, comment: string) => {
+		let formStage = "";
+		if (stage === "1") {
+			formStage = "Reverted to Staff";
+		} else if (stage === "2") {
+			formStage = "Reviewing by AAO";
+		} else if (stage === "3") {
+			formStage = "Reviewing by HOS/ ADCR/ MGR";
+		} else if (stage === "4") {
+			formStage = "Reviewing by HMU/ Dean";
+		} else if (stage === "5") {
+			formStage = "Approved";
+		} else if (stage === "6") {
+			formStage = "Rejected";
+		} else {
+			formStage = "Unknown";
+		}
+		let message = `The Nominations/ Travelling Form for ${form.program_title}, submitted by ${form.full_name} (${form.staff_id}) has been undo to "${formStage}" with reason(s): ${comment}`;
+
+		const notifDesc = message;
+		const notifType = "Nominations/ Travelling Form";
+		const notifLink = `/form/external/${form.id}`;
+
+		const { error: notificationError } = await supabase.from("notifications").insert([
+			{
+				notifDesc,
+				notifType,
+				notifLink,
+			},
+		]);
+
+		if (notificationError) {
+			toast.error("Failed to send email. Please contact server administrator.");
+		} else {
+			sendContactForm(form);
+		}
+	};
+
 	return (
 		<div className="w-full">
 			<div className="flex items-center py-4">
@@ -364,8 +405,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								Nominations/ Travelling Forms
 							</DialogTitle>
 						</DialogHeader>
-						<DialogDescription className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-							This is where the staff can access to submit their forms.
+						<DialogDescription className="lg:text-s font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
+						All staff can submit their Nomination/Travelling Form by scanning the QR Code or link.
 						</DialogDescription>
 						<div className="grid place-items-center">
 							<QRCodeCanvas value={`${window.location.origin}/form/external`} size={256} />
@@ -402,11 +443,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<DialogContent>
 						<DialogHeader>
 							<DialogTitle className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-								View Nominations/ Travelling Forms List
+								Nomination/Travelling Forms Status & Staff Attendance Summary
 							</DialogTitle>
 						</DialogHeader>
-						<DialogDescription className="lg:text-xs font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-							This is where the staff is able to access their past submitted forms.
+						<DialogDescription className="lg:text-s font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
+						All staff can view their current application/overall summary of their past Nominations/Travelling Form submission or Past Attended Events by scanning the QR Code or link below.		
 						</DialogDescription>
 						<div className="grid place-items-center">
 							<QRCodeCanvas className="bg-white p-1" value={`${window.location.origin}/attended_events`} size={256} />
@@ -418,6 +459,13 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							>
 								Copy Link
 							</button>
+							<a
+								href={`${window.location.origin}/attended_events`}
+								target="_blank"
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
+							>
+								Open Link
+							</a>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>
@@ -597,7 +645,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								<ContextMenu key={row.id}>
 									<ContextMenuTrigger asChild>
 										<TableRow
-											onClick={() => {
+											onClick={e => {
+												e.preventDefault();
 												router.push(`/external/${row.original.id}`);
 											}}
 											data-state={row.getIsSelected() && "selected"}
@@ -610,14 +659,16 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									</ContextMenuTrigger>
 									<ContextMenuContent>
 										<ContextMenuItem
-											onClick={() => {
+											onClick={e => {
+												e.preventDefault();
 												router.push(`/external/${row.original.id}`);
 											}}
 										>
 											View
 										</ContextMenuItem>
 										<ContextMenuItem
-											onClick={() => {
+											onClick={e => {
+												e.preventDefault();
 												setOpen(true);
 												setSelectedRow(row.original);
 											}}

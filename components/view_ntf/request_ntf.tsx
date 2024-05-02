@@ -127,26 +127,28 @@ const RequestNTF = () => {
                     <div className="p-5">
                         <div className="text-left pl-5 pr-5">
                             <p className="text-[20px] font-bold">
-                                Attendance List Request
+                            Request to view Nomination/Travelling Forms Status & Staff Attendance Summary
                             </p>
                             <div className="border-t border-gray-300 my-2"></div>
                             <div className="text-justify">
                                 <p>
-                                    If there are any records of any attendance (including Nominations/ Travelling Forms for staff), an email will be sent to you.
+                                    To view the status of your current or previous Nomination/Traveling forms application or the summary of your Attendance record for past
+events, <br></br> please refer to the guidelines below.<br></br>Please note that you will receive an email notification including an access token for additional
+authorization purposes.
                                 </p>
                             </div>
                             <p className="text-base font-bold mt-3 underline">
-                                Please take into consideration when filling out the form,
+                            Please follow the guidelines below when filling out the form, if you are logging in via:
                             </p>
                             <div className="text-justify">
                                 <p>
-                                    1. <span className="font-bold">Using ID</span>, ensure that you have entered your ID correctly including all the alphanumericals as how it is shown in your staff/ student card.
+                                    <span className="font-bold">Staff/Student Access Card ID: </span> Please ensure that you have entered your ID correctly including all the alphanumerical based on your Staff/ Student access card.  
                                     <br />
-                                    2. <span className="font-bold">Using EMAIL</span>, ensure that you have entered your email in the correct format and is what you have used in the events.
+                                    <span className="font-bold">Email address:</span> Please ensure that you have entered your email address in the correct format and based on what you have entered in the event registration form previously.
                                 </p>
                             </div>
                             <p className="text-base italic mt-3 text-red-600">
-                                Failure to abide to the above format(s) might result in you not receiving any emails. Thank you.
+                            Invalid or mistyped information will result in email delivery failure; therefore, please abide to the above guidelines. <br></br>Thank you for your cooperation.
                             </p>
                         </div>
                         <div className="pl-5 pr-5">

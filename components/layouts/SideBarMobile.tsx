@@ -13,7 +13,7 @@ import NotifIconMobile from "@/components/icons/NotifIconMobile";
 import { usePathname } from "next/navigation";
 
 const NavLinks = [
-    { id: 1, name: "Home", icon: HomeIcon, link: "/homepage" },
+    { id: 1, name: "Home", icon: HomeIcon, link: "/dashboard" },
     { id: 2, name: "Notifications", icon: NotifIconMobile, link: "/" },
     { id: 3, name: "Add Events", icon: AddIcon, link: "/test1" },
     { id: 4, name: "Reports", icon: ReportIcon, link: "/analytics" },

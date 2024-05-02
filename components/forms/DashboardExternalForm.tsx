@@ -31,6 +31,7 @@ import {
 	CircleX,
 	Forward,
 	Pencil,
+	X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -202,20 +203,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			venue: externalForm.venue!,
 			hrdf_claimable: externalForm.hrdf_claimable!,
 
-			flight_date: externalForm.flight_date ? new Date(externalForm.flight_date) : null,
-			flight_time: externalForm.flight_time ?? null,
-			flight_number: externalForm.flight_number!,
-			destination_from: externalForm.destination_from!,
-			destination_to: externalForm.destination_to!,
-			transit_flight_date: externalForm.transit_flight_date ? new Date(externalForm.transit_flight_date) : null,
-			transit_flight_time: externalForm.transit_flight_time ?? null,
-			transit_flight_number: externalForm.transit_flight_number!,
-			transit_destination_from: externalForm.transit_destination_from!,
-			transit_destination_to: externalForm.transit_destination_to!,
-
-			check_in_date: externalForm.check_in_date ? new Date(externalForm.check_in_date) : null,
-			check_out_date: externalForm.check_out_date ? new Date(externalForm.check_out_date) : null,
-			hotel_name: externalForm.hotel_name!,
+			// @ts-ignore
+			logistic_arrangement: externalForm.logistic_arrangement,
 			total_hours: externalForm.total_hours! ?? null,
 
 			course_fee: externalForm.course_fee!,
@@ -409,6 +398,16 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		forwardForm.reset();
 		setForwardSaveLoading(false);
 	}
+
+	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
+	const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
+
+	// console.log(externalForm);
+	// console.log(form.getValues("logistic_arrangement"));
+
+	useEffect(() => {
+		console.log(form.formState.errors);
+	}, [form.formState.errors]);
 
 	return (
 		<>
@@ -659,19 +658,20 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														field.onChange(e);
 														if (e === "own transport" || e === "company vehicle") {
 															setUseOwnTransport(true);
-															form.setValue("flight_date", null);
-															form.setValue("flight_time", null);
-															form.setValue("flight_number", "");
-															form.setValue("destination_from", "");
-															form.setValue("destination_to", "");
-
-															form.setValue("transit_flight_date", null);
-															form.setValue("transit_flight_time", null);
-															form.setValue("transit_flight_number", "");
-															form.setValue("transit_destination_from", "");
-															form.setValue("transit_destination_to", "");
+															form.setValue("logistic_arrangement", null);
 														} else {
 															setUseOwnTransport(false);
+															const logisticObject = {
+																flight_date: null,
+																flight_time: null,
+																flight_number: "",
+																destination_from: "",
+																destination_to: "",
+																hotel_name: "",
+																check_in_date: null,
+																check_out_date: null,
+															};
+															form.setValue("logistic_arrangement", [logisticObject, logisticObject]);
 														}
 													}}
 													value={field.value}
@@ -970,134 +970,36 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 								<div className="rounded-sm bg-purple-300 w-4 h-8"></div>
 								<h1 className="text-xl font-semibold">Logistic Arrangement</h1>
 							</div>
-							<div className="grid gap-8">
-								{form.getValues("transport") === "aeroplane" && (
-									<>
-										<div className="grid grid-auto-fit-lg gap-8">
-											<FormField
-												control={form.control}
-												name="flight_date"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel className="font-semibold text-sm text-gray-500">
-															Flight Date <span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Popover>
-																<PopoverTrigger asChild>
-																	<FormControl>
-																		<Button
-																			variant={"outline"}
-																			disabled={!edit}
-																			className={cn(
-																				"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
-																				!field.value && "text-muted-foreground",
-																			)}
-																		>
-																			<div className="bg-gray-100 h-[43px] w-[44px] px-3 text-gray-900 grid place-items-center relative left-[2px] rounded-l-xl">
-																				<CalenderIcon size={20} />
-																			</div>
-																			{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-																		</Button>
-																	</FormControl>
-																</PopoverTrigger>
-																<PopoverContent className="w-auto p-0" align="start">
-																	<Calendar
-																		mode="single"
-																		selected={field.value!}
-																		onSelect={date => {
-																			field.onChange(date);
-																			if (date !== undefined) {
-																				date.setHours(date.getHours() + 8);
-																				field.value = new Date(date);
-																			}
-																		}}
-																		initialFocus
-																	/>
-																</PopoverContent>
-															</Popover>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="flight_time"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel className="font-semibold text-sm text-gray-500">
-															Flight Time <span className="text-red-500"> *</span>
-														</FormLabel>
-														<FormControl>
-															<Input type="time" {...field} value={field.value || ""} disabled={!edit} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-
-										<FormField
-											control={form.control}
-											name="flight_number"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel className="font-semibold text-sm text-gray-500">
-														Flight Number <span className="text-red-500"> *</span>
-													</FormLabel>
-													<FormControl>
-														<Input {...field} disabled={!edit} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-
+							{form.getValues("transport") === "aeroplane" && form.getValues("logistic_arrangement") ? (
+								<>
+									<div className={colFlightClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
 										<div>
-											<h2 className="font-medium mb-3">Destination</h2>
-											<div className="grid grid-auto-fit-lg gap-8 ">
-												<FormField
-													control={form.control}
-													name="destination_from"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel className="font-semibold text-sm text-gray-500">
-																From <span className="text-red-500"> *</span>
-															</FormLabel>
-															<FormControl>
-																<Input {...field} disabled={!edit} />
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
-												<FormField
-													control={form.control}
-													name="destination_to"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel className="font-semibold text-sm text-gray-500">
-																To <span className="text-red-500"> *</span>
-															</FormLabel>
-															<FormControl>
-																<Input {...field} disabled={!edit} />
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
-											</div>
+											Flight Date <span className="text-red-500"> *</span>
 										</div>
-
-										<div className="grid gap-8">
-											<div className="grid grid-auto-fit-lg gap-8">
+										<div>
+											Flight Time <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											Flight No. <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											From <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											To <span className="text-red-500"> *</span>
+										</div>
+										<div>Hotel Name</div>
+										<div>Check In</div>
+										<div>Check Out</div>
+									</div>
+									<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
+										{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+											<div key={i} className={colFlightClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
 												<FormField
 													control={form.control}
-													name="transit_flight_date"
+													name="logistic_arrangement"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Transit Flight Date</FormLabel>
 															<Popover>
 																<PopoverTrigger asChild>
 																	<FormControl>
@@ -1105,15 +1007,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			disabled={!edit}
 																			variant={"outline"}
 																			className={cn(
-																				"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
-																				!field.value && "text-muted-foreground",
+																				"w-full text-left font-normal border-none disabled:opacity-100",
 																			)}
 																		>
-																			<div className="bg-gray-100 h-[43px] w-[44px] px-3 text-gray-900 grid place-items-center relative left-[2px] rounded-l-xl">
-																				<CalenderIcon size={20} />
-																			</div>
-																			{field.value ? (
-																				format(new Date(field.value), "PPP")
+																			{field.value && field.value[i] && field.value[i].flight_date ? (
+																				format(new Date(field.value[i].flight_date!), "PPP")
 																			) : (
 																				<span>Pick a date</span>
 																			)}
@@ -1123,13 +1021,21 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																<PopoverContent className="w-auto p-0" align="start">
 																	<Calendar
 																		mode="single"
-																		selected={field.value!}
+																		selected={field.value?.[i]?.flight_date!}
 																		onSelect={date => {
 																			if (date !== undefined) {
 																				date.setHours(date.getHours() + 8);
-																				field.onChange(date);
-																				field.value = new Date(date);
+																				field.onChange(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, flight_date: date } : item,
+																					),
+																				);
 																			}
+																		}}
+																		disabled={date => {
+																			const today = new Date();
+																			today.setHours(0, 0, 0, 0);
+																			return date < today;
 																		}}
 																		initialFocus
 																	/>
@@ -1141,40 +1047,22 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												/>
 												<FormField
 													control={form.control}
-													name="transit_flight_time"
+													name="logistic_arrangement"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Transit Flight Time</FormLabel>
 															<FormControl>
-																<Input type="time" {...field} value={field.value || ""} disabled={!edit} />
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
-											</div>
-											<FormField
-												control={form.control}
-												name="transit_flight_number"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Transit Flight Number</FormLabel>
-														<FormControl>
-															<Input {...field} disabled={!edit} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<div className="grid grid-auto-fit-lg gap-8 ">
-												<FormField
-													control={form.control}
-													name="transit_destination_from"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel>Transit From</FormLabel>
-															<FormControl>
-																<Input placeholder="" {...field} disabled={!edit} />
+																<Input
+																	disabled={!edit}
+																	className="border-none shadow-none disabled:hover:shadow-none"
+																	type="time"
+																	value={field.value?.[i]?.flight_time || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, flight_time: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -1182,129 +1070,433 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												/>
 												<FormField
 													control={form.control}
-													name="transit_destination_to"
+													name="logistic_arrangement"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Transit To</FormLabel>
 															<FormControl>
-																<Input placeholder="" {...field} disabled={!edit} />
+																<Input
+																	disabled={!edit}
+																	className="border-none shadow-none disabled:hover:shadow-none"
+																	value={field.value?.[i]?.flight_number || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, flight_number: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
 															</FormControl>
 															<FormMessage />
 														</FormItem>
 													)}
 												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	disabled={!edit}
+																	className="border-none shadow-none disabled:hover:shadow-none"
+																	value={field.value?.[i]?.destination_from || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, destination_from: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	disabled={!edit}
+																	className="border-none shadow-none disabled:hover:shadow-none"
+																	value={field.value?.[i]?.destination_to || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, destination_to: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	disabled={!edit}
+																	className="border-none shadow-none disabled:hover:shadow-none"
+																	value={field.value?.[i]?.hotel_name || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, hotel_name: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<Popover>
+																<PopoverTrigger asChild>
+																	<FormControl>
+																		<Button
+																			disabled={!edit}
+																			variant={"outline"}
+																			className={cn(
+																				"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
+																				!field.value && "text-muted-foreground",
+																			)}
+																		>
+																			{field.value && field.value[i] && field.value[i].check_in_date ? (
+																				format(new Date(field.value?.[i].check_in_date!), "PPP")
+																			) : (
+																				<span>Pick a date</span>
+																			)}
+																		</Button>
+																	</FormControl>
+																</PopoverTrigger>
+																<PopoverContent className="w-auto p-0" align="start">
+																	<Calendar
+																		mode="single"
+																		selected={
+																			field.value && field.value[i]
+																				? (field.value[i].check_in_date as Date)
+																				: undefined
+																		}
+																		onSelect={date => {
+																			if (date !== undefined) {
+																				date.setHours(date.getHours() + 8);
+																				field.onChange(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, check_in_date: date } : item,
+																					),
+																				);
+																			}
+																		}}
+																		disabled={date => {
+																			const today = new Date();
+																			today.setHours(0, 0, 0, 0);
+																			return date < today;
+																		}}
+																		initialFocus
+																	/>
+																</PopoverContent>
+															</Popover>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<Popover>
+																<PopoverTrigger asChild>
+																	<FormControl>
+																		<Button
+																			disabled={!edit}
+																			variant={"outline"}
+																			className={cn(
+																				"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
+																			)}
+																		>
+																			{field.value && field.value[i] && field.value[i].check_out_date ? (
+																				format(new Date(field.value?.[i].check_out_date!), "PPP")
+																			) : (
+																				<span>Pick a date</span>
+																			)}
+																		</Button>
+																	</FormControl>
+																</PopoverTrigger>
+																<PopoverContent className="w-auto p-0" align="start">
+																	<Calendar
+																		mode="single"
+																		selected={
+																			field.value &&
+																			field.value[i] &&
+																			field.value[i].check_out_date !== null &&
+																			field.value[i].check_out_date
+																				? (field.value[i].check_out_date as Date)
+																				: undefined
+																		}
+																		onSelect={date => {
+																			if (date !== undefined) {
+																				date.setHours(date.getHours() + 8);
+																				field.onChange(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, check_out_date: date } : item,
+																					),
+																				);
+																			}
+																		}}
+																		disabled={date => {
+																			let today = form.getValues("logistic_arrangement")?.[i].check_out_date;
+																			if (today === undefined) {
+																				today = new Date();
+																				today.setHours(0, 0, 0, 0);
+																			} else {
+																				today?.setHours(0, 0, 0, 0);
+																			}
+																			return date < today!;
+																		}}
+																		initialFocus
+																	/>
+																</PopoverContent>
+															</Popover>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+
+												<div className="grid place-items-center">
+													<X
+														className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${
+															edit ? "cursor-pointer" : "cursor-not-allowed"
+														}`}
+														onClick={() => {
+															if (!edit) return;
+															const values = form.getValues("logistic_arrangement");
+															if (values?.length! <= 2) {
+																toast.error("2 flights are needed for go and return");
+																return;
+															}
+															if (Array.isArray(values) && i >= 0 && i < values.length) {
+																values.splice(i, 1);
+																form.setValue("logistic_arrangement", values);
+																form.trigger("logistic_arrangement");
+																console.log(form.getValues("logistic_arrangement"));
+															}
+														}}
+													/>
+												</div>
 											</div>
+										))}
+									</div>
+								</>
+							) : (
+								<>
+									{form.getValues("logistic_arrangement") && form.getValues("logistic_arrangement")?.length! > 0 ? (
+										<>
+											<div className={colHotelClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+												<div>Hotel Name</div>
+												<div>Check In</div>
+												<div>Check Out</div>
+											</div>
+											<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
+												{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+													<div
+														key={i}
+														className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
+													>
+														<FormField
+															control={form.control}
+															name="logistic_arrangement"
+															render={({ field }) => (
+																<FormItem>
+																	<FormControl>
+																		<Input
+																			disabled={!edit}
+																			placeholder="Hotel Name"
+																			className="border-none shadow-none disabled:hover:shadow-none"
+																			value={field.value?.[i]?.hotel_name || ""}
+																			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																				const newValue = field.value?.map((item, index) =>
+																					index === i ? { ...item, hotel_name: e.target.value } : item,
+																				);
+																				field.onChange(newValue);
+																			}}
+																		/>
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+
+														<FormField
+															control={form.control}
+															name="logistic_arrangement"
+															render={({ field }) => (
+																<FormItem>
+																	<Popover>
+																		<PopoverTrigger asChild>
+																			<FormControl>
+																				<Button
+																					disabled={!edit}
+																					variant={"outline"}
+																					className={cn(
+																						"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
+																						!field.value && "text-muted-foreground",
+																					)}
+																				>
+																					{field.value && field.value[i] && field.value[i].check_in_date ? (
+																						format(new Date(field.value?.[i].check_in_date!), "PPP")
+																					) : (
+																						<span>Pick a date</span>
+																					)}
+																				</Button>
+																			</FormControl>
+																		</PopoverTrigger>
+																		<PopoverContent className="w-auto p-0" align="start">
+																			<Calendar
+																				mode="single"
+																				selected={
+																					field.value && field.value[i]
+																						? (field.value[i].check_in_date as Date)
+																						: undefined
+																				}
+																				onSelect={date => {
+																					if (date !== undefined) {
+																						date.setHours(date.getHours() + 8);
+																						console.log(new Date(date));
+																						field.onChange(
+																							field.value?.map((item, index) =>
+																								index === i
+																									? { ...item, check_in_date: new Date(date) }
+																									: item,
+																							),
+																						);
+																					}
+																				}}
+																				disabled={date => {
+																					const today = new Date();
+																					today.setHours(0, 0, 0, 0);
+																					return date < today;
+																				}}
+																				initialFocus
+																			/>
+																		</PopoverContent>
+																	</Popover>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+														<FormField
+															control={form.control}
+															name="logistic_arrangement"
+															render={({ field }) => (
+																<FormItem>
+																	<Popover>
+																		<PopoverTrigger asChild>
+																			<FormControl>
+																				<Button
+																					disabled={!edit}
+																					variant={"outline"}
+																					className={cn(
+																						"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
+																					)}
+																				>
+																					{field.value &&
+																					field.value[i] &&
+																					field.value[i].check_out_date ? (
+																						format(new Date(field.value?.[i].check_out_date!), "PPP")
+																					) : (
+																						<span>Pick a date</span>
+																					)}
+																				</Button>
+																			</FormControl>
+																		</PopoverTrigger>
+																		<PopoverContent className="w-auto p-0" align="start">
+																			<Calendar
+																				mode="single"
+																				selected={
+																					field.value &&
+																					field.value[i] &&
+																					field.value[i].check_out_date !== null &&
+																					field.value[i].check_out_date
+																						? (field.value[i].check_out_date as Date)
+																						: undefined
+																				}
+																				onSelect={date => {
+																					if (date !== undefined) {
+																						date.setHours(date.getHours() + 8);
+																						field.onChange(
+																							field.value?.map((item, index) =>
+																								index === i
+																									? { ...item, check_out_date: new Date(date) }
+																									: item,
+																							),
+																						);
+																					}
+																				}}
+																				disabled={date => {
+																					let today = new Date(form.getValues("logistic_arrangement")?.[i].check_out_date ?? "");
+																					if (today === undefined) {
+																						today = new Date();
+																						today.setHours(0, 0, 0, 0);
+																					} else {
+																						today?.setHours(0, 0, 0, 0);
+																					}
+																					return date < today!;
+																				}}
+																				initialFocus
+																			/>
+																		</PopoverContent>
+																	</Popover>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+
+														<div className="grid place-items-center">
+															<X
+																className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${
+																	edit ? "cursor-pointer" : "cursor-not-allowed"
+																}`}
+																onClick={() => {
+																	if (!edit) return;
+																	const values = form.getValues("logistic_arrangement");
+																	if (Array.isArray(values) && i >= 0 && i < values.length) {
+																		values.splice(i, 1);
+																		form.setValue("logistic_arrangement", values);
+																		form.trigger("logistic_arrangement");
+																	}
+
+																	// set null if the array is empty
+																	if (values?.length === 0) {
+																		form.setValue("logistic_arrangement", null);
+																	}
+																}}
+															/>
+														</div>
+													</div>
+												))}
+											</div>
+										</>
+									) : (
+										<div className="text-center text-muted-foreground w-full h-48 rounded-xl grid place-items-center bg-gray-100">
+											No logistic arrangement added
 										</div>
-									</>
-								)}
-
-								<FormField
-									control={form.control}
-									name="hotel_name"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="font-semibold text-sm text-gray-500">Hotel Name</FormLabel>
-											<FormControl>
-												<Input {...field} disabled={!edit} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
 									)}
-								/>
-
-								<div className="grid grid-auto-fit-lg gap-8 ">
-									<FormField
-										control={form.control}
-										name="check_in_date"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel className="font-semibold text-sm text-gray-500">Hotel Check In</FormLabel>
-												<Popover>
-													<PopoverTrigger asChild>
-														<FormControl>
-															<Button
-																disabled={!edit}
-																variant={"outline"}
-																className={cn(
-																	"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
-																	!field.value && "text-muted-foreground",
-																)}
-															>
-																<div className="bg-gray-100 h-[43px] w-[44px] px-3 text-gray-900 grid place-items-center relative left-[2px] rounded-l-xl">
-																	<CalenderIcon size={20} />
-																</div>
-																{field.value ? format(field.value, "PPP") : <span>Not Filled</span>}
-															</Button>
-														</FormControl>
-													</PopoverTrigger>
-													<PopoverContent className="w-auto p-0" align="start">
-														<Calendar
-															mode="single"
-															selected={field.value!}
-															onSelect={date => {
-																field.onChange(date);
-																if (date !== undefined) {
-																	date.setHours(date.getHours() + 8);
-																	field.value = new Date(date);
-																}
-															}}
-															initialFocus
-														/>
-													</PopoverContent>
-												</Popover>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="check_out_date"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel className="font-semibold text-sm text-gray-500">Hotel Check Out</FormLabel>
-												<Popover>
-													<PopoverTrigger asChild>
-														<FormControl>
-															<Button
-																disabled={!edit}
-																variant={"outline"}
-																className={cn(
-																	"w-full h-12 flex items-center justify-start p-0 gap-2 font-semibold text-[15px] mt-0 rounded-xl overflow-hidden shadow-[0_0_0_2px_#EFEFEF_inset] hover:shadow-[0_0_0_2px_#9A9FA5_inset] hover:border-[#dbdbdb] focus:shadow-[0_0_0_2px_#9A9FA5_inset] focus:border-[#dbdbdb] border-none hover:bg-white transition-all",
-																	!field.value && "text-muted-foreground",
-																)}
-															>
-																<div className="bg-gray-100 h-[43px] w-[44px] px-3 text-gray-900 grid place-items-center relative left-[2px] rounded-l-xl">
-																	<CalenderIcon size={20} />
-																</div>
-																{field.value ? format(field.value, "PPP") : <span>Not Filled</span>}
-															</Button>
-														</FormControl>
-													</PopoverTrigger>
-													<PopoverContent className="w-auto p-0" align="start">
-														<Calendar
-															mode="single"
-															selected={field.value!}
-															onSelect={date => {
-																field.onChange(date);
-																if (date !== undefined) {
-																	date.setHours(date.getHours() + 8);
-																	field.value = new Date(date);
-																}
-															}}
-															disabled={date => {
-																const checkInDate = form.getValues("check_in_date");
-																return date < checkInDate!;
-															}}
-															initialFocus
-														/>
-													</PopoverContent>
-												</Popover>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								</div>
-							</div>
+								</>
+							)}
 						</section>
 
 						<section className="section-4 bg-white rounded-lg p-4 dark:bg-dark_mode_card">
@@ -1663,7 +1855,12 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<span className="text-red-500"> (Fill in by AAO)</span>
 											</FormLabel>
 											<FormControl>
-												<RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-1" disabled={!edit}>
+												<RadioGroup
+													onValueChange={field.onChange}
+													defaultValue={field.value}
+													className="flex space-x-1"
+													disabled={!edit}
+												>
 													<FormItem className="flex items-center space-x-3 space-y-0">
 														<FormControl>
 															<RadioGroupItem value="Yes" />

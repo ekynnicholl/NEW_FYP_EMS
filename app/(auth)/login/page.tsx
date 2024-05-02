@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import login_bg from "@/public/images/event_manager.png";
 import swin_logo from "@/public/swinburne_logo.png"
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { auth, provider } from "../../../google_config";
+import { provider } from "../../../google_config";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import cookie from 'js-cookie';
 import ReCAPTCHA from "react-google-recaptcha";
 import toast from 'react-hot-toast';
 import loadingGIF from "@/public/loading_bird.gif";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 type Info = {
 	id: string;
@@ -26,8 +27,8 @@ export default function Login() {
 	const recaptchaRef = useRef<ReCAPTCHA>(null);
 	const isCompact = typeof window !== 'undefined' && window.innerWidth <= 640;
 	const [isLoading, setIsLoading] = useState(false);
+	const auth = getAuth();
 
-	// Toggle Password Visibility
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
 	};
@@ -39,28 +40,15 @@ export default function Login() {
 	const [errorMessageLogin, setErrorMessageLogin] = useState<string | null>(null);
 
 	const supabase = createClientComponentClient();
-	const [info, setInfo] = useState<Info>({} as Info);
-	const [infos, setInfos] = useState<Info[]>([] as Info[]);
 
-	// Fetch data from database
 	useEffect(() => {
-		const authToken = cookie.get('authToken');
-		if (authToken) {
-			router.push("/homepage");
-		}
-
-		const fetchInfos = async () => {
-			const { data } = await supabase.from("login").select("id, firebase_uid, activation");
-			setInfos(data || []); // Ensure data is not null
-			if (data && data.length > 0) {
-				// Assuming you want to use the first item in the 'data' array
-				setInfo(data[0]);
+		onAuthStateChanged(auth, user => {
+			if (user) {
+				router.push("/dashboard");
 			}
-		};
-		fetchInfos();
-	}, [supabase, router]);
+		});
+	}, [auth, router]);
 
-	// Handle Google SignIn Button Click
 	const handleGoogleSignIn = async (info: Info) => {
 		try {
 			const result = await signInWithPopup(auth, provider);
@@ -88,7 +76,7 @@ export default function Login() {
 				if (firebase_uid === userId && dbEmailAddress === email_address) {
 					// setIsLoading(true);
 					// toast.success('You have logged in successfully.');
-					router.push("/homepage");
+					router.push("/dashboard");
 
 					// Set the cookies
 					cookie.set('authToken', userId);
@@ -103,11 +91,6 @@ export default function Login() {
 		}
 	};
 
-	useEffect(() => {
-		setValue(localStorage.getItem("email"));
-	}, []); // take the value from localStorage
-
-	// Handle Login Button Click
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -118,34 +101,29 @@ export default function Login() {
 
 		try {
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
-			const userId = user.uid; // Extract user ID
+			const userId = user.uid;
 			const email_address = user.email;
 			const email_address_verified = user.emailVerified;
-			console.log(user, "authData");
-			localStorage.setItem("userId", userId); // Save user ID to localStorage
 
 			const { data, error } = await supabase
 				.from('login')
 				.select('firebase_uid, email_address, activation')
-				.eq('firebase_uid', userId);
+				.eq('firebase_uid', userId)
+				.single();
 
 			if (error) {
 				console.error('Error fetching user data:', error.message);
 				return;
 			}
 
-			if (data && data.length > 0) {
-				const userInfo = data[0];
-				const { firebase_uid, email_address: dbEmailAddress, activation } = userInfo;
+			if (data) {
+				const { firebase_uid, email_address: dbEmailAddress, activation } = data;
 
 				// Redirect to the dashboard or another page after successful login
 				if (firebase_uid === userId && dbEmailAddress === email_address && email_address_verified == true && activation === true) {
 					setIsLoading(true);
 					toast.success('You have logged in successfully.');
-					router.push("/homepage");
-
-					// Set the cookies
-					cookie.set('authToken', userId);
+					router.push("/dashboard");
 				} else {
 					if (activation == false) {
 						toast.error("Your account has been de-activated. Please contact the Academic Administration Office for more information.");
@@ -176,7 +154,7 @@ export default function Login() {
 		<>
 			{isLoading ? (
 				<div className="flex flex-col justify-center items-center h-screen bg-[#ffffff] z-[999]">
-					<img src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
+					<Image width={100} height={100} src={loadingGIF.src} alt="" className="w-[100px] lg:w-[100px]" />
 				</div>
 			) : (
 				<div>

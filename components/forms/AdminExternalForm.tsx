@@ -10,7 +10,6 @@ import { format } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
-import cookie from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
 import NTFPDF from "@/components/forms/NTFPDF";
 import TooltipIcon from "@/components/icons/TooltipIcon";
@@ -44,6 +43,7 @@ import { sendContactForm } from "@/lib/api";
 import type { FieldValues } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { getAuth } from "firebase/auth";
+import { X } from "lucide-react"
 
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
@@ -93,6 +93,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
 
+	const auth = getAuth();
+	const user = auth.currentUser;
+
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [submitOpen, setSubmitOpen] = useState(false);
 	const [applicantOpen, setApplicantOpen] = useState(false);
@@ -103,15 +106,11 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	const [showCommentInput, setShowCommentInput] = useState(false);
 
-	const [authToken, setAuthToken] = useState<string | undefined>("");
-	useEffect(() => {
-		setAuthToken(cookie.get("authToken"));
-	}, [authToken]);
+	const [authToken, setAuthToken] = useState<string | undefined>(auth.currentUser?.uid);
 
 	let displayName: string | null = null;
 	let email: string | null = null;
-	const auth = getAuth();
-	const user = auth.currentUser;
+
 	if (user !== null) {
 		displayName = user.displayName;
 		email = user.email;
@@ -179,14 +178,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			hrdf_claimable: externalForm.hrdf_claimable!,
 			total_hours: externalForm.total_hours ?? null,
 
-			flight_date: externalForm.flight_date ? new Date(externalForm.flight_date) : null,
-			flight_time: externalForm.flight_time ?? null,
-			flight_number: externalForm.flight_number!,
-			destination_from: externalForm.destination_from!,
-			destination_to: externalForm.destination_to!,
-			check_in_date: externalForm.check_in_date ? new Date(externalForm.check_in_date) : null,
-			check_out_date: externalForm.check_out_date ? new Date(externalForm.check_out_date) : null,
-			hotel_name: externalForm.hotel_name!,
+			// @ts-ignore
+			logistic_arrangement: externalForm.logistic_arrangement,
 
 			course_fee: externalForm.course_fee!,
 			airfare_fee: externalForm.airfare_fee!,
@@ -248,7 +241,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 				.select("*");
 
 			if (error) {
-				// console.error("Error fetching emails:", error);
 				return;
 			}
 
@@ -256,13 +248,10 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		};
 
 		fetchEmails();
-	}, [])
+	}, [supabase])
 
 	const checkFormStatus = () => {
 		setApplicantOpen(false);
-		if (form.getValues("check_out_date")! < form.getValues("check_in_date")!) {
-			toast.error("Check out date cannot be earlier than check in date");
-		}
 		if (form.getValues("completion_date") < form.getValues("commencement_date")) {
 			toast.error("Commencement date must be before completion date.");
 		}
@@ -466,40 +455,52 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const createNotifications = async (message: string, formId: string) => {
-		try {
-			const notifDesc = message;
-			const notifType = "Nominations/ Travelling Form";
-			const notifLink = `/form/external/${formId}`;
+		const notifDesc = message;
+		const notifType = "Nominations/ Travelling Form";
+		const notifLink = `/form/external/${formId}`;
 
-			const { data: notificationData, error: notificationError } = await supabase
-				.from("notifications")
-				.insert([
-					{
-						notifDesc,
-						notifType,
-						notifLink,
-					},
-				]);
+		const { data: notificationData, error: notificationError } = await supabase
+			.from("notifications")
+			.insert([
+				{
+					notifDesc,
+					notifType,
+					notifLink,
+				},
+			]);
 
-			if (notificationError) {
+		if (notificationError) {
 
-			} else {
-
-			}
-		} catch (error) {
+		} else {
 
 		}
 	};
 
 	const fetchAndUpdateFormData = async (formId: string, formStage: string) => {
-		try {
-			const { data: updatedData, error: updatedError } = await supabase
-				.from("external_forms")
-				.select("*")
-				.eq("id", formId);
+		const { data: updatedData, error: updatedError } = await supabase
+			.from("external_forms")
+			.select("*")
+			.eq("id", formId);
 
-			if (updatedError) {
-				// console.error("Error fetching updated data:", updatedError);
+		if (updatedError) {
+			// console.error("Error fetching updated data:", updatedError);
+		} else {
+			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+
+			let message = "";
+
+			if (formStage == "to_1") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reverted back to the user with reason(s): ${updatedData[0].revertComment}`;
+			} else if (formStage == "to_2") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been re-submitted by the user.`;
+			} else if (formStage == "to_3") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reviewed by AAO and submitted to HOS/ ADCR/ MGR.`;
+			} else if (formStage == "to_4") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been reviewed by HOS/ ADCR/ MGR and submitted to HMU/ Dean.`;
+			} else if (formStage == "to_5") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been approved.`;
+			} else if (formStage == "to_6") {
+				message = `The Nominations/ Travelling Form for ${updatedData[0].program_title}, submitted by ${updatedData[0].full_name} (${updatedData[0].staff_id}) has been rejected with reason(s): ${updatedData[0].revertComment}`;
 			} else {
 				showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 
@@ -527,8 +528,12 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 				router.push("/external_status");
 			}
-		} catch (error) {
-			// console.error("Error in fetchAndUpdateFormData:", error);
+
+			createNotifications(message, updatedData[0].id);
+
+			sendContactForm(updatedData);
+
+			router.push("/external_status");
 		}
 	};
 
@@ -641,6 +646,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	};
 
 	const [group, setGroup] = useState(true);
+
+	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px]";
+	const colHotelClass = "grid grid-cols-[1fr_200px_200px]";
 
 	return (
 		<div>
@@ -1090,29 +1098,369 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 								<section className="section-3" id="Logistic Arrangement">
 									<h2 className="text-2xl font-bold mb-4">3. Logistic Arrangement</h2>
-									<div className="grid gap-8">
-										{form.getValues("transport") === "aeroplane" && (
-											<>
-												<div className="grid grid-auto-fit-lg gap-8">
-													<FormField
-														control={form.control}
-														name="flight_date"
-														render={({ field }) => (
-															<FormItem>
-																<FormLabel>Flight Date <span className="text-red-500"> *</span></FormLabel>
-																<FormControl>
+									<div className="grid">
+									{form.getValues("transport") === "aeroplane" && form.getValues("logistic_arrangement") ? (
+								<>
+									<div className={colFlightClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+										<div>
+											Flight Date <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											Flight Time <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											Flight No. <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											From <span className="text-red-500"> *</span>
+										</div>
+										<div>
+											To <span className="text-red-500"> *</span>
+										</div>
+										<div>Hotel Name</div>
+										<div>Check In</div>
+										<div>Check Out</div>
+									</div>
+									<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
+										{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+											<div key={i} className={colFlightClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<Popover>
+																<PopoverTrigger asChild>
+																	<FormControl>
+																		<Button
+																			variant={"outline"}
+																			className={cn("w-full text-left font-normal border-none")}
+																		>
+																			{field.value &&
+																			field.value[i] &&
+																			field.value[i].flight_date ? (
+																				format(new Date(field.value[i].flight_date!), "PPP")
+																			) : (
+																				<span>Pick a date</span>
+																			)}
+																		</Button>
+																	</FormControl>
+																</PopoverTrigger>
+																<PopoverContent className="w-auto p-0" align="start">
+																	<Calendar
+																		mode="single"
+																		selected={field.value?.[i]?.flight_date!}
+																		onSelect={date => {
+																			if (date !== undefined) {
+																				date.setHours(date.getHours() + 8);
+																				field.onChange(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, flight_date: date } : item,
+																					),
+																				);
+																			}
+																		}}
+																		disabled={date => {
+																			const today = new Date();
+																			today.setHours(0, 0, 0, 0);
+																			return date < today;
+																		}}
+																		initialFocus
+																	/>
+																</PopoverContent>
+															</Popover>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	className="border-none shadow-none focus:shadow-none focus:ring-transparent focus:border-none"
+																	type="time"
+																	value={field.value?.[i]?.flight_time || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, flight_time: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	className="border-none focus:ring-transparent shadow-none"
+																	value={field.value?.[i]?.flight_number || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, flight_number: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	className="border-none focus:ring-transparent shadow-none"
+																	value={field.value?.[i]?.destination_from || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, destination_from: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	className="border-none focus:ring-transparent shadow-none"
+																	value={field.value?.[i]?.destination_to || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, destination_to: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<FormControl>
+																<Input
+																	className="border-none focus:ring-transparent shadow-none"
+																	value={field.value?.[i]?.hotel_name || ""}
+																	onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																		const newValue = field.value?.map((item, index) =>
+																			index === i ? { ...item, hotel_name: e.target.value } : item,
+																		);
+																		field.onChange(newValue);
+																	}}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<Popover>
+																<PopoverTrigger asChild>
+																	<FormControl>
+																		<Button
+																			variant={"outline"}
+																			className={cn(
+																				"w-full text-left font-normal rounded-none border-none pl-2",
+																				!field.value && "text-muted-foreground",
+																			)}
+																		>
+																			{field.value &&
+																			field.value[i] &&
+																			field.value[i].check_in_date ? (
+																				format(new Date(field.value?.[i].check_in_date!), "PPP")
+																			) : (
+																				<span>Pick a date</span>
+																			)}
+																		</Button>
+																	</FormControl>
+																</PopoverTrigger>
+																<PopoverContent className="w-auto p-0" align="start">
+																	<Calendar
+																		mode="single"
+																		selected={
+																			field.value && field.value[i]
+																				? (field.value[i].check_in_date as Date)
+																				: undefined
+																		}
+																		onSelect={date => {
+																			if (date !== undefined) {
+																				date.setHours(date.getHours() + 8);
+																				field.onChange(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, check_in_date: date } : item,
+																					),
+																				);
+																			}
+																		}}
+																		disabled={date => {
+																			const today = new Date();
+																			today.setHours(0, 0, 0, 0);
+																			return date < today;
+																		}}
+																		initialFocus
+																	/>
+																</PopoverContent>
+															</Popover>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name="logistic_arrangement"
+													render={({ field }) => (
+														<FormItem>
+															<Popover>
+																<PopoverTrigger asChild>
+																	<FormControl>
+																		<Button
+																			variant={"outline"}
+																			className={cn(
+																				"w-full text-left font-normal rounded-none border-none pl-2",
+																			)}
+																		>
+																			{field.value &&
+																			field.value[i] &&
+																			field.value[i].check_out_date ? (
+																				format(new Date(field.value?.[i].check_out_date!), "PPP")
+																			) : (
+																				<span>Pick a date</span>
+																			)}
+																		</Button>
+																	</FormControl>
+																</PopoverTrigger>
+																<PopoverContent className="w-auto p-0" align="start">
+																	<Calendar
+																		mode="single"
+																		selected={
+																			field.value &&
+																			field.value[i] &&
+																			field.value[i].check_out_date !== null &&
+																			field.value[i].check_out_date
+																				? (field.value[i].check_out_date as Date)
+																				: undefined
+																		}
+																		onSelect={date => {
+																			if (date !== undefined) {
+																				date.setHours(date.getHours() + 8);
+																				field.onChange(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, check_out_date: date } : item,
+																					),
+																				);
+																			}
+																		}}
+																		disabled={date => {
+																			let today = form.getValues("logistic_arrangement")?.[i].check_out_date;
+																			if (today === undefined) {
+																				today = new Date();
+																				today.setHours(0, 0, 0, 0);
+																			} else {
+																				today?.setHours(0, 0, 0, 0);
+																			}
+																			return date < today!;
+																		}}
+																		initialFocus
+																	/>
+																</PopoverContent>
+															</Popover>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+											</div>
+										))}
+									</div>
+								</>
+							) : (
+								<>
+									{form.getValues("logistic_arrangement") && form.getValues("logistic_arrangement")?.length! > 0 ? (
+										<>
+											<div className={colHotelClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+												<div>Hotel Name</div>
+												<div>Check In</div>
+												<div>Check Out</div>
+											</div>
+											<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
+												{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+													<div
+														key={i}
+														className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
+													>
+														<FormField
+															control={form.control}
+															name="logistic_arrangement"
+															render={({ field }) => (
+																<FormItem>
+																	<FormControl>
+																		<Input
+																			placeholder="Hotel Name"
+																			className="border-none focus:ring-transparent shadow-none"
+																			value={field.value?.[i]?.hotel_name || ""}
+																			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+																				const newValue = field.value?.map((item, index) =>
+																					index === i ? { ...item, hotel_name: e.target.value } : item,
+																				);
+																				field.onChange(newValue);
+																			}}
+																		/>
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+
+														<FormField
+															control={form.control}
+															name="logistic_arrangement"
+															render={({ field }) => (
+																<FormItem>
 																	<Popover>
 																		<PopoverTrigger asChild>
 																			<FormControl>
 																				<Button
-																					disabled={externalForm.formStage != 1}
 																					variant={"outline"}
 																					className={cn(
-																						"w-full pl-3 text-left font-normal",
+																						"w-full text-left font-normal rounded-none border-none pl-2",
 																						!field.value && "text-muted-foreground",
-																					)}>
-																					{field.value ? (
-																						format(field.value, "PPP")
+																					)}
+																				>
+																					{field.value &&
+																					field.value[i] &&
+																					field.value[i].check_in_date ? (
+																						format(new Date(field.value?.[i].check_in_date!), "PPP")
 																					) : (
 																						<span>Pick a date</span>
 																					)}
@@ -1122,213 +1470,111 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																		<PopoverContent className="w-auto p-0" align="start">
 																			<Calendar
 																				mode="single"
-																				selected={field.value!}
+																				selected={
+																					field.value && field.value[i]
+																						? (field.value[i].check_in_date as Date)
+																						: undefined
+																				}
 																				onSelect={date => {
-																					field.onChange(date);
 																					if (date !== undefined) {
 																						date.setHours(date.getHours() + 8);
-																						field.value = new Date(date);
+																						field.onChange(
+																							field.value?.map((item, index) =>
+																								index === i ? { ...item, check_in_date: date } : item,
+																							),
+																						);
 																					}
 																				}}
 																				disabled={date => {
-																					const today = form.getValues("flight_date");
+																					const today = new Date();
+																					today.setHours(0, 0, 0, 0);
+																					return date < today;
+																				}}
+																				initialFocus
+																			/>
+																		</PopoverContent>
+																	</Popover>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+														<FormField
+															control={form.control}
+															name="logistic_arrangement"
+															render={({ field }) => (
+																<FormItem>
+																	<Popover>
+																		<PopoverTrigger asChild>
+																			<FormControl>
+																				<Button
+																					variant={"outline"}
+																					className={cn(
+																						"w-full text-left font-normal rounded-none border-none pl-2",
+																					)}
+																				>
+																					{field.value &&
+																					field.value[i] &&
+																					field.value[i].check_out_date ? (
+																						format(new Date(field.value?.[i].check_out_date!), "PPP")
+																					) : (
+																						<span>Pick a date</span>
+																					)}
+																				</Button>
+																			</FormControl>
+																		</PopoverTrigger>
+																		<PopoverContent className="w-auto p-0" align="start">
+																			<Calendar
+																				mode="single"
+																				selected={
+																					field.value &&
+																					field.value[i] &&
+																					field.value[i].check_out_date !== null &&
+																					field.value[i].check_out_date
+																						? (field.value[i].check_out_date as Date)
+																						: undefined
+																				}
+																				onSelect={date => {
+																					if (date !== undefined) {
+																						date.setHours(date.getHours() + 8);
+																						field.onChange(
+																							field.value?.map((item, index) =>
+																								index === i
+																									? { ...item, check_out_date: date }
+																									: item,
+																							),
+																						);
+																					}
+																				}}
+																				disabled={date => {
+																					let today = form.getValues("logistic_arrangement")?.[i]
+																						.check_out_date;
+																					if (today === undefined) {
+																						today = new Date();
+																						today.setHours(0, 0, 0, 0);
+																					} else {
+																						today?.setHours(0, 0, 0, 0);
+																					}
 																					return date < today!;
 																				}}
 																				initialFocus
 																			/>
 																		</PopoverContent>
 																	</Popover>
-																</FormControl>
-																<FormMessage />
-															</FormItem>
-														)}
-													/>
-													<FormField
-														control={form.control}
-														name="flight_time"
-														render={({ field }) => (
-															<FormItem>
-																<FormLabel>Flight Time <span className="text-red-500"> *</span></FormLabel>
-																<FormControl>
-																	<Input
-																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
-																		{...field}
-																		value={field.value || ""}
-																	/>
-																</FormControl>
-																<FormMessage />
-															</FormItem>
-														)}
-													/>
-												</div>
-
-												<FormField
-													control={form.control}
-													name="flight_number"
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel>Flight Number <span className="text-red-500"> *</span></FormLabel>
-															<FormControl>
-																<Input
-																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
-																	{...field}
-																/>
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
-
-												<div>
-													<h2 className="font-medium mb-3">Destination</h2>
-													<div className="grid grid-auto-fit-lg gap-8 ">
-														<FormField
-															control={form.control}
-															name="destination_from"
-															render={({ field }) => (
-																<FormItem>
-																	<FormLabel>From <span className="text-red-500"> *</span></FormLabel>
-																	<FormControl>
-																		<Input
-																			disabled={externalForm.formStage != 1}
-																			className="disabled:text-black-500 disabled:opacity-100"
-																			{...field}
-																		/>
-																	</FormControl>
-																	<FormMessage />
-																</FormItem>
-															)}
-														/>
-														<FormField
-															control={form.control}
-															name="destination_to"
-															render={({ field }) => (
-																<FormItem>
-																	<FormLabel>To <span className="text-red-500"> *</span></FormLabel>
-																	<FormControl>
-																		<Input
-																			disabled={externalForm.formStage != 1}
-																			className="disabled:text-black-500 disabled:opacity-100"
-																			{...field}
-																		/>
-																	</FormControl>
 																	<FormMessage />
 																</FormItem>
 															)}
 														/>
 													</div>
-												</div>
-											</>
-										)}
-
-										<FormField
-											control={form.control}
-											name="hotel_name"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Hotel Name</FormLabel>
-													<FormControl>
-														<Input
-															disabled={externalForm.formStage != 1}
-															className="disabled:text-black-500 disabled:opacity-100"
-															{...field}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-
-										<div className="grid grid-auto-fit-lg gap-8 ">
-											<FormField
-												control={form.control}
-												name="check_in_date"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Check In</FormLabel>
-														<Popover>
-															<PopoverTrigger asChild>
-																<FormControl>
-																	<Button
-																		disabled={externalForm.formStage != 1}
-																		variant={"outline"}
-																		className={cn(
-																			"w-full pl-3 text-left font-normal disabled:opacity-100",
-																			!field.value && "text-muted-foreground",
-																		)}>
-																		{field.value ? format(field.value, "PPP") : <span>Not Filled</span>}
-																	</Button>
-																</FormControl>
-															</PopoverTrigger>
-															<PopoverContent className="w-auto p-0" align="start">
-																<Calendar
-																	mode="single"
-																	selected={field.value!}
-																	onSelect={date => {
-																		field.onChange(date);
-																		if (date !== undefined) {
-																			date.setHours(date.getHours() + 8);
-																			field.value = new Date(date);
-																		}
-																	}}
-																	disabled={date => {
-																		const today = new Date();
-																		return date < today;
-																	}}
-																	initialFocus
-																/>
-															</PopoverContent>
-														</Popover>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="check_out_date"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Check Out</FormLabel>
-														<Popover>
-															<PopoverTrigger asChild>
-																<FormControl>
-																	<Button
-																		disabled={externalForm.formStage != 1}
-																		variant={"outline"}
-																		className={cn(
-																			"w-full pl-3 text-left font-normal disabled:opacity-100",
-																			!field.value && "text-muted-foreground",
-																		)}>
-																		{field.value ? format(field.value, "PPP") : <span>Not Filled</span>}
-																	</Button>
-																</FormControl>
-															</PopoverTrigger>
-															<PopoverContent className="w-auto p-0" align="start">
-																<Calendar
-																	mode="single"
-																	selected={field.value!}
-																	onSelect={date => {
-																		field.onChange(date);
-																		if (date !== undefined) {
-																			date.setHours(date.getHours() + 8);
-																			field.value = new Date(date);
-																		}
-																	}}
-																	disabled={date => {
-																		const today = form.getValues("check_in_date");
-																		return date < today!;
-																	}}
-																	initialFocus
-																/>
-															</PopoverContent>
-														</Popover>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
+												))}
+											</div>
+										</>
+									) : (
+										<div className="text-center text-muted-foreground w-full h-48 rounded-xl grid place-items-center bg-gray-100">
+											No logistic arrangement added
 										</div>
+									)}
+								</>
+							)}
 									</div>
 								</section>
 
@@ -2283,7 +2529,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Verification Email</FormLabel>
-															<Select onValueChange={field.onChange} defaultValue={field.value}>
+															<Select onValueChange={field.onChange} defaultValue={field.value!}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />
@@ -2309,7 +2555,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													render={({ field }) => (
 														<FormItem>
 															<FormLabel>Approval Email</FormLabel>
-															<Select onValueChange={field.onChange} defaultValue={field.value}>
+															<Select onValueChange={field.onChange} defaultValue={field.value!}>
 																<FormControl>
 																	<SelectTrigger>
 																		<SelectValue placeholder="Please select an option" />

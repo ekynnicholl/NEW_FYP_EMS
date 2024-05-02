@@ -508,9 +508,9 @@ export default function Home() {
 				<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
 					<div className="inline-flex">
 						<span className="mt-[7px]">
-							<a href="/homepage">
+							<Link href="/dashboard">
 								<IoIosArrowBack className="text-2xl -mt-[1.5px] mr-[6px] text-slate-800 -ml-1 dark:text-dark_text" />
-							</a>
+							</Link>
 						</span>
 						<h1 className="text-xl lg:text-2xl font-bold">
 							<span className="ml-[5px] text-slate-800 dark:text-dark_text">Past Events</span>
