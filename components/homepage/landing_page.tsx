@@ -240,8 +240,8 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            <div className="border-b border-[#f5f5f5]"></div>
-            <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[40px]">
+            {/* <div className="border-b border-[#f5f5f5]"></div> */}
+            <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[50px] lg:-mt-[40px]">
                 <p className="">© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
             </div>
         </div>
