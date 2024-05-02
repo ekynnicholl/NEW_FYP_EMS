@@ -92,6 +92,9 @@ export default function Home() {
 
 	return (
 		<div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
+			<div>
+
+			</div>
 			<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card">
 				<div className="text-center">
 					<h1 className="font-bold p-5 text-[20px] dark:text-dark_text">Budget Expenditure/ Faculty/ School/ Unit</h1>
