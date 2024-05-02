@@ -232,9 +232,9 @@ export default function LandingPage() {
                         <h2 className="text-[#5EEAD4] text-[19px] font-semibold tracking-wide mt-0 lg:-mt-12">NAVIGATION</h2>
                         <ul className="mt-[10px] text-[#f5f5f5] tracking-wide text-lg">
                             <li className="text-base"><a href="#">Home</a></li>
-                            <li className="text-base mt-2 lg:mt-1"><a href="#upcomingEvents">Upcoming Event</a></li>
-                            <li className="text-base mt-2 lg:mt-1"><a href="#pastAttended">Past Attended Events</a></li>
-                            <li className="text-base mt-2 lg:mt-1"><a href="/form/external">Notification Travelling Form</a></li>
+                            <li className="text-base mt-2 lg:mt-[10px]"><a href="#upcomingEvents">Upcoming Event</a></li>
+                            <li className="text-base mt-2 lg:mt-[10px]"><a href="#pastAttended">Past Attended Events</a></li>
+                            <li className="text-base mt-2 lg:mt-[10px]"><a href="/form/external">Notification Travelling Form</a></li>
                         </ul>
                     </div>
                 </div>

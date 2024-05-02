@@ -141,7 +141,7 @@ const LandingIntro = () => {
                 />
             </animated.div>
 
-            <div className="flex justify-center items-center w-full sm:w-1/2 sm:ml-20 mb-8 sm:mb-0">
+            <div className="flex justify-center items-center w-full sm:w-1/2 lg:-ml-10 mb-8 sm:mb-0">
                 <div>
                     <animated.div style={fadeIn_Text1}>
                         <h1 className="text-[50px] lg:text-[72px] text-black font-bold"><span className="italic">{eventsCount}</span> Event(s)</h1>
