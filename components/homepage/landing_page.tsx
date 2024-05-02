@@ -171,8 +171,8 @@ export default function LandingPage() {
 
             <LandingIntro />
 
-            <div className="my-12 sm:my-32">
-                <div className="inset-0 transform skew-y-3 h-20 bg-[#ededed]"></div>
+            <div className="my-8 sm:my-32">
+                <div className="inset-0 transform skew-y-3 h-8 lg:h-20 bg-[#ededed]"></div>
             </div>
 
             <BestExperience />
