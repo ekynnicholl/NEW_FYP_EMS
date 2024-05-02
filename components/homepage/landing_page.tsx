@@ -119,11 +119,11 @@ export default function LandingPage() {
                                     <div
                                         ref={menuRef}
                                         tabIndex={-1}
-                                        className="absolute right-0 top-0 h-full w-64 bg-white border border-gray-200"
+                                        className="absolute right-0 top-0 h-full w-64 bg-white border border-gray-200 pr-[2px]"
                                     >
                                         <button
                                             type="button"
-                                            className="text-gray-600 hover:text-gray-800 absolute top-2 right-2 mt-1"
+                                            className="text-gray-600 hover:text-gray-800 absolute top-2 right-2 mt-1 pr-[2px]"
                                             onClick={() => setMenuOpen(false)}
                                             aria-label="Close menu"
                                         >
