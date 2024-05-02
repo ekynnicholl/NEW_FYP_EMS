@@ -134,16 +134,16 @@ export default function LandingPage() {
 
                                         <div className="p-4 text-right mt-6">
                                             <Link legacyBehavior href="#home">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Home</a>
+                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Home</a>
                                             </Link>
                                             <Link legacyBehavior href="#upcomingEvents">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Upcoming Event(s)</a>
+                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Upcoming Event(s)</a>
                                             </Link>
                                             <Link legacyBehavior href="#pastAttended">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Past Attended Event(s)</a>
+                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Past Attended Event(s)</a>
                                             </Link>
                                             <Link legacyBehavior href="/form/external">
-                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4" target="_blank" onClick={() => setMenuOpen(false)}>
+                                                <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
                                                     Nominations/ Travelling Form
                                                 </a>
                                             </Link>
@@ -240,7 +240,7 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            {/* <div className="border-b border-[#f5f5f5]"></div> */}
+            <div className="border-b border-[#f5f5f5]"></div>
             <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[50px] lg:-mt-[40px]">
                 <p className="">© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
             </div>
