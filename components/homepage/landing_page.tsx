@@ -8,7 +8,7 @@ import BestExperience from "@/components/homepage/best_experience";
 import UpcomingEventsLanding from "@/components/homepage/upcoming_events";
 import LandingIntro from "@/components/homepage/landing_intro";
 import PastAttended from "@/components/homepage/past_attended";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FaCircleArrowUp } from "react-icons/fa6";
 
 export default function LandingPage() {
@@ -55,10 +55,15 @@ export default function LandingPage() {
         });
     };
 
+
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+
     return (
-        <div className="scroll-smooth">
-            <nav className="text-black font-bold flex flex-col sm:flex-row justify-between items-center px-4 py-2 mt-2">
-                <div className="flex items-center sm:ml-28 mb-4 sm:mb-0">
+        <div className="scroll-smooth p-2 lg:p-0">
+
+            <nav className="text-black font-bold flex flex-col lg:flex-row justify-between items-center px-4 py-2 mt-2">
+                <div className="flex items-center lg:ml-28 mb-4 lg:mb-0 hidden lg:block">
                     <Image
                         src="/swinburne_logo.png"
                         alt="Swinburne Logo"
@@ -66,7 +71,7 @@ export default function LandingPage() {
                         height={50}
                     />
                 </div>
-                <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 sm:mr-10 text-center sm:text-left">
+                <div className="hidden lg:flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-6 lg:mr-10 text-center lg:text-left">
                     <Link legacyBehavior href="#upcomingEvents">
                         <a className="hover:text-slate-500">Upcoming Event(s)</a>
                     </Link>
@@ -86,11 +91,83 @@ export default function LandingPage() {
                 </div>
             </nav>
 
+            {/* Mobile Responsiveness */}
+
+            <div id="navbar" className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-[14px] bg-white z-50 transition-all duration-300 lg:hidden">
+                <div>
+                    <h1 className="text-xl font-bold text-slate-900 font-Nudito">
+                        <span className="text-slate-900">SWINBURNE</span>
+                    </h1>
+                </div>
+
+                <div>
+                    <div className="relative">
+                        <button
+                            type="button"
+                            className="text-slate-900 hover:text-gray-800 focus:outline-none focus:text-gray-800 -mt-[4px] float-right"
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            aria-label="Toggle menu"
+                        >
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </button>
+
+                        {menuOpen && (
+                            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-20 flex justify-center items-center">
+                                <div
+                                    ref={menuRef}
+                                    tabIndex={-1}
+                                    className="absolute right-0 top-0 h-full w-64 bg-white border border-gray-200"
+                                >
+                                    <button
+                                        type="button"
+                                        className="text-gray-600 hover:text-gray-800 absolute top-2 right-2"
+                                        onClick={() => setMenuOpen(false)}
+                                        aria-label="Close menu"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+
+                                    <div className="p-4 text-right mt-3">
+                                        <Link legacyBehavior href="#home">
+                                            <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Home</a>
+                                        </Link>
+                                        <Link legacyBehavior href="#upcomingEvents">
+                                            <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Upcoming Event(s)</a>
+                                        </Link>
+                                        <Link legacyBehavior href="#pastAttended">
+                                            <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200" onClick={() => setMenuOpen(false)}>Past Attended Event(s)</a>
+                                        </Link>
+                                        <Link legacyBehavior href="/form/external">
+                                            <a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mb-4" target="_blank" onClick={() => setMenuOpen(false)}>
+                                                Nominations/ Travelling Form
+                                            </a>
+                                        </Link>
+                                        <Link legacyBehavior href="/login">
+                                            <Button className="bg-white text-black border-2 border-black-500 font-bold hover:bg-slate-200 transition-all ease-in-out whitespace-nowrap px-2 py-1 text-[12px]" onClick={() => setMenuOpen(false)}>
+                                                Login as Admin
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+
+                    </div>
+                </div>
+            </div>
+
+
             {showScrollButton && (
                 <div onClick={scrollToTop} className="fixed bottom-4 right-4 cursor-pointer z-[999]">
-                    <FaCircleArrowUp size={48} />
+                    <FaCircleArrowUp className="text-4xl lg:text-6xl" />
                 </div>
             )}
+
 
             <LandingIntro />
 

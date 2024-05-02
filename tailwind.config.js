@@ -157,6 +157,8 @@ module.exports = {
 			},
 			fontFamily: {
 				'arial-narrow': ['Arial Narrow', 'sans-serif'],
+				JetBrains: ['JetBrains Mono Variable', 'monospace'],
+				Nudito: ['Nunito Variable','sans-serif']
 			},
 		},
 	},

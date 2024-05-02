@@ -132,16 +132,26 @@ const LandingIntro = () => {
 
     return (
         <div className="flex flex-col sm:flex-row justify-center items-center px-4 py-2 mt-2">
+            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 lg:hidden">
+                <Image
+                    src="/images/man-planning-on-calendar-vector.png"
+                    alt="Event Manager"
+                    width={550}
+                    height={50}
+                    className="mx-auto"
+                />
+            </animated.div>
+
             <div className="flex justify-center items-center w-full sm:w-1/2 sm:ml-20 mb-8 sm:mb-0">
                 <div>
                     <animated.div style={fadeIn_Text1}>
-                        <h1 className="text-[72px] text-black font-bold"><span className="italic">{eventsCount}</span> Event(s)</h1>
+                        <h1 className="text-[50px] lg:text-[72px] text-black font-bold"><span className="italic">{eventsCount}</span> Event(s)</h1>
                     </animated.div>
                     <animated.div style={fadeIn_Text2}>
-                        <h1 className="text-[72px] text-black font-bold">Created</h1>
+                        <h1 className="text-[50px] lg:text-[72px] text-black font-bold">Created</h1>
                     </animated.div>
                     <animated.div style={fadeIn_Text3}>
-                        <p className="text-[30px] mb-4"><span className="italic">{attendanceCount}</span> participants recorded so far!</p>
+                        <p className="text-[20px] lg:text-[30px] mb-4"><span className="italic">{attendanceCount}</span> participants recorded so far!</p>
                     </animated.div>
                     <animated.div style={fadeIn_Text4}>
                         <Link href="#upcomingEvents">
@@ -152,7 +162,7 @@ const LandingIntro = () => {
                     </animated.div>
                 </div>
             </div>
-            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2">
+            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 hidden lg:block">
                 <Image
                     src="/images/man-planning-on-calendar-vector.png"
                     alt="Event Manager"
