@@ -229,12 +229,12 @@ export default function LandingPage() {
 
                 <div className="lg:w-1/2 flex flex-col justify-start lg:ml-[150px] mt-10 lg:mt-0">
                     <div className="mb-4">
-                        <h2 className="text-[#5EEAD4] text-[15px] lg:text-[19px] font-semibold tracking-wide mt-0 lg:-mt-12">NAVIGATION</h2>
+                        <h2 className="text-[#5EEAD4] text-[19px] lg:text-[23px] font-semibold tracking-wide mt-0 lg:-mt-12">NAVIGATION</h2>
                         <ul className="mt-[10px] text-[#f5f5f5] tracking-wide text-lg">
-                            <li className="text-sm lg:text-base"><a href="#">Home</a></li>
-                            <li className="text-sm lg:text-base mt-2 lg:mt-1"><a href="#upcomingEvents">Upcoming Event</a></li>
-                            <li className="text-sm lg:text-base mt-2 lg:mt-1"><a href="#pastAttended">Past Attended Events</a></li>
-                            <li className="text-sm lg:text-base mt-2 lg:mt-1"><a href="/form/external">Notification Travelling Form</a></li>
+                            <li className="text-base lg:text-lg"><a href="#">Home</a></li>
+                            <li className="text-base lg:text-lg mt-2 lg:mt-1"><a href="#upcomingEvents">Upcoming Event</a></li>
+                            <li className="text-base lg:text-lg mt-2 lg:mt-1"><a href="#pastAttended">Past Attended Events</a></li>
+                            <li className="text-base lg:text-lg mt-2 lg:mt-1"><a href="/form/external">Notification Travelling Form</a></li>
                         </ul>
                     </div>
                 </div>
