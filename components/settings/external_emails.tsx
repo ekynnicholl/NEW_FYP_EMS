@@ -174,7 +174,7 @@ const AttendanceSettings = () => {
 												</th>
 
 												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													<p className="-ml-56">Email</p>
+													<p className="-ml-[125px] lg:-ml-56">Email</p>
 												</th>
 
 												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -240,7 +240,7 @@ const AttendanceSettings = () => {
 															</td>
 
 															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="flex ml-12">
+																<div className="flex ml-5 lg:ml-12">
 																	<button
 																		onClick={() => {
 																			handleEditOption(emails.extEID, emails.extEMail);
@@ -251,7 +251,7 @@ const AttendanceSettings = () => {
 																	<button
 																		onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
 																	>
-																		<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-3 lg:ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
 																	</button>
 																</div>
 															</td>

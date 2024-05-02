@@ -98,8 +98,8 @@ const ExternalSettings = () => {
                     <div className="overflow-y-auto max-h-fit flex flex-col justify-between mt-1 space-y-4 pl-10">
                         <div className="pr-10">
                             <div className="text-slate-900 dark:text-dark_text mb-3 text-justify text-sm lg:text-base">
-                                <p className="font-bold underline text-[18px]">Applicants</p>
-                                <p>
+                                <p className="font-bold underline text-[15px] lg:text-[18px] mt-2 lg:mt-0">Applicants</p>
+                                <p className="mt-1 lg:mt-0">
                                     For applicants, the duration takes into consideration of only the weekends. For instance, if the last updated date of the form is 19 April 2024 (Friday),
                                     the applicant will only be able to remind the Academic Administration Office Staff after 3 working days (or the number of days you have selected)
                                     excluding Saturday and Sunday, which will be on 23 April 2024 (Tuesday).
@@ -125,8 +125,8 @@ const ExternalSettings = () => {
                         </div>
                         <div>
                             <div className="text-slate-900 dark:text-dark_text mb-3 text-justify text-sm lg:text-base">
-                                <p className="font-bold underline text-[18px]">Academic Administration Office</p>
-                                <p>
+                                <p className="font-bold underline text-[18px] mt-1 lg:mt-0">Academic Administration Office</p>
+                                <p className="mt-1 lg:mt-0">
                                     For this, you may navigate to the Nominations/ Travelling Forms Page and look for the <span className="italic">Important</span> tab.
                                     This option allows you to specify how many day(s) later will you be able to remind the relevant party.
                                 </p>

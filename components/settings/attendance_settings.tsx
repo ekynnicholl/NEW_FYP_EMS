@@ -399,7 +399,7 @@ const AttendanceSettings = () => {
                                 {/* Settings for Staff */}
                                 <Tab.Panels>
                                     <Tab.Panel>
-                                        <table className="w-1/2 float-left">
+                                        <table className="lg:w-1/2 float-left">
                                             <thead>
                                                 <tr>
                                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -407,7 +407,7 @@ const AttendanceSettings = () => {
                                                     </th>
 
                                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-                                                        <p className="-ml-56">Faculty / Unit</p>
+                                                        <p className="-ml-2 lg:-ml-56">Faculty / Unit</p>
                                                     </th>
 
                                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -469,14 +469,14 @@ const AttendanceSettings = () => {
                                                             </td>
 
                                                             <td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-                                                                <div className="flex ml-12">
+                                                                <div className="flex ml-8 lg:ml-12">
                                                                     <button onClick={() => {
                                                                         handleEditOption(faculty.attsID, faculty.attsName);
                                                                     }}>
-                                                                        <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+                                                                        <HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text -ml-5 lg:-ml-3" />
                                                                     </button>
                                                                     <button onClick={() => openDeleteModal(faculty.attsID, faculty.attsName)}>
-                                                                        <BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+                                                                        <BsFillTrash3Fill className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text ml-2 lg:ml-4" />
                                                                     </button>
                                                                 </div>
                                                             </td>
