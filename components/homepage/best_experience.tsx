@@ -79,8 +79,8 @@ const BestExperience = () => {
         <Element name="section2">
             <div className="flex flex-col items-center justify-center mb-10">
                 <animated.div style={fadeIn_Top1} className="flex items-center justify-center mb-4">
-                    <PiTriangleBold className="transform -rotate-90" size={36} />
-                    <PiTriangleBold className="transform rotate-90" size={36} />
+                    <PiTriangleBold className="transform -rotate-90 text-[23px] lg:text-[38px]" />
+                    <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
                 </animated.div>
                 <animated.div style={fadeIn_Top2}>
                     <p className="text-center font-bold text-[22px] lg:text-[26px]">We are setting the best experience in Swinburne University.</p>
@@ -111,7 +111,7 @@ const BestExperience = () => {
                                 </div>
                             </div>
                         </animated.div>
-                        <animated.div style={fadeIn_Card2} className={`mt-10 h-[520px] pb-5 card bg-white rounded-lg lg:shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4 my-auto`}>
+                        <animated.div style={fadeIn_Card2} className={`mt-1 lg:mt-0 h-[520px] pb-5 card bg-white rounded-lg lg:shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4 my-auto`}>
                             <div className="flex items-center justify-center my-auto -mb-6 lg:mb-0">
                                 <Image
                                     src="/images/work-chat-concept-illustration_114360-1229.png"
@@ -127,7 +127,7 @@ const BestExperience = () => {
                                 <p className="text-sm font-bold mt-1"></p>
                             </div>
                         </animated.div>
-                        <animated.div style={fadeIn_Card3} className={`-mt-[200px] lg:mt-0 lg:h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
+                        <animated.div style={fadeIn_Card3} className={`-mt-[260px] lg:mt-0 lg:h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
                             <div className="flex items-center justify-center">
                                 <Image
                                     src="/images/happy-boy-with-casual-clothes-smartphone_24640-46929.png"

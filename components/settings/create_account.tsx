@@ -469,7 +469,7 @@ const CreateAdminAccount = () => {
 
 					</div>
 
-					<div className="w-1/4">
+					<div className="lg:w-1/4">
 						<form onSubmit={e => handleCreateAccount(e)}>
 							<div className="mb-[0px] lg:mb-[20px] mt-[30px] dark:bg-dark_mode_card">
 								<div className="">

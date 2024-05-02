@@ -9,7 +9,7 @@ export default function Home() {
     return (
         <div className="">
             <div className="flex-1">
-                <div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
+                <div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg mt-7 lg:mt-0">
                     <div className="flex flex-col lg:flex-row lg:space-x-4">
                         <Suggestion />
                         <SuggestList />
