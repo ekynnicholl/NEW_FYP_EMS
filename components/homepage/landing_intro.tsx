@@ -132,13 +132,12 @@ const LandingIntro = () => {
 
     return (
         <div className="flex flex-col sm:flex-row justify-center items-center px-4 py-2 mt-2">
-            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 lg:hidden">
+            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full lg:hidden">
                 <Image
                     src="/images/man-planning-on-calendar-vector.png"
                     alt="Event Manager"
                     width={550}
-                    height={50}
-                    className="mx-auto"
+                    height={100}
                 />
             </animated.div>
 
