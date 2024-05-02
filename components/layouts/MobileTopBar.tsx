@@ -99,7 +99,7 @@ export default function MobileTopBar() {
 
 									<div className="p-4 text-right mt-6">
 										<Link legacyBehavior href="/dashboard">
-											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>HOME</a>
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-2 font-semibold" onClick={() => setMenuOpen(false)}>HOME</a>
 										</Link>
 										<Link legacyBehavior href="/analytics">
 											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>ANALYTICS</a>
