@@ -99,27 +99,27 @@ export default function MobileTopBar() {
 
 									<div className="p-4 text-right mt-6">
 										<Link legacyBehavior href="/dashboard">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Home</a>
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>HOME</a>
 										</Link>
 										<Link legacyBehavior href="/analytics">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Analytics</a>
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>ANALYTICS</a>
 										</Link>
 										<Link legacyBehavior href="/report">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>Report</a>
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" onClick={() => setMenuOpen(false)}>REPORT</a>
 										</Link>
 										<Link legacyBehavior href="/external">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
-												External Event
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
+												EXTERNAL EVENT
 											</a>
 										</Link>
 										<Link legacyBehavior href="/suggestions">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
-												Suggestions
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1" target="_blank" onClick={() => setMenuOpen(false)}>
+												SUGGESTIONS
 											</a>
 										</Link>
 										<Link legacyBehavior href="/settings">
-											<a className="text-sm hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 mb-4" target="_blank" onClick={() => setMenuOpen(false)}>
-												Settings
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 mb-4" target="_blank" onClick={() => setMenuOpen(false)}>
+												SETTINGS
 											</a>
 										</Link>
 										<Link legacyBehavior href="/logout">
