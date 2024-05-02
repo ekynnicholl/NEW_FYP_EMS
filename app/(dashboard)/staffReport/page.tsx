@@ -151,9 +151,13 @@ export default function Home() {
 	}
 
 	// Refresh data from database
-	const refreshData = async () => {
+	const refreshData = () => {
 		fetchInfos();
 		setActiveTab('all');
+		setSearchQuery("");
+		setSelectedFacultyUnit("");
+		setSelectedFilterStaff("");
+		setSelectedFilterStudent("");
 	};
 
 	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
@@ -175,7 +179,7 @@ export default function Home() {
 		staffName: 'Full Name',
 		staffFaculty: 'Faculty / Unit',
 		totalSubEvents: 'Total Event(s) Attended',
-		grandTotalHours: 'Grand Total Hours (H)',
+		grandTotalHours: 'Training Hours',
 	};
 
 	const convertToXLSX = (data: Info[], columnMapping: ColumnMapping) => {
@@ -187,7 +191,7 @@ export default function Home() {
 
 		const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
 		const wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, 'Staff Report');
+		XLSX.utils.book_append_sheet(wb, ws, 'staff_attendance_data');
 
 		const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Change type to 'array'
 
@@ -201,7 +205,7 @@ export default function Home() {
 
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = 'Staff Report.xlsx';
+		a.download = 'staff_attendance_data.xlsx';
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
@@ -377,8 +381,6 @@ export default function Home() {
 
 	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
 
-		setSearchQuery(query);
-
 		// Clear the data results
 		setDataResults([]);
 
@@ -538,6 +540,9 @@ export default function Home() {
 
 								</div>
 							</Fragment>
+							<div>
+								<h1 className="text-xl font-bold lg:text-2xl mb-8 text-slate-800 dark:text-dark_text">Staff Attendance & Training Hours</h1>
+							</div>
 
 							<div className="flex items-center justify-between mb-8">
 								{/* Refresh Button */}
@@ -692,7 +697,7 @@ export default function Home() {
 											<select
 												name="facultyUnit"
 												id="facultyUnit"
-												defaultValue=""
+												value={selectedFacultyUnit}
 												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
 												required
 												onChange={event => setSelectedFacultyUnit(event.target.value)}
@@ -730,7 +735,7 @@ export default function Home() {
 											<select
 												name="facultyUnit"
 												id="facultyUnit"
-												defaultValue=""
+												value={selectedFilterStaff}
 												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
 												required
 												onChange={event => setSelectedFilterStaff(event.target.value)}
@@ -755,7 +760,7 @@ export default function Home() {
 											<select
 												name="studentFacultyUnit"
 												id="studentFacultyUnit"
-												defaultValue=""
+												value={selectedFilterStudent}
 												className="px-4 py-2 border-[1px] rounded-md border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
 												required
 												onChange={event => setSelectedFilterStudent(event.target.value)}
@@ -792,8 +797,8 @@ export default function Home() {
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="ml-2 lg:ml-10">No</span>
 												</th>
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="ml-11 lg:ml-6">Name</span>
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 lg:-ml-24 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<span className="ml-11 lg:ml-0">Name</span>
 												</th>
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<span className="ml-16 lg:ml-1">Staff / Student ID</span>
@@ -804,7 +809,7 @@ export default function Home() {
 												</th>
 
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="">Grand Total Hours (H)</span>
+													<span className="lg:ml-9">Training Hours</span>
 												</th>
 											</tr>
 										</thead>
@@ -829,21 +834,21 @@ export default function Home() {
 														>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
 																<div className="flex items-center">
-																	<div className="ml-[34px]">
+																	<div className="ml-6">
 																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
 																			{(currentPage - 1) * entriesToShow + index + 1}
 																		</p>
 																	</div>
 																</div>
 															</td>
-															<td className="flex-1 px-6 lg:-ml-3 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<span className="-ml-3 lg:-ml-0">{info.staffName}</span>
+															<td className="flex-1 px-6 lg:-ml-28 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<span className="-ml-3 lg:-ml-5">{info.staffName}</span>
 															</td>
-															<td className="flex-1 px-6 lg:-ml-10 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+															<td className="flex-1 px-6 lg:-ml-9 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
 															</td>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<span className="lg:-ml-0">{info.staffFaculty}</span>
+																<span className="lg:-ml-1">{info.staffFaculty}</span>
 															</td>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
@@ -1134,7 +1139,7 @@ export default function Home() {
 				<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
 					<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
 						<div className="inline-flex mb-5">
-							<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Staff Expenditure</span></h1>
+							<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Staff Expenditure Report</span></h1>
 						</div>
 						<ExpenditureUser />
 					</div>

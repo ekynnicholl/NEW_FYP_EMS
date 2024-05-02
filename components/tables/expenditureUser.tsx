@@ -446,7 +446,7 @@ const ExpenditureUser = () => {
                                 <table className="lg:w-full w-auto">
                                     <thead>
                                         <tr>
-                                        <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
                                                 NO
                                             </th>
                                             <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
@@ -469,7 +469,7 @@ const ExpenditureUser = () => {
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody>                        
+                                    <tbody className='h-screen'>                        
                                         {dataResults.length === 0 && selectedFacultyUnit || dataResults.length === 0 && searchQuery? (
                                             <p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
                                         ) : (
@@ -477,7 +477,7 @@ const ExpenditureUser = () => {
                                             .map((expenditureItem, index) => (
                                             <tr key={expenditureItem.id}>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                    {index + 1}
+                                                    {(currentPage - 1) * itemsPerPage + index + 1}
                                                 </td>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.full_name}
@@ -485,24 +485,24 @@ const ExpenditureUser = () => {
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.staff_id}
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.faculty}
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {groupedData[expenditureItem.staff_id]?.map((programItem) => (
                                                         <div key={programItem.id}>
                                                             {programItem.program_title} - {Number(programItem.grand_total_fees).toFixed(2)}
                                                         </div>
                                                     ))}
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {groupedData[expenditureItem.staff_id]?.map((programItem) => (
                                                         <div key={programItem.id}>
                                                             {Number(programItem.grand_total_fees).toFixed(2)}
                                                         </div>
                                                     ))}
                                                 </td>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D]  dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.grand_total_fees}
                                                 </td>
                                             </tr>
