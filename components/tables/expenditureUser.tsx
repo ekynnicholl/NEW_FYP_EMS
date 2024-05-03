@@ -518,11 +518,31 @@ const ExpenditureUser = () => {
                                                 </td>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.grand_total_fees}
-                                                </td>
-                                            </tr>
+                                                </td>                                                
+                                            </tr>                                            
                                         ))
                                         )
                                         }
+                                        {sortedData.length < itemsPerPage && (
+                                                [...Array(itemsPerPage - sortedData.length)].map((_, index) => (
+                                                    <tr className="" key={index}>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                    </tr>
+                                                ))                                                 
+                                            )}
                                     </tbody>
                                 </table>
                             </div>
