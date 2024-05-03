@@ -554,7 +554,7 @@ const AttendanceSettings = () => {
                                             {selectedOption &&
                                                 <>
                                                     <input type="text"
-                                                        placeholder="e.g., Barchelor of Degrees"
+                                                        placeholder="e.g., Bachelor of Degrees"
                                                         value={newCategory}
                                                         className="mt-7 border-[1px] border-slate-200 rounded-sm w-[373px] px-2 py-1"
                                                         onChange={e => setNewCategory(e.target.value)}

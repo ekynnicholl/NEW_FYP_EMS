@@ -236,23 +236,7 @@ export default function Home() {
 
 	// Refresh data from database
 	const refreshData = async () => {
-		// Get the current date
-		const currentDate = new Date().toISOString();
-
-		// Fetch events where the start date is in the future
-		const { data: mainEventData, error: internalError } = await supabase
-			.from("internal_events")
-			.select("*")
-			.lt("intFEventEndDate", currentDate)
-			.order("intFEventStartDate", { ascending: true })
-			.eq("intFIsHidden", 0);
-
-		if (internalError) {
-			console.error("Error fetching past event:", internalError);
-			return;
-		}
-
-		setMainEvents(mainEventData || []);
+		setSearchQuery("");
 	};
 
 	//Handle search input
@@ -419,25 +403,6 @@ export default function Home() {
 		intFTrainingProvider: 'Training Provider', 
 		intFTotalHours: 'Total Hour(s)',
 	};
-
-	// export to CSV format
-	// const exportToCSV = () => {
-	// 	// Generate header row
-	// 	const header = Object.keys(mainEvents[0]).join(",");
-	// 	const dataRows = mainEvents.map(e => Object.values(e).join(",")).join("\n");
-
-	// 	// Combine header and data rows
-	// 	const csvContent = `${header}\n${dataRows}`;
-
-	// 	const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-	// 	const link = document.createElement("a");
-
-	// 	link.href = URL.createObjectURL(blob);
-	// 	link.setAttribute("download", "attendance_data.csv");
-	// 	document.body.appendChild(link);
-	// 	link.click();
-	// 	document.body.removeChild(link);
-	// };
 
 	// An array of sorting options
 	const sortOptions = [
@@ -826,9 +791,15 @@ export default function Home() {
 									</div>
 								</div>
 								<div className="flex items-center">
-									<span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
-										1-{entriesToShow} of {mainEvents?.length} entries
-									</span>
+									{dataResults ? (
+                                        <span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+                                            1-{entriesToShow} of {dataResults?.length} entries
+                                        </span>
+                                    ) : (
+                                        <span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+                                            1-{entriesToShow} of {mainEvents?.length} entries
+                                        </span>
+                                    )}
 
 									<div className="flex">
 										{/* Skip To First Page Button */}
