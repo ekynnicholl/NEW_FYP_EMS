@@ -40,6 +40,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 import { X } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
@@ -56,6 +57,8 @@ const showSuccessToast = (message: string) => {
 		},
 	});
 };
+
+let files: File[] = [];
 
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const supabase = createClientComponentClient();
@@ -78,6 +81,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 	const [applicantName, setApplicantName] = useState("");
 	const [applicantPosition, setApplicantPosition] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -237,6 +241,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	// }, [form, form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
+		setIsSubmitting(true);
 		console.log("Form sent");
 		console.log(values);
 
@@ -246,11 +251,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			}
 		}
 
-		// if (values.logistic_arrangement?.check_in_date.getHours()! < 8) {
-		// 	new Date(values.logistic_arrangement?.check_in_date?.setHours(values.logistic_arrangement?.check_in_date?.getHours() + 8)!);
-		// }
-
-		// Upload supporting documents to the bucket and return an array of paths
 		let documentPaths: string[] = [];
 		const uniqueName = uuidv4();
 
@@ -260,10 +260,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 					cacheControl: "3600",
 					upsert: false,
 				});
-
-				if (upload.data?.path) {
-					console.log(upload.data.path);
-				}
 
 				if (upload.data) {
 					const { data } = supabase.storage.from("supporting_documents").getPublicUrl(upload?.data.path);
@@ -316,6 +312,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 			formReset();
 			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
+			setIsSubmitting(false);
 			const { data: fetchedForms, error: fetchedError } = await supabase
 				.from("external_forms")
 				.select("*")
@@ -1681,20 +1678,49 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													{...form.register("supporting_documents", {
 														required: false,
 													})}
+													onChange={event => {
+														if (event.target.files) {
+															console.log(event.target.files);
+															const newFiles = Array.from(event.target.files as FileList);
+															newFiles.forEach(newFile => {
+																if (!files.some(file => file.name === newFile.name)) {
+																	files.push(newFile);
+																} else {
+																	toast.error("File already exists");
+																}
+															});
+															field.onChange(files);
+															form.trigger("supporting_documents");
+															console.log(form.getValues("supporting_documents"));
+														}
+													}}
 												/>
 											</FormControl>
 										</FormLabel>
 										<FormMessage />
-										<div className="flex flex-col gap-2 mt-2 items-start">
+										<div className="grid gap-2 mt-2 items-start">
 											{form.getValues("supporting_documents") &&
-												Array.from(form.getValues("supporting_documents")!).map((file: any) => (
+												Array.from(form.getValues("supporting_documents")!).map((file: any, index: number) => (
 													<div key={file.name}>
-														{
-															<div className="flex gap-2 p-2 items-start">
+														<div className="grid grid-cols-[400px_100px]">
+															<div className="flex gap-2 p-2 items-start text-ellipsis overflow-hidden whitespace-nowrap">
 																<BsFiletypePdf className="w-6 h-6 text-red-500" />
 																{file.name}
 															</div>
-														}
+															<div className="grid place-ite">
+																<X
+																	className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
+																	onClick={() => {
+																		let supporting_documents = form.getValues("supporting_documents"); // FileList
+																		supporting_documents = Array.from(supporting_documents);
+																		supporting_documents.splice(index, 1);
+																		files.splice(index, 1);
+																		form.setValue("supporting_documents", supporting_documents);
+																		form.trigger("supporting_documents");
+																	}}
+																/>
+															</div>
+														</div>
 													</div>
 												))}
 										</div>
@@ -1862,8 +1888,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
-									<Button type="button" disabled={form.formState.isSubmitting}>
-										{form.formState.isSubmitting ? <span>Submitting...</span> : <span>Submit for Review</span>}
+									<Button type="button" disabled={isSubmitting}>
+										{isSubmitting ? <span>Submitting...</span> : <span>Submit for Review</span>}
 									</Button>
 								</DialogTrigger>
 								<DialogContent>

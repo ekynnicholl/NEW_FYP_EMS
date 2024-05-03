@@ -129,7 +129,7 @@ const externalFormSchema = z
 				fileList => {
 					if (fileList) {
 						for (let i = 0; i < fileList.length; i++) {
-							if (fileList?.item(i)?.size! > MAX_FILE_SIZE) {
+							if (fileList[i].size! > MAX_FILE_SIZE) {
 								return false;
 							}
 						}
