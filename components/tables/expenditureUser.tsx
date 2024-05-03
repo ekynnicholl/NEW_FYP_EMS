@@ -137,14 +137,14 @@ const ExpenditureUser = () => {
 		// Clear the data results
 		setDataResults([]);	
 
-		let filteredData = currentData;
+		let filteredData = totalsData;
 
         if (selectedFacultyUnit !== 'all' && selectedFacultyUnit) {
-			filteredData = currentData.filter((item) => selectedFacultyUnit === item.faculty);
+			filteredData = totalsData.filter((item) => selectedFacultyUnit === item.faculty);
 		}		
 
 		if (query) {
-			filteredData = currentData.filter(
+			filteredData = totalsData.filter(
 				info => {
 					return (
 						info.full_name.toLowerCase().includes(query.toLowerCase()) ||
@@ -483,7 +483,7 @@ const ExpenditureUser = () => {
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className='h-screen'>                        
+                                    <tbody>                        
                                         {dataResults.length === 0 && selectedFacultyUnit || dataResults.length === 0 && searchQuery? (
                                             <p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
                                         ) : (
