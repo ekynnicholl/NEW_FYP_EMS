@@ -407,7 +407,7 @@ const AttendanceSettings = () => {
                                                     </th>
 
                                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-                                                        <p className="-ml-2 lg:-ml-56">Faculty / Unit</p>
+                                                        <p className="-ml-2 lg:-ml-40">Faculty / Unit</p>
                                                     </th>
 
                                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
@@ -451,7 +451,7 @@ const AttendanceSettings = () => {
                                                                     Update
                                                                 </button>
                                                                 <button
-                                                                    className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
+                                                                    className="border-[0.5px] rounded-md bg-slate-100 mt-1 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
                                                                     onClick={() => { setCancelOptionUpdate(true); }}
                                                                 >
                                                                     Cancel
@@ -490,7 +490,7 @@ const AttendanceSettings = () => {
                                             <table className="w-full lg:w-1/2 lg:float-left">
                                                 {/* Table content */}
                                             </table>
-                                            <div className="border-2 p-7 mr-6 mt-6 lg:mt-0 shadow-lg dark:bg-dark_mode_card lg:float-right dark:border-[#363B3D]">
+                                            <div className="border-2 p-7 mr-6 mt-6 lg:mt-0 lg:mr-56 shadow-lg dark:bg-dark_mode_card lg:float-right dark:border-[#363B3D]">
                                                 <p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add New Faculty / Unit</p>
                                                 <input
                                                     type="text"
@@ -607,7 +607,7 @@ const AttendanceSettings = () => {
                                                                                     <p className={`${categories.subcategories.length > 0 ? 'ml-0' : 'ml-[155px]'}`}>Course</p>
                                                                                 </th>
                                                                                 <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-r-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-                                                                                    <p className={`${categories.subcategories.length > 0 ? 'ml-0' : 'ml-[155px]'}`}>Action</p>
+                                                                                    <p className={`${categories.subcategories.length > 0 ? 'ml-16' : 'ml-[155px]'}`}>Action</p>
                                                                                 </th>
                                                                             </tr>
                                                                         </thead>
@@ -718,13 +718,13 @@ const AttendanceSettings = () => {
                                     className="border-[0.5px] rounded-md bg-white px-4 py-3 font-semibold hover:bg-slate-100 duration-300 ease-in-out"
                                     onClick={() => setShowCreateOptionModal(false)}>Cancel</button>
                                 <button
-                                    className="border-2 rounded-md bg-red-600 ml-2 text-white px-4 py-3 font-semibold hover:bg-red-700 duration-300 ease-in-out"
+                                    className={`border-2 rounded-md ${ !newFacultyName ? 'text--slate-900 bg-gray-200' : 'text-white bg-slate-900' }  ml-2  px-6 py-3 font-semibold hover:bg-red-600 duration-300 ease-in-out`}
                                     onClick={() => {
                                         createNewCourse(newFacultyName, newCourse.attsSubcategory, newCourse.attsFacultyUnit);
                                         setShowCreateOptionModal(false);
                                     }}
                                 >
-                                    Submit
+                                    Add
                                 </button>
                             </div>
                         </div>
