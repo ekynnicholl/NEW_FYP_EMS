@@ -582,10 +582,10 @@ export default function Home() {
                                         <span className="ml-8 lg:ml-4">No</span>
                                     </th>
                                     <th className="flex-1 lg:px-[3px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-6 lg:ml-2">Event Title</span>
+										<span className="ml-6 lg:ml-1">Event Title</span>
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-6 lg:ml-2">Description</span>
+										<span className="ml-6 lg:ml-1">Description</span>
                                     </th>
                                     
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
@@ -873,90 +873,69 @@ export default function Home() {
 
 					<EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
 						<p className="font-semibold text-md text-gray-600 p-2 ml-2">Sub-Events Details</p>
-						<div className="p-5 bg-slate-100 h-[520px] lg:w-full lg:h-11/12 ml-1 overflow-auto dark:bg-dark_mode_bg">
-							<table className="leading-normal w-11/12 mx-auto dark:bg-[#1D2021]">
-							<thead>
-                                    <tr className="flex border-b-2 border-gray-200 bg-gray-100 justify-between dark:bg-[#1D2021] dark:border-[#363B3D]">
-                                        <th className="lg:ml-5 px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            NO.
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            <span className="lg:-ml-12">Event Name</span>
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Organizer
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Venue
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Start Time
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            End Time
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Maximum Seats
-                                        </th>
-                                    </tr>
-                                </thead>
+						
+						<div className="bg-white h-[520px] w-auto lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg pb-5">
+							<table className="leading-normal lg:w-full mx-auto dark:bg-[#1D2021]">
+								<thead>
+									<tr>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											NO.
+										</th>											
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Event Name
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Organizer
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Venue
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Start Time
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											End Time
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Maximum Seats
+										</th>
+									</tr>
+								</thead>
 								<tbody>
 									{subEvents
-                                        .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
-                                        .map((subEvent, index) => (
-                                            <tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-                                                <td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
-                                                    <div>
-                                                        <div className="ml-4 lg:ml-10">
-                                                            <p className="text-gray-900 dark:text-dark_text">
-                                                                {(currentPage - 1) *
-                                                                    entriesToShow +
-                                                                    index +
-                                                                    1
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-7 lg:-ml-10">
-                                                        {subEvent.sub_eventsName}
-                                                    </p>
-                                                </td>
+										.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+										.map((subEvent, index) => (
+											<tr key={index}>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{(currentPage - 1) * entriesToShow + index + 1 }
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+														{subEvent.sub_eventsName}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-2 dark:text-dark_text">
-                                                        {subEvent.sub_eventsOrganizer}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsOrganizer}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 lg:ml-4 dark:text-dark_text">
-                                                        {subEvent.sub_eventsVenue}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsVenue}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-7 lg:-ml-0 lg:whitespace-nowrap dark:text-dark_text">
-                                                        {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-5 lg:ml-6 lg:whitespace-nowrap dark:text-dark_text">
-                                                        {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 ml-7 dark:text-dark_text">
-                                                        {subEvent.sub_eventsMaxSeats}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        ))}
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsMaxSeats}
+												</td>
+											</tr>
+										))}
 								</tbody>
-							</table>							
+							</table>
 						</div>
 					</EventListModal>
 
