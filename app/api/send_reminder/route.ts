@@ -151,8 +151,8 @@ export async function POST(request: Request) {
         } else if (formStage == 4) {
             reminderEmail = requestData.approval_email;
         } else if (formStage == 2) {
-            // reminderEmail = 'swinburneacademicoffice@gmail.com'
-            reminderEmail = 'jadpichoo@outlook.com'
+            reminderEmail = 'swinburneacademicoffice@gmail.com'
+            // reminderEmail = 'jadpichoo@outlook.com'
         } else {
             reminderEmail = requestData.email;
         }
