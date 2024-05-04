@@ -209,10 +209,8 @@ export default function AttendanceForm() {
 
 			if (attFormsStaffID.startsWith("S") && !attFormsStaffID.startsWith("SS")) {
 				attFormsStaffID = "S" + attFormsStaffID;
-				console.log("1");
 			} else if (!attFormsStaffID.startsWith("SS")) {
 				attFormsStaffID = "SS" + attFormsStaffID;
-				console.log("2");
 			}
 		}
 

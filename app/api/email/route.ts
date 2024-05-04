@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 // type 1: approval/ rejection, type 2: rejection, type 3: approved, type 4: reverted email to staff, type 5: form has been received
 function generateEmailHTML(process: string, formID: string, type: number, optionalFields?: string, optionalFields2?: string, optionalFields3?: string) {
     const link = `${url}/form/external/${formID}`;
-    const linkForAAO = `<span style="font-weight: bold;">Link:</span> ${url}/external/${formID}`;
+    const linkForAAO = `<span style="font-weight: bold;">Link:</span> <a href="${url}/external/${formID}">${url}/external/${formID}</a>`;
 
     // To HMU/ Dean/ HOS/ ADCR/ MGR = Stage 3 and 4.
     if (type == 1) {
@@ -20,7 +20,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields && optionalFields.trim() !== "") {
             securityKeySentence = `
-                <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> This link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></p>
+                <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> This link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><a href="${link}?secKey=${optionalFields}"><span style="font-weight: bold;">${link}?secKey=${optionalFields}</span></a></p>
                 <br/>
                 <p class="no-p-m">Please take note that the following Security Key is sent solely to your email and will be rendered expired immediately after usage.</p>
             `;
@@ -67,7 +67,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF) pending for approval/ rejection </span> from ${staffDetails}. Please click the link below for your next action.</p>
+                    <p class="no-p-m">There is currently a <span style="font-weight: bold;">Nominations/ Travelling Form (NTF) pending for approval/ rejection </span> from <span style="font-weight: bold;">${staffDetails}</span>. Please click the link below for your next action.</p>
                     <br/>
                     <p class="no-p-m">${securityKeySentence.trim() === "" ? link : securityKeySentence}</p>
                     ${securityKey}
@@ -76,8 +76,10 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
                     <br/>
-                    Process Level: ${process}
+                    <span style="font-weight:bold;">Process Level:</span> ${process}
                     <br/>
+                    <br/>
+                    <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     </p>
@@ -104,14 +106,14 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                 <br/>
                 <br/>
                 <p class="no-p-m" style="font-weight:bold;"> Reason(s) of Rejection: </p>
-                <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
+                <p class="no-p-m">${optionalFields}</p>
                 <br/>
             `;
         } else {
             rejectMessage = 'Failed to retrieve reason. Please refer to user manual for more assistance (ERRNTF_4_T2).'
         }
 
-        let aaoEmail = optionalFields2 ? optionalFields2 : 'OFficer email not found. Please refer to user manual for more assistance (ERRNTF_2_T2).';
+        let aaoEmail = optionalFields2 ? optionalFields2 : 'Officer email not found. Please refer to user manual for more assistance (ERRNTF_2_T2).';
 
         return `
         <html>
@@ -126,9 +128,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                         margin: 0px;
                         padding: 0px;
                     }
-                    body{
-                        text-align: justify;
-                    }
+                    
                 </style>
             </head>
             <body>
@@ -136,16 +136,16 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m">We regret to inform you that your Nominations/ Travelling Form has been rejected. You may review the PDF version of it here: </p>
+                    <p class="no-p-m">We regret to inform you that your <span style="font-weight:bold;">Nominations/ Travelling Form application</span> has been rejected, please refer to the reasons below. You may review your previous submission in the link below (in PDF format). </p>
                     <br/>
-                    Link: <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
+                    <span style="font-weight:bold;">Link:</span> <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
                     ${rejectMessage}
-                    <p class="no-p-m">If you have inquiries regarding the forms, you may contact the Academic Admin Officer handling this form: ${aaoEmail}</p>
+                    <p class="no-p-m" style="text-align: text-left;">If you have inquiries regarding your application, you may contact the following assigned Academic Admin Officer handling this submission: ${aaoEmail}</p>
+                    <br/>
+                    <span style="font-weight:bold;">Process Level: </span> ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
-                    <br/>
-                    Process Level: ${process}
-                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     </p>
@@ -192,12 +192,12 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     
                     <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m">Pleased to inform you that your Nominations/ Travelling Form has been approved! You may view or print the PDF version via the link below:</p>
-                    <p>Link: <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a></p>
+                    <p class="no-p-m">Pleased to inform you that your <span style="font-weight:bold;">Nominations/ Travelling Form (NTF) application</span> has been approved! You may view or print the PDF version via the link below.</p>
+                    <p><span style="font-weight:bold;">Link:</span> <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a></p>
+                    <span style="font-weight:bold;">Process Level:</span> ${process}
+                    <br/>
+                    <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
-                    <br/>
-                    Process Level: ${process}
-                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     </p>
@@ -222,7 +222,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
         if (optionalFields2 && optionalFields2.trim() !== "") {
             securityKeySentence = `
-                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/>Link: <a href="${link}/?secKey=${optionalFields2}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></a></p>
+                <p><span style="font-weight: bold;">[IMPORTANT!]</span> This link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight:bold;">Link:</span> <a href="${link}/?secKey=${optionalFields2}" style="color: #0070f3; text-decoration: underline;" class="no-p-m"><span style="font-weight: bold;">${link}/?secKey=${optionalFields2}</span></a></p>
                 <p>Please take note that the following Security Key is sent solely to your email and will be rendered expired immediately after usage.</p>
             `;
 
@@ -261,19 +261,19 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     
                     <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m">Your form has been reverted to you for further changes, which you may refer to the reason(s) below. Please click the link below for your next action.</p>
+                    <p class="no-p-m">Your <span style="font-weight:bold;">Nominations/ Travelling Form (NTF) application</span> has been reverted to you for further changes, which you may refer to the reason(s) below. Please click the link below for your next action.</p>
                     ${securityKeySentence}
                     ${securityKey}
                     <br/>
                     <p class="no-p-m" style="font-weight:bold;"> Reason(s) of Reverting: </p>
-                    <p class="no-p-m" style="font-weight:bold;">${optionalFields}</p>
+                    <p class="no-p-m">${optionalFields}</p>
+                    <!-- <br/>
+                    <p class="no-p-m">If you have inquiries regarding the forms, you may contact the Academic Admin Officer handling this form: ${aaoEmail}</p> -->
                     <br/>
-                    <p class="no-p-m">If you have inquiries regarding the forms, you may contact the Academic Admin Officer handling this form: ${aaoEmail}</p>
+                    <span style="font-weight:bold;">Process Level:</span> ${process}
+                    <br/>
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
-                    <br/>
-                    Process Level: ${process}
-                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     </p>
@@ -313,19 +313,21 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     
                     <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m">Please be informed that your Nominations/ Travelling Form application has been submitted. The Academic Administration Office
+                    <p class="no-p-m">Please be informed that your <span style="font-weight:bold;">Nominations/ Travelling Form application</span> has been submitted. The Academic Administration Office
                     will assign an officer to process your application. Please allow us some time to process within 2 to 3 working days.</p>
+                    <br/>
+                    <p class="no-p-m">You will receive an email notification regarding your application status if there are any changes required to be made, approved or rejected.</p>
                     <br/>
                     <p class="no-p-m">If you have any questions, please do not hesitate to contact us at fypemsmaster369@gmail.com</p>
                     <br/>
                     <p class="no-p-m">You may review your submitted form here:</p>
-                    <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
+                    <span style="font-weight:bold;">Link:</span> <a href="${link}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${link}</a>
+                    <br/>
+                    <br/>
+                    <span style="font-weight:bold;">Process Level:</span> ${process}
                     <br/>
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
-                    <br/>
-                    Process: ${process}
-                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     </p>
@@ -377,15 +379,16 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                     <h2 class="no-p-m">Dear Academic Administration Office Staff,</h2>
                     <br/>
-                    <p class="no-p-m">There is currently a Nominations/ Travelling Form (NTF) pending for your review and confirmation with the applicant before forwarding it to the respective Verifier/ Approver from <span style="font-weight: bold;">${staffDetails}</span>. You may view the applicant submission via the Event
+                    <p class="no-p-m">There is currently a <span style="font-weight:bold;">Nominations/ Travelling Form (NTF) application</span> pending for your review and confirmation with the applicant before forwarding it to the respective Verifier/ Approver from <span style="font-weight: bold;">${staffDetails}</span>. You may view the applicant submission via the Event
                     Management System or you can click the link below to take the next action: </p>
                     <br/>
                     <p class="no-p-m">${linkForAAO}</p>
                     <br/>
+                    <br/>
+                    <span style="font-weight:bold;">Process Level:>/span> ${process}
+                    <br/>
+                    <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
-                    <br/>
-                    Process Level: ${process}
-                    <br/>
                     <br/>
                     <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
                     </p>
@@ -449,16 +452,16 @@ export async function POST(request: Request) {
                 if (i == 0) {
                     await transporter.sendMail({
                         ...mailOptionsCopy,
-                        subject: `[NTF - TO REVIEW] ${staffName} (${staffID}) - Nominations Travelling Form`,
-                        text: "[Academic Admin Office Level - Staff to Academic Administration Office]",
-                        html: generateEmailHTML("[Academic Admin Office Level - Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
+                        subject: `[NTF - To Review by AAO] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                        text: "[Academic Admin Office Level: Staff to Academic Administration Office]",
+                        html: generateEmailHTML("[Academic Admin Office Level: Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
                     });
                 } else {
                     await transporter.sendMail({
                         ...mailOptionsCopy,
-                        subject: `[NTF - SUBMITTED SUCCESSFULLY] ${staffName} (${staffID}) - Nominations Travelling Form`,
-                        text: "[Applicant Level - Submission Success]",
-                        html: generateEmailHTML("[Applicant Level - Submission Success]", formID, formIDForRecipient, '', formDetails)
+                        subject: `[NTF - Under Review] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                        text: "[Applicant Level: Academic Administration Office to Staff]",
+                        html: generateEmailHTML("[Applicant Level: Academic Administration Office to Staff]", formID, formIDForRecipient, '', formDetails)
                     });
                 }
             }
@@ -469,9 +472,9 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - TO VERIFY & SUPPORT REMINDER] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - To Verify and Support] ${staffName} (${staffID}) - Nominations Travelling Form`,
                 text: "[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-                html: generateEmailHTML("[Verifier Level: Review & Approval Reminder to to HOS/ACDR/MGR]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
+                html: generateEmailHTML("[Verifier Level: Review & Approval by HOS/ACDR/MGR]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
             });
 
         } else if (formStage === 4) {
@@ -481,9 +484,9 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + approvalEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - TO REVIEW & APPROVE REMINDER] ${staffName} (${staffID}) - Nominations Travelling Form`,
-                text: "[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
-                html: generateEmailHTML("[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
+                subject: `[NTF - Approval] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                text: "[Approver Level: Final Review & Approval by Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
+                html: generateEmailHTML("[Approver Level: Final Review & Approval by Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
             });
         } else if (formStage === 6) {
             const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
@@ -492,7 +495,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF - REJECTED APPLICATION] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - Rejected Application] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Applicant Level: Rejected Nomination/Traveling Form Application]",
                     html: generateEmailHTML("[Applicant Level: Rejected Nomination/Traveling Form Application]", formID, 2, requestData.revertComment, aaoEmail)
                 });
@@ -504,9 +507,9 @@ export async function POST(request: Request) {
             // console.log("Debugging reverted comment: " + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - REVERTED TO STAFF] ${staffName} (${staffID}) - Nominations Travelling Form`,
-                text: "[Applicant Level - Academic Administration Office to Staff]",
-                html: generateEmailHTML("[Applicant Level - Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey, aaoEmail)
+                subject: `[NTF - Reverted to Staff] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                text: "[Applicant Level: Academic Administration Office to Staff]",
+                html: generateEmailHTML("[Applicant Level: Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey, aaoEmail)
             });
         } else if (formStage === 5) {
             const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
@@ -515,7 +518,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - Approved] ${staffName} (${staffID}) - Nominations Travelling Form`,
                     text: "[Applicant Level: Approved Nomination/Traveling Form Application]",
                     html: generateEmailHTML("[Applicant Level: Approved Nomination/Traveling Form Application]", formID, 3)
                 });
