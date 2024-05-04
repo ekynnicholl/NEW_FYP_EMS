@@ -148,7 +148,7 @@ const externalFormSchema = z
 			required_error: "Declaration date is required.",
 			invalid_type_error: "Oops that's not a date!",
 		}),
-		applicant_declaration_signature: z.string(),
+		applicant_declaration_signature: z.any(),
 	})
 	// if commencement date is before completion date, then return true
 	// else return false

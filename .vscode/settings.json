@@ -20,8 +20,7 @@
 		"code.txt": true,
 		"next-env.d.ts": true,
 		"men-with-calendar-planning_24908-71106-removebg-preview.png": true,
-		"messageImage_1714152166409-removebg-preview.png": true,
-		"next.config.js": true
+		"messageImage_1714152166409-removebg-preview.png": true
 	},
 	"hide-files.files": [
 		"README.md",
@@ -38,8 +37,7 @@
 		"code.txt",
 		"next-env.d.ts",
 		"men-with-calendar-planning_24908-71106-removebg-preview.png",
-		"messageImage_1714152166409-removebg-preview.png",
-		"next.config.js"
+		"messageImage_1714152166409-removebg-preview.png"
 	],
 	"cSpell.words": ["hrdf", "Travelling"]
 }

@@ -1491,7 +1491,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											</div>
 										</>
 									) : (
-										<div className="text-center text-muted-foreground w-full h-48 rounded-xl grid place-items-center bg-gray-100">
+										<div className="text-center text-muted-foreground w-full h-44 rounded-xl grid place-items-center bg-gray-50 text-gray-500">
 											No logistic arrangement added
 										</div>
 									)}
@@ -1926,7 +1926,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 							<div className="w-full">
 								<Document documents={externalForm.supporting_documents ?? []} />
 								{externalForm.supporting_documents?.length === 0 && (
-									<div className="flex items-center justify-center h-96">
+									<div className="flex items-center justify-center h-44 bg-gray-50">
 										<p className="text-gray-500">No supporting documents uploaded.</p>
 									</div>
 								)}

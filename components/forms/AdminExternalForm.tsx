@@ -366,8 +366,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 			const uniqueName = uuidv4();
 			if (values.supporting_documents && values.supporting_documents.length > 0) {
 				for (const file of values.supporting_documents) {
-					console.log(file);
-
 					if (file instanceof File) {
 						const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
 							cacheControl: "3600",

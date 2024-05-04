@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import SignaturePad from "react-signature-canvas";
 import NTFHeader from "@/components/layouts/NTFHeader";
 
@@ -36,11 +36,11 @@ import {
 	DialogClose,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sendContactForm } from "@/lib/api";
 import { X } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 
 const showSuccessToast = (message: string) => {
 	toast.success(message, {
@@ -65,7 +65,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const router = useRouter();
 
 	const [open, setOpen] = useState(false);
-	const [imageURL, setImageURL] = useState("");
+	const [imageURL, setImageURL] = useState<any>();
 
 	const [group, setGroup] = useState(false);
 	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(null);
@@ -252,9 +252,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		}
 
 		let documentPaths: string[] = [];
-		const uniqueName = uuidv4();
-
 		if (values.supporting_documents && values.supporting_documents.length > 0) {
+			const uniqueName = uuidv4();
 			for (const file of values.supporting_documents) {
 				const upload = await supabase.storage.from("supporting_documents").upload(`${uniqueName}_${file.name}`, file, {
 					cacheControl: "3600",
@@ -272,6 +271,29 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 				if (upload.error) {
 					console.log(upload.error);
 				}
+			}
+		}
+
+		if (values.applicant_declaration_signature instanceof File) {
+			const newUniqueName = uuidv4();
+			const upload = await supabase.storage
+				.from("signatures")
+				.upload(`${newUniqueName}_signature.png`, values.applicant_declaration_signature, {
+					cacheControl: "3600",
+					upsert: false,
+				});
+
+			if (upload.data) {
+				const { data } = supabase.storage.from("signatures").getPublicUrl(upload?.data.path);
+
+				if (data) {
+					values.applicant_declaration_signature = data.publicUrl;
+				}
+			}
+
+			if (upload.error) {
+				console.log(upload.error);
+				toast.error("Error uploading signature");
 			}
 		}
 
@@ -1826,52 +1848,123 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												Signature <span className="text-red-500"> *</span>
 											</FormLabel>
 											<Dialog>
-												<FormControl>
-													<DialogTrigger asChild>
-														<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-															{imageURL && <Image src={imageURL} width={300} height={200} alt="Signature" />}
-														</div>
-													</DialogTrigger>
-												</FormControl>
-												<DialogContent>
-													<DialogHeader>
-														<DialogTitle>Signature</DialogTitle>
-														<DialogClose />
-													</DialogHeader>
-													<DialogDescription>Please sign below</DialogDescription>
-													<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-														<SignaturePad
-															// @ts-ignore
-															ref={sigCanvas}
-															canvasProps={{
-																className: "w-full h-full",
-															}}
-														/>
+												<DialogTrigger asChild>
+													<div className="w-full border-2 min-h-[200px] h-fit border-gray-300 rounded-md grid place-items-center relative">
+														{field.value ? (
+															<Image
+																src={imageURL}
+																width={300}
+																height={200}
+																alt="Signature"
+																className="w-[300px] h-fit"
+															/>
+														) : (
+															<div>Click to upload or draw signature</div>
+														)}
 													</div>
-													<DialogFooter>
-														<Button variant="outline" onClick={clear}>
-															Clear
-														</Button>
-														<DialogClose asChild>
-															<Button
-																onClick={() => {
-																	save();
-																	field.onChange(
-																		sigCanvas.current
-																			// @ts-ignore
-																			.getTrimmedCanvas()
-																			.toDataURL("image/png"),
-																	);
-																	field.value = sigCanvas.current
-																		// @ts-ignore
-																		.getTrimmedCanvas()
-																		.toDataURL("image/png");
-																}}
-															>
-																Save
-															</Button>
-														</DialogClose>
-													</DialogFooter>
+												</DialogTrigger>
+												<DialogContent>
+													<Tabs defaultValue="upload">
+														<TabsList className="grid w-full grid-cols-2 my-3">
+															<TabsTrigger value="upload">Upload</TabsTrigger>
+															<TabsTrigger value="draw">Draw</TabsTrigger>
+														</TabsList>
+														<TabsContent value="upload">
+															<DialogHeader>
+																<DialogTitle className="mb-4">Upload Signature Image</DialogTitle>
+															</DialogHeader>
+															<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+																<div className="flex flex-col items-center justify-center pt-5 pb-6">
+																	<svg
+																		className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+																		aria-hidden="true"
+																		xmlns="http://www.w3.org/2000/svg"
+																		fill="none"
+																		viewBox="0 0 20 16"
+																	>
+																		<path
+																			stroke="currentColor"
+																			strokeLinecap="round"
+																			strokeLinejoin="round"
+																			strokeWidth="2"
+																			d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+																		/>
+																	</svg>
+																	<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
+																		<span className="font-semibold">Click or drag to upload</span>
+																	</p>
+																	{field?.value instanceof File && (
+																		<p className="mt-2 text-xl text-slate-700">Image Uploaded</p>
+																	)}
+																</div>
+																<FormControl className="absolute">
+																	<Input
+																		className="absolute w-full h-full opacity-0 cursor-pointer"
+																		type="file"
+																		accept="image/*"
+																		onChange={event => {
+																			if (event.target.files) {
+																				console.log(event.target.files[0]);
+																				field.onChange(event.target.files[0]);
+																				form.trigger("applicant_declaration_signature");
+																				console.log(form.getValues("applicant_declaration_signature"));
+																			}
+																		}}
+																	/>
+																</FormControl>
+															</FormLabel>
+															<DialogFooter className="mt-8">
+																<DialogClose asChild>
+																	<Button
+																		onClick={() => {
+																			setImageURL(URL.createObjectURL(field.value));
+																		}}
+																	>
+																		Save
+																	</Button>
+																</DialogClose>
+															</DialogFooter>
+														</TabsContent>
+														<TabsContent value="draw">
+															<DialogHeader className="my-3">
+																<DialogTitle>Draw Signature</DialogTitle>
+															</DialogHeader>
+															<DialogDescription className="mb-4">Please sign below</DialogDescription>
+															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md relative">
+																<SignaturePad
+																	// @ts-ignore
+																	ref={sigCanvas}
+																	canvasProps={{
+																		className: "w-full h-full",
+																	}}
+																/>
+															</div>
+															<DialogFooter className="mt-8">
+																<Button variant="outline" onClick={clear}>
+																	Clear
+																</Button>
+																<DialogClose asChild>
+																	<Button
+																		onClick={() => {
+																			save();
+																			field.onChange(
+																				sigCanvas.current
+																					// @ts-ignore
+																					.getTrimmedCanvas()
+																					.toDataURL("image/png"),
+																			);
+																			field.value = sigCanvas.current
+																				// @ts-ignore
+																				.getTrimmedCanvas()
+																				.toDataURL("image/png");
+																		}}
+																	>
+																		Save
+																	</Button>
+																</DialogClose>
+															</DialogFooter>
+														</TabsContent>
+													</Tabs>
 												</DialogContent>
 												<FormMessage />
 											</Dialog>
