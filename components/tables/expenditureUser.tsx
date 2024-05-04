@@ -25,6 +25,7 @@ type ExpenditureDataType = {
     commencement_date: string;
     completion_date: string;
     grand_total_fees: string;
+    formStage: string;
 };
 
 const ExpenditureUser = () => {
@@ -41,7 +42,7 @@ const ExpenditureUser = () => {
         try {
             const { data, error } = await supabase
                 .from('external_forms')
-                .select('id, full_name, staff_id, faculty, program_title, commencement_date, completion_date, grand_total_fees');
+                .select('id, full_name, staff_id, faculty, program_title, commencement_date, completion_date, grand_total_fees, formStage');
             if (error) {
                 throw error;
             }
@@ -154,31 +155,31 @@ const ExpenditureUser = () => {
 			);
 		}
 
-        // if (selectedYear.length > 0 && selectedYear !== 'all') {
-        //     filteredData = totalsData.filter(
-        //         event => {
-        //             return (
-        //                 event.commencement_date.includes(selectedYear)
-        //             );
-        //         }
-        //     );
-        // }
+        if (selectedYear && selectedYear !== 'all') {
+            filteredData = filteredData.filter(event => event.commencement_date.includes(selectedYear));
+        }
+
+        if (selectedFormStatus && selectedFormStatus !== 'all') {
+            filteredData = filteredData.filter(event => event.formStage.toString() === selectedFormStatus);
+        }
+
         setDataResults(filteredData);
 		
 	};
 
-    // const [selectedYear, setSelectedYear] = useState("");
+    const [selectedYear, setSelectedYear] = useState("");
+    const [selectedFormStatus, setSelectedFormStatus] = useState("");
 
-	// const generateYearOptions = () => {
-	// 	let startYear = 2023;
-	// 	let currentYear = new Date().getFullYear();
+	const generateYearOptions = () => {
+		let startYear = 2023;
+		let currentYear = new Date().getFullYear();
 
-	// 	const options = [];
-	// 	for (let year = startYear; year <= currentYear; year++) {
-	// 		options.push(<option key={year} value={year}>{year}</option>);
-	// 	}
-	// 	return options;
-	// }
+		const options = [];
+		for (let year = startYear; year <= currentYear; year++) {
+			options.push(<option key={year} value={year}>{year}</option>);
+		}
+		return options;
+	}
 
     const handleSearch = (query: string) => {
 		setSearchQuery(query);
@@ -191,12 +192,13 @@ const ExpenditureUser = () => {
     useEffect(() => {
 		filterData(searchQuery);
 		setCurrentPage(1);
-	}, [searchQuery, selectedFacultyUnit]);
+	}, [searchQuery, selectedFacultyUnit, selectedYear, selectedFormStatus]);
 
     const refreshData = () => {
 		setSearchQuery("");
 		setSelectedFacultyUnit("");
-        // setSelectedYear("");
+        setSelectedYear("");
+        setSelectedFormStatus("");
 	};
     
     // Show Sort Options
@@ -241,7 +243,7 @@ const ExpenditureUser = () => {
 					return b.full_name.localeCompare(a.full_name, undefined, { sensitivity: 'base' });
 				} else {
 					return a.full_name.localeCompare(b.full_name, undefined, { sensitivity: 'base' });
-				}
+				} 
 			} else if (sortBy === "grand_total_fees") {
 				if (sortOrder === "asc") {
 					return b.grand_total_fees.localeCompare(a.grand_total_fees, undefined, { sensitivity: 'base' });
@@ -454,20 +456,40 @@ const ExpenditureUser = () => {
                             </div>
                         </div>
                         <div className="flex flex-col lg:flex-row justify-between">
-                            <div></div>
-                            <div> 
-                                {/* <div className="flex items-center ml-auto">
+                            <div className='flex flex-row'>
+                                <div className="lg:flex hidden items-center ml-auto">
 									<select
 										className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base"
 										id="year"
-										defaultValue=""
+										value={selectedYear}
 										onChange={event => setSelectedYear(event.target.value)}
 									>
 										<option value="" disabled>Year</option>
-										<option value="all">View All</option>
+										<option value="all">View All (Year)</option>
 										{generateYearOptions()}
 									</select>
-								</div>                            */}
+								</div>
+                                <div className="lg:flex hidden items-center ml-2">
+									<select
+										className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base"
+										id="formStatus"
+										value={selectedFormStatus}
+										onChange={event => setSelectedFormStatus(event.target.value)}
+									>
+										<option value="" disabled>Form Status</option>
+										<option value="all">View All (Form Status)</option>
+										<option value="1">Reverted to Staff</option>
+                                        <option value="2">Reviewing by AAO</option>
+                                        <option value="3">Reviewing by HOS/ ACDR/ MGR</option>
+                                        <option value="4">Reviewing by HMU/ Dean</option>
+                                        <option value="5">Approved</option>
+                                        <option value="6">Rejected</option>
+									</select>
+								</div>
+                            </div>
+                                
+                            <div> 
+                                                           
                                 <select
                                     name="facultyUnit"
                                     id="facultyUnit"
@@ -480,7 +502,7 @@ const ExpenditureUser = () => {
                                         Faculty/ Unit
                                     </option>
                                     <option value="all">
-                                        View All
+                                        View All (Faculty/ Unit)
                                     </option>
                                     {facultyOptions.map((faculty, index) => (
                                         <option key={index} value={faculty}>
@@ -524,6 +546,7 @@ const ExpenditureUser = () => {
                                             <p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
                                         ) : (
                                             sortedData
+                                            .slice(startIndex, endIndex)
                                             .map((expenditureItem, index) => (
                                             <tr key={expenditureItem.id}>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
@@ -539,14 +562,18 @@ const ExpenditureUser = () => {
                                                     {expenditureItem.faculty}
                                                 </td>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                    {groupedData[expenditureItem.staff_id]?.map((programItem) => (
+                                                    {groupedData[expenditureItem.staff_id]?.filter(e => e.commencement_date.includes(selectedYear) || selectedYear === 'all')
+                                                        .filter(e => e.formStage.toString() === selectedFormStatus || selectedFormStatus === 'all' || selectedFormStatus === '')
+                                                        .map((programItem) => (
                                                         <div key={programItem.id}>
                                                             {programItem.program_title}
                                                         </div>
                                                     ))}
                                                 </td>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                    {groupedData[expenditureItem.staff_id]?.map((programItem) => (
+                                                    {groupedData[expenditureItem.staff_id]?.filter(e => e.commencement_date.includes(selectedYear) || selectedYear === 'all')
+                                                        .filter(e => e.formStage.toString() === selectedFormStatus || selectedFormStatus === 'all' || selectedFormStatus === '')
+                                                        .map((programItem) => (
                                                         <div key={programItem.id}>
                                                             {Number(programItem.grand_total_fees).toFixed(2)}
                                                         </div>
@@ -560,25 +587,25 @@ const ExpenditureUser = () => {
                                         )
                                         }
                                         {sortedData.length < itemsPerPage && (
-                                                [...Array(itemsPerPage - sortedData.length)].map((_, index) => (
-                                                    <tr className="" key={index}>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                        </td>
-                                                    </tr>
-                                                ))                                                 
-                                            )}
+                                            [...Array(itemsPerPage - sortedData.length)].map((_, index) => (
+                                                <tr className="" key={index}>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                    <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                    </td>
+                                                </tr>
+                                            ))                                                 
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
