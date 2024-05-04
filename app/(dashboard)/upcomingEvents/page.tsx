@@ -571,7 +571,7 @@ export default function Home() {
                                 {/* Export Button */}
                                 <button
                                     type="button"
-                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
                                     onClick={() => downloadXLSX(mainEvents)}>
                                     <img
                                         src={exportCSV.src}
@@ -588,55 +588,53 @@ export default function Home() {
                             <div className="inline-block min-w-full shadow rounded-sm">
                                 <table className="lg:w-full w-auto min-h-screen">
                                     <thead>
-                                        <tr className="flex border-b-2 border-gray-200 bg-gray-100">
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                                <span className="ml-8 lg:ml-4">No</span>
+                                        <tr>
+                                            <th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap text-left">
+                                                <div className="ml-2 lg:ml-0">NO</div>
                                             </th>
-                                            <th className="flex-1 lg:px-[3px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                                <span className="ml-6 lg:ml-1">Event Title</span>
+                                            <th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap text-left">
+                                                <div className="-ml-36 lg:-ml-20">Event Title</div>
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                                <span className="ml-6 lg:ml-1">Description</span>
+                                            <th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap text-left">
+                                                Description
                                             </th>
-
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                                <span className="ml-2 lg:ml-1">Start Date</span>
+                                            <th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap">
+                                                <div className="ml-12 lg:-ml-2">Start Date</div>
                                             </th>
-
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                                <span className="ml-24 lg:ml-20">Status</span>
+                                            <th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap">
+                                                <div className="ml-20 lg:ml-16">Status</div>
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                                <span className="ml-[52px] lg:ml-20">Action</span>
+                                            <th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap">
+                                                <div className="ml-5 lg:ml-5">Action</div>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {searchQuery.length > 0 && dataResults.length === 0 ? (
-                                            <p className="text-lg text-center mt-4">No data available.</p>
+                                            <p className="text-lg ml-4 mt-4">No data available.</p>
                                         ) : (
                                             sortedData.slice((currentPage - 1) * entriesToShow, currentPage * entriesToShow).map((event, index) => (
-                                                <tr className="flex" key={index}>
-                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                                <tr key={index}>
+                                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                         <div className="flex items-center">
-                                                            <div className="ml-4">
+                                                            <div className="ml-1">
                                                                 <p className="text-gray-900 dark:text-dark_text">
                                                                     {(currentPage - 1) * entriesToShow + index + 1}
                                                                 </p>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="flex-1 px-6 lg:px-2 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-80">
-                                                        {event.intFEventName}
+                                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        <div className="-ml-36 lg:-ml-20">{event.intFEventName}</div>
                                                     </td>
-                                                    <td className="flex-1 px-6 ml-1 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-96">
-                                                        {event.intFEventDescription}
+                                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text lg:w-[450px]">
+                                                        <div className="">{event.intFEventDescription}</div>
                                                     </td>
-                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-                                                        <span className="-ml-3 lg:-ml-0">{event.intFEventStartDate} </span>
+                                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text whitespace-nowrap">
+                                                        <span className="ml-12 lg:-ml-0">{event.intFEventStartDate} </span>
                                                     </td>
-                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                        <div className="flex items-end">
+                                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        <div className="flex items-end ml-2 lg:ml-0">
                                                             <span className="relative px-3 py-[5px] font-semibold text-orange-900 text-xs flex items-center ml-10 dark:text-orange-200">
                                                                 <span aria-hidden className="absolute inset-0 bg-orange-200 opacity-50 rounded-full dark:bg-orange-900"></span>
                                                                 <AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
@@ -646,121 +644,127 @@ export default function Home() {
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                        <DropdownMenu>
-                                                            <DropdownMenuTrigger asChild>
-                                                                <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
-                                                                    <BsThreeDots />
-                                                                </div>
-                                                            </DropdownMenuTrigger>
-                                                            <DropdownMenuContent className="-mt-1">
-                                                                <DropdownMenuItem
-                                                                    className="cursor-pointer"
-                                                                    onClick={e => {
+                                                    <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        <div className="-ml-16 lg:-ml-12">
+                                                            <DropdownMenu>
+                                                                <DropdownMenuTrigger asChild>
+                                                                    <div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-[86px]">
+                                                                        <BsThreeDots />
+                                                                    </div>
+                                                                </DropdownMenuTrigger>
+                                                                <DropdownMenuContent className="-mt-1">
+                                                                    <DropdownMenuItem
+                                                                        className="cursor-pointer"
+                                                                        onClick={e => {
+                                                                            e.stopPropagation();
+                                                                            const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
+
+                                                                            if (filteredSubEvent) {
+                                                                                openModal(
+                                                                                    event.intFID,
+                                                                                    event.intFEventName,
+                                                                                    event.intFEventDescription,
+                                                                                    event.intFEventStartDate,
+                                                                                    event.intFEventEndDate,
+                                                                                    event.intFTrainerName,
+                                                                                    filteredSubEvent.sub_eventsID,
+                                                                                    filteredSubEvent.sub_eventsMainID,
+                                                                                    filteredSubEvent.sub_eventsName,
+                                                                                    filteredSubEvent.sub_eventsVenue,
+                                                                                    filteredSubEvent.sub_eventsStartDate,
+                                                                                    filteredSubEvent.sub_eventsEndDate,
+                                                                                    filteredSubEvent.sub_eventsStartTime,
+                                                                                    filteredSubEvent.sub_eventsEndTime,
+                                                                                    filteredSubEvent.sub_eventsMaxSeats,
+                                                                                    filteredSubEvent.sub_eventsOrganizer,
+                                                                                    filteredSubEvent.sub_eventsFaculty
+                                                                                );
+                                                                            }
+
+                                                                        }}
+                                                                    >Sub-Events Details
+                                                                    </DropdownMenuItem>
+
+                                                                    <DropdownMenuSeparator />
+
+                                                                    <DropdownMenuItem
+                                                                        className="cursor-pointer"
+                                                                        onClick={e => {
+                                                                            e.stopPropagation()
+                                                                            openAttendanceModal(event.intFID);
+                                                                        }}
+                                                                    >Attendance List
+                                                                    </DropdownMenuItem>
+
+                                                                    <DropdownMenuSeparator />
+
+                                                                    <DropdownMenuItem onClick={e => {
+                                                                        e.stopPropagation();
+                                                                        setMainEventForFeedback(event);
+                                                                        openFeedbackModal(event.intFID);
+                                                                    }}>Event Feedback
+                                                                    </DropdownMenuItem>
+
+                                                                    <DropdownMenuSeparator />
+
+                                                                    <DropdownMenuItem onClick={e => {
                                                                         e.stopPropagation();
                                                                         const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
 
                                                                         if (filteredSubEvent) {
-                                                                            openModal(
-                                                                                event.intFID,
-                                                                                event.intFEventName,
-                                                                                event.intFEventDescription,
-                                                                                event.intFEventStartDate,
-                                                                                event.intFEventEndDate,
-                                                                                event.intFTrainerName,
-                                                                                filteredSubEvent.sub_eventsID,
-                                                                                filteredSubEvent.sub_eventsMainID,
-                                                                                filteredSubEvent.sub_eventsName,
-                                                                                filteredSubEvent.sub_eventsVenue,
-                                                                                filteredSubEvent.sub_eventsStartDate,
-                                                                                filteredSubEvent.sub_eventsEndDate,
-                                                                                filteredSubEvent.sub_eventsStartTime,
-                                                                                filteredSubEvent.sub_eventsEndTime,
-                                                                                filteredSubEvent.sub_eventsMaxSeats,
-                                                                                filteredSubEvent.sub_eventsOrganizer,
-                                                                                filteredSubEvent.sub_eventsFaculty
-                                                                            );
+                                                                            openQRCodeModal(event.intFID);
                                                                         }
-
-                                                                    }}
-                                                                >Sub-Events Details
-                                                                </DropdownMenuItem>
-
-                                                                <DropdownMenuSeparator />
-
-                                                                <DropdownMenuItem
-                                                                    className="cursor-pointer"
-                                                                    onClick={e => {
-                                                                        e.stopPropagation()
-                                                                        openAttendanceModal(event.intFID);
-                                                                    }}
-                                                                >Attendance List
-                                                                </DropdownMenuItem>
-
-                                                                <DropdownMenuSeparator />
-
-                                                                <DropdownMenuItem onClick={e => {
-                                                                    e.stopPropagation();
-                                                                    setMainEventForFeedback(event);
-                                                                    openFeedbackModal(event.intFID);
-                                                                }}>Event Feedback
-                                                                </DropdownMenuItem>
-
-                                                                <DropdownMenuSeparator />
-
-                                                                <DropdownMenuItem onClick={e => {
-                                                                    e.stopPropagation();
-                                                                    const filteredSubEvent = subEvents.find(subEvent => subEvent.sub_eventsMainID === event.intFID);
-
-                                                                    if (filteredSubEvent) {
-                                                                        openQRCodeModal(event.intFID);
-                                                                    }
-                                                                }}>Feedback &amp; Attendance Form
-                                                                </DropdownMenuItem>
-                                                            </DropdownMenuContent>
-                                                        </DropdownMenu>
+                                                                    }}>Feedback &amp; Attendance Form
+                                                                    </DropdownMenuItem>
+                                                                </DropdownMenuContent>
+                                                            </DropdownMenu>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))
                                         )}
 
                                         {/* pagination */}
-                                        {/* {Array.from({
-                                        length: entriesToShow - mainEvents?.length,
-                                    }).map((_, index) => (
-                                        <tr className="flex invisible" key={index}>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <div className="flex items-center">
-                                                    <div className="ml-[14px]">
+                                        {sortedData.length < entriesToShow && (
+                                            [...Array(entriesToShow - sortedData.length)]
+                                                .map((_, index) => (
+                                                <tr className="flex invisible" key={index}>
+                                                    <td className="flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-[14px]">
+                                                                <p className="text-gray-900 whitespace-no-wrap"></p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+                                                        <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
+                                                    </td>
+                                                    <td className="flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]">
                                                         <p className="text-gray-900 whitespace-no-wrap"></p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <p className="text-gray-900 whitespace-no-wrap"></p>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
-                                            </td>
-                                            <td
-                                                className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]`}>
-                                                <span
-                                                    className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
-                                                    <span
-                                                        aria-hidden
-                                                        className={`absolute inset-0 opacity-0 rounded-full`}></span>
-                                                    <span className="relative"></span>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))} */}
+                                                    </td>
+                                                    <td className="flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+                                                        <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
+                                                    </td>
+                                                    <td
+                                                        className={`flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]`}>
+                                                        <span
+                                                            className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
+                                                            <span
+                                                                aria-hidden
+                                                                className={`absolute inset-0 opacity-0 rounded-full`}></span>
+                                                            <span className="relative"></span>
+                                                        </span>
+                                                    </td>
+                                                    <td className="flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+                                                        <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
                                     </tbody>
                                 </table>
 
-                                <div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
+                                <div className="px-5 py-5 bg-white border-t hidden lg:flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
                                     <div className="flex items-center text-[14px] text-base">
                                         <div className="mr-2 ml-3">
                                             <span className="text-sm lg:text-base dark:text-dark_text">Show</span>
@@ -892,8 +896,50 @@ export default function Home() {
                                                 <MdKeyboardDoubleArrowRight className="text-3xl" />
                                             </button>
                                         </div>
-                                    </div>
+                                    </div>                                    
                                 </div>
+                            </div>
+                            {/*mobile view pagination */}
+                            <div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
+                                <button
+                                    className="opacity-70"
+                                    onClick={() => handlePageChange(1)}
+                                    disabled={currentPage === 1}
+                                >
+                                    <MdKeyboardDoubleArrowLeft className="text-3xl" />
+                                </button>
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="opacity-70"
+                                >
+                                    <MdKeyboardArrowLeft className="text-3xl" />
+                                </button>
+
+                                {/* Pagination Buttons */}
+                                <div className="flex">
+                                    <button
+                                        className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
+                                        onClick={() => handlePageChange(currentPage)}
+                                    >
+                                        {currentPage}/ {pageCount}
+                                    </button>
+                                </div>
+
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === pageCount}
+                                    className="opacity-70"
+                                >
+                                    <MdKeyboardArrowRight className="text-3xl" />
+                                </button>
+                                <button
+                                    className="opacity-70"
+                                    onClick={() => handlePageChange(pageCount)}
+                                    disabled={currentPage === pageCount}
+                                >
+                                    <MdKeyboardDoubleArrowRight className="text-3xl" />
+                                </button>
                             </div>
                         </div>
 
@@ -1072,7 +1118,7 @@ export default function Home() {
                         </Modal>
 
                         {/* mobile view pagination */}
-                        <div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
+                        {/* <div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
                             <button
                                 className="opacity-70"
                                 onClick={() => handleSkipToFirstPage}
@@ -1086,10 +1132,10 @@ export default function Home() {
                                 className="opacity-70"
                             >
                                 <LeftArrow />
-                            </button>
+                            </button> */}
 
                             {/* Pagination Buttons */}
-                            <div className="flex">
+                            {/* <div className="flex">
                                 {[1, 2, 3].map(pageNumber => (
                                     <button
                                         type="button"
@@ -1130,7 +1176,7 @@ export default function Home() {
                             >
                                 <DoubleRightArrow />
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
