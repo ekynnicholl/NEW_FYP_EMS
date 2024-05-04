@@ -236,23 +236,7 @@ export default function Home() {
 
 	// Refresh data from database
 	const refreshData = async () => {
-		// Get the current date
-		const currentDate = new Date().toISOString();
-
-		// Fetch events where the start date is in the future
-		const { data: mainEventData, error: internalError } = await supabase
-			.from("internal_events")
-			.select("*")
-			.lt("intFEventEndDate", currentDate)
-			.order("intFEventStartDate", { ascending: true })
-			.eq("intFIsHidden", 0);
-
-		if (internalError) {
-			console.error("Error fetching past event:", internalError);
-			return;
-		}
-
-		setMainEvents(mainEventData || []);
+		setSearchQuery("");
 	};
 
 	//Handle search input
@@ -420,25 +404,6 @@ export default function Home() {
 		intFTotalHours: 'Total Hour(s)',
 	};
 
-	// export to CSV format
-	// const exportToCSV = () => {
-	// 	// Generate header row
-	// 	const header = Object.keys(mainEvents[0]).join(",");
-	// 	const dataRows = mainEvents.map(e => Object.values(e).join(",")).join("\n");
-
-	// 	// Combine header and data rows
-	// 	const csvContent = `${header}\n${dataRows}`;
-
-	// 	const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-	// 	const link = document.createElement("a");
-
-	// 	link.href = URL.createObjectURL(blob);
-	// 	link.setAttribute("download", "attendance_data.csv");
-	// 	document.body.appendChild(link);
-	// 	link.click();
-	// 	document.body.removeChild(link);
-	// };
-
 	// An array of sorting options
 	const sortOptions = [
 		{ label: "Event Title", value: "event" },
@@ -600,7 +565,7 @@ export default function Home() {
 							{/* Export Button */}
 							<button
 								type="button"
-								className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+								className="items-center justify-center bg-slate-200 rounded-lg py-2 ml-2 lg:ml-0 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
 								onClick={() => downloadXLSX(mainEvents)}
 							>
 								<img src={exportCSV.src} alt="" width={20} className="text-slate-800" />
@@ -610,186 +575,191 @@ export default function Home() {
 					</div>
 					<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto lg:block">
 						<div className="inline-block min-w-full shadow rounded-sm">
-						<table className="lg:w-full w-auto min-h-screen">
-                            <thead>
-                                <tr className="flex border-b-2 border-gray-200 bg-gray-100">
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-                                        <span className="ml-8 lg:ml-4">No</span>
-                                    </th>
-                                    <th className="flex-1 lg:px-[3px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-6 lg:ml-2">Event Title</span>
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-6 lg:ml-2">Description</span>
-                                    </th>
-                                    
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-2 lg:ml-1">Start Date</span>
-                                    </th>
-                                    
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-24 lg:ml-20">Status</span>
-                                    </th>
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-										<span className="ml-[52px] lg:ml-20">Action</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-								{searchQuery.length > 0 && dataResults.length === 0 ? (
-										<p className="text-lg text-center mt-4">No data available.</p>
-									) : (
+							<table className="lg:w-full w-auto min-h-screen">
+								<thead>									
+									<tr>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap text-left">
+											<div className="ml-2 lg:ml-0">NO</div>
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap text-left">
+											<div className="ml-20 lg:ml-32">Event Title</div>
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap text-left">
+											<div className="">Description</div>
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap">
+											<div className="ml-12 lg:-ml-2">Start Date</div>
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap">
+											<div className="ml-20 lg:ml-16">Status</div>
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider whitespace-nowrap">
+											<div className="ml-5 lg:ml-5">Action</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{searchQuery.length > 0 && dataResults.length === 0 ? (
+											<p className="text-lg text-center mt-4">No data available.</p>
+										) : (
 										sortedData.slice((currentPage - 1) * entriesToShow, currentPage * entriesToShow).map((event, index) => (
-                                <tr className="flex" key={index}>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">                                                
-												<div className="flex items-center">
-														<div className="ml-4">
+										
+											<tr key={index}>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													<div className="flex items-center">
+														<div className="ml-1">
 															<p className="text-gray-900 dark:text-dark_text">
 																{(currentPage - 1) * entriesToShow + index + 1}
 															</p>
 														</div>
 													</div>
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-2 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-80">
-												{event.intFEventName}
-                                            </td>
-                                            <td className="flex-1 px-6 ml-1 lg:ml-0 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text w-96">
-												{event.intFEventDescription}
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-												<span className="-ml-3 lg:-ml-0">{event.intFEventStartDate} </span> 
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D]">
-												<div className="flex items-end">												
-													<span className="relative px-3 py-[5px] font-semibold text-slate-800 text-xs flex items-center ml-10">
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													<div className="ml-20 lg:ml-32">{event.intFEventName}</div>
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text lg:w-[450px]">
+													{event.intFEventDescription}
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text whitespace-nowrap">
+													<span className="ml-12 lg:-ml-0">{event.intFEventStartDate} </span>
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													<div className="flex items-end">												
+														<span className="relative px-3 py-[5px] font-semibold text-slate-800 text-xs flex items-center ml-10">
+														<span
+																aria-hidden
+																className="absolute inset-0 bg-green-500 opacity-50 rounded-full"
+															></span>
+															<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
+															<span className="relative mt-[1px] leading-3 tracking-wider ">Completed</span>
+														</span>
+													</div>
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													<div className="-ml-3 lg:-ml-12">
+														<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-10 lg:ml-[86px]">
+																<BsThreeDots />
+															</div>
+														</DropdownMenuTrigger>
+															<DropdownMenuContent className="-mt-1">
+																<DropdownMenuItem
+																	className="cursor-pointer"
+																	onClick={e => {
+																		e.stopPropagation();
+
+																		const filteredSubEvent = subEvents.find(
+																			subEvent => subEvent.sub_eventsMainID === event.intFID,
+																		);
+
+																		if (filteredSubEvent) {
+																			openModal(
+																				event.intFID,
+																				event.intFEventName,
+																				event.intFEventDescription,
+																				event.intFEventStartDate,
+																				event.intFEventEndDate,
+																				filteredSubEvent.sub_eventsID,
+																				filteredSubEvent.sub_eventsMainID,
+																				filteredSubEvent.sub_eventsName,
+																				filteredSubEvent.sub_eventsVenue,
+																				filteredSubEvent.sub_eventsStartDate,
+																				filteredSubEvent.sub_eventsEndDate,
+																				filteredSubEvent.sub_eventsStartTime,
+																				filteredSubEvent.sub_eventsEndTime,
+																				filteredSubEvent.sub_eventsMaxSeats,
+																				filteredSubEvent.sub_eventsOrganizer,
+																				filteredSubEvent.sub_eventsFaculty,
+																			);
+																		}
+																	}}
+																>
+																	Sub-Events Details
+																</DropdownMenuItem>
+																<DropdownMenuSeparator />
+																<DropdownMenuItem
+																	className="cursor-pointer"
+																	onClick={e => {
+																		e.stopPropagation();
+																		openAttendanceModal(event.intFID);
+																	}}
+																>
+																	Attendance List
+																</DropdownMenuItem>
+																<DropdownMenuSeparator />
+																<DropdownMenuItem
+																	onClick={e => {
+																		e.stopPropagation();
+																		setMainEventForFeedback(event);
+																		openFeedbackModal(event.intFID);
+																	}}
+																>
+																	Event Feedback
+																</DropdownMenuItem>
+																<DropdownMenuSeparator />
+
+																<DropdownMenuItem
+																	onClick={e => {
+																		e.stopPropagation();
+																		const filteredSubEvent = subEvents.find(
+																			subEvent => subEvent.sub_eventsMainID === event.intFID,
+																		);
+
+																		if (filteredSubEvent) {
+																			openQRCodeModal(event.intFID);
+																		}
+																	}}
+																>
+																	Feedback Form
+																</DropdownMenuItem>
+															</DropdownMenuContent>
+														</DropdownMenu>
+													</div>
+												</td>
+											</tr>
+										))
+									)}
+
+									{/* pagination */}
+									{sortedData.length < entriesToShow && (
+										[...Array(entriesToShow - sortedData.length)]
+											.map((_, index) => (
+											<tr className="flex invisible" key={index}>
+												<td className="flex-1 px-1 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+													<div className="flex items-center">
+														<div className="">
+															<p className="text-gray-900 whitespace-no-wrap"></p>
+														</div>
+													</div>
+												</td>
+												<td className="flex-1 px-1 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+													<p className="text-gray-900 whitespace-no-wrap"></p>
+												</td>
+												<td className="flex-1 px-1 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+													<p className="text-gray-900 whitespace-no-wrap"></p>
+												</td>
+												<td className="flex-1 px-1 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+													<p className="text-gray-900 whitespace-no-wrap"></p>
+												</td>
+												<td
+													className={`flex-1 px-1 py-5 bg-white text-sm dark:text-[#B0AA9F]`}>
+													<span
+														className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
 														<span
 															aria-hidden
-															className="absolute inset-0 bg-green-500 opacity-50 rounded-full"
-														></span>
-														<AiOutlineFieldTime className="mr-1 text-2xl font-bold relative" />
-														<span className="relative mt-[1px] leading-3 tracking-wider ">Completed</span>
+															className={`absolute inset-0 opacity-0 rounded-full`}></span>
+														<span className="relative"></span>
 													</span>
-												</div>
-                                            </td>
-                                            <td className="flex-1 px-6 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
-												<DropdownMenu>
-													<DropdownMenuTrigger asChild>
-														<div className="rounded-full bg-slate-100 p-2 opacity-80 hover:bg-slate-200 mt-[3px] cursor-pointer w-8 ml-10 lg:ml-[86px]">
-															<BsThreeDots />
-														</div>
-													</DropdownMenuTrigger>
-													<DropdownMenuContent className="-mt-1">
-														<DropdownMenuItem
-															className="cursor-pointer"
-															onClick={e => {
-																e.stopPropagation();
-
-																const filteredSubEvent = subEvents.find(
-																	subEvent => subEvent.sub_eventsMainID === event.intFID,
-																);
-
-																if (filteredSubEvent) {
-																	openModal(
-																		event.intFID,
-																		event.intFEventName,
-																		event.intFEventDescription,
-																		event.intFEventStartDate,
-																		event.intFEventEndDate,
-																		filteredSubEvent.sub_eventsID,
-																		filteredSubEvent.sub_eventsMainID,
-																		filteredSubEvent.sub_eventsName,
-																		filteredSubEvent.sub_eventsVenue,
-																		filteredSubEvent.sub_eventsStartDate,
-																		filteredSubEvent.sub_eventsEndDate,
-																		filteredSubEvent.sub_eventsStartTime,
-																		filteredSubEvent.sub_eventsEndTime,
-																		filteredSubEvent.sub_eventsMaxSeats,
-																		filteredSubEvent.sub_eventsOrganizer,
-																		filteredSubEvent.sub_eventsFaculty,
-																	);
-																}
-															}}
-														>
-															Sub-Events Details
-														</DropdownMenuItem>
-														<DropdownMenuSeparator />
-														<DropdownMenuItem
-															className="cursor-pointer"
-															onClick={e => {
-																e.stopPropagation();
-																openAttendanceModal(event.intFID);
-															}}
-														>
-															Attendance List
-														</DropdownMenuItem>
-														<DropdownMenuSeparator />
-														<DropdownMenuItem
-															onClick={e => {
-																e.stopPropagation();
-																setMainEventForFeedback(event);
-																openFeedbackModal(event.intFID);
-															}}
-														>
-															Event Feedback
-														</DropdownMenuItem>
-														<DropdownMenuSeparator />
-
-														<DropdownMenuItem
-															onClick={e => {
-																e.stopPropagation();
-																const filteredSubEvent = subEvents.find(
-																	subEvent => subEvent.sub_eventsMainID === event.intFID,
-																);
-
-																if (filteredSubEvent) {
-																	openQRCodeModal(event.intFID);
-																}
-															}}
-														>
-															Feedback Form
-														</DropdownMenuItem>
-													</DropdownMenuContent>
-												</DropdownMenu>
-                                        </td>
-                                    </tr>
-									))
-								)}
-
-								{/* pagination */}
-								{/* {Array.from({
-                                        length: entriesToShow - mainEvents?.length,
-                                    }).map((_, index) => (
-                                        <tr className="flex invisible" key={index}>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <div className="flex items-center">
-                                                    <div className="ml-[14px]">
-                                                        <p className="text-gray-900 whitespace-no-wrap"></p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <p className="text-gray-900 whitespace-no-wrap ml-3"></p>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <p className="text-gray-900 whitespace-no-wrap"></p>
-                                            </td>
-                                            <td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]">
-                                                <p className="text-gray-900 whitespace-no-wrap ml-1"></p>
-                                            </td>
-                                            <td
-                                                className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm dark:text-[#B0AA9F]`}>
-                                                <span
-                                                    className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
-                                                    <span
-                                                        aria-hidden
-                                                        className={`absolute inset-0 opacity-0 rounded-full`}></span>
-                                                    <span className="relative"></span>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))} */}
-                            </tbody>
-                        </table>
+												</td>
+												<td className="flex-1 px-5 py-5 bg-white text-sm dark:text-[#B0AA9F]">
+													<p className="text-gray-900 whitespace-no-wrap ml-3"></p>
+												</td>
+											</tr>
+										))
+									)}
+								</tbody>
+							</table>
 
 							<div className="px-5 py-5 bg-white border-t hidden lg:flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
 								<div className="flex items-center text-[14px] text-base">
@@ -826,9 +796,15 @@ export default function Home() {
 									</div>
 								</div>
 								<div className="flex items-center">
-									<span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
-										1-{entriesToShow} of {mainEvents?.length} entries
-									</span>
+									{dataResults ? (
+										<span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+											1-{entriesToShow} of {dataResults?.length} entries
+										</span>
+									) : (
+										<span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+											1-{entriesToShow} of {mainEvents?.length} entries
+										</span>
+									)}
 
 									<div className="flex">
 										{/* Skip To First Page Button */}
@@ -898,94 +874,115 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
+						{/*mobile view pagination */}
+						<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
+                                <button
+                                    className="opacity-70"
+                                    onClick={() => handlePageChange(1)}
+                                    disabled={currentPage === 1}
+                                >
+                                    <MdKeyboardDoubleArrowLeft className="text-3xl" />
+                                </button>
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="opacity-70"
+                                >
+                                    <MdKeyboardArrowLeft className="text-3xl" />
+                                </button>
+
+                                {/* Pagination Buttons */}
+                                <div className="flex">
+                                    <button
+                                        className={`py-1 px-3 lg:ml-1 lg:mr-1 ml-2 mr-2 rounded font-medium text-sm lg:text-[15px] text-slate-100 bg-slate-900`}
+                                        onClick={() => handlePageChange(currentPage)}
+                                    >
+                                        {currentPage}/ {pageCount}
+                                    </button>
+                                </div>
+
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === pageCount}
+                                    className="opacity-70"
+                                >
+                                    <MdKeyboardArrowRight className="text-3xl" />
+                                </button>
+                                <button
+                                    className="opacity-70"
+                                    onClick={() => handlePageChange(pageCount)}
+                                    disabled={currentPage === pageCount}
+                                >
+                                    <MdKeyboardDoubleArrowRight className="text-3xl" />
+                                </button>
+                            </div>
 					</div>
 
 					<EventListModal isVisible={showSubEventModal} onClose={() => setShowSubEventModal(false)}>
 						<p className="font-semibold text-md text-gray-600 p-2 ml-2">Sub-Events Details</p>
-						<div className="p-5 bg-slate-100 h-[520px] lg:w-full lg:h-11/12 ml-1 overflow-auto dark:bg-dark_mode_bg">
-							<table className="leading-normal w-11/12 mx-auto dark:bg-[#1D2021]">
-							<thead>
-                                    <tr className="flex border-b-2 border-gray-200 bg-gray-100 justify-between dark:bg-[#1D2021] dark:border-[#363B3D]">
-                                        <th className="lg:ml-5 px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            NO.
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            <span className="lg:-ml-12">Event Name</span>
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Organizer
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Venue
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Start Time
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            End Time
-                                        </th>
-                                        <th className="px-[33px] py-3 text-left text-sm lg:text-md font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap dark:text-dark_text">
-                                            Maximum Seats
-                                        </th>
-                                    </tr>
-                                </thead>
+						
+						<div className="bg-white h-[520px] w-auto lg:w-full lg:h-11/12 overflow-x-auto dark:bg-dark_mode_bg pb-5">
+							<table className="leading-normal lg:w-full mx-auto dark:bg-[#1D2021]">
+								<thead>
+									<tr>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											NO.
+										</th>											
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Event Name
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Organizer
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Venue
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Start Time
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											End Time
+										</th>
+										<th className="flex-1 px-6 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+											Maximum Seats
+										</th>
+									</tr>
+								</thead>
 								<tbody>
 									{subEvents
-                                        .filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
-                                        .map((subEvent, index) => (
-                                            <tr className="flex border-b border-gray-200 bg-white dark:bg-dark_mode_card dark:border-[#363B3D]" key={index}>
-                                                <td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
-                                                    <div>
-                                                        <div className="ml-4 lg:ml-10">
-                                                            <p className="text-gray-900 dark:text-dark_text">
-                                                                {(currentPage - 1) *
-                                                                    entriesToShow +
-                                                                    index +
-                                                                    1
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-7 lg:-ml-10">
-                                                        {subEvent.sub_eventsName}
-                                                    </p>
-                                                </td>
+										.filter(subEvent => subEvent.sub_eventsMainID === selectedEvent.intFID)
+										.map((subEvent, index) => (
+											<tr key={index}>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{(currentPage - 1) * entriesToShow + index + 1 }
+												</td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+														{subEvent.sub_eventsName}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-2 dark:text-dark_text">
-                                                        {subEvent.sub_eventsOrganizer}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsOrganizer}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 lg:ml-4 dark:text-dark_text">
-                                                        {subEvent.sub_eventsVenue}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsVenue}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-7 lg:-ml-0 lg:whitespace-nowrap dark:text-dark_text">
-                                                        {subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 -ml-5 lg:ml-6 lg:whitespace-nowrap dark:text-dark_text">
-                                                        {subEvent.sub_eventsEndDate} {subEvent.sub_eventsEndTime}
-                                                    </p>
-                                                </td>
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsStartDate} {subEvent.sub_eventsStartTime}
+												</td>
 
-                                                <td className="flex-1 px-3 py-5 text-sm lg:text-md dark:bg-dark_mode_card dark:border-[#363B3D]">
-                                                    <p className="text-gray-900 ml-7 dark:text-dark_text">
-                                                        {subEvent.sub_eventsMaxSeats}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        ))}
+												<td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+													{subEvent.sub_eventsMaxSeats}
+												</td>
+											</tr>
+										))}
 								</tbody>
-							</table>							
+							</table>
 						</div>
 					</EventListModal>
 
@@ -1053,47 +1050,7 @@ export default function Home() {
 							</div>
 						</div>
 					</Modal>
-					</div>
-					{/* mobile view paginagtion */}
-					<div className="pagination flex justify-center items-center mt-5 pb-24 lg:hidden">
-						<button className="opacity-70" onClick={() => handleSkipToFirstPage} disabled={currentPage === 1}>
-							<DoubleLeftArrow />
-						</button>
-						<button onClick={() => handleArrowLeftClick} disabled={currentPage === 1} className="opacity-70">
-							<LeftArrow />
-						</button>
-
-						{/* Pagination Buttons */}
-						<div className="flex">
-							{[1, 2, 3].map(pageNumber => (
-								<button
-									type="button"
-									className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${
-										pageNumber === activePage ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-									}`}
-									key={pageNumber}
-									onClick={() => {
-										if (pageNumber <= Math.ceil(mainEvents.length / entriesToShow)) {
-											handlePageClick(pageNumber);
-										}
-									}}
-								>
-									{pageNumber}
-								</button>
-							))}
-						</div>
-
-						<button
-							onClick={handleArrowRightClick}
-							disabled={currentPage === Math.ceil(mainEvents?.length / entriesToShow)}
-							className="opacity-70"
-						>
-							<RightArrow />
-						</button>
-						<button className="opacity-70" onClick={handleSkipToLastPage}>
-							<DoubleRightArrow />
-						</button>
-					</div>
+					</div>					
 				</div>
 			</div>
 		</div>

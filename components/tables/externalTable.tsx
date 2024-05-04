@@ -406,7 +406,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							</DialogTitle>
 						</DialogHeader>
 						<DialogDescription className="lg:text-s font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-						All staff can submit their Nomination/Travelling Form by scanning the QR Code or link.
+							All staff can submit their Nomination/Travelling Form by scanning the QR Code or link.
 						</DialogDescription>
 						<div className="grid place-items-center">
 							<QRCodeCanvas value={`${window.location.origin}/form/external`} size={256} />
@@ -447,7 +447,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							</DialogTitle>
 						</DialogHeader>
 						<DialogDescription className="lg:text-s font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-						All staff can view their current application/overall summary of their past Nominations/Travelling Form submission or Past Attended Events by scanning the QR Code or link below.		
+							All staff can view their current application/overall summary of their past Nominations/Travelling Form submission or Past Attended Events by scanning the QR Code or link below.
 						</DialogDescription>
 						<div className="grid place-items-center">
 							<QRCodeCanvas className="bg-white p-1" value={`${window.location.origin}/attended_events`} size={256} />

@@ -5,6 +5,7 @@ import RightArrow from '@/components/icons/RightArrow';
 import LeftArrow from '@/components/icons/LeftArrow';
 import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight, MdAttachMoney } from "react-icons/md";
 import { FaSortAlphaDown, FaSortNumericDown } from "react-icons/fa";
+import { IoMdRefresh} from "react-icons/io";
 import exportCSV from "@/public/images/export_csv.png";
 import arrowLeft from "@/public/images/arrow_left.png";
 import arrowRight from "@/public/images/arrow_right.png";
@@ -46,7 +47,7 @@ const ExpenditureUser = () => {
             }
             setExpenditureData(data);
         } catch (error) {
-            console.error('Error fetching attendance data:', error);
+            // console.error('Error fetching attendance data:', error);
         }
     };
 
@@ -136,14 +137,14 @@ const ExpenditureUser = () => {
 		// Clear the data results
 		setDataResults([]);	
 
-		let filteredData = currentData;
+		let filteredData = totalsData;
 
         if (selectedFacultyUnit !== 'all' && selectedFacultyUnit) {
-			filteredData = currentData.filter((item) => selectedFacultyUnit === item.faculty);
+			filteredData = totalsData.filter((item) => selectedFacultyUnit === item.faculty);
 		}		
 
 		if (query) {
-			filteredData = currentData.filter(
+			filteredData = totalsData.filter(
 				info => {
 					return (
 						info.full_name.toLowerCase().includes(query.toLowerCase()) ||
@@ -154,6 +155,11 @@ const ExpenditureUser = () => {
 		}
 
 		setDataResults(filteredData);
+	};
+
+    const refreshData = () => {
+		setSearchQuery("");
+		setSelectedFacultyUnit("");
 	};
 
     const handleSearch = (query: string) => {
@@ -312,137 +318,145 @@ const ExpenditureUser = () => {
             {totalsData.length > 0 ? (
                 <div>
                     <div className="">
-                        {/* <div className="mb-5">
+                        <div className="flex items-center justify-between mt-2">
+                            {/* Refresh Button */}
                             <button
                                 type="button"
-                                className="flex rounded-md items-center py-2 px-4 mr-3 font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729]"
-                            >
-                                <img
-                                    src={exportCSV.src}
-                                    alt=""
-                                    width={14}
-                                    className="text-slate-800"
-                                />
-                                <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                                className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+                                onClick={refreshData}>
+                                <IoMdRefresh className="text-xl text-slate-800 dark:text-dark_text" />
+                                <span className="ml-2 -mt-[1.25px] text-slate-800 dark:text-dark_text">
+                                    Refresh
+                                </span>
                             </button>
-                        </div> */}
+
+                            <div className="flex items-center">
+                                {/* Search Input */}
+                                <div className="max-w-full relative shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
+                                    <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            className="h-4 w-4 fill-current text-gray-500">
+                                            <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                                        </svg>
+                                    </span>
+                                    <input
+                                        placeholder="Search here..."
+                                        className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
+                                        value={searchQuery}
+                                        onChange={e => handleSearch(e.target.value)}
+                                    />
+                                </div>
+
+                                {/* mobile view */}
+                                <button
+                                    type="button"
+                                    className="items-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:hidden lg:hidden hover:transition duration-300 transform hover:scale-105"
+                                    onClick={refreshData}>
+                                    <IoMdRefresh className="text-xl text-slate-800" />
+                                </button>
+					
+                                {/* Sort By Button */}
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
+                                        onClick={handleSortButtonClick}>
+                                        <Image
+                                            src={filterBar.src}
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="text-slate-800"
+                                        />
+                                        <span className="ml-2 text-slate-800 dark:text-dark_text">Sort By</span>
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    <div
+                                        className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
+                                            }`}
+                                        style={{ zIndex: 999 }}>
+                                        {showSortOptions && (
+                                            <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-72 rounded-lg">
+                                                <ul>
+                                                    <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
+                                                        <span className="font-bold text-slate-800">
+                                                            Sort By:
+                                                        </span>
+                                                    </li>
+                                                    {sortOptions.map(option => (
+                                                        <li
+                                                            key={option.value}
+                                                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
+                                                            onClick={() => {
+                                                                handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
+                                                                setSortBy(option.value); // Set the sorting option
+                                                            }}>
+                                                            {option.value === "full_name" && (
+                                                                <FaSortAlphaDown className="mr-3 ml-2 text-slate-800" />
+                                                            )}
+                                                            {option.value === "staff_id" && (
+                                                                <FaSortNumericDown className="mr-3 ml-2 text-slate-800" />
+                                                            )}
+                                                            {option.value === "grand_total_fees" && (
+                                                                <MdAttachMoney className="mr-3 ml-2 text-md text-slate-800 whitespace-nowrap" />
+                                                            )}
+                                                            <span className="text-slate-500 ">
+                                                                {option.label}
+                                                            </span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Export Button */}
+                                <button
+                                    type="button"
+                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+                                    onClick={()=> downloadXLSX(totalsData)}
+                                >
+                                    <img
+                                        src={exportCSV.src}
+                                        alt=""
+                                        width={20}
+                                        className="text-slate-800"
+                                    />
+                                    <span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-col lg:flex-row justify-between">
+                            <div></div>
+                            <div>                            
+                                <select
+                                    name="facultyUnit"
+                                    id="facultyUnit"
+                                    defaultValue={selectedFacultyUnit}
+                                    className="px-4 py-2 mt-8 mb-8 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96 lg:float-right"
+                                    required
+                                    onChange={event => setSelectedFacultyUnit(event.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Select Faculty/ Unit
+                                    </option>
+                                    <option value="all">
+                                        All
+                                    </option>
+                                    {facultyOptions.map((faculty, index) => (
+                                        <option key={index} value={faculty}>
+                                            {faculty}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+						</div>
                         
                         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                             <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
-                                <div className="float-left lg:float-right mb-8">
-                                    <div className="flex items-center">
-                                        {/* Search Input */}
-                                        <div className="max-w-full relative shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
-                                            <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    className="h-4 w-4 fill-current text-gray-500">
-                                                    <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                                                </svg>
-                                            </span>
-                                            <input
-                                                placeholder="Search here..."
-                                                className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
-                                                value={searchQuery}
-                                                onChange={e => handleSearch(e.target.value)}
-                                            />
-                                        </div>
-							
-                                        {/* Sort By Button */}
-                                        <div className="relative">
-                                            <button
-                                                type="button"
-                                                className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 mr-3 shadow-sm md:inline-flex hidden hover:transition duration-300 transform hover:scale-105 dark:bg-[#242729]"
-                                                onClick={handleSortButtonClick}>
-                                                <Image
-                                                    src={filterBar.src}
-                                                    alt=""
-                                                    width={20}
-                                                    height={20}
-                                                    className="text-slate-800"
-                                                />
-                                                <span className="ml-2 text-slate-800 dark:text-dark_text">Sort By</span>
-                                            </button>
-
-                                            {/* Dropdown Menu */}
-                                            <div
-                                                className={`absolute top-[45px] transform translate-x-0 translate-y-0 transition-transform duration-300 ease-in-out ${showSortOptions ? "translate-x-0" : ""
-                                                    }`}
-                                                style={{ zIndex: 999 }}>
-                                                {showSortOptions && (
-                                                    <div className="bg-white border-l border-t border-r border-gray-200 shadow-md w-72 rounded-lg">
-                                                        <ul>
-                                                            <li className="px-4 py-2 cursor-pointer flex items-center text-gray-600">
-                                                                <span className="font-bold text-slate-800">
-                                                                    Sort By:
-                                                                </span>
-                                                            </li>
-                                                            {sortOptions.map(option => (
-                                                                <li
-                                                                    key={option.value}
-                                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center transition-all duration-200 ease-in-out font-medium"
-                                                                    onClick={() => {
-                                                                        handleSortButtonMenuClick(); // Hide the dropdown when an option is selected
-                                                                        setSortBy(option.value); // Set the sorting option
-                                                                    }}>
-                                                                    {option.value === "full_name" && (
-                                                                        <FaSortAlphaDown className="mr-3 ml-2 text-slate-800" />
-                                                                    )}
-                                                                    {option.value === "staff_id" && (
-                                                                        <FaSortNumericDown className="mr-3 ml-2 text-slate-800" />
-                                                                    )}
-                                                                    {option.value === "grand_total_fees" && (
-                                                                        <MdAttachMoney className="mr-3 ml-2 text-md text-slate-800 whitespace-nowrap" />
-                                                                    )}
-                                                                    <span className="text-slate-500 ">
-                                                                        {option.label}
-                                                                    </span>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Export Button */}
-                                        <button
-                                            type="button"
-                                            className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
-                                            onClick={()=> downloadXLSX(totalsData)}
-                                        >
-                                            <img
-                                                src={exportCSV.src}
-                                                alt=""
-                                                width={20}
-                                                className="text-slate-800"
-                                            />
-                                            <span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
-                                        </button>
-                                    </div>
-                                    <div>
-										<select
-											name="facultyUnit"
-											id="facultyUnit"
-											defaultValue={selectedFacultyUnit}
-											className="px-4 py-2 mt-8 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96 lg:float-right"
-											required
-											onChange={event => setSelectedFacultyUnit(event.target.value)}
-										>
-											<option value="" disabled>
-												Select Faculty/ Unit
-											</option>
-											<option value="all">
-												All
-											</option>
-											{facultyOptions.map((faculty, index) => (
-												<option key={index} value={faculty}>
-													{faculty}
-												</option>
-											))}
-										</select>
-									</div>
-							    </div>
                                 <table className="lg:w-full w-auto">
                                     <thead>
                                         <tr>
@@ -469,7 +483,7 @@ const ExpenditureUser = () => {
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className='h-screen'>                        
+                                    <tbody>                        
                                         {dataResults.length === 0 && selectedFacultyUnit || dataResults.length === 0 && searchQuery? (
                                             <p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
                                         ) : (
@@ -504,15 +518,35 @@ const ExpenditureUser = () => {
                                                 </td>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.grand_total_fees}
-                                                </td>
-                                            </tr>
+                                                </td>                                                
+                                            </tr>                                            
                                         ))
                                         )
                                         }
+                                        {sortedData.length < itemsPerPage && (
+                                                [...Array(itemsPerPage - sortedData.length)].map((_, index) => (
+                                                    <tr className="" key={index}>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                        <td className="flex-1 px-6 lg:px-8 py-10 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                        </td>
+                                                    </tr>
+                                                ))                                                 
+                                            )}
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div>                        
                     </div>
 
                     <div className="flex justify-between items-center">

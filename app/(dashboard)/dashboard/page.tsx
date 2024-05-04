@@ -1824,8 +1824,9 @@ export default function Homepage() {
 								height={200}
 								src={selectedEventImage}
 								alt="Random"
-								className="absolute h-[200px] lg:h-[258px] object-cover -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm"
+								className="absolute h-[200px] lg:h-[258px] -mt-[38px] lg:-mt-[100px] rounded-t-lg -ml-[0.25px] lg:ml-2 transform hover:scale-110 lg:hover:scale-110 hover:rotate-1 scale-[1.12] lg:scale-[1.070] transition duration-300 shadow-sm w-full"
 							/>
+							{/* Removed object cover */}
 
 							<div className="ml-[6px] lg:ml-[9px]">
 								<h3 className="text-[15px] lg:text-[20px] font-semibold text-slate-800 mb-1 mt-[185px] lg:mt-[180px] dark:text-dark_text">

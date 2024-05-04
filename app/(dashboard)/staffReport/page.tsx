@@ -9,12 +9,10 @@ import exportCSV from "@/public/images/export_csv.png";
 
 import { FaSortAlphaDown, FaSortNumericDown, FaSortAmountUp } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
-import { IoTimerSharp } from "react-icons/io5";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight, MdAccessTimeFilled } from "react-icons/md";
 import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ExpenditureUser from "@/components/tables/expenditureUser";
-import { CiCalendar } from "react-icons/ci";
 import * as XLSX from 'xlsx';
 import { Info } from "lucide-react";
 import Link from "next/link";
@@ -152,7 +150,6 @@ export default function Home() {
 
 	// Refresh data from database
 	const refreshData = () => {
-		fetchInfos();
 		setActiveTab('all');
 		setSearchQuery("");
 		setSelectedFacultyUnit("");
