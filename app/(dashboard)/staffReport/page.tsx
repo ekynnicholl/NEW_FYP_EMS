@@ -390,7 +390,7 @@ export default function Home() {
 		let filteredUserData = [...aggregatedInfo];
 
 		if (tab === 'staff') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID.startsWith('SS'));
+			filteredUserData = filteredUserData.filter((item) => item.staffID.startsWith('SS'));
 			if (selectedFilterStaff.length > 0) {
 				filterByFacultyUnit(selectedFilterStaff);
 			}
@@ -399,7 +399,7 @@ export default function Home() {
 			setCurrentPage(1);
 
 		} else if (tab === 'student') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
+			filteredUserData = filteredUserData.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
 			if (selectedFilterStudent.length > 0) {
 				filterByFacultyUnit(selectedFilterStudent);
 			}
@@ -408,7 +408,7 @@ export default function Home() {
 			setCurrentPage(1);
 
 		} else if (tab === 'visitor') {
-			filteredUserData = aggregatedInfo.filter((item) => item.staffID === '0');
+			filteredUserData = filteredUserData.filter((item) => item.staffID === '0');
 			setCurrentPage(1);
 
 		} else if (tab === 'all') {
@@ -422,7 +422,7 @@ export default function Home() {
 		}
 
 		if (query) {
-			filteredUserData = aggregatedInfo.filter(
+			filteredUserData = filteredUserData.filter(
 				info => {
 					return (
 						info.staffName.toLowerCase().includes(query.toLowerCase()) ||
@@ -642,7 +642,7 @@ export default function Home() {
 									{/* Export Button */}
 									<button
 										type="button"
-										className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+										className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
 										onClick={( )=> downloadXLSX(aggregatedInfo)}>
 										<img
 											src={exportCSV.src}
@@ -700,10 +700,10 @@ export default function Home() {
 												onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
 												<option value="" disabled>
-													Select Faculty/ Unit
+													Faculty/ Unit
 												</option>
 												<option value="all">
-													All
+													View All
 												</option>
 												{facultyOptions.map((faculty, index) => (
 													<option key={index} value={faculty}>
@@ -738,10 +738,10 @@ export default function Home() {
 												onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
 												<option value="" disabled>
-													Select Faculty/ Unit (Staff)
+													Faculty/ Unit (Staff)
 												</option>
 												<option value="all">
-													All
+													View All
 												</option>
 												{facultyOptions.map((faculty, index) => (
 													<option key={index} value={faculty}>
@@ -762,9 +762,9 @@ export default function Home() {
 												required
 												onChange={event => setSelectedFilterStudent(event.target.value)}
 											>
-												<option value="" disabled>Select Faculty/ Unit (Student)</option>
+												<option value="" disabled>Faculty/ Unit (Student)</option>
 												<option value="all">
-													All
+													View All
 												</option>
 												{facultyStudents.map((faculty) => (
 													categories
@@ -792,21 +792,21 @@ export default function Home() {
 										<thead>
 											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="ml-2 lg:ml-10">No</span>
+													<div className="ml-2 lg:ml-10">No</div>
 												</th>
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 lg:-ml-24 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="ml-11 lg:ml-0">Name</span>
+													<div className="ml-11 lg:ml-0">Name</div>
 												</th>
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="ml-16 lg:ml-1">Staff / Student ID</span>
-												</th>
-
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="ml-1">Faculty / Unit</span>
+													<div className="ml-16 lg:ml-1">Staff / Student ID</div>
 												</th>
 
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<span className="lg:ml-9">Training Hours</span>
+													<div className="ml-1">Faculty / Unit</div>
+												</th>
+
+												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<div className="lg:ml-9">Training Hours</div>
 												</th>
 											</tr>
 										</thead>
@@ -814,7 +814,7 @@ export default function Home() {
 										{/* Table Body */}
 										<tbody>
 											{dataResults.length === 0 ? (
-												<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+												<span className="lg:text-lg ml-4 mt-4">No data available.</span>
 											) : (
 												sortedData
 													.slice(
@@ -839,16 +839,16 @@ export default function Home() {
 																</div>
 															</td>
 															<td className="flex-1 px-6 lg:-ml-28 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<span className="-ml-3 lg:-ml-5">{info.staffName}</span>
+																<div className="-ml-3 lg:-ml-5">{info.staffName}</div>
 															</td>
 															<td className="flex-1 px-6 lg:-ml-9 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<span className="-ml-5 lg:-ml-0">{info.staffID}</span>
+																<div className="-ml-5 lg:-ml-0">{info.staffID}</div>
 															</td>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<span className="lg:-ml-1">{info.staffFaculty}</span>
+																<div className="lg:-ml-1">{info.staffFaculty}</div>
 															</td>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<span className="-ml-5 lg:-ml-24">{info.grandTotalHours}</span>
+																<div className="-ml-5 lg:-ml-24">{info.grandTotalHours}</div>
 															</td>
 														</tr>
 													))
@@ -862,27 +862,27 @@ export default function Home() {
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
 														<div className="flex items-center">
 															<div className="ml-[14px]">
-																<span className="text-gray-900 whitespace-no-wrap"></span>
+																<div className="text-gray-900 whitespace-no-wrap"></div>
 															</div>
 														</div>											</td>
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<span className="text-gray-900 whitespace-no-wrap ml-3"></span>
+														<div className="text-gray-900 whitespace-no-wrap ml-3"></div>
 													</td>
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<span className="text-gray-900 whitespace-no-wrap"></span>
+														<div className="text-gray-900 whitespace-no-wrap"></div>
 													</td>
 													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<span className="text-gray-900 whitespace-no-wrap ml-1"></span>
+														<div className="text-gray-900 whitespace-no-wrap ml-1"></div>
 													</td>
 													<td
 														className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
-														<span
+														<div
 															className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
-															<span
+															<div
 																aria-hidden
-																className={`absolute inset-0 opacity-0 rounded-full`}></span>
-															<span className="relative"></span>
-														</span>
+																className={`absolute inset-0 opacity-0 rounded-full`}></div>
+															<div className="relative"></div>
+														</div>
 													</td>
 												</tr>
 											))}
@@ -1049,8 +1049,8 @@ export default function Home() {
 										defaultValue=""
 										onChange={event => setSelectedYear(event.target.value)}
 									>
-										<option value="" disabled>Select Year</option>
-										<option value="all">All</option>
+										<option value="" disabled>Year</option>
+										<option value="all">View All</option>
 										{generateYearOptions()}
 									</select>
 								</div>
@@ -1081,7 +1081,7 @@ export default function Home() {
 										{/* {subEventsAttended */}
 										{/* {eventsAttended */}
 										{filteredEventResults.length === 0 ? (
-											<p className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</p>
+											<div className="lg:text-lg ml-4 lg:ml-0 lg:text-center mt-4">No data available.</div>
 										) : (
 											filteredEventResults
 												.map((event, index) => (
@@ -1089,38 +1089,38 @@ export default function Home() {
 														<td className="flex-1 py-5 text-sm mt-1 lg:text-sm ml-5">
 															<div>
 																<div className="ml-2">
-																	<p className="ml-2 text-gray-900 dark:text-dark_text">
+																	<div className="ml-2 text-gray-900 dark:text-dark_text">
 																		{(currentPage - 1) *
 																			entriesToShow +
 																			index +
 																			1
 																		}
-																	</p>
+																	</div>
 																</div>
 															</div>
 														</td>
 														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 -ml-16 dark:text-dark_text w-60">
+															<div className="text-gray-900 -ml-16 dark:text-dark_text w-60">
 																{event.programName}
-															</p>
+															</div>
 														</td>
 
 														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 -ml-10 dark:text-dark_text">
+															<div className="text-gray-900 -ml-10 dark:text-dark_text">
 																{event.startDate}
-															</p>
+															</div>
 														</td>
 
 														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900 -ml-6 dark:text-dark_text">
+															<div className="text-gray-900 -ml-6 dark:text-dark_text">
 																{event.endDate}
-															</p>
+															</div>
 														</td>
 
 														<td className="flex-1 px-3 py-5 text-sm lg:text-sm dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<p className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
+															<div className="text-gray-900  ml-11 whitespace-nowrap dark:text-dark_text">
 																{event.totalHours ?? 0}
-															</p>
+															</div>
 														</td>
 													</tr>
 												)))}

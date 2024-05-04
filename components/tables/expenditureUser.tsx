@@ -140,11 +140,11 @@ const ExpenditureUser = () => {
 		let filteredData = totalsData;
 
         if (selectedFacultyUnit !== 'all' && selectedFacultyUnit) {
-			filteredData = totalsData.filter((item) => selectedFacultyUnit === item.faculty);
+			filteredData = filteredData.filter((item) => selectedFacultyUnit === item.faculty);
 		}		
 
 		if (query) {
-			filteredData = totalsData.filter(
+			filteredData = filteredData.filter(
 				info => {
 					return (
 						info.full_name.toLowerCase().includes(query.toLowerCase()) ||
@@ -154,13 +154,31 @@ const ExpenditureUser = () => {
 			);
 		}
 
-		setDataResults(filteredData);
+        // if (selectedYear.length > 0 && selectedYear !== 'all') {
+        //     filteredData = totalsData.filter(
+        //         event => {
+        //             return (
+        //                 event.commencement_date.includes(selectedYear)
+        //             );
+        //         }
+        //     );
+        // }
+        setDataResults(filteredData);
+		
 	};
 
-    const refreshData = () => {
-		setSearchQuery("");
-		setSelectedFacultyUnit("");
-	};
+    // const [selectedYear, setSelectedYear] = useState("");
+
+	// const generateYearOptions = () => {
+	// 	let startYear = 2023;
+	// 	let currentYear = new Date().getFullYear();
+
+	// 	const options = [];
+	// 	for (let year = startYear; year <= currentYear; year++) {
+	// 		options.push(<option key={year} value={year}>{year}</option>);
+	// 	}
+	// 	return options;
+	// }
 
     const handleSearch = (query: string) => {
 		setSearchQuery(query);
@@ -174,6 +192,12 @@ const ExpenditureUser = () => {
 		filterData(searchQuery);
 		setCurrentPage(1);
 	}, [searchQuery, selectedFacultyUnit]);
+
+    const refreshData = () => {
+		setSearchQuery("");
+		setSelectedFacultyUnit("");
+        // setSelectedYear("");
+	};
     
     // Show Sort Options
 	const handleSortButtonClick = () => {
@@ -416,7 +440,7 @@ const ExpenditureUser = () => {
                                 {/* Export Button */}
                                 <button
                                     type="button"
-                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729]"
+                                    className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
                                     onClick={()=> downloadXLSX(totalsData)}
                                 >
                                     <img
@@ -431,20 +455,32 @@ const ExpenditureUser = () => {
                         </div>
                         <div className="flex flex-col lg:flex-row justify-between">
                             <div></div>
-                            <div>                            
+                            <div> 
+                                {/* <div className="flex items-center ml-auto">
+									<select
+										className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base"
+										id="year"
+										defaultValue=""
+										onChange={event => setSelectedYear(event.target.value)}
+									>
+										<option value="" disabled>Year</option>
+										<option value="all">View All</option>
+										{generateYearOptions()}
+									</select>
+								</div>                            */}
                                 <select
                                     name="facultyUnit"
                                     id="facultyUnit"
-                                    defaultValue={selectedFacultyUnit}
+                                    value={selectedFacultyUnit}
                                     className="px-4 py-2 mt-8 mb-8 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96 lg:float-right"
                                     required
                                     onChange={event => setSelectedFacultyUnit(event.target.value)}
                                 >
                                     <option value="" disabled>
-                                        Select Faculty/ Unit
+                                        Faculty/ Unit
                                     </option>
                                     <option value="all">
-                                        All
+                                        View All
                                     </option>
                                     {facultyOptions.map((faculty, index) => (
                                         <option key={index} value={faculty}>
@@ -460,25 +496,25 @@ const ExpenditureUser = () => {
                                 <table className="lg:w-full w-auto">
                                     <thead>
                                         <tr>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
                                                 NO
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
                                                 Staff Name 
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
                                                 Staff ID
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Faculty
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Program Title / Event
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Total (RM)
                                             </th>
-                                            <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
+                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-left text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider">
                                                 Grand Total (RM)
                                             </th>
                                         </tr>
@@ -505,7 +541,7 @@ const ExpenditureUser = () => {
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {groupedData[expenditureItem.staff_id]?.map((programItem) => (
                                                         <div key={programItem.id}>
-                                                            {programItem.program_title} - {Number(programItem.grand_total_fees).toFixed(2)}
+                                                            {programItem.program_title}
                                                         </div>
                                                     ))}
                                                 </td>
