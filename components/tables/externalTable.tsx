@@ -210,7 +210,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			),
-			cell: ({ row }) => <div className="text-left capitalize w-72 mx-auto">{row.getValue("program_title")}</div>,
+			cell: ({ row }) => <div className="text-left capitalize w-fit max-w-[288px] mx-auto">{row.getValue("program_title")}</div>,
 		},
 		{
 			accessorKey: "formStage",
