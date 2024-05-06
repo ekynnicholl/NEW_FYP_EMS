@@ -198,7 +198,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				const fullName = row.original.full_name;
 				const displayText = staffID ? `${fullName} (${staffID})` : fullName;
 
-				return <div className="capitalize">{displayText}</div>;
+				return <div className="text-left capitalize w-40 mx-auto">{displayText}</div>;
 			},
 		},
 		{
@@ -210,7 +210,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			),
-			cell: ({ row }) => <div className="capitalize">{row.getValue("program_title")}</div>,
+			cell: ({ row }) => <div className="text-left capitalize w-72 mx-auto">{row.getValue("program_title")}</div>,
 		},
 		{
 			accessorKey: "formStage",
@@ -295,15 +295,6 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							>
 								Undo Action
 							</DropdownMenuItem>
-							{/* <DropdownMenuItem
-								onMouseUp={() => {
-									sendContactForm([row.original]);
-									console.log(row.original);
-									router.refresh();
-								}}
-							>
-								Send
-							</DropdownMenuItem> */}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);
@@ -447,7 +438,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							</DialogTitle>
 						</DialogHeader>
 						<DialogDescription className="lg:text-s font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200 italic">
-							All staff can view their current application/overall summary of their past Nominations/Travelling Form submission or Past Attended Events by scanning the QR Code or link below.
+							All staff can view their current application/overall summary of their past Nominations/Travelling Form submission or Past
+							Attended Events by scanning the QR Code or link below.
 						</DialogDescription>
 						<div className="grid place-items-center">
 							<QRCodeCanvas className="bg-white p-1" value={`${window.location.origin}/attended_events`} size={256} />
@@ -478,29 +470,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					className="max-w-sm mr-5"
 				/>
 
-				{/* <Popover>
-					<PopoverTrigger asChild>
-						<Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal text-muted-foreground")}>
-							<CalendarIcon className="mr-2 h-4 w-4" />
-							<span>Select a year range</span>
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent className="w-auto p-0">
-						<Calendar
-							mode="range"
-							captionLayout="dropdown-buttons"
-							selected={date}
-							onSelect={setDate}
-							fromYear={1960}
-							toYear={new Date().getFullYear()}
-						/>
-					</PopoverContent>
-				</Popover> */}
-
 				<div className="ml-auto flex gap-2">
-					{/* Filter by year by checking the created_at column */}
-					{/* The dropdown will check which year is available and show in the dropdown list */}
-					{/* When user select the year, it will filter the data based on the selected year */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" className="dark:text-dark_text">
@@ -612,17 +582,21 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 											checked={column.getIsVisible()}
 											onCheckedChange={value => column.toggleVisibility(!!value)}
 										>
-											{column.id
-												.split("_")
-												.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-												.join(" ")}
+											{column.id === "full_name"
+												? "Name (Staff ID)"
+												: column.id === "program_title"
+												? "Program Title"
+												: column.id === "formStage"
+												? "Form Status"
+												: column.id === "created_at"
+												? "Submitted At"
+												: column.id}
 										</DropdownMenuCheckboxItem>
 									);
 								})}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				{/* filter by form status */}
 			</div>
 			<div className="rounded-md border">
 				<Table>
@@ -650,7 +624,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 												router.push(`/external/${row.original.id}`);
 											}}
 											data-state={row.getIsSelected() && "selected"}
-											className="cursor-pointer text-center dark:bg-dark_mode_card dark:text-dark_text"
+											className="text-center cursor-pointer dark:bg-dark_mode_card dark:text-dark_text"
 										>
 											{row.getVisibleCells().map(cell => (
 												<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
