@@ -222,7 +222,7 @@ export default function AttendanceForm() {
 			.eq("attFSubEventID", sub_id)
 			.eq("attFormsStaffID", attFormsStaffID);
 
-		if (existingForms && existingForms.length > 0 && userType != 'visitor' && userType != 'staff' && userType != 'student') {
+		if (existingForms && existingForms.length > 0 && userType != 'visitor') {
 			// setShowModalFailure(true);
 			return;
 		} else {
