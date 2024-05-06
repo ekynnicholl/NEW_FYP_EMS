@@ -8,6 +8,8 @@ import loadingGIF from "@/public/loading_bird.gif";
 import { getAuth } from "firebase/auth";
 import Image from "next/image";
 
+import Failure_Modal from "@/components/Failure_Modal";
+
 type Info = {
 	attFormsAttendanceID: string;
 	attFormsStaffName: string;
@@ -223,7 +225,9 @@ export default function AttendanceForm() {
 			.eq("attFormsStaffID", attFormsStaffID);
 
 		if (existingForms && existingForms.length > 0 && userType != 'visitor') {
-			// setShowModalFailure(true);
+			setShowModalFailure(true);
+			toast.error("Your Staff/ Student ID cannot be 0.");
+			setIsSubmitting(false);
 			return;
 		} else {
 			const { data: oldForms, error } = await supabase
@@ -538,6 +542,8 @@ export default function AttendanceForm() {
 		setFormSubmitted(false);
 	}
 
+
+	const [showModalFailure, setShowModalFailure] = useState(false);
 
 	return (
 		<>
@@ -914,59 +920,36 @@ export default function AttendanceForm() {
 									</div>
 								</Fragment>
 
-								{/* <Modal
-								isVisible={showModalSuccess}
-								onClose={() => setShowModalSuccess(false)}>
-								<div className="p-4">
-									<Image
-										src="/images/tick_mark.png"
-										alt="cross_mark"
-										width={200}
-										height={250}
-										className="mx-auto -mt-[39px] lg:-mt-[45px]"
-									/>
-									<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
-										Success!
-									</h3>
-									<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-										Your attendance has been successfully recorded!
-									</p>
-									<div className="text-center ml-4">
-										<button
-											className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
-											onClick={handleOK}>
-											OK
-										</button>
+								<Failure_Modal
+									isVisible={showModalFailure}
+									onClose={() => setShowModalFailure(false)}>
+									<div className="p-4">
+										<Image
+											src="/images/cross_mark.png"
+											alt="cross_mark"
+											width={200}
+											height={250}
+											className="mx-auto -mt-[39px] lg:-mt-[45px]"
+										/>
+										<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
+											Failed.
+										</h3>
+										<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
+											An attendance form already exists associated with your staff/ student ID. Please contact the organizer if you think this was a mistake.
+										</p>
+										<div className="text-center ml-4">
+											<button
+												className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
+												onClick={() => {
+													setShowModalFailure(false);
+												}}
+											>
+												OK
+											</button>
+										</div>
 									</div>
-								</div>
-							</Modal>
-	
-							<Modal
-								isVisible={showModalFailure}
-								onClose={() => setShowModalFailure(false)}>
-								<div className="p-4">
-									<Image
-										src="/images/cross_mark.png"
-										alt="cross_mark"
-										width={200}
-										height={250}
-										className="mx-auto -mt-[39px] lg:-mt-[45px]"
-									/>
-									<h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
-										Failed.
-									</h3>
-									<p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-gray-400 text-center">
-										An attendance form already exists associated with your staff/ student ID. Please contact the organizer if you think this was a mistake.
-									</p>
-									<div className="text-center ml-4">
-										<button
-											className="mt-1 text-white bg-slate-800 hover:bg-slate-900 focus:outline-none font-medium text-sm rounded-lg px-16 py-2.5 text-center mr-5"
-											onClick={handleOK}>
-											OK
-										</button>
-									</div>
-								</div>
-							</Modal> */}
+								</Failure_Modal>
+
 							</form>
 						</div>
 					) : (
