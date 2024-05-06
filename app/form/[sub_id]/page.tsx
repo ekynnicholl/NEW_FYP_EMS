@@ -185,6 +185,7 @@ export default function AttendanceForm() {
 
 		if (!isValidEmail) {
 			toast.error("Please input the email in a valid format.")
+			setIsSubmitting(false);
 			return;
 		}
 
