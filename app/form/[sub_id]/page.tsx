@@ -226,7 +226,7 @@ export default function AttendanceForm() {
 
 		if (existingForms && existingForms.length > 0 && userType != 'visitor') {
 			setShowModalFailure(true);
-			toast.error("Your Staff/ Student ID cannot be 0.");
+			// toast.error("Your Staff/ Student ID cannot be 0.");
 			setIsSubmitting(false);
 			return;
 		} else {
