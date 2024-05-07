@@ -227,7 +227,7 @@ const ExpenditureUser = () => {
 	];
 
 	// Modify the sorting logic based on the selected option and sort order
-	const sortedData = (dataResults.length > 0 ? dataResults : currentData)
+	const sortedData = (dataResults.length > 0 ? dataResults : totalsData)
     // const sortedData = (currentData)
 		.slice()
 		.sort((a, b) => {
