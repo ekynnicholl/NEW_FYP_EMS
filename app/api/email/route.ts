@@ -385,7 +385,7 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m">${linkForAAO}</p>
                     <br/>
                     <br/>
-                    <span style="font-weight:bold;">Process Level:>/span> ${process}
+                    <span style="font-weight:bold;">Process Level: </span> ${process}
                     <br/>
                     <br/>
                     <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>

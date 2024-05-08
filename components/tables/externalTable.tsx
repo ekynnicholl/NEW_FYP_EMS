@@ -185,20 +185,61 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 	const columns: ColumnDef<ExternalForm>[] = [
 		{
+			accessorKey: "no",
+			sortingFn: "text",
+			header: ({ column }) => (
+				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					No.
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			),
+			cell: ({ row }) => {
+				return <div className="text-left capitalize">{row.index + 1}</div>;
+			},
+		},
+		{
 			accessorKey: "full_name",
 			sortingFn: "text",
 			header: ({ column }) => (
 				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-					Name (Staff ID)
+					Staff Name
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			),
+			cell: ({ row }) => {
+				const fullName = row.original.full_name;
+
+				return <div className="text-left capitalize">{fullName}</div>;
+			},
+		},
+		{
+			accessorKey: "staff_id",
+			sortingFn: "text",
+			header: ({ column }) => (
+				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					Staff ID
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			),
 			cell: ({ row }) => {
 				const staffID = row.original.staff_id;
-				const fullName = row.original.full_name;
-				const displayText = staffID ? `${fullName} (${staffID})` : fullName;
 
-				return <div className="text-left capitalize w-40 mx-auto">{displayText}</div>;
+				return <div className="text-left capitalize w-40">{staffID}</div>;
+			},
+		},
+		{
+			accessorKey: "faculty",
+			sortingFn: "text",
+			header: ({ column }) => (
+				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					Faculty
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			),
+			cell: ({ row }) => {
+				const faculty = row.original.faculty;
+
+				return <div className="text-left capitalize">{faculty}</div>;
 			},
 		},
 		{
@@ -206,11 +247,11 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			sortingFn: "text",
 			header: ({ column }) => (
 				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-					Program Title
+					Program Title/ Event
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			),
-			cell: ({ row }) => <div className="text-left capitalize w-fit max-w-[288px] mx-auto">{row.getValue("program_title")}</div>,
+			cell: ({ row }) => <div className="text-left capitalize w-fit ">{row.getValue("program_title")}</div>,
 		},
 		{
 			accessorKey: "formStage",
@@ -226,17 +267,17 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				const formStage = row.original.formStage;
 
 				if (formStage === 1) {
-					return <div className="uppercase text-red-500 font-bold">Reverted to Staff</div>;
+					return <div className="uppercase text-red-500 font-bold text-left">Reverted to Staff</div>;
 				} else if (formStage === 2) {
-					return <div className="uppercase text-blue-500 font-bold">Reviewing by AAO</div>;
+					return <div className="uppercase text-blue-500 font-bold text-left">Reviewing by AAO</div>;
 				} else if (formStage === 3) {
-					return <div className="uppercase text-blue-500 font-bold">Reviewing by HOS/ ADCR/ MGR</div>;
+					return <div className="uppercase text-blue-500 font-bold text-left">Reviewing by HOS/ ADCR/ MGR</div>;
 				} else if (formStage === 4) {
-					return <div className="uppercase text-blue-500 font-bold">Reviewing by HMU/ Dean</div>;
+					return <div className="uppercase text-blue-500 font-bold text-left">Reviewing by HMU/ Dean</div>;
 				} else if (formStage === 5) {
-					return <div className="uppercase text-green-500 font-bold">Approved</div>;
+					return <div className="uppercase text-green-500 font-bold text-left">Approved</div>;
 				} else if (formStage === 6) {
-					return <div className="uppercase text-red-500 font-bold">Rejected</div>;
+					return <div className="uppercase text-red-500 font-bold text-left">Rejected</div>;
 				} else {
 					return <div className="uppercase">Unknown</div>;
 				}
@@ -248,7 +289,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			filterFn: "includesString",
 			header: ({ column }) => {
 				return (
-					<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					<Button variant="ghost" className="w-40" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 						Submitted At
 						<ArrowUpDown className="ml-2 h-4 w-4" />
 					</Button>
@@ -262,7 +303,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				const year = date.getFullYear();
 				const formattedDate = `${day}-${month}-${year}`;
 
-				return <div className="lowercase">{formattedDate}</div>;
+				return <div className="lowercase text-left">{formattedDate}</div>;
 			},
 		},
 		{
@@ -273,7 +314,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" className="h-8 w-8 p-0">
-								<span className="sr-only">Open menu</span>
+								<span className="sr-only">Open Menu</span>
 								<MoreHorizontal className="h-4 w-4" />
 							</Button>
 						</DropdownMenuTrigger>
@@ -294,6 +335,14 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								}}
 							>
 								Undo Action
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={e => {
+									e.stopPropagation();
+									sendContactForm([row.original]);
+								}}
+							>
+								Send
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -582,15 +631,21 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 											checked={column.getIsVisible()}
 											onCheckedChange={value => column.toggleVisibility(!!value)}
 										>
-											{column.id === "full_name"
-												? "Name (Staff ID)"
-												: column.id === "program_title"
-												? "Program Title"
-												: column.id === "formStage"
-												? "Form Status"
-												: column.id === "created_at"
-												? "Submitted At"
-												: column.id}
+											{column.id === "no"
+												? "No."
+												: column.id === "full_name"
+													? "Name"
+													: column.id === "staff_id"
+														? "Staff ID"
+														: column.id === "faculty"
+															? "Faculty"
+															: column.id === "program_title"
+																? "Program Title/ Event"
+																: column.id === "formStage"
+																	? "Form Status"
+																	: column.id === "created_at"
+																		? "Submitted At"
+																		: column.id}
 										</DropdownMenuCheckboxItem>
 									);
 								})}
@@ -605,7 +660,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map(header => {
 									return (
-										<TableHead key={header.id} className="text-center bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1]">
+										<TableHead key={header.id} className="text-left bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1]">
 											{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
 										</TableHead>
 									);

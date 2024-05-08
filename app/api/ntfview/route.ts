@@ -79,7 +79,7 @@ export async function POST(request: Request) {
                     
                     <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
                     <br/>
-                    <p class="no-p-m">You have requested for an <span style="font-weight: bold;">Access Token</span> to view the status of your current and past <span style="font-weight: bold;">Nominations/ Traverlling Forms application</span> or the summary of your 
+                    <p class="no-p-m">You have requested for an <span style="font-weight: bold;">Access Token</span> to view the status of your current and past <span style="font-weight: bold;">Nominations/ Travelling Forms application</span> or the summary of your 
                     Attendance record for past events. Please visit the link below:</p>
                     <br/>
                     <span style="font-weight: bold;">Link: </span><a href="${tempLink}" style="color: #0070f3; text-decoration: underline;" class="no-p-m">${tempLink}</a>

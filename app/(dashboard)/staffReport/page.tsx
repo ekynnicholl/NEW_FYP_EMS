@@ -22,11 +22,12 @@ type Info = {
 	staffName: string;
 	staffFaculty: string;
 	totalSubEvents: number;
-	allEventsAttended: { 
-		programName: string; 
-		totalHours: number; 
-		startDate: string; 
-		endDate: string; }[];
+	allEventsAttended: {
+		programName: string;
+		totalHours: number;
+		startDate: string;
+		endDate: string;
+	}[];
 	grandTotalHours: number;
 }
 
@@ -182,7 +183,7 @@ export default function Home() {
 	const convertToXLSX = (data: Info[], columnMapping: ColumnMapping) => {
 		const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
 		const body = data.map((row) => {
-			const newRow: any = {...row};
+			const newRow: any = { ...row };
 			return Object.keys(columnMapping).map((key) => newRow[key as keyof Info]);
 		});
 
@@ -643,7 +644,7 @@ export default function Home() {
 									<button
 										type="button"
 										className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
-										onClick={( )=> downloadXLSX(aggregatedInfo)}>
+										onClick={() => downloadXLSX(aggregatedInfo)}>
 										<img
 											src={exportCSV.src}
 											alt=""
@@ -847,8 +848,8 @@ export default function Home() {
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<div className="lg:-ml-1">{info.staffFaculty}</div>
 															</td>
-															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="-ml-5 lg:-ml-24">{info.grandTotalHours}</div>
+															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																<div className="-ml-5 lg:ml-7">{info.grandTotalHours}</div>
 															</td>
 														</tr>
 													))
