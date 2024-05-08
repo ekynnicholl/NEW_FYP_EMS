@@ -1,3 +1,18 @@
+import { join } from 'path';
+import { readFileSync } from 'fs';
+
+const imageToBase64 = (path: string): string => {
+    try {
+        const data = readFileSync(path);
+        const base64 = Buffer.from(data).toString('base64');
+        const mime = path.endsWith('.png') ? 'image/png' : 'image/jpeg';
+        return `data:${mime};base64,${base64}`;
+    } catch (error) {
+        console.error('Error reading image file:', error);
+        return '';
+    }
+};
+
 export const GenerateCertificateParticipation = (participantName: string, eventName: string, dateSubmitted: string, mainEventName: string, atVenue: string): string => {
     const formattedDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -6,6 +21,12 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
         const year = date.getFullYear().toString();
         return `${day}/${month}/${year}`;
     };
+
+    const swinburneTextImagePath = join(process.cwd(), 'public/parti_cert_images/swinburne_logo1.png');
+    const swinburneLogoImagePath = join(process.cwd(), 'public/parti_cert_images/swinburne_logo.png');
+
+    const swinburneTextBase64 = imageToBase64(swinburneTextImagePath);
+    const swinburneLogoBase64 = imageToBase64(swinburneLogoImagePath);
 
     return `
         <!DOCTYPE html>
@@ -17,26 +38,54 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
                 <style>
 
                 @font-face {
-                    font-family: Schar;
-                    src: url(Schar-Regular-BF64c32408d2c12.otf);
+                    font-family: SimplonNorm;
+                    src: url(public/parti_cert_images/SimplonNorm-Regular.ttf) format('truetype');
+                }
+
+                @font-face {
+                    font-family: SimplonNormBold;
+                    src: url(public/parti_cert_images/SimplonNorm-Bold.ttf) format('truetype');
+                }
+
+                @font-face {
+                    font-family: SimplonNormItalic;
+                    src: url(public/parti_cert_images/SimplonNorm-Light.ttf) format('truetype');
                 }
 
                 body {
                     margin: 0;
                     padding: 0;
-                    font-family: Schar;
+                    font-family: SimplonNorm;
                 }
             
                 .border {
-                    margin-top: 35px;
-                    /* Move the border 5px away from the top margin */
-                    margin-left: 35px;
-                    /* Move the border 5px away from the left margin */
+                    margin-top: 75px;
+                    margin-left: 75px;
                     border-top: 7px solid red;
                     border-left: 7px solid red;
                     padding: 20px;
-                    height: 750px;
+                    height: 735px;
                     margin-right: 100px;
+                }
+
+                .absolute-shape {
+                    position: absolute;
+                    right: 96px;
+                    top: 73px;
+                    border: 7px solid white;
+                    width: 20px;
+                    height: 0.2px;
+                    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+                }
+
+                .sec-absolute-shape {
+                    position: absolute;
+                    left: 58px;
+                    bottom: 199px;
+                    border: 7px solid white;
+                    width: 14px;
+                    height: 0.1px;
+                    clip-path: polygon(90% 0%, 60% 100%, 90% 100%);
                 }
             
                 .content {
@@ -48,20 +97,32 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
                     margin-left: 30px;
                     width: 10%;
                     transform: rotate(90deg);
-                    /* Rotate the div 90 degrees counter-clockwise */
                     transform-origin: top top;
-                    /* Set the origin point for rotation */
                     height: 100%;
                     display: flex;
                     align-items: center;
                     white-space: nowrap;
-                    margin-top: 50px;
+                    margin-top: 30px;
+                }
+
+                .title-font {
+                    font-family: SimplonNormItalic;
+                }
+                
+                .title-content-font {
+                    font-family: SimplonNorm;
+                }
+
+                .bold-simplon {
+                    font-family: SimplonNormBold;
                 }
             
-                .left-div h1 {
+                .left-div .side-text {
                     color: #c1c1c1;
-                    font-size: 36px;
-                    opacity: 0.5;
+                    font-size: 46px;
+                    font-weight: 46px;
+                    letter-spacing: -2px;
+                    font-family: SimplonNormBold;
                 }
             
                 .middle-div {
@@ -86,43 +147,43 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
                 }
             
                 .right-div img {
-                    max-width: 170%;
-                    /* Ensure the image does not exceed the container width */
+                    max-width: 100%;
                     margin-top: 480px;
-                    margin-left: -37.5px;
                     opacity: 0.1;
+                    margin-left: -7.5px;
                 }
             
                 .absolute-logo {
                     position: absolute;
                     bottom: 25px;
-                    right: 25px;
+                    right: 50px;
                 }
                 </style>
             </head>
             <body>
                 <div class="border">
+                <div class="absolute-shape"></div>  
+                <div class="sec-absolute-shape"></div>              
                 <div class="content">
                     <div class="left-div">
-                    <h1>CERTIFICATE OF ATTENDANCE</h1>
+                    <div class="side-text">CERTIFICATE OF ATTENDANCE</div>
                     </div>
                     <div class="middle-div">
-                    <p style="margin-top: 50px; margin-bottom: 80px;">Presented to</p>
-                    <h2>${participantName}</h2>
-                    <p>attended the</p>
-                    <h2>${mainEventName} - ${eventName}</h2>
-                    <p>which was held at</p>
-                    <h2>${atVenue}</h2>
-                    <p>on ${formattedDate(dateSubmitted)}</p>
-                    <p style="margin-top: 160px;">This is a computer generated certificate
-                    and requires no signature.</p>
+                    <p class="title-font" style="margin-top: 20px; margin-bottom: 20px;">Presented to</p>
+                    <h2 class="title-content-font">${participantName}</h2>
+                    <p class="title-font">attended the</p>
+                    <h2 class="title-content-font">${mainEventName} - ${eventName}</h2>
+                    <p class="title-font">which was held at</p>
+                    <h2 class="title-content-font">${atVenue}</h2>
+                    <p class="title-font">on ${formattedDate(dateSubmitted)}</p>
+                    <p class="title-font" style="margin-top: 80px;">This is a computer generated certificate and requires no signature.</p>
                     </div>
                     <div class="right-div">
-                    <img src="https://cdn.freebiesupply.com/logos/large/2x/swinburne-university-of-technology-3-logo-png-transparent.png" alt="Logo Image">
+                    <img src="${swinburneLogoBase64}" alt="Logo Image">
                     </div>
                 </div>
                 </div>
-                <img src="https://seeklogo.com/images/S/swinburne-university-of-technology-logo-8DF0E18721-seeklogo.com.png" alt="Second Logo" class="absolute-logo">
+                <img src="${swinburneTextBase64}" alt="Second Logo" class="absolute-logo">
             </body>
         </html>
     `;

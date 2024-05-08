@@ -24,117 +24,109 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const requestData = await request.json();
+        const requestDataArray = await request.json();
         const supabase = createClientComponentClient();
 
-        // console.log('Received request data in route:', requestData);
+        console.log('Received request data in route:', requestDataArray);
 
-        const atEmail = requestData.attFormsStaffEmail;
-        const atEventName = requestData.eventName;
-        const atSubEventName = requestData.sub_eventName;
-        const atStaffID = requestData.attFormsStaffID;
-        // const atStartDate = requestData.eventStartDate;
-        const atDateSubmitted = requestData.attDateSubmitted;
-        const atStaffName = requestData.attFormsStaffName;
-        const atFormsID = requestData.attFormsID;
-        const atVenue = requestData.sub_eventVenue;
+        for (const requestData of requestDataArray) {
+            const atEmail = requestData.attFormsStaffEmail;
+            const atEventName = requestData.eventName;
+            const atSubEventName = requestData.sub_eventName;
+            const atStaffID = requestData.attFormsStaffID;
+            const atDateSubmitted = requestData.attDateSubmitted;
+            const atStaffName = requestData.attFormsStaffName;
+            const atFormsID = requestData.attFormsID;
+            const atVenue = requestData.sub_eventVenue;
 
-        const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atDateSubmitted, atEventName, atVenue);
+            const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atDateSubmitted, atEventName, atVenue);
 
-        const pdfBuffer = await generatePdfFromHtml(certificateContent);
+            const pdfBuffer = await generatePdfFromHtml(certificateContent);
 
-        let documentPath: string | undefined = "";
-        const uniqueName = uuidv4();
+            let documentPath: string | undefined = "";
+            const uniqueName = uuidv4();
 
-        // Use the pdfBuffer directly for uploading to Supabase storage
-        const { data: storageData, error: storageError } = await supabase
-            .storage
-            .from('attFormsCertofParticipation')
-            .upload(`${atStaffName}_Certificate of Participation_${uniqueName}.pdf`, pdfBuffer, {
-                cacheControl: '3600',
-                upsert: false,
-            });
+            // Use the pdfBuffer directly for uploading to Supabase storage
+            const { data: storageData, error: storageError } = await supabase
+                .storage
+                .from('attFormsCertofParticipation')
+                .upload(`${atStaffName}_Certificate of Participation_${uniqueName}.pdf`, pdfBuffer, {
+                    cacheControl: '3600',
+                    upsert: false,
+                });
 
-        documentPath = storageData?.path;
+            documentPath = storageData?.path;
 
-        if (storageError) {
-            throw new Error('Error uploading the document to Supabase storage.');
-        }
+            if (storageError) {
+                throw new Error('Error uploading the document to Supabase storage.');
+            }
 
-        const { data, error } = await supabase
-            .from('attendance_forms')
-            .update({ attFormsCertofParticipation: documentPath })
-            .eq('attFormsID', atFormsID);
+            const { data, error } = await supabase
+                .from('attendance_forms')
+                .update({ attFormsCertofParticipation: documentPath })
+                .eq('attFormsID', atFormsID);
 
-        if (error) {
-            throw new Error('Error updating the path for this attendance form.');
-        }
+            if (error) {
+                throw new Error('Error updating the path for this attendance form.');
+            }
 
-        const mailContent = `
+            const mailContent = `
             <html>
-            <head>
-                <style>
-                    .email-container {
-                        padding: 20px;
-                        max-width: 1400px; 
-                        margin: 0 auto;
-                    }
-                    .no-p-m{
-                        margin: 0px;
-                        padding: 0px;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="email-container">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
-                    
-                    <h2 class="no-p-m">Dear sir/ ma'am,</h2>
-                    <p class="no-p-m">This email serves to inform you that you have successfully participated in an event called ${atEventName}! </p>
-                    <br/>
-                    <!-- <p class="no-p-m">Please refer to the PDF for your certificate of participation.</p>
-                    <br/> -->
-                    <p class="no-p-m">Thank you for using our system.</p>
-                    <br/>
-                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
-                    <br/>
-                    <p class="no-p-m" style="color: red; text-align: justify;">[NOTICE] <br/>
-                    This e-mail and any attachments are confidential and intended only for the use of the addressee. They may contain information that is privileged or protected by copyright. 
-                    If you are not the intended recipient, any dissemination, distribution, printing, copying or use is strictly prohibited. 
-                    The University does not warrant that this e-mail and any attachments are secure and there is also a risk that it may be corrupted in transmission. 
-                    It is your responsibility to check any attachments for viruses or defects before opening them. If you have received this transmission in error, please contact us on 
-                    +6082 255000 and delete it immediately from your system. We do not accept liability in connection with computer virus, data corruption, delay, interruption, 
-                    unauthorised access or unauthorised amendment. <br/>
-                    Process: [Confirmation of Participation]
-                    </p>
-                </div>
-            </body>
-        </html>
-        `;
+                <head>
+                    <style>
+                        .email-container {
+                            padding: 20px;
+                            max-width: 1400px; 
+                            margin: 0 auto;
+                        }
+                        .no-p-m{
+                            margin: 0px;
+                            padding: 0px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="email-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
+                        
+                        <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
+                        <p class="no-p-m">Thank you for attendance ${atEventName}! We hope you found the event to be informative and enjoyable. </p>
+                        <br/>
+                        <p class="no-p-m">Attached is a copy of your Certificate of Attendance.</p>
+                        <br/>
+                        <p class="no-p-m">Thank you for using our system. We're committed to ensuring your user experience is as seamless and hassle free as possible.</p>
+                        <br/>
+                        <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                        </p>
+                    </div>
+                </body>
+            </html>
+            `;
 
-        const mailOptionsCopy = { ...mailOptions };
-        mailOptionsCopy.to = atEmail;
+            const mailOptionsCopy = { ...mailOptions };
+            mailOptionsCopy.to = atEmail;
 
-        if (!mailOptions.to) {
-            throw new Error('Recipient email address not specified.');
-        }
+            if (!mailOptions.to) {
+                throw new Error('Recipient email address not specified.');
+            }
 
-        const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Participation.pdf`;
+            const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Participation.pdf`;
 
-        await transporter.sendMail({
-            ...mailOptionsCopy,
-            subject: "Confirmation of Participation",
-            text: "Please enable HTML in your email client to view this message.",
-            html: mailContent,
-            attachments: [
-                {
-                    filename: pdfFilename,
-                    content: pdfBuffer,
-                },
-            ],
-        });
+            await transporter.sendMail({
+                ...mailOptionsCopy,
+                subject: "Confirmation of Participation",
+                text: "Please enable HTML in your email client to view this message.",
+                html: mailContent,
+                attachments: [
+                    {
+                        filename: pdfFilename,
+                        content: pdfBuffer,
+                    },
+                ],
+            });
+        };
 
-        return NextResponse.json({ success: true }, { status: 200 });
+        return NextResponse.json({ success: true, message: "Certificates generated and sent successfully." }, { status: 200 });
     } catch (error) {
         console.error('Error processing request:', error);
         return NextResponse.json({ error: (error as any).message }, { status: 500 });

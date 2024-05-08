@@ -223,7 +223,7 @@ export default function LandingPage() {
                     <div className="-mt-10">
                         <Image src="/swinburne_logo.png" alt="Swinburne Logo" width={250} height={50} />
                     </div>
-                    <h1 className="text-[15px] lg:text-[22px] mt-5 font-extrabold text-[#f5f5f5] font-JetBrains"><span className="text-[#6366F1]">&lt;</span>Swinburne University of Technology Sarawak <span className="text-[#6366F1]">/&gt;</span></h1>
+                    {/* <h1 className="text-[15px] lg:text-[22px] mt-5 font-extrabold text-[#f5f5f5] font-JetBrains"><span className="text-[#6366F1]">&lt;</span>Swinburne University of Technology Sarawak <span className="text-[#6366F1]">/&gt;</span></h1> */}
                     <p className="text-[#bfc2c8] font-light text-xs lg:text-sm mt-3 tracking-wide"> The Event Management and Attendance Tracking (EMAT) System is developed by a group of students for their Final Year Project (FYP) since August/ September 2023.</p>
                 </div>
 
@@ -240,7 +240,7 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            <div className="border-b border-[#f5f5f5]"></div>
+            {/* <div className="border-b border-[#f5f5f5]"></div> */}
             <div className="text-center bg-[#18202A] text-[#f5f5f5] text-xs -mt-[50px] lg:-mt-[40px]">
                 <p className="">© 2024 Swinburne University of Technology, Sarawak. All rights reserved.</p>
             </div>
