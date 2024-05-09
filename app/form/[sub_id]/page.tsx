@@ -687,31 +687,6 @@ export default function AttendanceForm() {
 									</div>
 								</div>
 
-								{/* <div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
-								<div className="ml-1">
-									<label
-										htmlFor="name"
-										className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-										Email
-										<span className="text-red-500"> *</span>
-									</label>
-									<input
-										type="email"
-										name="name"
-										id="name"
-										className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
-										required
-										placeholder="e.g., abc@swinburne.edu.my OR 12345678@students.swinburne.edu.my"
-										style={{ paddingLeft: "5px" }}
-										onChange={event => {
-											if (!formSubmitted) {
-												setInfo({ ...info, attFormsStaffEmail: event.target.value });
-											}
-										}}
-									/>
-								</div>
-							</div> */}
-
 								<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
 									<div className="ml-1">
 										<label
@@ -738,7 +713,6 @@ export default function AttendanceForm() {
 
 									</div>
 								</div>
-
 
 								{userType === 'staff' && (
 									<div>
