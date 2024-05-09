@@ -6,11 +6,11 @@ import './CustomCalendar.css'; // Import your custom styles
 
 interface CalendarComponentProps {
   onDateChange: (date: Date) => void;
-  eventDates: string[];
+  subEventDates: string[];
   onClickDay: (date: Date) => void;
 }
 
-const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eventDates, onClickDay }) => {
+const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, subEventDates, onClickDay }) => {
   const [date, setDate] = useState(new Date());
 
   // Existing functionality remains unchanged
@@ -48,8 +48,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, eve
 
   // Adjust isEventDate function to use the local date string for comparison
   const isEventDate = (date: Date): boolean => {
-    const formattedDate = toLocalDateString(date); // Use local date string for comparison
-    return eventDates.includes(formattedDate);
+    const formattedDate = toLocalDateString(date);
+    return subEventDates.includes(formattedDate);
   };
 
   return (

@@ -247,9 +247,11 @@ export default function Homepage() {
 	// Temporary variables,
 	const [attendanceTimingStart, setAttendanceTimingStart] = useState<number>(0);
 	const [attendanceTimingEnd, setAttendanceTimingEnd] = useState<number>(0);
-	const [showEventsOnDateModal, setShowEventsOnDateModal] = useState(false);
 	const [selectedDate, setSelectedDate] = useState('');
 	const [eventsOnSelectedDate, setEventsOnSelectedDate] = useState<any[]>([]);
+	const [showEventsOnDateModal, setShowEventsOnDateModal] = useState(false);
+	const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+
 
 	// Function to fetch the 6 latest events
 	useEffect(() => {
@@ -425,6 +427,7 @@ export default function Homepage() {
 	const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
 	const [displayedEvents, setDisplayedEvents] = useState<any[]>([]);
 	const [eventDates, setEventDates] = useState<any[]>([]);
+	const [subEventDates, setSubEventDates] = useState<any[]>([]);
 
 	// Function to compare dates (ignores time)
 	function isSameDate(date1: string, date2: string) {
@@ -508,6 +511,34 @@ export default function Homepage() {
 		};
 		fetchGridView();
 	}, [supabase]);
+
+	//this is for fetching sub events
+	useEffect(() => {
+		const fetchSubEventDates = async () => {
+		  const { data: subEventData, error: subEventError } = await supabase
+			.from("sub_events")
+			.select("sub_eventsStartDate, sub_eventsEndDate")
+			.gte("sub_eventsEndDate", new Date().toISOString())
+			.eq("sub_eventsIsHidden", 0);
+	  
+		  if (subEventError) {
+			console.error("Error fetching sub-event dates:", subEventError);
+			return;
+		  }
+	  
+		  const uniqueSubEventDates = new Set<string>();
+		  subEventData.forEach(subEvent => {
+			const startDate = new Date(subEvent.sub_eventsStartDate).toISOString().substring(0, 10);
+			const endDate = new Date(subEvent.sub_eventsEndDate).toISOString().substring(0, 10);
+			uniqueSubEventDates.add(startDate);
+			uniqueSubEventDates.add(endDate);
+		  });
+	  
+		  setSubEventDates(Array.from(uniqueSubEventDates));
+		};
+	  
+		fetchSubEventDates();
+	  }, [supabase]);
 
 	// This is needed for the attendance data to show,
 	const [attendanceID, setAttendanceID] = useState<string>("");
@@ -612,34 +643,32 @@ export default function Homepage() {
 	]);
 
 	const handleDateClick = async (date: Date) => {
-
 		// Calculate the local time offset in minutes and convert it to milliseconds
 		const timeOffsetInMilliseconds = date.getTimezoneOffset() * 60000;
-
+	  
 		// Create a new Date object adjusted for the local time offset
 		const localDate = new Date(date.getTime() - timeOffsetInMilliseconds);
-
+	  
 		const formattedDate = localDate.toISOString().split('T')[0];
 		setSelectedDate(formattedDate);
-
-		// Fetch events for the selected date and update the state
-		const { data: eventsData, error } = await supabase
-			.from('internal_events')
-			.select('*')
-			.gte('intFEventStartDate', formattedDate)
-			.lte('intFEventEndDate', formattedDate)
-			.eq('intFIsHidden', 0);
-
+	  
+		// Fetch sub-events for the selected date and update the state
+		const { data: subEventsData, error } = await supabase
+		  .from('sub_events')
+		  .select('*')
+		  .gte('sub_eventsStartDate', formattedDate)
+		  .lte('sub_eventsEndDate', formattedDate)
+		  .eq('sub_eventsIsHidden', 0);
+	  
 		if (error) {
-			console.error('Error fetching events for selected date:', error);
-			return;
-		} else {
-			console.log(formattedDate)
+		  console.error('Error fetching sub-events for selected date:', error);
+		  return;
 		}
-
-		setEventsOnSelectedDate(eventsData);
+	  
+		setEventsOnSelectedDate(subEventsData);
 		setShowEventsOnDateModal(true);
-	};
+	  };
+
 
 	const lastDetailRef = useRef<HTMLDivElement>(null);
 	const addEventDetails = () => {
@@ -917,6 +946,12 @@ export default function Homepage() {
 
 		setIntFID(intFID);
 	};
+
+	const handleAddEvent = (selectedDate: string) => {
+		setSelectedDate(selectedDate);
+		setShowEventsOnDateModal(false);
+		setShowCreateEventModal(true);
+	  };
 
 	const handleAddSubEvent = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -1385,7 +1420,11 @@ export default function Homepage() {
 						</button>
 					</div>
 
-					<CreateEvent_Modal isVisible={showModalCreateEvent} onClose={() => setShowModalCreateEvent(false)}>
+					<CreateEvent_Modal
+						isVisible={showCreateEventModal}
+						onClose={() => setShowCreateEventModal(false)}
+						selectedDate={selectedDate}
+						>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px] dark:bg-dark_mode_card">
 								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
@@ -1400,25 +1439,6 @@ export default function Homepage() {
 								</p>
 
 
-								{/* <p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] dark:text-dark_textbox_title">
-									Event / Course Banner
-									<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">
-										*
-									</span>
-								</p>
-
-								<div className="flex items-center justify-center w-full">
-									<label className="flex flex-col items-center justify-center w-full mr-2 h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-										<div className="flex flex-col items-center justify-center pt-5 pb-6">
-											<svg className="w-7 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-												<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-											</svg>
-											<p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-											<p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG (600x300px)</p>
-										</div>
-										<input id="dropzone-file" type="file" className="hidden" />
-									</label>
-								</div> */}
 
 								<div className="w-full pr-[11px]">
 									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] mt-2 dark:text-dark_textbox_title">
@@ -1991,10 +2011,11 @@ export default function Homepage() {
 					</ViewEvent_Modal>
 
 					<EventsOnDateModal
-						isVisible={showEventsOnDateModal}
-						onClose={() => setShowEventsOnDateModal(false)}
-						events={eventsOnSelectedDate}
-						selectedDate={selectedDate}
+					isVisible={showEventsOnDateModal}
+					onClose={() => setShowEventsOnDateModal(false)}
+					events={eventsOnSelectedDate}
+					selectedDate={selectedDate}
+					onAddEvent={handleAddEvent}
 					/>
 
 					<ViewEventFeedback isVisible={showFeedbackModal} onClose={() => setShowFeedbackModal(false)}>
@@ -5609,10 +5630,10 @@ export default function Homepage() {
 
 					<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">
 						<h2 className="text-2xl font-semibold mb-4 p-4 border-b border-slate-200 text-center dark:border-[#202C3B]">Calendar</h2>
-						<Calendar onDateChange={handleDateChange} eventDates={eventDates} onClickDay={handleDateClick} />
+						<Calendar onDateChange={handleDateChange} subEventDates={subEventDates} onClickDay={handleDateClick} />
 						<div>
 							<h3 className="text-xl font-semibold my-5 ml-6 mt-4">Upcoming Events:</h3>
-							<div className="mt-4 overflow-auto max-h-[200px]">
+							<div className="mt-4 overflow-auto max-h-[160px]">
 								<ul className="space-y-2">
 									{displayedEvents.length === 0 && (
 										<li key="noEvents" className="text-center text-m">
