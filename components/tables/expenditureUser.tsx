@@ -28,8 +28,13 @@ type ExpenditureDataType = {
     formStage: string;
 };
 
+
+
+
+
 const ExpenditureUser = () => {
     const [expenditureData, setExpenditureData] = useState<ExpenditureDataType[]>([]);
+    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('all');
 
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -133,39 +138,43 @@ const ExpenditureUser = () => {
 	const [sortOrder, setSortOrder] = useState("asc"); // Initialize sort order (asc or desc)
 	const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
 
-    const filterData = (query: string) => {
-
-		// Clear the data results
-		setDataResults([]);	
-
-		let filteredData = totalsData;
-
+    const filterData = (tab: 'all' | 'staff' | 'student', query: string) => {
+        // Clear the data results
+        setDataResults([]);
+      
+        let filteredData = totalsData;
+      
+        if (tab === 'staff') {
+          filteredData = filteredData.filter((item) => item.staff_id.startsWith('SS'));
+        } else if (tab === 'student') {
+          filteredData = filteredData.filter((item) => item.staff_id !== '0' && !item.staff_id.startsWith('SS'));
+        }
+      
         if (selectedFacultyUnit !== 'all' && selectedFacultyUnit) {
-			filteredData = filteredData.filter((item) => selectedFacultyUnit === item.faculty);
-		}		
-
-		if (query) {
-			filteredData = filteredData.filter(
-				info => {
-					return (
-						info.full_name.toLowerCase().includes(query.toLowerCase()) ||
-						info.staff_id.toLowerCase().toString().includes(query.toLowerCase())
-					);
-				}
-			);
-		}
-
+          filteredData = filteredData.filter((item) => selectedFacultyUnit === item.faculty);
+        }
+      
+        if (query) {
+          filteredData = filteredData.filter(
+            info => {
+              return (
+                info.full_name.toLowerCase().includes(query.toLowerCase()) ||
+                info.staff_id.toLowerCase().toString().includes(query.toLowerCase())
+              );
+            }
+          );
+        }
+      
         if (selectedYear && selectedYear !== 'all') {
-            filteredData = filteredData.filter(event => event.commencement_date.includes(selectedYear));
+          filteredData = filteredData.filter(event => event.commencement_date.includes(selectedYear));
         }
-
+      
         if (selectedFormStatus && selectedFormStatus !== 'all') {
-            filteredData = filteredData.filter(event => event.formStage.toString() === selectedFormStatus);
+          filteredData = filteredData.filter(event => event.formStage.toString() === selectedFormStatus);
         }
-
+      
         setDataResults(filteredData);
-		
-	};
+      };
 
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedFormStatus, setSelectedFormStatus] = useState("");
@@ -182,17 +191,17 @@ const ExpenditureUser = () => {
 	}
 
     const handleSearch = (query: string) => {
-		setSearchQuery(query);
-		if (currentPage >= 1) {
-			setCurrentPage(1);
-		}
-        filterData(query);
-	}; 
+        setSearchQuery(query);
+        if (currentPage >= 1) {
+          setCurrentPage(1);
+        }
+        filterData(activeTab, query);
+      };
 
     useEffect(() => {
-		filterData(searchQuery);
-		setCurrentPage(1);
-	}, [searchQuery, selectedFacultyUnit, selectedYear, selectedFormStatus]);
+        filterData(activeTab, searchQuery);
+        setCurrentPage(1);
+      }, [activeTab, searchQuery, selectedFacultyUnit, selectedYear, selectedFormStatus]);
 
     const refreshData = () => {
 		setSearchQuery("");
@@ -512,6 +521,27 @@ const ExpenditureUser = () => {
                                 </select>
                             </div>
 						</div>
+
+                        <div className="flex flex-row mb-4">
+                            <button
+                                className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] shadow-sm md:inline-flex ${activeTab === 'all' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
+                                onClick={() => setActiveTab('all')}
+                            >
+                                All
+                            </button>
+                            <button
+                                className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-slate-300 dark:hover:bg-[#2F3335] shadow-sm md:inline-flex ${activeTab === 'staff' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
+                                onClick={() => setActiveTab('staff')}
+                            >
+                                Staff
+                            </button>
+                            <button
+                                className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] shadow-sm md:inline-flex ${activeTab === 'student' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'}`}
+                                onClick={() => setActiveTab('student')}
+                            >
+                                Student
+                            </button>
+                         </div>
                         
                         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                             <div className="inline-block min-w-full shadow rounded-sm overflow-hidden">
