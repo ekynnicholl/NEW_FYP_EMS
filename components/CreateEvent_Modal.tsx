@@ -7,7 +7,7 @@ interface ModalProps {
   selectedDate: string; // Add this prop
 }
 
-const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children,selectedDate }) => {
+const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, selectedDate }) => {
   if (!isVisible) return null;
   
 

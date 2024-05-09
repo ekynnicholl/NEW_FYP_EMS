@@ -4,6 +4,7 @@ import { HiMiniCalendarDays } from "react-icons/hi2";
 import { FiClock } from 'react-icons/fi';
 import { FaLocationDot } from "react-icons/fa6";
 import { MdPeople } from 'react-icons/md';
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface ModalProps {
   isVisible: boolean;
@@ -40,15 +41,17 @@ const EventsOnDateModal: React.FC<ModalProps> = ({ isVisible, onClose, events, s
             x
           </button>
           <div className="bg-white p-6 rounded-lg shadow-md max-h-[80vh] overflow-y-auto dark:bg-dark_mode_card">
-            <h2 className="text-2xl lg:text-3xl font-semibold mb-6 text-slate-800 dark:text-dark_text">
-              Events on {selectedDate}
+          <h2 className="flex items-center justify-between text-2xl lg:text-3xl font-semibold mb-6 text-slate-800 dark:text-dark_text">
+              <span>Events on {selectedDate}</span>
+              <button
+                className="bg-slate-800 rounded py-1 px-3 font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer flex items-center dark:hover:bg-slate-800"
+                onClick={() => onAddEvent(selectedDate)}
+              >
+                <IoIosAddCircleOutline className="text-[18px] text-slate-100" />
+                <span className="text-slate-100 ml-1 text-sm">Add Event</span>
+              </button>
             </h2>
-            <button
-          className="flex items-center bg-slate-800 rounded-lg py-2 px-4 font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800"
-          onClick={() => onAddEvent(selectedDate)}
-            >
-          <span className="text-lg lg:text-xl text-slate-100">Add Events</span>
-        </button>
+
             {events.length === 0 ? (
               <p className="text-slate-600 text-lg lg:text-xl dark:text-dark_text">No events found on this date.</p>
             ) : (
