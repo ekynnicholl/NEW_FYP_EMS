@@ -54,13 +54,12 @@ export default function NTFPDF({ id }: { id: string }) {
 		window.print();
 	};
 
-	const capitalizeFirstLetter = (str: string = ""): string => {
-		if (!str) return ""; // Return an empty string if str is null, undefined, or falsy
+	const capitalizeFirstLetter = (str: string | null): string => {
+		if (!str) return "";
 		return str
-			.trim() // Trim the string first to remove leading/trailing spaces
+			.trim()
 			.split(" ")
 			.map((word: string): string => {
-				// Explicitly declare 'word' as a string
 				if (word.length > 0) {
 					return word[0].toUpperCase() + word.substring(1);
 				}
@@ -87,8 +86,8 @@ export default function NTFPDF({ id }: { id: string }) {
 	};
 
 	return (
-		<div className="bg-white w-full h-screen">
-			<div className="m-auto bg-white w-a4 h-a4">
+		<div className="bg-white w-full">
+			<div className="m-auto bg-white w-a4">
 				<div>
 					<span className="float-left mr-4">
 						<Image src="/images/swinburne_logo_black_and_white.png" alt="" width={140} height={40} />
@@ -262,15 +261,98 @@ export default function NTFPDF({ id }: { id: string }) {
 							{/* Section 3: Logistic Arrangement */}
 							<fieldset className=" text-[13px] bg-slate-950">
 								<span className="text-slate-50 font-semibold uppercase ml-2">Section 3: Logistic Arrangement</span>
-								<div className="grid grid-cols-2 grid-rows-5 normal-case bg-gray-200 text-[12px] font-semibold leading-3">
-									<label className="col-start-1 col-span-1 row-span-1 p-1 flex items-center justify-center border border-slate-950 border-t-0">
+								<div className="grid grid-cols-2 normal-case bg-gray-200 text-[12px] font-semibold leading-3">
+									<label className=" row-span-1 p-1 flex items-center justify-center border border-slate-950 border-t-0">
 										Tentative / Planned Flight Arrangement
 									</label>
-									<label className="col-span-1 p-1 row-span-1 text-center border-r border-b border-slate-950">
+									<label className="p-1 row-span-1 text-center border-r border-b border-slate-950">
 										Tentative / Planned Accommodation Arrangement <br />
 										<span className="italic font-normal">&#40;with or without receipt&#41;</span>
 									</label>
-									<div className="col-span-1 row-span-4 grid grid-cols-5 grid-rows-5">
+								</div>
+								<div className="grid grid-cols-10 bg-gray-200 text-center text-xs font-semibold leading-3">
+									<div className="border border-slate-950 border-t-0 border-r-0 py-2 flex items-center justify-center">Date</div>
+									<div className="border border-slate-950 border-t-0 border-r-0 py-2 flex items-center justify-center">Time</div>
+									<div className="border border-slate-950 border-t-0 border-r-0 py-2 flex items-center justify-center">Flight<br />Number</div>
+									<div className="col-span-2 border border-slate-950 border-t-0">
+										<div className="flex justify-center items-center py-1">Destination</div>
+										<div className="grid grid-cols-2 pt-1 h-full">
+											<div className="border border-slate-950 border-l-0 border-b-0">From</div>
+											<div className="border border-slate-950 border-l-0 border-b-0 border-r-0">To</div>
+										</div>
+									</div>
+									<div className="col-span-2 border-b border-slate-950">
+										<div className="flex justify-center items-center py-1">Date</div>
+										<div className="grid grid-cols-2 pt-1 h-full">
+											<div className="border border-slate-950 border-l-0 border-b-0">Check In</div>
+											<div className="border border-slate-950 border-l-0 border-b-0 border-r-0">Check out</div>
+										</div>
+									</div>
+									<div className="col-span-3 border border-slate-950 border-t-0 flex items-center justify-center">Hotel / Lodging Place</div>
+								</div>
+
+								{details.logistic_arrangement && details.logistic_arrangement.length > 0 ? details.logistic_arrangement?.map((logistic, index) => (
+									<div key={index} className="grid grid-cols-10 bg-white text-center text-xs">
+										<div className="border border-slate-950 border-t-0 border-r-0 py-2">
+											{/* @ts-ignore */}
+											{formatDate(logistic?.flight_date)}
+										</div>
+										{/* @ts-ignore */}
+										<div className="border border-slate-950 border-t-0 border-r-0 py-2">{logistic?.flight_time!}</div>
+										<div className="border border-slate-950 border-t-0 border-r-0 py-2">
+											{/* @ts-ignore */}
+											{logistic?.flight_number ? logistic.flight_number.toUpperCase() : ""}
+										</div>
+										<div className="border border-slate-950 border-t-0 py-2">
+											{/* @ts-ignore */}
+											{capitalizeFirstLetter(logistic?.destination_from!)}
+										</div>
+										<div className="border border-slate-950 border-t-0 border-l-0 py-2">
+											{/* @ts-ignore */}
+											{capitalizeFirstLetter(logistic?.destination_to!)}
+										</div>
+										<div className="border border-slate-950 border-t-0 border-l-0 py-2">
+											{/* @ts-ignore */}
+											{formatDate(logistic?.check_in_date)}
+										</div>
+										<div className="border border-slate-950 border-t-0 border-l-0 border-r-0 py-2">
+											{/* @ts-ignore */}
+											{formatDate(logistic?.check_out_date)}
+										</div>
+										<div className="col-span-3 border border-slate-950 border-t-0 py-2">
+											{/* @ts-ignore */}
+											{logistic?.hotel_name}
+										</div>
+									</div>
+								)) : (
+									<>
+										<div className="grid grid-cols-10 bg-white text-center text-xs">
+											<div className="border border-slate-950 border-t-0 border-r-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-r-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-r-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-l-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-l-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-l-0 border-r-0 py-2"></div>
+											<div className="col-span-3 border border-slate-950 border-t-0 py-2"></div>
+										</div>
+
+										<div className="grid grid-cols-10 bg-white text-center text-xs">
+											<div className="border border-slate-950 border-t-0 border-r-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-r-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-r-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-l-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-l-0 py-2"></div>
+											<div className="border border-slate-950 border-t-0 border-l-0 border-r-0 py-2"></div>
+											<div className="col-span-3 border border-slate-950 border-t-0 py-2"></div>
+										</div>
+									</>
+									
+								)}
+
+								{/* <div className="grid grid-cols-2 normal-case bg-gray-200 text-[12px] font-semibold leading-3">
+									<div className="row-span-4 grid grid-cols-5 grid-rows-5">
 										<label className="col-span-1 row-span-2 flex items-center justify-center border border-slate-950 border-t-0">
 											Date
 										</label>
@@ -310,7 +392,7 @@ export default function NTFPDF({ id }: { id: string }) {
 											</>
 										))}
 									</div>
-									<div className="col-span-1 row-span-4 grid grid-cols-4 grid-rows-5">
+									<div className="row-span-4 grid grid-cols-4 grid-rows-5">
 										<label className="col-span-2 row-span-1  flex items-center justify-center border-b border-r border-slate-950">
 											Date
 										</label>
@@ -337,7 +419,7 @@ export default function NTFPDF({ id }: { id: string }) {
 											</>
 										))}
 									</div>
-								</div>
+								</div> */}
 							</fieldset>
 
 							{/* Section 4: Funding */}
