@@ -147,10 +147,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 
 				createNotifications(selectedRow, values.undoOption, values.revertComment!);
 
-				const { data: latestFormsData, error: latestFormsError } = await supabase
-					.from("external_forms")
-					.select()
-					.eq("id", formID);
+				const { data: latestFormsData, error: latestFormsError } = await supabase.from("external_forms").select().eq("id", formID);
 
 				if (latestFormsError) {
 					toast.error("Failed to send email. Please contact server administrator.");
@@ -188,7 +185,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			accessorKey: "no",
 			sortingFn: "text",
 			header: ({ column }) => (
-				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+				<Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					No.
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
@@ -201,7 +198,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			accessorKey: "full_name",
 			sortingFn: "text",
 			header: ({ column }) => (
-				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+				<Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					Staff Name
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
@@ -216,7 +213,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			accessorKey: "staff_id",
 			sortingFn: "text",
 			header: ({ column }) => (
-				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+				<Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					Staff ID
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
@@ -231,7 +228,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			accessorKey: "faculty",
 			sortingFn: "text",
 			header: ({ column }) => (
-				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+				<Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					Faculty
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
@@ -246,7 +243,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			accessorKey: "program_title",
 			sortingFn: "text",
 			header: ({ column }) => (
-				<Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+				<Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					Program Title/ Event
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
@@ -258,7 +255,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			sortingFn: "auto",
 			filterFn: "equals",
 			header: ({ column }) => (
-				<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+				<Button className="text-left pl-0" variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 					Form Status
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
@@ -289,7 +286,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			filterFn: "includesString",
 			header: ({ column }) => {
 				return (
-					<Button variant="ghost" className="w-40" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+					<Button variant="ghost" className="w-32 text-left pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 						Submitted At
 						<ArrowUpDown className="ml-2 h-4 w-4" />
 					</Button>
@@ -323,8 +320,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								onClick={e => {
 									e.preventDefault();
 									router.push(`/form/external/${row.original.id}`);
-								}}
-							>
+								}}>
 								View
 							</DropdownMenuItem>
 							<DropdownMenuItem
@@ -332,16 +328,14 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									e.stopPropagation();
 									setOpen(true);
 									setSelectedRow(row.original);
-								}}
-							>
+								}}>
 								Undo Action
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={e => {
 									e.stopPropagation();
 									sendContactForm([row.original]);
-								}}
-							>
+								}}>
 								Send
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -454,15 +448,13 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						<DialogFooter className="sm:justify-center">
 							<button
 								onClick={() => copyToClipboard(`${window.location.origin}/form/external`)}
-								className="mt-4 mr-5 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-							>
+								className="mt-4 mr-5 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
 								Copy Link
 							</button>
 							<a
 								href={`${window.location.origin}/form/external`}
 								target="_blank"
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-							>
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
 								Open Link
 							</a>
 						</DialogFooter>
@@ -496,15 +488,13 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 						<DialogFooter className="sm:justify-center">
 							<button
 								onClick={() => copyToClipboard(`${window.location.origin}/attended_events`)}
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-							>
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
 								Copy Link
 							</button>
 							<a
 								href={`${window.location.origin}/attended_events`}
 								target="_blank"
-								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105"
-							>
+								className="mt-4 hover:bg-slate-300 focus:outline-none focus:ring-slate-300 bg-slate-200 shadow-sm focus:ring-2 focus:ring-offset-2 rounded-lg px-[20px] py-[7px]  dark:bg-[#242729] dark:text-[#C1C7C1] transform hover:scale-105">
 								Open Link
 							</a>
 						</DialogFooter>
@@ -530,8 +520,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("created_at")?.setFilterValue(undefined);
-								}}
-							>
+								}}>
 								View All
 							</DropdownMenuItem>
 							{data
@@ -546,8 +535,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 										onClick={() => {
 											table.getColumn("created_at")?.setFilterValue(year?.toString());
 											console.log("year: ", year);
-										}}
-									>
+										}}>
 										{year}
 									</DropdownMenuItem>
 								))}
@@ -564,50 +552,43 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(undefined);
-								}}
-							>
+								}}>
 								View All
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(1);
-								}}
-							>
+								}}>
 								Reverted to Staff
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(2);
-								}}
-							>
+								}}>
 								Reviewing by AAO
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(3);
-								}}
-							>
+								}}>
 								Reviewing by HOS/ ADCR/ MGR
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(4);
-								}}
-							>
+								}}>
 								Reviewing by HMU/ Dean
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(5);
-								}}
-							>
+								}}>
 								Approved
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => {
 									table.getColumn("formStage")?.setFilterValue(6);
-								}}
-							>
+								}}>
 								Rejected
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -629,23 +610,22 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 											key={column.id}
 											className="capitalize"
 											checked={column.getIsVisible()}
-											onCheckedChange={value => column.toggleVisibility(!!value)}
-										>
+											onCheckedChange={value => column.toggleVisibility(!!value)}>
 											{column.id === "no"
 												? "No."
 												: column.id === "full_name"
-													? "Name"
-													: column.id === "staff_id"
-														? "Staff ID"
-														: column.id === "faculty"
-															? "Faculty"
-															: column.id === "program_title"
-																? "Program Title/ Event"
-																: column.id === "formStage"
-																	? "Form Status"
-																	: column.id === "created_at"
-																		? "Submitted At"
-																		: column.id}
+												? "Name"
+												: column.id === "staff_id"
+												? "Staff ID"
+												: column.id === "faculty"
+												? "Faculty"
+												: column.id === "program_title"
+												? "Program Title/ Event"
+												: column.id === "formStage"
+												? "Form Status"
+												: column.id === "created_at"
+												? "Submitted At"
+												: column.id}
 										</DropdownMenuCheckboxItem>
 									);
 								})}
@@ -679,8 +659,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 												router.push(`/external/${row.original.id}`);
 											}}
 											data-state={row.getIsSelected() && "selected"}
-											className="text-center cursor-pointer dark:bg-dark_mode_card dark:text-dark_text"
-										>
+											className="text-left cursor-pointer dark:bg-dark_mode_card dark:text-dark_text">
 											{row.getVisibleCells().map(cell => (
 												<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
 											))}
@@ -691,8 +670,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 											onClick={e => {
 												e.preventDefault();
 												router.push(`/external/${row.original.id}`);
-											}}
-										>
+											}}>
 											View
 										</ContextMenuItem>
 										<ContextMenuItem
@@ -700,8 +678,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 												e.preventDefault();
 												setOpen(true);
 												setSelectedRow(row.original);
-											}}
-										>
+											}}>
 											Undo Action
 										</ContextMenuItem>
 									</ContextMenuContent>
@@ -749,8 +726,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 												field.onChange(e);
 												field.value = e;
 												console.log("field value: ", field.value);
-											}}
-										>
+											}}>
 											<FormControl>
 												<SelectTrigger>
 													<SelectValue placeholder="Choose an option" />
