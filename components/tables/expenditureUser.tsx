@@ -548,9 +548,9 @@ const ExpenditureUser = () => {
                                 <table className="lg:w-full w-auto">
                                     <thead>
                                         <tr>
-                                            <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
-                                                NO
-                                            </th>
+                                            <th className="w-20 flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+													<div className="ml-2 lg:ml-10">No</div>
+											</th>
                                             <th className="flex-1 px-5 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 dark:border-[#363B3D] dark:bg-[#1D2021] text-xs lg:text-sm font-semibold text-gray-600 dark:text-[#B0AA9F] uppercase tracking-wider text-left">
                                                 Staff Name 
                                             </th>
@@ -579,8 +579,8 @@ const ExpenditureUser = () => {
                                             .slice(startIndex, endIndex)
                                             .map((expenditureItem, index) => (
                                             <tr key={expenditureItem.id}>
-                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
-                                                    {(currentPage - 1) * itemsPerPage + index + 1}
+                                                <td className="w-20 flex-1 lg:pl-12 pr-4 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                {(currentPage - 1) * itemsPerPage + index + 1}
                                                 </td>
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.full_name}

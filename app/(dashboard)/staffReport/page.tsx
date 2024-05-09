@@ -792,7 +792,7 @@ export default function Home() {
 										{/* Table Header */}
 										<thead>
 											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+											<th className="w-20 flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<div className="ml-2 lg:ml-10">No</div>
 												</th>
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 lg:-ml-24 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
@@ -830,14 +830,14 @@ export default function Home() {
 																openModal(info.allEventsAttended);
 															}}
 														>
-															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
-																<div className="flex items-center">
-																	<div className="ml-6">
-																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
-																			{(currentPage - 1) * entriesToShow + index + 1}
-																		</p>
-																	</div>
+															<td className="w-20 flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+															<div className="flex items-center">
+																<div className="ml-6">
+																<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
+																	{(currentPage - 1) * entriesToShow + index + 1}
+																</p>
 																</div>
+															</div>
 															</td>
 															<td className="flex-1 px-6 lg:-ml-28 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<div className="-ml-3 lg:-ml-5">{info.staffName}</div>
@@ -1137,7 +1137,7 @@ export default function Home() {
 				<div className="flex-1 mx-auto px-4 sm:px-[26px] py-[26px] bg-slate-100 dark:bg-dark_mode_bg">
 					<div className="bg-white rounded p-8 dark:bg-dark_mode_card">
 						<div className="inline-flex mb-5">
-							<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[5px] text-slate-800 dark:text-dark_text">Staff Expenditure Report</span></h1>
+							<h1 className="text-xl font-bold lg:text-2xl"><span className="ml-[3px] text-slate-800 dark:text-dark_text">Staff Expenditure Report</span></h1>
 						</div>
 						<ExpenditureUser />
 					</div>
