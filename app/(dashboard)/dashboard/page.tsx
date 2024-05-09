@@ -514,30 +514,30 @@ export default function Homepage() {
 	//this is for fetching sub events
 	useEffect(() => {
 		const fetchSubEventDates = async () => {
-		  const { data: subEventData, error: subEventError } = await supabase
-			.from("sub_events")
-			.select("sub_eventsStartDate, sub_eventsEndDate")
-			.gte("sub_eventsEndDate", new Date().toISOString())
-			.eq("sub_eventsIsHidden", 0);
-	  
-		  if (subEventError) {
-			console.error("Error fetching sub-event dates:", subEventError);
-			return;
-		  }
-	  
-		  const uniqueSubEventDates = new Set<string>();
-		  subEventData.forEach(subEvent => {
-			const startDate = new Date(subEvent.sub_eventsStartDate).toISOString().substring(0, 10);
-			const endDate = new Date(subEvent.sub_eventsEndDate).toISOString().substring(0, 10);
-			uniqueSubEventDates.add(startDate);
-			uniqueSubEventDates.add(endDate);
-		  });
-	  
-		  setSubEventDates(Array.from(uniqueSubEventDates));
+			const { data: subEventData, error: subEventError } = await supabase
+				.from("sub_events")
+				.select("sub_eventsStartDate, sub_eventsEndDate")
+				.gte("sub_eventsEndDate", new Date().toISOString())
+				.eq("sub_eventsIsHidden", 0);
+
+			if (subEventError) {
+				console.error("Error fetching sub-event dates:", subEventError);
+				return;
+			}
+
+			const uniqueSubEventDates = new Set<string>();
+			subEventData.forEach(subEvent => {
+				const startDate = new Date(subEvent.sub_eventsStartDate).toISOString().substring(0, 10);
+				const endDate = new Date(subEvent.sub_eventsEndDate).toISOString().substring(0, 10);
+				uniqueSubEventDates.add(startDate);
+				uniqueSubEventDates.add(endDate);
+			});
+
+			setSubEventDates(Array.from(uniqueSubEventDates));
 		};
-	  
+
 		fetchSubEventDates();
-	  }, [supabase]);
+	}, [supabase]);
 
 	// This is needed for the attendance data to show,
 	const [attendanceID, setAttendanceID] = useState<string>("");
@@ -644,29 +644,29 @@ export default function Homepage() {
 	const handleDateClick = async (date: Date) => {
 		// Calculate the local time offset in minutes and convert it to milliseconds
 		const timeOffsetInMilliseconds = date.getTimezoneOffset() * 60000;
-	  
+
 		// Create a new Date object adjusted for the local time offset
 		const localDate = new Date(date.getTime() - timeOffsetInMilliseconds);
-	  
+
 		const formattedDate = localDate.toISOString().split('T')[0];
 		setSelectedDate(formattedDate);
-	  
+
 		// Fetch sub-events for the selected date and update the state
 		const { data: subEventsData, error } = await supabase
-		  .from('sub_events')
-		  .select('*')
-		  .gte('sub_eventsStartDate', formattedDate)
-		  .lte('sub_eventsEndDate', formattedDate)
-		  .eq('sub_eventsIsHidden', 0);
-	  
+			.from('sub_events')
+			.select('*')
+			.gte('sub_eventsStartDate', formattedDate)
+			.lte('sub_eventsEndDate', formattedDate)
+			.eq('sub_eventsIsHidden', 0);
+
 		if (error) {
-		  console.error('Error fetching sub-events for selected date:', error);
-		  return;
+			console.error('Error fetching sub-events for selected date:', error);
+			return;
 		}
-	  
+
 		setEventsOnSelectedDate(subEventsData);
 		setShowEventsOnDateModal(true);
-	  };
+	};
 
 
 	const lastDetailRef = useRef<HTMLDivElement>(null);
@@ -751,12 +751,15 @@ export default function Homepage() {
 		e.preventDefault();
 		// console.log(eventDetails);
 
+		// Replace newlines with <br> tags in the event description
+		const formattedEventDescription = mainEvent.intFEventDescription.replace(/\n/g, '<br>');
+
 		// MAIN EVENT
 		const { data, error } = await supabase
 			.from("internal_events")
 			.upsert({
 				intFEventName: mainEvent.intFEventName,
-				intFEventDescription: mainEvent.intFEventDescription,
+				intFEventDescription:formattedEventDescription, // Use the formatted description
 				intFEventStartDate: mainEvent.intFEventStartDate,
 				intFEventEndDate: mainEvent.intFEventEndDate,
 				intFDurationCourse: calculateDays(),
@@ -950,7 +953,7 @@ export default function Homepage() {
 		setSelectedDate(selectedDate);
 		setShowEventsOnDateModal(false);
 		setShowCreateEventModal(true);
-	  };
+	};
 
 	const handleAddSubEvent = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -1423,7 +1426,7 @@ export default function Homepage() {
 						isVisible={showCreateEventModal}
 						onClose={() => setShowCreateEventModal(false)}
 						selectedDate={selectedDate} // Pass the selectedDate prop
-						>
+					>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px] dark:bg-dark_mode_card">
 								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
@@ -2011,11 +2014,11 @@ export default function Homepage() {
 					</ViewEvent_Modal>
 
 					<EventsOnDateModal
-					isVisible={showEventsOnDateModal}
-					onClose={() => setShowEventsOnDateModal(false)}
-					events={eventsOnSelectedDate}
-					selectedDate={selectedDate}
-					onAddEvent={handleAddEvent}
+						isVisible={showEventsOnDateModal}
+						onClose={() => setShowEventsOnDateModal(false)}
+						events={eventsOnSelectedDate}
+						selectedDate={selectedDate}
+						onAddEvent={handleAddEvent}
 					/>
 
 					<ViewEventFeedback isVisible={showFeedbackModal} onClose={() => setShowFeedbackModal(false)}>
@@ -5625,7 +5628,7 @@ export default function Homepage() {
 									</div>
 								)}
 							</div>
-						)}	
+						)}
 					</div>
 
 					<div className="w-full h-[700px] bg-white border border-slate-200 rounded-lg transition transform hover:scale-105 hidden lg:inline dark:bg-dark_mode_card dark:text-slate-300 dark:border dark:border-[#363B3D]">

@@ -622,7 +622,7 @@ export default function AttendanceForm() {
 										<label
 											htmlFor="name"
 											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Are you a staff, student, or a visitor?
+											Are you a Staff, Swinburne Student, Secondary School Student or a Visitor?
 											<span className="text-red-500"> *</span>
 										</label>
 										<div>
@@ -646,7 +646,19 @@ export default function AttendanceForm() {
 													checked={userType === 'student'}
 													onChange={handleUserTypeChange}
 												/>
-												<span className="ml-2 font-medium text-sm lg:text-base">Student</span>
+												<span className="ml-2 font-medium text-sm lg:text-base">Swinburne Student</span>
+											</label>
+										</div>
+										<div className="mt-2">
+											<label className="ml-1">
+												<input
+													type="radio"
+													name="userType"
+													value="secondary"
+													checked={userType === 'secondary'}
+													onChange={handleUserTypeChange}
+												/>
+												<span className="ml-2 font-medium text-sm lg:text-base">Secondary School Student</span>
 											</label>
 										</div>
 										<div className="mt-2">
@@ -847,6 +859,56 @@ export default function AttendanceForm() {
 												</div>
 											</div>
 										}
+									</div>
+								)}
+
+								{userType === 'secondary' && (
+									<div>
+										<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="name_of_school"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Name of School
+													<span className="text-red-500"> *</span>
+												</label>
+												<input
+													type="text"
+													name="name_of_school"
+													id="name_of_school"
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+													required
+													placeholder="e.g., Lodge International School"
+													style={{ paddingLeft: "5px" }}
+												// onChange={event =>
+												// 	setInfo({ ...info, attFormsStaffID: event.target.value })
+												// }
+												/>
+											</div>
+										</div>
+
+										<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="name_of_school"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Year of Study
+													<span className="text-red-500"> *</span>
+												</label>
+												<input
+													type="text"
+													name="name_of_school"
+													id="name_of_school"
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+													required
+													placeholder="e.g., F4/F5"
+													style={{ paddingLeft: "5px" }}
+												// onChange={event =>
+												// 	setInfo({ ...info, attFormsStaffID: event.target.value })
+												// }
+												/>
+											</div>
+										</div>
 									</div>
 								)}
 
