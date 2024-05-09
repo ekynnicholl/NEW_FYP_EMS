@@ -807,7 +807,7 @@ export default function Home() {
 												</th>
 
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<div className="lg:ml-9">Training Hours</div>
+													<div className="lg:ml-10">Training Hours</div>
 												</th>
 											</tr>
 										</thead>

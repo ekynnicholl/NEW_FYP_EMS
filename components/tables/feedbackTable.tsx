@@ -77,53 +77,71 @@ const columnDisplayNames: { [key in keyof FeedbackDataType]: string } = {
     fbEmailAddress: 'Email Address',
 };
 
-const convertToCSV = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
-    const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
+const convertToXLSX = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
+    
+    const headerRow1 = sectionColumnMapping;
+    for(let i = 0; i <= 5; i++){
+        headerRow1.unshift('');
+    }    
+    const headerRow2 = Object.keys(columnMapping).map((key) => columnMapping[key]);
+
+    const wsHeader = [headerRow1, headerRow2];
+
     const body = data.map((row) => {
-        const newRow = { ...row };
+        const newRow: any = {...row};
+        newRow['fbCommencementDate'] = convertDateToLocale(newRow['fbCommencementDate']);
+        newRow['fbCompletionDate'] = convertDateToLocale(newRow['fbCompletionDate']);
+        return Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]);
+    });
 
-        Object.keys(columnMapping).forEach((key) => {
-            if (key === 'fbDateSubmitted') {
-                const formattedDate = convertDateToLocale(newRow[key as keyof FeedbackDataType]);
-                newRow[key as keyof FeedbackDataType] = formattedDate.includes(',')
-                    ? `"${formattedDate}"`
-                    : formattedDate;
-            } else if (typeof newRow[key as keyof FeedbackDataType] === 'string' && newRow[key as keyof FeedbackDataType].includes(',')) {
-                newRow[key as keyof FeedbackDataType] = `"${newRow[key as keyof FeedbackDataType]}"`;
-            }
-        });
+    const ws = XLSX.utils.aoa_to_sheet([...wsHeader, ...body]);
 
-        return Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]).join(',');
-    }).join('\n');
-    return `${header}\n${body}`;
+    const borderStyle = {
+        alignment: { horizontal: 'center' },
+        border: {
+            top: { style: 'thin', color: { rgb: '000000' } },
+            bottom: { style: 'thin', color: { rgb: '000000' } },
+            left: { style: 'thin', color: { rgb: '000000' } },
+            right: { style: 'thin', color: { rgb: '000000' } },
+        }
+    };
+
+    // const range = ws['!ref'] || 'A1:F10';
+
+    // // Decode the range
+    // const decodedRange = XLSX.utils.decode_range(range);
+    
+    // // const range = XLSX.utils.decode_range(ws['!ref']);
+    // for (let R = decodedRange.s.r; R <= decodedRange.e.r; ++R) {
+    //     for (let C = decodedRange.s.c; C <= decodedRange.e.c; ++C) {
+    //         const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+    //         if (!ws[cellAddress]) continue; // Skip empty cells
+    //         ws[cellAddress].s = borderStyle;
+    //     }
+    // }
+    
+   
+    // Define the range to merge cells
+    const merges = [
+        { s: { r: 0, c: headerRow1.indexOf('Course Quality') }, e: { r: 0, c: headerRow1.indexOf('Course Quality') + 4 } },
+        { s: { r: 0, c: headerRow1.indexOf('Training Experience') }, e: { r: 0, c: headerRow1.indexOf('Training Experience') + 3 } },
+        { s: { r: 0, c: headerRow1.indexOf('Suggestions/Comments') }, e: { r: 0, c: headerRow1.indexOf('Suggestions/Comments') + 2 } },
+        { s: { r: 0, c: headerRow1.indexOf('Verification') }, e: { r: 0, c: headerRow1.indexOf('Verification') + 1 } }
+    ];
+    
+    ws['!merges'] = merges;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Feedback Form');
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+    return wbout;
 };
 
-const downloadCSV = (data: FeedbackDataType[]) => {
-    // const firstRow = data[0];
-    // const subEventName = firstRow ? firstRow.sub_eventName : '';
-
-    const csv = convertToCSV(data, columnMapping);
-
-    // Create a data URI for the CSV content
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    // a.download = `attendance_data_${subEventName}.csv`;
-    a.download = `feedback_forms.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    window.URL.revokeObjectURL(url);
-};
-
-// const convertToXLSX = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
-//     const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
+// const convertToCSV = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
+//     const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
 //     const body = data.map((row) => {
-//         const newRow: any = { ...row };
+//         const newRow = { ...row };
 
 //         Object.keys(columnMapping).forEach((key) => {
 //             if (key === 'fbDateSubmitted') {
@@ -136,36 +154,52 @@ const downloadCSV = (data: FeedbackDataType[]) => {
 //             }
 //         });
 
-//         return Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]);
-//     });
-
-//     const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
-//     const wb = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(wb, ws, 'Feedback Forms');
-//     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-
-//     return wbout;
+//         return Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]).join(',');
+//     }).join('\n');
+//     return `${header}\n${body}`;
 // };
 
-// const downloadXLSX = (data: FeedbackDataType[]) => {
-//     const xlsxContent = convertToXLSX(data, columnMapping);
-//     const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-//     const url = URL.createObjectURL(blob);
+// const downloadCSV = (data: FeedbackDataType[]) => {
+    // // const firstRow = data[0];
+    // // const subEventName = firstRow ? firstRow.sub_eventName : '';
 
-//     const firstRow = data[0];
-//     const subEventName = firstRow ? firstRow.sub_eventName : '';
-//     const subEventDate = firstRow ? new Date(firstRow.attDateSubmitted) : null;
-//     const formattedDate = subEventDate ? `${subEventDate.getDate()}.${subEventDate.getMonth() + 1}.${subEventDate.getFullYear()}` : '';
+    // const csv = convertToCSV(data, columnMapping);
 
-//     const a = document.createElement('a');
-//     a.href = url;
-//     a.download = `${subEventName} (${formattedDate}) - Feedback Data.xlsx`;
-//     document.body.appendChild(a);
-//     a.click();
-//     document.body.removeChild(a);
+    // // Create a data URI for the CSV content
+    // const blob = new Blob([csv], { type: 'text/csv' });
+    // const url = window.URL.createObjectURL(blob);
 
-//     URL.revokeObjectURL(url);
+    // const a = document.createElement('a');
+    // a.style.display = 'none';
+    // a.href = url;
+    // // a.download = `attendance_data_${subEventName}.csv`;
+    // a.download = `feedback_forms.csv`;
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+
+    // window.URL.revokeObjectURL(url);
 // };
+
+const downloadXLSX = (data: FeedbackDataType[]) => {
+    const xlsxContent = convertToXLSX(data, columnMapping);
+    const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+
+    const firstRow = data[0];
+    const subEventName = firstRow ? firstRow.fbCourseName : '';
+    const subEventDate = firstRow ? new Date(firstRow.fbCommencementDate) : null;
+    const formattedDate = subEventDate ? `${subEventDate.getDate()}.${subEventDate.getMonth() + 1}.${subEventDate.getFullYear()}` : '';
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${subEventName} (${formattedDate}) - Feedback Data.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+};
 
 type ColumnMapping = {
     [key: string]: string;
@@ -209,6 +243,8 @@ const columnMapping: ColumnMapping = {
     fbFullName: 'Full Name',
     fbEmailAddress: 'Email Address',
 };
+
+const sectionColumnMapping = ['Course Quality', '', '', '', '', 'Training Experience', '', '', '', 'Duration', 'Recommendation', 'Suggestions/Comments', '', '', 'Verification'];
 
 const ratingDescriptions: { [key: string]: string } = {
     1: "Strongly Disagree",
@@ -433,14 +469,14 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                 <button
                     type="button"
                     className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729] mb-5"
-                    onClick={() => downloadCSV(feedbackData)}>
+                    onClick={() => downloadXLSX(feedbackData)}>
                     <img
                         src={exportCSV.src}
                         alt=""
                         width={20}
                         className="text-slate-800"
                     />
-                    <span className="ml-2 text-slate-800 dark:text-dark_text">Export to CSV</span>
+                    <span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
                 </button>
             )}
 
