@@ -128,12 +128,12 @@ export default function MobileTopBar() {
 										<Link legacyBehavior href="/analytics">
 											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>ANALYTICS</a>
 										</Link>
-										<Link legacyBehavior href="/report">
-											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>REPORT</a>
+										<Link legacyBehavior href="/staffReport">
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>REPORTS</a>
 										</Link>
 										<Link legacyBehavior href="/external">
 											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" target="_blank" onClick={() => setMenuOpen(false)}>
-												EXTERNAL EVENT
+												NOMINATION TRAVELLING FORMS
 											</a>
 										</Link>
 										<Link legacyBehavior href="/suggestions">
