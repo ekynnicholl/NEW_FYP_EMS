@@ -5660,7 +5660,7 @@ export default function Homepage() {
 												return (
 													<li key={event.intFEventName} className="flex justify-between items-center mb-2">
 														<span className="font-semibold text-l ml-6 mb-3 break-words">{event.intFEventName}</span>
-														<span className="text-m mr-6 mb-3">
+														<span className="text-m mr-6 mb-3 flex-shrink-0 max-w-[50%] text-right">
 															{startDateFormatted} - {endDateFormatted}
 														</span>
 													</li>
