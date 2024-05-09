@@ -225,6 +225,7 @@ export default function Homepage() {
 	});
 
 	// Create, View, Edit Modal + Selected Event Image
+	const [showModalCreateEvent, setShowModalCreateEvent] = useState(false);
 	const [showModalViewEvent, setShowModalViewEvent] = useState(false);
 	const [showModalAddEvent, setShowModalAddEvent] = useState(false);
 	const [showModalEditEvent, setShowModalEditEvent] = useState(false);
@@ -1412,7 +1413,7 @@ export default function Homepage() {
 					<div className="w-1/4 mt-4 flex justify-end items-start lg:mr-1 lg:ml-5 hidden md:inline">
 						<button
 							className="flex items-center bg-slate-800 rounded-lg py-3 px-[50px] lg:px-[30px] font-medium hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 shadow-sm mt-4 -mr-[15px] hover:text-slate-50 justify-end text-right hover:transition duration-300 transform hover:scale-105 cursor-pointer dark:bg-slate-800"
-							onClick={() => setShowCreateEventModal(true)}
+							onClick={() => setShowModalCreateEvent(true)}
 						>
 							<IoIosAddCircleOutline className="text-[31px] text-slate-100 -ml-1 mr-1" />
 							<span className="text-[18px] text-slate-100 ml-[2px] -mt-[2.5px]">Add Events</span>
