@@ -6,71 +6,10 @@ import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 
-type Form = {
-	formID: string;
-	email: string;
-	full_name: string;
-	staff_id: string;
-	course: string;
-	faculty: string;
-	transport: string;
-	travelling: string;
-	other_members: string[];
-	program_title: string;
-	program_description: string;
-	commencement_date: string;
-	completion_date: string;
-	organiser: string;
-	venue: string;
-	hrdf_claimable: string;
-	flight_number: string;
-	flight_date: string;
-	flight_time: string;
-	destination_from: string;
-	destination_to: string;
-	hotel_name: string;
-	check_in_date: string;
-	check_out_date: string;
-	course_fee: string;
-	airfare_fee: string;
-	accommodation_fee: string;
-	per_diem_fee: string;
-	transportation_fee: string;
-	travel_insurance_fee: string;
-	others_fee: string;
-	grand_total_fees: string;
-	staff_development_fund: string;
-	consolidated_pool_fund: string;
-	research_fund: string;
-	travel_fund: string;
-	student_council_fund: string;
-	other_funds: string;
-	expenditure_cap: string;
-	expenditure_cap_amount: string;
-	applicant_declaration_name: string;
-	applicant_declaration_position_title: string;
-	applicant_declaration_date: string;
-	applicant_declaration_signature: string;
-	verification_name: string;
-	verification_position_title: string;
-	verification_date: string;
-	verification_signature: string;
-	approval_name: string;
-	approval_position_title: string;
-	approval_date: string;
-	approval_signature: string;
-	transit_flight_date: string;
-	transit_flight_time: string;
-	transit_flight_number: string;
-	transit_destination_from: string;
-	transit_destination_to: string;
-};
-
 export default function NTFPDF({ id }: { id: string }) {
 	const supabase = createClientComponentClient();
 	const [formDetails, setFormDetails] = useState<ExternalForm[]>([]);
 	const [auditLog, setAuditLog] = useState<AuditLog[]>([]);
-	const [str, setStr] = useState("");
 
 	const [numPagesArray, setNumPagesArray] = useState<(number | null)[]>([]);
 
@@ -88,6 +27,8 @@ export default function NTFPDF({ id }: { id: string }) {
 				.from("external_forms")
 				.select("*")
 				.eq("id", id);
+
+			console.log("external", external);
 
 			if (externalError) {
 				console.error("Error fetching staff external form data:", externalError);
@@ -128,7 +69,9 @@ export default function NTFPDF({ id }: { id: string }) {
 			.join(" ");
 	};
 
-	const formatDate = (dateString: string): string => {
+	const formatDate = (dateString: string | null): string => {
+		if (!dateString) return "";
+
 		const date = new Date(dateString);
 		const month = date.toLocaleDateString("en-GB", { month: "long" });
 		const day = date.toLocaleDateString("en-GB", { day: "numeric" });
@@ -176,8 +119,9 @@ export default function NTFPDF({ id }: { id: string }) {
 									Full Name in CAPITAL LETTERS &#40;as per I.C. / Passport&#41;
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
-										}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
+										(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
+									}`}
 								>
 									{details.full_name}
 								</p>
@@ -189,16 +133,18 @@ export default function NTFPDF({ id }: { id: string }) {
 									Designation / Course
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
-										}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
+										(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
+									}`}
 								>
 									{details.course}
 								</p>
 
 								<label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Faculty / School / Unit</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
-										}`}
+									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
+										details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
+									}`}
 								>
 									{details.faculty}
 								</p>
@@ -219,8 +165,9 @@ export default function NTFPDF({ id }: { id: string }) {
 									Name of other staff / student travelling together in group<sup>1</sup>
 								</label>
 								<p
-									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
-										}`}
+									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${
+										details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
+									}`}
 								>
 									{(details && details.other_members?.length) ?? 0 > 0 ? details.other_members : ""}
 								</p>
@@ -266,16 +213,18 @@ export default function NTFPDF({ id }: { id: string }) {
 									Organiser
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
-										}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
+										details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
+									}`}
 								>
 									{details && details.organiser?.length ? details.organiser : ""}
 								</p>
 
 								<label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Venue</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
-										}`}
+									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
+										details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
+									}`}
 								>
 									{details.venue}
 								</p>
@@ -311,10 +260,8 @@ export default function NTFPDF({ id }: { id: string }) {
 							</div>
 
 							{/* Section 3: Logistic Arrangement */}
-							<fieldset className=" text-[13px] bg-slate-950 h-[155px]">
-								<span className="text-slate-50 font-semibold uppercase ml-2">
-									Section 3: Logistic Arrangement
-								</span>
+							<fieldset className=" text-[13px] bg-slate-950">
+								<span className="text-slate-50 font-semibold uppercase ml-2">Section 3: Logistic Arrangement</span>
 								<div className="grid grid-cols-2 grid-rows-5 normal-case bg-gray-200 text-[12px] font-semibold leading-3">
 									<label className="col-start-1 col-span-1 row-span-1 p-1 flex items-center justify-center border border-slate-950 border-t-0">
 										Tentative / Planned Flight Arrangement
@@ -343,36 +290,25 @@ export default function NTFPDF({ id }: { id: string }) {
 										<label className="col-span-1 row-span-1 flex items-center justify-center border-b border-r border-slate-950">
 											To
 										</label>
-										<p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.flight_date}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.flight_time}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.flight_number ? details.flight_number.toUpperCase() : ""}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.destination_from!)}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.destination_to!)}
-										</p>
-										<p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.transit_flight_date}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.transit_flight_time}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.transit_flight_number}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.transit_destination_from!)}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{capitalizeFirstLetter(details.transit_destination_to!)}
-										</p>
+										{details.logistic_arrangement?.map((logistic, index) => (
+											<>
+												<p className="col-span-1 border border-t-0 border-slate-950 p-1 bg-white flex items-center justify-center">
+													{formatDate(logistic?.flight_date!)}
+												</p>
+												<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
+													{logistic?.flight_time!}
+												</p>
+												<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
+													{logistic.flight_number ? logistic.flight_number.toUpperCase() : ""}
+												</p>
+												<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
+													{capitalizeFirstLetter(logistic.destination_from!)}
+												</p>
+												<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
+													{capitalizeFirstLetter(logistic.destination_to!)}
+												</p>
+											</>
+										))}
 									</div>
 									<div className="col-span-1 row-span-4 grid grid-cols-4 grid-rows-5">
 										<label className="col-span-2 row-span-1  flex items-center justify-center border-b border-r border-slate-950">
@@ -387,24 +323,19 @@ export default function NTFPDF({ id }: { id: string }) {
 										<label className="col-span-2 row-span-2  flex items-center justify-center border-b border-r border-slate-950">
 											Hotel / Lodging Place
 										</label>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.check_in_date}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{details.check_in_date}
-										</p>
-										<p className="col-span-2 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{details.hotel_name}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{""}
-										</p>
-										<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
-											{""}
-										</p>
-										<p className="col-span-2 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
-											{""}
-										</p>
+										{details.logistic_arrangement?.map((logistic, index) => (
+											<>
+												<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
+													{formatDate(logistic.check_in_date)}
+												</p>
+												<p className="col-span-1 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center">
+													{formatDate(logistic.check_out_date)}
+												</p>
+												<p className="col-span-2 border-b border-r border-slate-950 p-1 bg-white flex items-center justify-center whitespace-nowrap">
+													{logistic.hotel_name}
+												</p>
+											</>
+										))}
 									</div>
 								</div>
 							</fieldset>
@@ -569,9 +500,7 @@ export default function NTFPDF({ id }: { id: string }) {
 									<span className="text-slate-50 font-semibold uppercase ml-2">Section 5: Applicant Declaration</span>
 								</fieldset>
 								<fieldset className="p-[0.5px] text-[13px] bg-slate-950">
-									<span className="text-slate-50 font-semibold uppercase ml-2">
-										Section 6: Verification
-									</span>
+									<span className="text-slate-50 font-semibold uppercase ml-2">Section 6: Verification</span>
 								</fieldset>
 								<div className="col-span-1 normal-case text-[11.5px] bg-gray-200 leading-3 border-r border-l border-slate-950">
 									<p className="mx-2 p-1 text-justify">
