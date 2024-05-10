@@ -772,8 +772,6 @@ export default function Homepage() {
 		console.log("DATAWEEEEEEE" + data![0].intFID);
 		const generatedEventID = data![0].intFID;
 
-
-
 		setMainEvents([
 			...mainEvents,
 			{
