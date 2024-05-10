@@ -1,13 +1,16 @@
+// createevent_modal.tsx
 import React, { ReactNode, MouseEvent } from 'react';
 
-interface ModalProps {
+interface CreateEventModalProps {
   isVisible: boolean;
   onClose: () => void;
+  startDate?: string;
   children: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children}) => {
+const CreateEvent_Modal: React.FC<CreateEventModalProps> = ({ isVisible, onClose, startDate, children }) => {
   if (!isVisible) return null;
+
   
 
   return (
@@ -24,4 +27,4 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children}) => {
   );
 }
 
-export default Modal;
+export default CreateEvent_Modal;
