@@ -197,7 +197,7 @@ export default function AttendanceForm() {
 			info.attFormsStaffID = '0';
 			info.attFormsFacultyUnit = 'Visitor';
 		} else if (userType == 'secondary') {
-			info.attFormsStaffID = '0';
+			info.attFormsStaffID = '1';
 			info.attFormsFacultyUnit = 'Secondary';
 		}
 		else {
