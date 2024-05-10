@@ -1440,8 +1440,6 @@ export default function Homepage() {
 									This can be changed in the settings page.
 								</p>
 
-
-
 								<div className="w-full pr-[11px]">
 									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 ml-[2px] mt-2 dark:text-dark_textbox_title">
 										Event / Course Name
