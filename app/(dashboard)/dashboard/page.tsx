@@ -1425,7 +1425,7 @@ export default function Homepage() {
 					<CreateEvent_Modal
 						isVisible={showCreateEventModal}
 						onClose={() => setShowCreateEventModal(false)}
-						selectedDate={selectedDate} // Pass the selectedDate prop
+						 // Pass the selectedDate prop
 					>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px] dark:bg-dark_mode_card">
@@ -1500,7 +1500,6 @@ export default function Homepage() {
 												type="date"
 												name="event_start_date"
 												required
-												value={selectedDate}
 												onChange={e =>
 													setMainEvent({
 														...mainEvent,

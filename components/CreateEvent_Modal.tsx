@@ -4,10 +4,9 @@ interface ModalProps {
   isVisible: boolean;
   onClose: () => void;
   children: ReactNode;
-  selectedDate: string; // Add this prop
 }
 
-const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, selectedDate }) => {
+const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children}) => {
   if (!isVisible) return null;
   
 
