@@ -441,9 +441,61 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         }
     }
 
+    // Determine whether there are more than 1 sub-events,
+    const uniqueSubEventNames = new Set(attendanceData.map(item => item.sub_eventName));
+    const hasMultipleSubEvents = uniqueSubEventNames.size > 1;
+    const [noDuplicateAttendance, setNoDuplicateAttendance] = useState<any[]>([]);
+
     useEffect(() => {
-        setSelectedAttendanceData(new Array(attendanceData.length).fill(true));
-    }, [attendanceData]);
+        if (hasMultipleSubEvents) {
+            const staffIdCountMap = new Map<string, number>();
+            attendanceData.forEach(item => {
+                const count = staffIdCountMap.get(item.attFormsStaffID) || 0;
+                staffIdCountMap.set(item.attFormsStaffID, count + 1);
+            });
+
+            const staffIdsToAutoSelect = new Set<string>();
+            staffIdCountMap.forEach((count, staffId) => {
+                if (count === uniqueSubEventNames.size) {
+                    staffIdsToAutoSelect.add(staffId);
+                }
+            });
+
+            const deduplicatedAttendanceData = attendanceData.reduce((acc, item) => {
+                if (item.attFormsStaffID !== '0' && item.attFormsStaffID !== '1') {
+                    if (!acc.some(existingItem => existingItem.attFormsStaffID === item.attFormsStaffID)) {
+                        acc.push(item);
+                    }
+                } else {
+                    acc.push(item);
+                }
+                return acc;
+            }, [] as typeof attendanceData);
+
+            setNoDuplicateAttendance(deduplicatedAttendanceData);
+            console.log(deduplicatedAttendanceData);
+
+            const updatedSelectedData = attendanceData.map(item =>
+                staffIdsToAutoSelect.has(item.attFormsStaffID)
+            );
+            setSelectedAttendanceData(updatedSelectedData);
+        } else {
+            setSelectedAttendanceData(new Array(attendanceData.length).fill(true));
+        }
+    }, [attendanceData, hasMultipleSubEvents]);
+
+    const handleReSelectAttendees = () => {
+        toast.success("You have successfully selected all the eligible staff to receive the certificates.");
+
+        const updatedSelectedData = attendanceData.map((attendee) => {
+            const attendanceCount = attendanceData.filter(
+                (item) => item.attFormsStaffID === attendee.attFormsStaffID
+            ).length;
+            return attendanceCount === uniqueSubEventNames.size;
+        });
+
+        setSelectedAttendanceData(updatedSelectedData);
+    };
 
     const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
     const [isDistributeOpen, setDistributeOpen] = useState(false);
@@ -451,7 +503,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
 
     const distributeCertificates = async () => {
         try {
-            const selectedAttendance = attendanceData.filter((_, index) => selectedAttendanceData[index]);
+            let selectedAttendance = attendanceData.filter((_, index) => selectedAttendanceData[index]);
+
+            if (hasMultipleSubEvents) {
+                selectedAttendance = noDuplicateAttendance.filter((_, index) => selectedAttendanceData[index]);
+            }
 
             const selectedAttendanceWithEventName = selectedAttendance.map(attendanceItem => ({
                 ...attendanceItem,
@@ -479,10 +535,6 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         updatedSelectedData[index] = !updatedSelectedData[index];
         setSelectedAttendanceData(updatedSelectedData);
     };
-
-    // Determine whether there are more than 1 sub-events,
-    const uniqueSubEventNames = new Set(attendanceData.map(item => item.sub_eventName));
-    const hasMultipleSubEvents = uniqueSubEventNames.size > 1;
 
     return (
         <div>
@@ -524,11 +576,30 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     </DialogTrigger>
                                     <DialogContent className="z-[9999]">
                                         <DialogHeader>
-                                            <DialogTitle className="lg:text-md font-medium text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
-                                                Certificate of Participation
+                                            <DialogTitle>
+                                                <div className="ml-3 mr-3">
+                                                    <div className="lg:text-md font-medium text-gray-600 -ml-[6px] mt-1 text-center dark:text-slate-200">
+                                                        <span>Certificate of Participation</span>
+                                                    </div>
+                                                    {hasMultipleSubEvents && (
+                                                        <div>
+                                                            <br />
+                                                            <span className="text-sm font-medium text-gray-600 mt-1 text-justify dark:text-slate-200">
+                                                                NOTE: There are {uniqueSubEventNames.size} day(s) for this event. Only those who attended all {uniqueSubEventNames.size} day(s) will be auto-selected. You may choose to manually select others.
+                                                                The button below will select only those that are eligible.
+                                                            </span>
+                                                            <Button
+                                                                onClick={() => {
+                                                                    handleReSelectAttendees();
+                                                                }}
+                                                                className="mt-2"
+                                                            >Eligible Only</Button>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </DialogTitle>
                                         </DialogHeader>
-                                        <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 mt-1 text-center dark:text-slate-200">
+                                        <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 text-center dark:text-slate-200">
                                             Please confirm you are about to distribute certificates to these emails:
                                             <div className="flex items-center mb-2">
                                                 <input
@@ -543,19 +614,35 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                 <span>Select/ Deselect All</span>
                                             </div>
                                             <div className="max-h-[200px] overflow-auto">
-                                                {attendanceData.map((attendee, index) => (
-                                                    <div key={index} className="flex items-center text-left">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedAttendanceData[index]}
-                                                            onChange={() => toggleSelection(index)}
-                                                            className="mr-3 ml-5"
-                                                        />
-                                                        <span>
-                                                            {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
-                                                        </span>
-                                                    </div>
-                                                ))}
+                                                {hasMultipleSubEvents ? (
+                                                    noDuplicateAttendance.map((attendee, index) => (
+                                                        <div key={index} className="flex items-center text-left">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedAttendanceData[index]}
+                                                                onChange={() => toggleSelection(index)}
+                                                                className="mr-3 ml-5"
+                                                            />
+                                                            <span>
+                                                                {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
+                                                            </span>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    attendanceData.map((attendee, index) => (
+                                                        <div key={index} className="flex items-center text-left">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedAttendanceData[index]}
+                                                                onChange={() => toggleSelection(index)}
+                                                                className="mr-3 ml-5"
+                                                            />
+                                                            <span>
+                                                                {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
+                                                            </span>
+                                                        </div>
+                                                    ))
+                                                )}
                                             </div>
                                         </DialogDescription>
                                         <DialogFooter className="sm:justify-center">

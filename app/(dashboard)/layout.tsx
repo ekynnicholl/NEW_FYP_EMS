@@ -66,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 						</div>
 						{isAuthenticated && children}
 					</div>
-					{/* <Chatbot /> */}
+					<Chatbot />
 				</div>
 			)}
 		</>
