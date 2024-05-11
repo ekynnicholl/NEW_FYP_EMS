@@ -250,6 +250,8 @@ const Chatbot = () => {
                 6. If they ask for yesterday then use yesterdays date.
                 7. If they ask for tomorrow then use tomorrows date.
                 8. If they ask 2 days ago, or 3 days later, use the current date and modify accordingly.
+                9. If they ask for upcoming events, use todays date as the start date and end date as high as 9999-12-31.
+                10. If they ask for past events, use start date as 2023-01-01 and end date as todays date.
             `;
 
             // if (events.length > 0) {
@@ -261,7 +263,7 @@ const Chatbot = () => {
             // }
             const response = await getOpenAIResponse(eventQuestion);
 
-            // console.log(response);
+            console.log(response);
 
             if (response) {
                 const [startStr, endStr] = response
