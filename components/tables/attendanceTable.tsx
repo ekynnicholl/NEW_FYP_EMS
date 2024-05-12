@@ -473,33 +473,37 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             }, [] as typeof attendanceData);
 
             setNoDuplicateAttendance(deduplicatedAttendanceData);
-            console.log(deduplicatedAttendanceData);
 
-            const updatedSelectedData = attendanceData.map(item =>
+            const updatedSelectedData = deduplicatedAttendanceData.map(item =>
                 staffIdsToAutoSelect.has(item.attFormsStaffID)
             );
+
+            console.log("initial", updatedSelectedData.length)
             setSelectedAttendanceData(updatedSelectedData);
+            setSelectedEligibleAttendance(updatedSelectedData);
         } else {
             setSelectedAttendanceData(new Array(attendanceData.length).fill(true));
+            setNoDuplicateAttendance(attendanceData);
         }
     }, [attendanceData, hasMultipleSubEvents]);
 
-    const handleReSelectAttendees = () => {
-        toast.success("You have successfully selected all the eligible staff to receive the certificates.");
+    // const handleReSelectAttendees = () => {
+    //     toast.success("You have successfully selected all the eligible staff to receive the certificates.");
 
-        const updatedSelectedData = attendanceData.map((attendee) => {
-            const attendanceCount = attendanceData.filter(
-                (item) => item.attFormsStaffID === attendee.attFormsStaffID
-            ).length;
-            return attendanceCount === uniqueSubEventNames.size;
-        });
+    //     const updatedSelectedData = attendanceData.map((attendee) => {
+    //         const attendanceCount = attendanceData.filter(
+    //             (item) => item.attFormsStaffID === attendee.attFormsStaffID
+    //         ).length;
+    //         return attendanceCount === uniqueSubEventNames.size;
+    //     });
 
-        setSelectedAttendanceData(updatedSelectedData);
-    };
+    //     setSelectedAttendanceData(updatedSelectedData);
+    // };
 
     const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
     const [isDistributeOpen, setDistributeOpen] = useState(false);
     const [selectedAttendanceData, setSelectedAttendanceData] = useState<boolean[]>([]);
+    const [selectedEligibleAttendance, setSelectedEligibleAttendance] = useState<boolean[]>([]);
 
     const distributeCertificates = async () => {
         try {
@@ -513,6 +517,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                 ...attendanceItem,
                 eventName: eventName,
             }));
+
+            // console.log(selectedAttendanceWithEventName.length)
 
             await toast.promise(
                 sendParticipationCert(selectedAttendanceWithEventName),
@@ -535,6 +541,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         updatedSelectedData[index] = !updatedSelectedData[index];
         setSelectedAttendanceData(updatedSelectedData);
     };
+
+    const [eligibleOnlyChecked, setEligibleOnlyChecked] = useState(true);
 
     return (
         <div>
@@ -586,14 +594,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                             <br />
                                                             <span className="text-sm font-medium text-gray-600 mt-1 text-justify dark:text-slate-200">
                                                                 NOTE: There are {uniqueSubEventNames.size} day(s) for this event. Only those who attended all {uniqueSubEventNames.size} day(s) will be auto-selected. You may choose to manually select others.
-                                                                The button below will select only those that are eligible.
                                                             </span>
-                                                            <Button
-                                                                onClick={() => {
-                                                                    handleReSelectAttendees();
-                                                                }}
-                                                                className="mt-2"
-                                                            >Eligible Only</Button>
                                                         </div>
                                                     )}
                                                 </div>
@@ -607,42 +608,46 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     checked={selectedAttendanceData.every(Boolean)}
                                                     onChange={() => {
                                                         const allSelected = selectedAttendanceData.every(Boolean);
-                                                        setSelectedAttendanceData(attendanceData.map(() => !allSelected));
+                                                        setSelectedAttendanceData(noDuplicateAttendance.map(() => !allSelected));
                                                     }}
                                                     className="mr-3 ml-5"
                                                 />
                                                 <span>Select/ Deselect All</span>
                                             </div>
+                                            {hasMultipleSubEvents && (
+                                                <div className="flex items-center mb-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={eligibleOnlyChecked}
+                                                        onChange={() => {
+                                                            const isEligibleOnlyChecked = !eligibleOnlyChecked;
+
+                                                            const updatedSelectedData = noDuplicateAttendance.map((item, index) => {
+                                                                return isEligibleOnlyChecked ? selectedEligibleAttendance[index] ?? false : false;
+                                                            });
+
+                                                            setSelectedAttendanceData(updatedSelectedData);
+                                                            setEligibleOnlyChecked(isEligibleOnlyChecked);
+                                                        }}
+                                                        className="mr-3 ml-5"
+                                                    />
+                                                    <span>Eligible Only</span>
+                                                </div>
+                                            )}
                                             <div className="max-h-[200px] overflow-auto">
-                                                {hasMultipleSubEvents ? (
-                                                    noDuplicateAttendance.map((attendee, index) => (
-                                                        <div key={index} className="flex items-center text-left">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedAttendanceData[index]}
-                                                                onChange={() => toggleSelection(index)}
-                                                                className="mr-3 ml-5"
-                                                            />
-                                                            <span>
-                                                                {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
-                                                            </span>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    attendanceData.map((attendee, index) => (
-                                                        <div key={index} className="flex items-center text-left">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedAttendanceData[index]}
-                                                                onChange={() => toggleSelection(index)}
-                                                                className="mr-3 ml-5"
-                                                            />
-                                                            <span>
-                                                                {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
-                                                            </span>
-                                                        </div>
-                                                    ))
-                                                )}
+                                                {noDuplicateAttendance.map((attendee, index) => (
+                                                    <div key={index} className="flex items-center text-left">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedAttendanceData[index]}
+                                                            onChange={() => toggleSelection(index)}
+                                                            className="mr-3 ml-5"
+                                                        />
+                                                        <span>
+                                                            {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
+                                                        </span>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </DialogDescription>
                                         <DialogFooter className="sm:justify-center">
