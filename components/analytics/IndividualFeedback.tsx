@@ -72,29 +72,52 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chart = useRef<Chart | null>(null);
 
-    const prepareChartData = () => {
-        const validSectionKeys = Object.keys(feedbackData[0]).filter((key) => key.startsWith(columnStart));
+const prepareChartData = () => {
+    const validSectionKeys = Object.keys(feedbackData[0]).filter((key) => key.startsWith(columnStart));
 
-        const xLabels: string[][] = validSectionKeys.map((sectionKey) => sectionNamesMap[sectionKey]);
-
-        const originalDatasets = validSectionKeys.map((sectionKey, index) => {
-            const ratingCounts = calculateRatingCounts(sectionKey);
-            const data = Object.values(ratingCounts);
-
-            return {
-                label: `Label ${sectionKey.slice(-2)}`,
-                data,
-                backgroundColor: barColors[index],
-            };
+    const xLabels: string[][] = validSectionKeys.map((sectionKey) => {
+        const label = sectionNamesMap[sectionKey];
+        const maxLineLength = 20; // Adjust as needed
+        const words = label.join(' ').split(' ');
+        const lines: string[] = [];
+        let currentLine = '';
+    
+        words.forEach((word) => {
+            if (currentLine.length + word.length <= maxLineLength) {
+                currentLine += (currentLine ? ' ' : '') + word;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
         });
+    
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+    
+        return lines;
+    });
+    // Create an array of all section keys from A1 to A5 (or B1 to B4, etc.)
+    const allSectionKeys = Array.from({ length: validSectionKeys.length }, (_, i) => `${columnStart}${i + 1}`);
 
-        // Transpose the datasets
-        const transposedDatasets = transposeData(originalDatasets);
+    const originalDatasets = allSectionKeys.map((sectionKey, index) => {
+        const ratingCounts = calculateRatingCounts(sectionKey);
+        const data = Object.values(ratingCounts);
 
-        console.log('test' + JSON.stringify(transposedDatasets));
+        return {
+            label: `Label ${sectionKey.slice(-2)}`,
+            data,
+            backgroundColor: barColors[index],
+        };
+    });
 
-        return { labels: xLabels, datasets: transposedDatasets };
-    };
+    // Transpose the datasets
+    const transposedDatasets = transposeData(originalDatasets);
+
+    console.log('test' + JSON.stringify(transposedDatasets));
+
+    return { labels: xLabels, datasets: transposedDatasets };
+};
 
     const transposeData = (inputData: any[]) => {
         const yLabels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
