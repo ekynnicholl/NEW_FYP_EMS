@@ -349,22 +349,20 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
       const workbook = new Workbook();
       const worksheet = await workbook.xlsx.load(xlsxContent);
   
-      // Create a new sheet for the graphs
-      const graphSheet = workbook.addWorksheet('Graphs');
-  
-      // Add the chart images and section titles to the graph sheet
+      // Create separate sheets for each chart
       const sectionTitles = [
         `Section A: Course Quality (${feedbackData.length} Responses)`,
         `Section B: Training Experience (${feedbackData.length} Responses)`,
         `Section C: Duration (${feedbackData.length} Responses)`,
         `Section D: Recommendation (${feedbackData.length} Responses)`
       ];
-      let rowIndex = 0;
   
       chartImages.forEach((imageData, index) => {
+        // Create a new sheet for each chart with the corresponding section name
+        const graphSheet = workbook.addWorksheet(`Section ${String.fromCharCode(65 + index)}`);
+  
         // Add the section title
-        graphSheet.getCell(`A${rowIndex + 1}`).value = sectionTitles[index];
-        rowIndex += 2;
+        graphSheet.getCell('A1').value = sectionTitles[index];
   
         // Add the chart image
         const imageId = workbook.addImage({
@@ -373,11 +371,9 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
         });
   
         graphSheet.addImage(imageId, {
-          tl: { col: 0, row: rowIndex },
+          tl: { col: 0, row: 2 },
           ext: { width: 800, height: 400 },
         });
-  
-        rowIndex += 20;
       });
   
       const buffer = await workbook.xlsx.writeBuffer();
@@ -402,7 +398,7 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
       setActiveTab('summary');
     }, 500); // Delay of 500 milliseconds (adjust as needed)
   };
-
+  
     useEffect(() => {
         // Iterate through each row of data
         feedbackData.forEach(row => {
