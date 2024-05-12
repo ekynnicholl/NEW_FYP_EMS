@@ -367,7 +367,7 @@ const Chatbot = () => {
                         }
 
                         if (!hasDownloadKeyword && data?.length <= 15) {
-                            reply += "\nIf you wish to download this attendance list, please do specify download attendance list for [Event Name].\n";
+                            reply += "\n\nIf you wish to download this attendance list, please do specify download attendance list for [Event Name].\n";
                         } else if (data?.length > 15) {
                             reply += `\nNOTE: There are more than 15 attendance forms so only the first 15 will be shown. Either expand this window and request for the full attendance list OR specify you wish to download the attendance list.\n`
                         }

@@ -345,7 +345,7 @@ const Chatbot = () => {
                                 toast.error("Unable to download attendance list. Please try.")
                             }
                         } else {
-                            reply = `If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees for ${mostSimilarEvent}:\n`
+                            reply = `If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees for ${mostSimilarEvent}:\n\n`
                         }
 
                         data?.forEach((attendanceForm, index) => {
