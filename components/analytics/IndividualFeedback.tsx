@@ -46,6 +46,7 @@ const sectionNamesMap: { [key: string]: string[] } = {
 interface IndividualFeedbackProps {
     columnStart: string;
     feedbackData: FeedbackDataType[];
+    canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
 const sectionTitlesMap: { [key: string]: string } = {
@@ -65,7 +66,8 @@ interface ExtendedChart extends Chart {
     options: ExtendedChartOptions;
 }
 
-const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData }) => {
+const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData, canvasRef }) => {
+    
     Chart.register(ChartDataLabels);
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chart = useRef<Chart | null>(null);
@@ -150,12 +152,12 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
     const barColors = ['red', 'green', 'blue', 'orange', 'purple'];
 
     useEffect(() => {
-        if (chartRef.current) {
+        if (canvasRef.current) {
             if (chart.current) {
                 chart.current.destroy();
             }
 
-            const ctx = chartRef.current.getContext('2d');
+            const ctx = canvasRef.current.getContext('2d');
 
             var backgroundColor = 'white';
             Chart.register({
@@ -230,8 +232,8 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
     }, []);
 
     const downloadChart = () => {
-        if (chartRef.current) {
-            const originalCanvas = chartRef.current;
+        if (canvasRef.current) {
+            const originalCanvas = canvasRef.current;
             const originalCtx = originalCanvas.getContext('2d');
 
             // Create a new canvas with a margin
@@ -267,7 +269,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
             <div className="border-t border-gray-400 my-2 mr-10"></div>
             <div className="mt-10">
                 <div className="w-full h-[580px] bg-white">
-                    <canvas width={400} height={200} ref={chartRef} />
+                    <canvas width={400} height={200} ref={canvasRef} />
                 </div>
                 <button
                     type="button"
