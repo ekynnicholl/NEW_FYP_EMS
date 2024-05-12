@@ -32,7 +32,7 @@ const Chatbot = () => {
 
     const sendInitialMessage = async () => {
         if (isInitialMessage) {
-            setMessages((prevMessages) => [...prevMessages, `bee: Hi there! How can I help?`]);
+            setMessages((prevMessages) => [...prevMessages, `bee: Hi there! I am an EMAT Assistant programmed by the EMAT Developer Team! For now, I am able to help you inquire about events (past, upcoming, date-specific), view attendance list for a particular event and even download them! Try me out! \n\nI might give you wrong responses at times but please bear with me!`]);
             setIsInitialMessage(false);
             console.log(isInitialMessage)
         }
@@ -140,8 +140,12 @@ const Chatbot = () => {
 
     const findMostSimilarEvent = (userInput: string, eventNames: string[], threshold: number) => {
         const matches = stringSimilarity.findBestMatch(userInput, eventNames);
-        // console.log(matches);
-        return matches.bestMatch.rating >= threshold ? matches.bestMatch.target : null;
+        const bestMatchRating = matches.bestMatch.rating;
+
+        const similarEvents = matches.ratings.filter(event => event.rating >= 0.2);
+        const similarEventNames = similarEvents.map(event => event.target);
+
+        return { list: similarEventNames, target: bestMatchRating >= threshold ? matches.bestMatch.target : null };
     };
 
     const fetchAttendanceList = async (eventID: string) => {
@@ -188,8 +192,6 @@ const Chatbot = () => {
 
         return attendanceFormsWithSubEventName;
     }
-
-    const [isAskingDownload, setIsAskingDownload] = useState(false);
 
     const getChatbotResponse = async (question: string) => {
         const keywords = ["events", "attendance", "attendees", "download"];
@@ -282,10 +284,12 @@ const Chatbot = () => {
 
                         if (data && data.length !== 0) {
                             if (Array.isArray(data)) {
-                                reply = `There are a total of ${data.length} event(s) and here's the list of event(s) for your specified query:\n\n`;
+                                reply = `There are a total of ${data.length} event(s). If there are more than 50 events, only the first 50 will be shown. Here's the list of event(s) for your specified query:\n\n`;
 
                                 data.forEach((event, index) => {
-                                    reply += `${index + 1}. ${event.intFEventName}, from ${event.intFEventStartDate} to ${event.intFEventEndDate} by ${event.intFTrainerName}.\n`;
+                                    if (index < 50) {
+                                        reply += `${index + 1}. ${event.intFEventName}, from ${event.intFEventStartDate} to ${event.intFEventEndDate} by ${event.intFTrainerName}.\n`;
+                                    }
                                 });
 
                                 reply += `\nIf the events listed are not accurate based on your query, please do try a more specific date.`;
@@ -318,39 +322,67 @@ const Chatbot = () => {
 
             // const response = await getOpenAIResponse(attendeesQuestion);
 
-            const mostSimilarEvent = findMostSimilarEvent(question, intFEventNames, 0.5);
-            //  console.log(mostSimilarEvent)
+            const findMostSimilarEventResults = findMostSimilarEvent(question, intFEventNames, 0.5);
+            const mostSimilarEvent = findMostSimilarEventResults.target;
+            const mostSimilarEventList = findMostSimilarEventResults.list;
+
+            let reply = '';
 
             if (mostSimilarEvent) {
                 const index = intFEventNames.indexOf(mostSimilarEvent);
+
                 if (index !== -1) {
                     const matchedEventID = eventNames[index].intFID;
                     const data = await fetchAttendanceList(matchedEventID);
 
-                    let reply = '';
-
                     if (data?.length != 0 && data) {
-                        reply = `If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees for ${mostSimilarEvent}:\n\n`
-
                         if (hasDownloadKeyword) {
-                            downloadXLSX(data);
+                            reply = `You have requested to download the attendance list for ${mostSimilarEvent}. If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees:\n\n`
+                            if (data.length > 0 && data) {
+                                downloadXLSX(data);
+                                toast.success("Received prompt to download attendance list.")
+                            } else {
+                                toast.error("Unable to download attendance list. Please try.")
+                            }
+                        } else {
+                            reply = `If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees for ${mostSimilarEvent}:\n`
                         }
 
                         data?.forEach((attendanceForm, index) => {
                             reply += `${index + 1}. ${attendanceForm.attFormsStaffName} (${attendanceForm.attFormsStaffID}) from ${attendanceForm.attFormsFacultyUnit}.\n`;
                         });
 
-                        reply += "\nIf you wish to download this attendance list, please do specify download attendance list for [Event Name].";
+                        if (!hasDownloadKeyword) {
+                            reply += "\nIf you wish to download this attendance list, please do specify download attendance list for [Event Name].";
+                        }
                     } else {
                         reply = `There are no attendees for ${mostSimilarEvent}. If the requested event is incorrect, please try to use the full event name for better results.`
                     }
 
                     return reply;
                 }
-                return 'I see that you are currently trying to get the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
+                reply = 'I see that you are currently trying to get the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
+
+                if (mostSimilarEventList.length > 0 && mostSimilarEventList) {
+                    reply += `\n\nDid you meant any of these?\n`;
+                    mostSimilarEventList?.forEach((event, index) => {
+                        reply += `${index + 1}. ${event}\n`;
+                    });
+                }
+
+                return reply;
             }
 
-            return 'I see that you are currently trying to view or download the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
+            reply = 'I see that you are currently trying to get the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
+
+            if (mostSimilarEventList.length > 0 && mostSimilarEventList) {
+                reply += `\n\nDid you meant any of these?\n`;
+                mostSimilarEventList?.forEach((event, index) => {
+                    reply += `${index + 1}. ${event}\n`;
+                });
+            }
+
+            return reply;
         } else {
             const response = await getOpenAIResponse(question);
             return response;
