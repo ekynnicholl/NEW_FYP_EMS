@@ -510,6 +510,35 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				/>
 
 				<div className="ml-auto flex gap-2">
+					{/* sort by faculty */}
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" className="dark:text-dark_text">
+								Faculty <ChevronDown className="ml-2 h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("faculty")?.setFilterValue(undefined);
+								}}>
+								View All
+							</DropdownMenuItem>
+							{data
+								.map(row => row.faculty)
+								.filter((value, index, self) => self.indexOf(value) === index)
+								.map(faculty => (
+									<DropdownMenuItem
+										key={faculty}
+										onClick={() => {
+											table.getColumn("faculty")?.setFilterValue(faculty);
+										}}>
+										{faculty}
+									</DropdownMenuItem>
+								))}
+						</DropdownMenuContent>
+					</DropdownMenu>
+
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" className="dark:text-dark_text">

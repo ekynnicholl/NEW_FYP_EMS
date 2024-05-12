@@ -46,6 +46,7 @@ const sectionNamesMap: { [key: string]: string[] } = {
 interface IndividualFeedbackProps {
     columnStart: string;
     feedbackData: FeedbackDataType[];
+    canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
 const sectionTitlesMap: { [key: string]: string } = {
@@ -65,34 +66,58 @@ interface ExtendedChart extends Chart {
     options: ExtendedChartOptions;
 }
 
-const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData }) => {
+const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, feedbackData, canvasRef }) => {
+    
     Chart.register(ChartDataLabels);
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const chart = useRef<Chart | null>(null);
 
-    const prepareChartData = () => {
-        const validSectionKeys = Object.keys(feedbackData[0]).filter((key) => key.startsWith(columnStart));
+const prepareChartData = () => {
+    const validSectionKeys = Object.keys(feedbackData[0]).filter((key) => key.startsWith(columnStart));
 
-        const xLabels: string[][] = validSectionKeys.map((sectionKey) => sectionNamesMap[sectionKey]);
-
-        const originalDatasets = validSectionKeys.map((sectionKey, index) => {
-            const ratingCounts = calculateRatingCounts(sectionKey);
-            const data = Object.values(ratingCounts);
-
-            return {
-                label: `Label ${sectionKey.slice(-2)}`,
-                data,
-                backgroundColor: barColors[index],
-            };
+    const xLabels: string[][] = validSectionKeys.map((sectionKey) => {
+        const label = sectionNamesMap[sectionKey];
+        const maxLineLength = 20; // Adjust as needed
+        const words = label.join(' ').split(' ');
+        const lines: string[] = [];
+        let currentLine = '';
+    
+        words.forEach((word) => {
+            if (currentLine.length + word.length <= maxLineLength) {
+                currentLine += (currentLine ? ' ' : '') + word;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
         });
+    
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+    
+        return lines;
+    });
+    // Create an array of all section keys from A1 to A5 (or B1 to B4, etc.)
+    const allSectionKeys = Array.from({ length: validSectionKeys.length }, (_, i) => `${columnStart}${i + 1}`);
 
-        // Transpose the datasets
-        const transposedDatasets = transposeData(originalDatasets);
+    const originalDatasets = allSectionKeys.map((sectionKey, index) => {
+        const ratingCounts = calculateRatingCounts(sectionKey);
+        const data = Object.values(ratingCounts);
 
-        console.log('test' + JSON.stringify(transposedDatasets));
+        return {
+            label: `Label ${sectionKey.slice(-2)}`,
+            data,
+            backgroundColor: barColors[index],
+        };
+    });
 
-        return { labels: xLabels, datasets: transposedDatasets };
-    };
+    // Transpose the datasets
+    const transposedDatasets = transposeData(originalDatasets);
+
+    console.log('test' + JSON.stringify(transposedDatasets));
+
+    return { labels: xLabels, datasets: transposedDatasets };
+};
 
     const transposeData = (inputData: any[]) => {
         const yLabels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
@@ -150,12 +175,12 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
     const barColors = ['red', 'green', 'blue', 'orange', 'purple'];
 
     useEffect(() => {
-        if (chartRef.current) {
+        if (canvasRef.current) {
             if (chart.current) {
                 chart.current.destroy();
             }
 
-            const ctx = chartRef.current.getContext('2d');
+            const ctx = canvasRef.current.getContext('2d');
 
             var backgroundColor = 'white';
             Chart.register({
@@ -230,8 +255,8 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
     }, []);
 
     const downloadChart = () => {
-        if (chartRef.current) {
-            const originalCanvas = chartRef.current;
+        if (canvasRef.current) {
+            const originalCanvas = canvasRef.current;
             const originalCtx = originalCanvas.getContext('2d');
 
             // Create a new canvas with a margin
@@ -267,7 +292,7 @@ const IndividualFeedback: React.FC<IndividualFeedbackProps> = ({ columnStart, fe
             <div className="border-t border-gray-400 my-2 mr-10"></div>
             <div className="mt-10">
                 <div className="w-full h-[580px] bg-white">
-                    <canvas width={400} height={200} ref={chartRef} />
+                    <canvas width={400} height={200} ref={canvasRef} />
                 </div>
                 <button
                     type="button"

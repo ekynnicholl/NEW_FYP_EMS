@@ -579,9 +579,10 @@ const ExpenditureUser = () => {
                                             .slice(startIndex, endIndex)
                                             .map((expenditureItem, index) => (
                                             <tr key={expenditureItem.id}>
-                                                <td className="w-20 flex-1 lg:pl-12 pr-4 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
+                                                <td className="w-20 flex-1 pl-12 lg:pl-12 pr-4 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                 {(currentPage - 1) * itemsPerPage + index + 1}
                                                 </td>
+
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white dark:border-[#363B3D] dark:bg-dark_mode_card text-sm text-left text-gray-900 dark:text-dark_text">
                                                     {expenditureItem.full_name}
                                                 </td>

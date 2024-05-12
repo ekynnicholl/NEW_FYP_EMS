@@ -97,7 +97,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const searchParams = useSearchParams();
 	const secKey = searchParams.get("secKey");
 	files = data.supporting_documents ?? [];
-	console.log(files);
 
 	const auth = getAuth();
 	const user = auth.currentUser;
@@ -123,7 +122,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	}
 
 	function convertToReadableName(url: string) {
-		console.log(url);
 		const split = url.split("supporting_documents/");
 		const fileName = split[split.length - 1];
 		const firstUnderscorePosition = fileName.indexOf("_");
@@ -1175,7 +1173,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 										<div>Check Out</div>
 									</div>
 									<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
-										{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+										{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
 											<div key={i} className={colFlightClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
 												<FormField
 													control={form.control}
@@ -1467,7 +1465,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												<div>Check Out</div>
 											</div>
 											<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
-												{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+												{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
 													<div
 														key={i}
 														className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
@@ -2014,8 +2012,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<span className="font-semibold">Click or drag to upload</span>
 														</p>
 														<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
-														{field?.value?.length! > 0 && (
-															<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
+														{files.length > 0 && (
+															<p className="mt-2 text-xl text-slate-700">{files.length} File Uploaded</p>
 														)}
 													</div>
 													<FormControl className="absolute">
@@ -2047,8 +2045,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												</FormLabel>
 												<FormMessage />
 												<div className="grid gap-2 mt-2 items-start">
-													{form.getValues("supporting_documents") &&
-														Array.from(form.getValues("supporting_documents")!).map((file: any, index: number) => (
+													{files &&
+														Array.from(files).map((file: any, index: number) => (
 															<div key={file}>
 																{_.isString(file) ? (
 																	<div className="grid grid-cols-[400px_100px]">

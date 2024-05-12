@@ -5,6 +5,7 @@ import exportCSV from "@/public/images/export_csv.png";
 import Chart from 'chart.js/auto';
 import IndividualFeedback from '@/components/analytics/IndividualFeedback';
 import * as XLSX from 'xlsx';
+import { Workbook } from 'exceljs';
 
 type FeedbackDataType = {
     fbID: string;
@@ -77,65 +78,39 @@ const columnDisplayNames: { [key in keyof FeedbackDataType]: string } = {
     fbEmailAddress: 'Email Address',
 };
 
-const convertToXLSX = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
-    
+const convertToXLSX = async (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
     const headerRow1 = sectionColumnMapping;
-    for(let i = 0; i <= 5; i++){
+    for (let i = 0; i <= 5; i++) {
         headerRow1.unshift('');
-    }    
+    }
     const headerRow2 = Object.keys(columnMapping).map((key) => columnMapping[key]);
 
-    const wsHeader = [headerRow1, headerRow2];
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Feedback Form');
 
-    const body = data.map((row) => {
-        const newRow: any = {...row};
+    worksheet.addRow(headerRow1);
+    worksheet.addRow(headerRow2);
+
+    data.forEach((row) => {
+        const newRow: any = { ...row };
         newRow['fbCommencementDate'] = convertDateToLocale(newRow['fbCommencementDate']);
         newRow['fbCompletionDate'] = convertDateToLocale(newRow['fbCompletionDate']);
-        return Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]);
+        worksheet.addRow(Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]));
     });
 
-    const ws = XLSX.utils.aoa_to_sheet([...wsHeader, ...body]);
-
-    const borderStyle = {
-        alignment: { horizontal: 'center' },
-        border: {
-            top: { style: 'thin', color: { rgb: '000000' } },
-            bottom: { style: 'thin', color: { rgb: '000000' } },
-            left: { style: 'thin', color: { rgb: '000000' } },
-            right: { style: 'thin', color: { rgb: '000000' } },
-        }
-    };
-
-    // const range = ws['!ref'] || 'A1:F10';
-
-    // // Decode the range
-    // const decodedRange = XLSX.utils.decode_range(range);
-    
-    // // const range = XLSX.utils.decode_range(ws['!ref']);
-    // for (let R = decodedRange.s.r; R <= decodedRange.e.r; ++R) {
-    //     for (let C = decodedRange.s.c; C <= decodedRange.e.c; ++C) {
-    //         const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-    //         if (!ws[cellAddress]) continue; // Skip empty cells
-    //         ws[cellAddress].s = borderStyle;
-    //     }
-    // }
-    
-   
-    // Define the range to merge cells
     const merges = [
-        { s: { r: 0, c: headerRow1.indexOf('Course Quality') }, e: { r: 0, c: headerRow1.indexOf('Course Quality') + 4 } },
-        { s: { r: 0, c: headerRow1.indexOf('Training Experience') }, e: { r: 0, c: headerRow1.indexOf('Training Experience') + 3 } },
-        { s: { r: 0, c: headerRow1.indexOf('Suggestions/Comments') }, e: { r: 0, c: headerRow1.indexOf('Suggestions/Comments') + 2 } },
-        { s: { r: 0, c: headerRow1.indexOf('Verification') }, e: { r: 0, c: headerRow1.indexOf('Verification') + 1 } }
+        { s: { r: 1, c: headerRow1.indexOf('Course Quality') }, e: { r: 1, c: headerRow1.indexOf('Course Quality') + 4 } },
+        { s: { r: 1, c: headerRow1.indexOf('Training Experience') }, e: { r: 1, c: headerRow1.indexOf('Training Experience') + 3 } },
+        { s: { r: 1, c: headerRow1.indexOf('Suggestions/Comments') }, e: { r: 1, c: headerRow1.indexOf('Suggestions/Comments') + 2 } },
+        { s: { r: 1, c: headerRow1.indexOf('Verification') }, e: { r: 1, c: headerRow1.indexOf('Verification') + 1 } }
     ];
-    
-    ws['!merges'] = merges;
 
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Feedback Form');
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    merges.forEach((merge) => {
+        worksheet.mergeCells(merge.s.r, merge.s.c, merge.e.r, merge.e.c);
+    });
 
-    return wbout;
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer;
 };
 
 // const convertToCSV = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
@@ -181,25 +156,7 @@ const convertToXLSX = (data: FeedbackDataType[], columnMapping: ColumnMapping) =
     // window.URL.revokeObjectURL(url);
 // };
 
-const downloadXLSX = (data: FeedbackDataType[]) => {
-    const xlsxContent = convertToXLSX(data, columnMapping);
-    const blob = new Blob([xlsxContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = URL.createObjectURL(blob);
 
-    const firstRow = data[0];
-    const subEventName = firstRow ? firstRow.fbCourseName : '';
-    const subEventDate = firstRow ? new Date(firstRow.fbCommencementDate) : null;
-    const formattedDate = subEventDate ? `${subEventDate.getDate()}.${subEventDate.getMonth() + 1}.${subEventDate.getFullYear()}` : '';
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${subEventName} (${formattedDate}) - Feedback Data.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
-};
 
 type ColumnMapping = {
     [key: string]: string;
@@ -264,10 +221,15 @@ const sectionsToDisplay = ['fbSectionA1', 'fbSectionA2', 'fbSectionA3', 'fbSecti
 const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
     const [activeTab, setActiveTab] = useState<'summary' | 'individual' | 'graph'>('summary');
     const [currentIndex, setCurrentIndex] = useState(0);
+    
 
     const [chartData, setChartData] = useState<{ labels: string[], datasets: { label: string, data: number[], backgroundColor: string }[] } | null>(null);
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const [chart, setChart] = useState<Chart | null>(null);
+    const chartRefA = useRef<HTMLCanvasElement | null>(null);
+    const chartRefB = useRef<HTMLCanvasElement | null>(null);
+    const chartRefC = useRef<HTMLCanvasElement | null>(null);
+    const chartRefD = useRef<HTMLCanvasElement | null>(null);
 
     const prepareChartData = (columnStart: number, columnEnd: number) => {
         const labels: string[] = [];
@@ -340,6 +302,103 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
     const [sectionC, setSectionC] = useState<SectionData[]>([]);
     const [sectionD, setSectionD] = useState<SectionData[]>([]);
 
+    const captureChartImages = async () => {
+        const chartRefs = [chartRefA, chartRefB, chartRefC, chartRefD];
+        const capturedImages = await Promise.all(
+            chartRefs.map(async (chartRef) => {
+                if (chartRef.current) {
+                    const originalCanvas = chartRef.current;
+                    const originalCtx = originalCanvas.getContext('2d');
+    
+                    // Create a new canvas with a margin
+                    const newCanvas = document.createElement('canvas');
+                    const newCtx = newCanvas.getContext('2d');
+    
+                    if (originalCtx && newCtx) {
+                        const margin = 50;
+                        newCanvas.width = originalCanvas.width + 2 * margin;
+                        newCanvas.height = originalCanvas.height + 2 * margin;
+    
+                        newCtx.fillStyle = 'white';
+                        newCtx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+    
+                        newCtx.drawImage(originalCanvas, margin, margin);
+    
+                        return newCanvas.toDataURL('image/png', 1.0);
+                    }
+                }
+                return null;
+            })
+        );
+        console.log('Captured Images:', capturedImages);
+        return capturedImages.filter((image) => image !== null) as string[];
+    };
+
+// Inside the FeedbackList component
+
+const downloadXLSX = async (data: FeedbackDataType[]) => {
+    setActiveTab('graph'); // Set the active tab to 'graph'
+  
+    // Delay the image capture by a short duration (adjust as needed)
+    setTimeout(async () => {
+      const chartImages = await captureChartImages();
+      console.log('Chart Images:', chartImages);
+  
+      // Rest of the code for generating the XLSX file
+      const xlsxContent = await convertToXLSX(data, columnMapping);
+      const workbook = new Workbook();
+      const worksheet = await workbook.xlsx.load(xlsxContent);
+  
+      // Create separate sheets for each chart
+      const sectionTitles = [
+        `Section A: Course Quality (${feedbackData.length} Responses)`,
+        `Section B: Training Experience (${feedbackData.length} Responses)`,
+        `Section C: Duration (${feedbackData.length} Responses)`,
+        `Section D: Recommendation (${feedbackData.length} Responses)`
+      ];
+  
+      chartImages.forEach((imageData, index) => {
+        // Create a new sheet for each chart with the corresponding section name
+        const graphSheet = workbook.addWorksheet(`Section ${String.fromCharCode(65 + index)}`);
+  
+        // Add the section title
+        graphSheet.getCell('A1').value = sectionTitles[index];
+  
+        // Add the chart image
+        const imageId = workbook.addImage({
+          base64: imageData.split(',')[1],
+          extension: 'png',
+        });
+  
+        graphSheet.addImage(imageId, {
+          tl: { col: 0, row: 2 },
+          ext: { width: 800, height: 400 },
+        });
+      });
+  
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+  
+      const firstRow = data[0];
+      const subEventName = firstRow ? firstRow.fbCourseName : '';
+      const subEventDate = firstRow ? new Date(firstRow.fbCommencementDate) : null;
+      const formattedDate = subEventDate ? `${subEventDate.getDate()}.${subEventDate.getMonth() + 1}.${subEventDate.getFullYear()}` : '';
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${subEventName} (${formattedDate}) - Feedback Data.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+  
+      URL.revokeObjectURL(url);
+  
+      // Set the active tab back to 'summary' after downloading the XLSX file
+      setActiveTab('summary');
+    }, 500); // Delay of 500 milliseconds (adjust as needed)
+  };
+  
     useEffect(() => {
         // Iterate through each row of data
         feedbackData.forEach(row => {
@@ -693,24 +752,28 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
                         <IndividualFeedback
                             columnStart={'fbSectionA'}
                             feedbackData={feedbackData}
+                            canvasRef={chartRefA}
                         />
                     </div>
                     <div className="w-full mb-5">
                         <IndividualFeedback
                             columnStart={'fbSectionB'}
                             feedbackData={feedbackData}
+                            canvasRef={chartRefB}
                         />
                     </div>
                     <div className="w-full mb-5">
                         <IndividualFeedback
                             columnStart={'fbSectionC'}
                             feedbackData={feedbackData}
+                            canvasRef={chartRefC}
                         />
                     </div>
                     <div className="w-full mb-5">
                         <IndividualFeedback
                             columnStart={'fbSectionD'}
                             feedbackData={feedbackData}
+                            canvasRef={chartRefD}
                         />
                     </div>
                 </div>

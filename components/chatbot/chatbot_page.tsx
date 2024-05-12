@@ -8,9 +8,9 @@ import OpenAI from "openai";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { downloadXLSX } from '@/components/attendance/export_attendance';
 
 const Chatbot = () => {
-    const [openChat, setOpenChat] = useState<boolean>(false);
     const [messages, setMessages] = useState<string[]>([]);
     const [inputValue, setInputValue] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -189,8 +189,10 @@ const Chatbot = () => {
         return attendanceFormsWithSubEventName;
     }
 
+    const [isAskingDownload, setIsAskingDownload] = useState(false);
+
     const getChatbotResponse = async (question: string) => {
-        const keywords = ["events", "attendance", "attendees"];
+        const keywords = ["events", "attendance", "attendees", "download"];
         const userWords = question.toLowerCase().split(/\s+/);
         // console.log(userWords);
 
@@ -201,6 +203,7 @@ const Chatbot = () => {
         const hasEventsKeyword = mostSimilarKeywords.includes("events");
         const hasAttendanceKeyword = mostSimilarKeywords.includes("attendance");
         const hasAttendanceKeyword1 = mostSimilarKeywords.includes("attendees");
+        const hasDownloadKeyword = mostSimilarKeywords.includes("download");
 
         // console.log("test", hasAttendanceKeyword, hasAttendanceKeyword1)
 
@@ -302,7 +305,7 @@ const Chatbot = () => {
                 }
             }
             return reply;
-        } else if (hasAttendanceKeyword || hasAttendanceKeyword1) {
+        } else if (hasAttendanceKeyword || hasAttendanceKeyword1 || hasDownloadKeyword) {
             const intFEventNames = eventNames.map(item => item.intFEventName);
             // const attendeesQuestion = `
             //     I ONLY NEED YOU TO RESPOND ME THE ID OF THE EVENT IF ANY OF THE USER INPUT MATCHES THE LIST OF EVENT NAMES I WILL SEND TO YOU IN JSON FORMAT.
@@ -327,12 +330,17 @@ const Chatbot = () => {
                     let reply = '';
 
                     if (data?.length != 0 && data) {
-                        reply = `If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees for ${mostSimilarEvent}:\n
-                    `
+                        reply = `If the requested event is incorrect, please try to use the full event name for better results. There are a total of ${data?.length} attendees and here is the list of attendees for ${mostSimilarEvent}:\n\n`
+
+                        if (hasDownloadKeyword) {
+                            downloadXLSX(data);
+                        }
 
                         data?.forEach((attendanceForm, index) => {
                             reply += `${index + 1}. ${attendanceForm.attFormsStaffName} (${attendanceForm.attFormsStaffID}) from ${attendanceForm.attFormsFacultyUnit}.\n`;
                         });
+
+                        reply += "\nIf you wish to download this attendance list, please do specify download attendance list for [Event Name].";
                     } else {
                         reply = `There are no attendees for ${mostSimilarEvent}. If the requested event is incorrect, please try to use the full event name for better results.`
                     }
@@ -342,7 +350,7 @@ const Chatbot = () => {
                 return 'I see that you are currently trying to get the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
             }
 
-            return 'I see that you are currently trying to get the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
+            return 'I see that you are currently trying to view or download the attendance list for an event but I am unable to find the said event. Could you try typing the full event name instead?';
         } else {
             const response = await getOpenAIResponse(question);
             return response;

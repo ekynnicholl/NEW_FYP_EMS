@@ -63,6 +63,7 @@ let files: File[] = [];
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const supabase = createClientComponentClient();
 	const router = useRouter();
+	const [key, setKey] = useState(0);
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState<any>();
@@ -150,10 +151,10 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			form.setValue("completion_date", parsedForm.completion_date ? new Date(parsedForm.completion_date) : null);
 			form.setValue("applicant_declaration_date", new Date(parsedForm.applicant_declaration_date));
 			setUseOwnTransport(parsedForm.transport === "own transport" || parsedForm.transport === "company vehicle");
-
+			setKey(prev => prev + 1);
 			toast.success("Form content loaded from previous session");
 		}
-	}, [form]);
+	}, []);
 
 	const checkFormStatus = () => {
 		setOpen(false);
@@ -234,13 +235,16 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		router.refresh();
 	};
 
-	// useEffect(() => {
-	// 	if (form.formState.isDirty) {
-	// 		sessionStorage.setItem("form", JSON.stringify(form.getValues()));
-	// 	}
-	// }, [form, form.formState]);
+	// save form content to session storage
+	useEffect(() => {
+		console.log("Save");
+		if (form.formState.isDirty) {
+			sessionStorage.setItem("form", JSON.stringify(form.getValues()));
+		}
+	}, [form, form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
+		toast.loading("Submitting form...");
 		setIsSubmitting(true);
 		console.log("Form sent");
 		console.log(values);
@@ -297,6 +301,10 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			}
 		}
 
+		if (useOwnTransport) {
+
+		}
+
 		const grand_total =
 			values.course_fee +
 			values.airfare_fee +
@@ -333,6 +341,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			]);
 
 			formReset();
+			toast.dismiss();
 			showSuccessToast("Submitting... Please do not close this tab until you are redirected to the confirmation page. TQ.");
 			setIsSubmitting(false);
 			const { data: fetchedForms, error: fetchedError } = await supabase
@@ -383,7 +392,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			<Separator className="mt-8" />
 			<div className="grid gap-8 place-items-center">
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8" key={key}>
 						<section className="section-1" id="Personal Details">
 							<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 							<div className="grid gap-8">
@@ -806,8 +815,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												check_out_date: null,
 											});
 											form.setValue("logistic_arrangement", old);
-											form.trigger("logistic_arrangement");
-											console.log(form.getValues("logistic_arrangement"));
 										}}
 									>
 										Add Flight
@@ -829,7 +836,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													check_out_date: null,
 												});
 												form.setValue("logistic_arrangement", old);
-												form.trigger("logistic_arrangement");
 												console.log(form.getValues("logistic_arrangement"));
 											}}
 										>
@@ -862,7 +868,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 											<div>Check Out</div>
 										</div>
 										<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
-											{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+											{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
 												<div key={i} className={colFlightClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
 													<FormField
 														control={form.control}
@@ -878,7 +884,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			>
 																				{field.value &&
 																				field.value[i] &&
-																				field.value[i].flight_date instanceof Date ? (
+																				field.value[i].flight_date ? (
 																					format(new Date(field.value[i].flight_date!), "PPP")
 																				) : (
 																					<span>Pick a date</span>
@@ -1042,7 +1048,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			>
 																				{field.value &&
 																				field.value[i] &&
-																				field.value[i].check_in_date instanceof Date ? (
+																				field.value[i].check_in_date ? (
 																					format(new Date(field.value?.[i].check_in_date!), "PPP")
 																				) : (
 																					<span>Pick a date</span>
@@ -1097,7 +1103,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			>
 																				{field.value &&
 																				field.value[i] &&
-																				field.value[i].check_out_date instanceof Date ? (
+																				field.value[i].check_out_date ? (
 																					format(new Date(field.value?.[i].check_out_date!), "PPP")
 																				) : (
 																					<span>Pick a date</span>
@@ -1112,7 +1118,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				field.value &&
 																				field.value[i] &&
 																				field.value[i].check_out_date !== null &&
-																				field.value[i].check_out_date instanceof Date
+																				field.value[i].check_out_date
 																					? (field.value[i].check_out_date as Date)
 																					: undefined
 																			}
@@ -1151,14 +1157,13 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 															className="text-red-500 cursor-pointer hover:text-red-600 transition-all hover:scale-125"
 															onClick={() => {
 																const values = form.getValues("logistic_arrangement");
-																if (values?.length! <= 2) {
-																	toast.error("2 flights are needed for go and return");
+																if (values?.length! <= 1) {
+																	toast.error("Flight details cannot be empty");
 																	return;
 																}
 																if (Array.isArray(values) && i >= 0 && i < values.length) {
 																	values.splice(i, 1);
 																	form.setValue("logistic_arrangement", values);
-																	form.trigger("logistic_arrangement");
 																	console.log(form.getValues("logistic_arrangement"));
 																}
 															}}
@@ -1178,11 +1183,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													<div>Check Out</div>
 												</div>
 												<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
-													{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
-														<div
-															key={i}
-															className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
-														>
+													{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
+														<div key={i} className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
 															<FormField
 																control={form.control}
 																name="logistic_arrangement"
