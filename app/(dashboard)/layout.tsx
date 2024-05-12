@@ -9,7 +9,7 @@ import useViewModeStore from "@/components/zustand/viewModeStorage";
 import darkLightStorage from "@/components/zustand/darkLightStorage";
 import loadingGIF from "@/public/loading_bird.gif";
 import { useRouter } from "next/navigation";
-import Chatbot from "@/components/chatbot/chatbot";
+import Chatbot from "@/components/chatbot/chatbot_popup";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 

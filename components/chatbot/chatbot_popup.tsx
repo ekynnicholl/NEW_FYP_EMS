@@ -8,6 +8,8 @@ import OpenAI from "openai";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { AiOutlineExpandAlt } from "react-icons/ai";
+import Link from "next/link";
 
 const Chatbot = () => {
     const [openChat, setOpenChat] = useState<boolean>(false);
@@ -262,39 +264,49 @@ const Chatbot = () => {
 
             //     return await getOpenAIResponse(eventQuestion);
             // }
-            const response = await getOpenAIResponse(eventQuestion);
 
-            console.log(response);
+            let validFormat = false;
+            let reply = '';
 
-            if (response) {
-                const [startStr, endStr] = response
-                    .replace("[", "")
-                    .replace("]", "")
-                    .split(", ");
-                const startDate = new Date(startStr);
-                const endDate = new Date(endStr);
+            while (!validFormat) {
+                const response = await getOpenAIResponse(eventQuestion);
 
-                const data = await fetchEvents(startDate, endDate);
+                if (response) {
+                    const [startStr, endStr] = response
+                        .replace("[", "")
+                        .replace("]", "")
+                        .split(", ");
 
-                let reply = '';
+                    const startDate = new Date(startStr);
+                    const endDate = new Date(endStr);
 
-                if (data && data.length != 0) {
-                    if (Array.isArray(data)) {
-                        reply = `There are a total of ${data.length} event(s) and here's the list of event(s) for your specified query:\n\n`;
+                    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                        validFormat = true;
+                        const data = await fetchEvents(startDate, endDate);
 
-                        data.forEach((event, index) => {
-                            reply += `${index + 1}. ${event.intFEventName}, from ${event.intFEventStartDate} to ${event.intFEventEndDate} by ${event.intFTrainerName}.\n`;
-                        });
+                        if (data && data.length !== 0) {
+                            if (Array.isArray(data)) {
+                                reply = `There are a total of ${data.length} event(s) and here's the list of event(s) for your specified query:\n\n`;
+
+                                data.forEach((event, index) => {
+                                    reply += `${index + 1}. ${event.intFEventName}, from ${event.intFEventStartDate} to ${event.intFEventEndDate} by ${event.intFTrainerName}.\n`;
+                                });
+                            } else {
+                                reply = data;
+                            }
+                        } else {
+                            reply = 'There are no event(s) on your mentioned query.';
+                        }
                     } else {
-                        reply = data;
+                        console.log('Response does not match the expected date format. Retrying...');
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
                     }
                 } else {
-                    reply = 'There are no event(s) on your mentioned query.'
+                    console.log('No response received. Retrying...');
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
                 }
-
-                return reply;
             }
-
+            return reply;
         } else if (hasAttendanceKeyword || hasAttendanceKeyword1) {
             const intFEventNames = eventNames.map(item => item.intFEventName);
             // const attendeesQuestion = `
@@ -360,9 +372,18 @@ const Chatbot = () => {
             ) : (
                 <div className="fixed w-[300px] h-[400px] bottom-0 right-5">
                     <div className="flex flex-col h-full">
-                        <div className="bg-red-500 h-[40px] rounded-t-md p-2 flex flex-row cursor-pointer items-center justify-center" onClick={() => setOpenChat(false)}>
-                            <IoChatbubbleEllipsesOutline className="text-white mt-[5px] mr-2" />
-                            <p className="text-white text-[18px]">EMAT Bot</p>
+                        <div className="bg-red-500 h-[40px] rounded-t-md p-2 flex flex-row cursor-pointer items-center justify-between" onClick={() => setOpenChat(false)}>
+                            <div className="flex items-center">
+                                <IoChatbubbleEllipsesOutline className="text-white mt-[2px] mr-2" />
+                                <p className="text-white text-[18px]">EMAT Assistant</p>
+                            </div>
+                            <div className="flex items-center">
+                                <Link legacyBehavior href="/chatbot">
+                                    <a className="cursor-pointer">
+                                        <AiOutlineExpandAlt size={20} className="text-white mt-[2px] ml-5" />
+                                    </a>
+                                </Link>
+                            </div>
                         </div>
 
                         <div className="bg-slate-100 flex-1 overflow-y-auto p-2 pb-5">

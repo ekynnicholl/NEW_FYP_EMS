@@ -37,7 +37,7 @@ export default function MobileTopBar() {
 
 
 	const [menuOpen, setMenuOpen] = useState(false);
-    const menuRef = useRef(null);
+	const menuRef = useRef(null);
 
 	const handleLogoutClick = () => {
 		signOut(auth)
@@ -126,10 +126,17 @@ export default function MobileTopBar() {
 											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-2 font-semibold" onClick={() => setMenuOpen(false)}>HOME</a>
 										</Link>
 										<Link legacyBehavior href="/analytics">
-											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>ANALYTICS</a>
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" target="_blank" onClick={() => setMenuOpen(false)}>ANALYTICS</a>
 										</Link>
 										<Link legacyBehavior href="/staffReport">
-											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" onClick={() => setMenuOpen(false)}>REPORTS</a>
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" target="_blank" onClick={() => setMenuOpen(false)}>
+												REPORTS
+											</a>
+										</Link>
+										<Link legacyBehavior href="/chatbot">
+											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 mb-4 font-semibold" target="_blank" onClick={() => setMenuOpen(false)}>
+												EMAT CHATBOT
+											</a>
 										</Link>
 										<Link legacyBehavior href="/external">
 											<a className="text-[15px] hover:bg-slate-100 block py-2 border-b border-gray-200 mt-1 font-semibold" target="_blank" onClick={() => setMenuOpen(false)}>

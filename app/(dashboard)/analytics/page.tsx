@@ -92,9 +92,6 @@ export default function Home() {
 
 	return (
 		<div className="flex-1 mx-auto px-5 py-5 bg-slate-100 dark:bg-dark_mode_bg">
-			<div>
-
-			</div>
 			<div className="p-4 mb-4 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0">
 				<div className="text-center">
 					<h1 className="font-bold p-5 text-[17px] lg:text-[20px] dark:text-dark_text">Budget Expenditure/ Faculty/ School/ Unit</h1>
@@ -166,7 +163,7 @@ export default function Home() {
 							className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 						/>
 					</div>
-					
+
 					<div className="ml-4">
 						<label htmlFor="endDate" className="mr-2 text-sm lg:text-base">
 							End Date:

@@ -14,10 +14,11 @@ import { usePathname } from "next/navigation";
 
 const NavLinks = [
     { id: 1, name: "Home", icon: HomeIcon, link: "/dashboard" },
-    { id: 2, name: "Notifications", icon: NotifIconMobile, link: "/" },
+    { id: 2, name: "Notifications", icon: NotifIconMobile, link: "/notifications" },
     { id: 3, name: "Add Events", icon: AddIcon, link: "/test1" },
     { id: 4, name: "Reports", icon: ReportIcon, link: "/analytics" },
     { id: 5, name: "NT Forms", icon: FormsIcon, link: "/staffReport" },
+    { id: 6, name: "EMAT Chatbot", icon: FormsIcon, link: "/chatbot" },
 ];
 
 const NavigationBarMobile = () => {
