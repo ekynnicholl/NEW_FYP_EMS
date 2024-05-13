@@ -101,6 +101,7 @@ type mainEvent = {
 	intFTrainerName: string;
 	intFTrainingProvider: string;
 	intFTotalHours: string;
+	intFEventHidden: boolean;
 };
 
 type AttendanceDataType = {
@@ -575,6 +576,7 @@ export default function Homepage() {
 		intFTrainerName: "",
 		intFTrainingProvider: "",
 		intFTotalHours: "",
+		intFEventHidden: "",
 	});
 
 	const openModal = async (
@@ -759,13 +761,14 @@ export default function Homepage() {
 			.from("internal_events")
 			.upsert({
 				intFEventName: mainEvent.intFEventName,
-				intFEventDescription:formattedEventDescription, // Use the formatted description
+				intFEventDescription: formattedEventDescription, // Use the formatted description
 				intFEventStartDate: mainEvent.intFEventStartDate,
 				intFEventEndDate: mainEvent.intFEventEndDate,
 				intFDurationCourse: calculateDays(),
 				intFTrainerName: mainEvent.intFTrainerName,
 				intFTrainingProvider: mainEvent.intFTrainingProvider,
 				intFTotalHours: mainEvent.intFTotalHours,
+				intFEventHidden: mainEvent.intFEventHidden,
 			})
 			.select();
 
@@ -784,6 +787,7 @@ export default function Homepage() {
 				intFTrainerName: mainEvent.intFTrainerName,
 				intFTrainingProvider: mainEvent.intFTrainingProvider,
 				intFTotalHours: mainEvent.intFTotalHours,
+				intFEventHidden: mainEvent.intFEventHidden,
 			},
 		]);
 
@@ -1424,7 +1428,7 @@ export default function Homepage() {
 						isVisible={showCreateEventModal}
 						onClose={() => setShowCreateEventModal(false)}
 						startDate={selectedDate} // Pass the selectedDate as the startDate prop
-						>
+					>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px] dark:bg-dark_mode_card">
 								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
@@ -1596,6 +1600,26 @@ export default function Homepage() {
 											})
 										}
 									/>
+
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Testing? (Please tick if yes)
+										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">*</span>
+									</p>
+									<div className="flex items-center">
+										<input
+											className="ml-[2px] mr-[6px] appearance-none checked:bg-blue-600 checked:border-transparent h-4 w-4 rounded border border-gray-300 focus:outline-none focus:ring-0"
+											type="checkbox"
+											id="testing_checkbox"
+											name="testing_checkbox"
+											onChange={e =>
+												setMainEvent({
+													...mainEvent,
+													intFEventHidden: e.target.checked,
+												})
+											}
+										/>
+										<label htmlFor="testing_checkbox" className="text-[12px] lg:text-[14px] text-gray-700 dark:text-gray-300">Yes</label>
+									</div>
 								</div>
 
 								{eventDetails.map((detail, index) => (
