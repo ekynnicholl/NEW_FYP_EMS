@@ -913,7 +913,7 @@ export default function AttendanceForm() {
 													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 													required
 													placeholder="e.g., Lodge International School"
-													style={{ paddingLeft: "5px" }}
+													style={{ paddingLeft: "5px", textTransform: "capitalize"}}
 													onChange={event =>
 														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 													}
