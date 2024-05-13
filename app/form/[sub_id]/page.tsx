@@ -193,7 +193,6 @@ export default function AttendanceForm() {
 
 		if (userType == 'visitor') {
 			info.attFormsStaffID = '0';
-			info.attFormsFacultyUnit = 'Visitor';
 		} else if (userType == 'secondary') {
 			info.attFormsStaffID = '1';
 		}
@@ -913,7 +912,7 @@ export default function AttendanceForm() {
 													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 													required
 													placeholder="e.g., Lodge International School"
-													style={{ paddingLeft: "5px", textTransform: "capitalize"}}
+													style={{ paddingLeft: "5px"}}
 													onChange={event =>
 														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 													}
@@ -943,6 +942,34 @@ export default function AttendanceForm() {
 												/>
 											</div>
 										</div>
+									</div>
+								)}
+
+								{userType === 'visitor' && (
+									<div>
+										<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="organization"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Organization
+													<span className="text-red-500"> *</span>
+												</label>
+												<input
+													type="text"
+													name="organization"
+													id="organization"
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+													required
+													placeholder="e.g., SCCS"
+													style={{ paddingLeft: "5px"}}
+													onChange={event =>
+														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+													}
+												/>
+											</div>
+										</div>
+
 									</div>
 								)}
 
