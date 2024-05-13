@@ -219,15 +219,19 @@ export default function LandingPage() {
 
             <div className="flex flex-col lg:flex-row py-24 bg-[#18202A] mt-[40px] lg:mt-19 px-8">
 
-                <div className="lg:w-1/2">
-                    <div className="-mt-10">
+                <div className="">
+                    <div className="-mt-10 lg:hidden">
                         <Image src="/swinburne_logo.png" alt="Swinburne Logo" width={250} height={50} />
                     </div>
+                    <div className="-mt-10 hidden lg:block">
+                        <Image src="/swinburne_logo.png" alt="Swinburne Logo" width={340} height={75} />
+                    </div>
                     {/* <h1 className="text-[15px] lg:text-[22px] mt-5 font-extrabold text-[#f5f5f5] font-JetBrains"><span className="text-[#6366F1]">&lt;</span>Swinburne University of Technology Sarawak <span className="text-[#6366F1]">/&gt;</span></h1> */}
-                    <p className="text-[#bfc2c8] font-light text-xs lg:text-sm mt-3 tracking-wide"> The Event Management and Attendance Tracking (EMAT) System is developed by a group of students for their Final Year Project (FYP) since August/ September 2023.</p>
+                    <p className="text-[#bfc2c8] font-light text-sm lg:text-[15px] mt-3 tracking-wide lg:hidden text-justify"> The Event Management and Attendance <br></br>Tracking (EMAT) System is developed by <br></br>a group of students for their Final Year <br></br>Project (FYP) since August/ September<br></br> 2023.</p>
+                    <p className="text-[#bfc2c8] font-light text-sm lg:text-[15px] mt-3 tracking-wide hidden lg:block text-justify leading-[1.5]"> The Event Management and Attendance Tracking <br></br>(EMAT) System is developed by a group of students <br></br>for their Final Year Project (FYP) since August/  <br></br>September 2023.</p>
                 </div>
 
-                <div className="lg:w-1/2 flex flex-col justify-start lg:ml-[150px] mt-10 lg:mt-0">
+                <div className="flex flex-col justify-start lg:ml-[150px] mt-10 lg:mt-0">
                     <div className="mb-4">
                         <h2 className="text-[#5EEAD4] text-[19px] font-semibold tracking-wide mt-0 lg:-mt-12">NAVIGATION</h2>
                         <ul className="mt-[10px] text-[#f5f5f5] tracking-wide text-lg">
