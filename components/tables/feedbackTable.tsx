@@ -350,10 +350,10 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
   
       // Create separate sheets for each chart
       const sectionTitles = [
-        'Section A: Course Quality',
-        'Section B: Training Experience',
-        'Section C: Duration',
-        'Section D: Recommendation'
+        'Section A Course Quality',
+        'Section B Training Experience',
+        'Section C Duration',
+        'Section D Recommendation'
       ];
   
       chartImages.forEach((imageData, index) => {
