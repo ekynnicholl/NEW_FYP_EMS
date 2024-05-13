@@ -87,7 +87,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	const supabase = createClientComponentClient();
 	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
 	const [auditLogs, setAuditLogs] = useState<AuditLog[]>(auditLog);
-	const [useOwnTransport, setUseOwnTransport] = useState(false);
+	console.log(data.transport === "aeroplane")
+	const [useOwnTransport, setUseOwnTransport] = useState(data.transport === "aeroplane");
 	const [group, setGroup] = useState(false);
 	const [emails, setEmails] = useState<any[]>([]);
 	const [revertOpen, setRevertOpen] = useState(false);
@@ -968,7 +969,56 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 						<section className="section-3 bg-white rounded-lg p-4 dark:bg-dark_mode_card">
 							<div className="flex gap-3 mb-8">
 								<div className="rounded-sm bg-purple-300 w-4 h-8"></div>
-								<h1 className="text-xl font-semibold">Logistic Arrangement</h1>
+								<div className="mb-4 flex justify-between">
+									<h2 className="text-xl font-semibold">3. Logistic Arrangement</h2>
+									{useOwnTransport !== null && useOwnTransport === false ? (
+										<Button
+											type="button"
+											onClick={() => {
+												const old = form.getValues("logistic_arrangement") ?? [];
+												old.push({
+													flight_date: null,
+													flight_time: null,
+													flight_number: "",
+													destination_from: "",
+													destination_to: "",
+													hotel_name: "",
+													check_in_date: null,
+													check_out_date: null,
+												});
+												form.setValue("logistic_arrangement", old);
+											}}
+										>
+											Add Flight
+										</Button>
+									) : (
+										<>
+											<Button
+												type="button"
+												onClick={() => {
+													if (useOwnTransport === null) {
+														toast.error("Please select a transport type first");
+													} else {
+														const old = form.getValues("logistic_arrangement") ?? [];
+														old.push({
+															flight_date: null,
+															flight_time: null,
+															flight_number: "",
+															destination_from: "",
+															destination_to: "",
+															hotel_name: "",
+															check_in_date: null,
+															check_out_date: null,
+														});
+														form.setValue("logistic_arrangement", old);
+													}
+												}}
+											>
+												Add Hotel
+											</Button>
+										</>
+									)}
+								</div>
 							</div>
 							{form.getValues("transport") === "aeroplane" && form.getValues("logistic_arrangement") ? (
 								<>
@@ -993,7 +1043,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 										<div>Check Out</div>
 									</div>
 									<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
-										{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+										{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
 											<div key={i} className={colFlightClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
 												<FormField
 													control={form.control}
@@ -1311,7 +1361,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 												<div>Check Out</div>
 											</div>
 											<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
-												{[...Array(form.getValues("logistic_arrangement")?.length)].map((_, i) => (
+												{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
 													<div
 														key={i}
 														className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
@@ -1447,7 +1497,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					}
 																				}}
 																				disabled={date => {
-																					let today = new Date(form.getValues("logistic_arrangement")?.[i].check_out_date ?? "");
+																					let today = new Date(
+																						form.getValues("logistic_arrangement")?.[i].check_out_date ??
+																							"",
+																					);
 																					if (today === undefined) {
 																						today = new Date();
 																						today.setHours(0, 0, 0, 0);

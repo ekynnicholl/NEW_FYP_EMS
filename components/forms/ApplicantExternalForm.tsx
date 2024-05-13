@@ -246,8 +246,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		toast.loading("Submitting form...");
 		setIsSubmitting(true);
-		console.log("Form sent");
-		console.log(values);
 
 		if (values.commencement_date !== null) {
 			if (values.commencement_date.getHours() < 8) {
@@ -296,13 +294,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			}
 
 			if (upload.error) {
-				console.log(upload.error);
 				toast.error("Error uploading signature");
 			}
-		}
-
-		if (useOwnTransport) {
-
 		}
 
 		const grand_total =

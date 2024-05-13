@@ -146,12 +146,12 @@ const adminExternalFormSchema = z
 			required_error: "Declaration date is required.",
 			invalid_type_error: "Oops that's not a date!",
 		}),
-		applicant_declaration_signature: z.string(),
+		applicant_declaration_signature: z.any(),
 
 		// Section 7
 		verification_name: z.string().optional(),
 		verification_position_title: z.string().optional(),
-		verification_signature: z.string().optional(),
+		verification_signature: z.any().optional(),
 		verification_date: z
 			.date({
 				required_error: "Date is required.",
@@ -162,7 +162,7 @@ const adminExternalFormSchema = z
 		// Section 8
 		approval_name: z.string().optional(),
 		approval_position_title: z.string().optional(),
-		approval_signature: z.string().optional(),
+		approval_signature: z.any().optional(),
 		approval_date: z
 			.date({
 				required_error: "Date is required.",

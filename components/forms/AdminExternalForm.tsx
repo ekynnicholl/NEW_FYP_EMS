@@ -36,6 +36,7 @@ import {
 	DialogClose,
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { toast } from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -112,6 +113,8 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 	const [showCommentInput, setShowCommentInput] = useState(false);
 
 	const [authToken, setAuthToken] = useState<string | undefined>(auth.currentUser?.uid);
+	const [verificationSignatureDialogOpen, setVerificationSignatureDialogOpen] = useState(false);
+	const [approvalSignatureDialogOpen, setApprovalSignatureDialogOpen] = useState(false);
 
 	let displayName: string | null = null;
 	let email: string | null = null;
@@ -428,6 +431,29 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		else if (externalForm.formStage === 3) {
 			console.log(values.verification_signature);
 
+			if (values.verification_signature instanceof File) {
+				const newUniqueName = uuidv4();
+				const upload = await supabase.storage
+					.from("signatures")
+					.upload(`${newUniqueName}_signature.png`, values.verification_signature, {
+						cacheControl: "3600",
+						upsert: false,
+					});
+	
+				if (upload.data) {
+					const { data } = supabase.storage.from("signatures").getPublicUrl(upload?.data.path);
+	
+					if (data) {
+						values.verification_signature = data.publicUrl;
+					}
+				}
+	
+				if (upload.error) {
+					console.log(upload.error);
+					toast.error("Error uploading signature");
+				}
+			}
+
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update([
@@ -466,6 +492,29 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 		// This is for approving the forms by HMU/ Dean, Stage 4 -> Stage 5,
 		else if (externalForm.formStage === 4) {
+			if (values.approval_signature instanceof File) {
+				const newUniqueName = uuidv4();
+				const upload = await supabase.storage
+					.from("signatures")
+					.upload(`${newUniqueName}_signature.png`, values.approval_signature, {
+						cacheControl: "3600",
+						upsert: false,
+					});
+	
+				if (upload.data) {
+					const { data } = supabase.storage.from("signatures").getPublicUrl(upload?.data.path);
+	
+					if (data) {
+						values.approval_signature = data.publicUrl;
+					}
+				}
+	
+				if (upload.error) {
+					console.log(upload.error);
+					toast.error("Error uploading signature");
+				}
+			}
+
 			const { data, error } = await supabase
 				.from("external_forms")
 				.update(
@@ -698,8 +747,6 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 
 	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px]";
 	const colHotelClass = "grid grid-cols-[1fr_200px_200px]";
-
-	console.log(form.getValues("supporting_documents"));
 
 	return (
 		<div>
@@ -2018,8 +2065,9 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													</div>
 													<FormControl className="absolute">
 														<Input
+															disabled={externalForm?.formStage! >= 3}
 															multiple
-															className="absolute w-full h-full opacity-0 cursor-pointer"
+															className="absolute w-full h-full opacity-0 cursor-pointer disabled:opacity-0"
 															type="file"
 															accept=".pdf"
 															{...form.register("supporting_documents", {
@@ -2197,22 +2245,28 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 													<FormLabel>Signature <span className="text-red-500"> *</span></FormLabel>
 													<Dialog>
 														{externalForm.formStage !== 1 ? (
-															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
+															<div className="w-full min-h-[200px] h-fit border-2 border-gray-300 rounded-md grid place-items-center">
 																{applicantImageURL && (
-																	<Image src={applicantImageURL} width={300} height={200} alt="Signature" />
+																	<Image src={applicantImageURL}
+																	width={300}
+																	height={200}
+																	alt="Signature"
+																	className="w-[300px] h-fit"
+																	/>
 																)}
 															</div>
 														) : (
 															<>
 																<FormControl>
 																	<DialogTrigger asChild>
-																		<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
+																		<div className="w-full min-h-[200px] h-fit border-2 border-gray-300 rounded-md grid place-items-center">
 																			{applicantImageURL && (
 																				<Image
 																					src={applicantImageURL}
 																					width={300}
 																					height={200}
 																					alt="Signature"
+																					className="w-[300px] h-fit"
 																				/>
 																			)}
 																		</div>
@@ -2366,36 +2420,84 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Signature</FormLabel>
-														<Dialog>
-															{externalForm.formStage != 3 ? (
-																<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-																	{verificationImageURL && (
-																		<Image src={verificationImageURL} width={300} height={200} alt="Signature" />
+														<Dialog open={verificationSignatureDialogOpen} onOpenChange={setVerificationSignatureDialogOpen}>
+															<FormControl>
+															<DialogTrigger asChild>
+																<button disabled={data.formStage !== 3} className="w-full border-2 min-h-[200px] h-fit disabled:cursor-not-allowed border-gray-300 rounded-md grid place-items-center relative">
+																	{field.value ? (
+																		<Image
+																			src={verificationImageURL!}
+																			width={300}
+																			height={200}
+																			alt="Signature"
+																			className="w-[300px] h-fit"
+																		/>
+																	) : (
+																		<div>Click to upload or draw signature</div>
 																	)}
-																</div>
-															) : (
-																<>
-																	<FormControl>
-																		<DialogTrigger asChild>
-																			<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-																				{verificationImageURL && (
-																					<Image
-																						src={verificationImageURL}
-																						width={300}
-																						height={200}
-																						alt="Signature"
+																</button>
+															</DialogTrigger>
+															</FormControl>
+															<DialogContent>
+																<Tabs defaultValue="upload">
+																	<TabsList className="grid w-full grid-cols-2 my-3">
+																		<TabsTrigger value="upload">Upload</TabsTrigger>
+																		<TabsTrigger value="draw">Draw</TabsTrigger>
+																	</TabsList>
+																	<TabsContent value="upload">
+																		<DialogHeader>
+																			<DialogTitle className="mb-4">Upload Signature Image</DialogTitle>
+																		</DialogHeader>
+																		<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+																			<div className="flex flex-col items-center justify-center pt-5 pb-6">
+																				<svg
+																					className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+																					aria-hidden="true"
+																					xmlns="http://www.w3.org/2000/svg"
+																					fill="none"
+																					viewBox="0 0 20 16"
+																				>
+																					<path
+																						stroke="currentColor"
+																						strokeLinecap="round"
+																						strokeLinejoin="round"
+																						strokeWidth="2"
+																						d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
 																					/>
+																				</svg>
+																				<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
+																					<span className="font-semibold">Click or drag to upload</span>
+																					<div className="font-semibold">Format: JPG, PNG, JPEG</div>
+																				</p>
+																				{field?.value instanceof File && (
+																					<p className="mt-2 text-xl text-slate-700">Image Uploaded</p>
 																				)}
 																			</div>
-																		</DialogTrigger>
-																	</FormControl>
-																	<DialogContent>
-																		<DialogHeader>
-																			<DialogTitle>Signature</DialogTitle>
-																			<DialogClose />
+																			<FormControl className="absolute">
+																				<Input
+																					className="absolute w-full h-full opacity-0 cursor-pointer"
+																					type="file"
+																					accept="image/*"
+																					onChange={event => {
+																						if (event.target.files) {
+																							field.onChange(event.target.files[0]);
+																							form.trigger("verification_signature");
+
+																							setVerificationImageURL(URL.createObjectURL(event.target.files[0]));
+
+																							setApprovalSignatureDialogOpen(false)
+																						}
+																					}}
+																				/>
+																			</FormControl>
+																		</FormLabel>
+																	</TabsContent>
+																	<TabsContent value="draw">
+																		<DialogHeader className="my-3">
+																			<DialogTitle>Draw Signature</DialogTitle>
 																		</DialogHeader>
-																		<DialogDescription>Please sign below</DialogDescription>
-																		<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
+																		<DialogDescription className="mb-4">Please sign below</DialogDescription>
+																		<div className="w-full h-[200px] border-2 border-gray-300 rounded-md relative">
 																			<SignaturePad
 																				// @ts-ignore
 																				ref={verificationSigCanvas}
@@ -2404,45 +2506,34 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																				}}
 																			/>
 																		</div>
-																		<DialogFooter>
-																			<Button variant="outline" onClick={() => verificationSigClear(field)}>
+																		<DialogFooter className="mt-8">
+																			<Button variant="outline" onClick={verificationSigClear}>
 																				Clear
 																			</Button>
 																			<DialogClose asChild>
 																				<Button
 																					onClick={() => {
-																						//@ts-ignore
-																						if (verificationSigCanvas.current.isEmpty()) {
-																							toast.error("Please sign the form");
-																						} else {
-																							setVerificationImageURL(
-																								verificationSigCanvas.current
-																									//@ts-ignore
-																									.getTrimmedCanvas()
-																									.toDataURL("image/png"),
-																							);
-																							field.onChange(
-																								verificationSigCanvas.current
-																									//@ts-ignore
-																									.getTrimmedCanvas()
-																									.toDataURL("image/png"),
-																							);
-
-																							field.value =
-																								verificationSigCanvas.current
-																									//@ts-ignore
-																									.getTrimmedCanvas()
-																									.toDataURL("image/png") ?? "";
-																						}
-																					}}>
+																						setVerificationImageURL(
+																							verificationSigCanvas.current
+																								//@ts-ignore
+																								.getTrimmedCanvas()
+																								.toDataURL("image/png"),
+																						);
+																						field.onChange(
+																							verificationSigCanvas.current
+																								// @ts-ignore
+																								.getTrimmedCanvas()
+																								.toDataURL("image/png"),
+																						);
+																					}}
+																				>
 																					Save
 																				</Button>
 																			</DialogClose>
 																		</DialogFooter>
-																	</DialogContent>
-																</>
-															)}
-
+																	</TabsContent>
+																</Tabs>
+															</DialogContent>
 															<FormMessage />
 														</Dialog>
 													</FormItem>
@@ -2535,66 +2626,119 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Signature</FormLabel>
-														<Dialog>
+														<Dialog open={approvalSignatureDialogOpen} onOpenChange={setApprovalSignatureDialogOpen}>
 															<FormControl>
-																<DialogTrigger asChild>
-																	<div className="w-full h-[200px] border-2 border-gray-300 rounded-md grid place-items-center">
-																		{approvalImageURL && (
-																			<Image src={approvalImageURL} width={300} height={200} alt="Signature" />
-																		)}
-																	</div>
-																</DialogTrigger>
+															<DialogTrigger asChild>
+																<button disabled={data.formStage !== 4} className="w-full border-2 min-h-[200px] h-fit disabled:cursor-not-allowed border-gray-300 rounded-md grid place-items-center relative">
+																	{field.value ? (
+																		<Image
+																			src={approvalImageURL!}
+																			width={300}
+																			height={200}
+																			alt="Signature"
+																			className="w-[300px] h-fit"
+																		/>
+																	) : (
+																		<div>Click to upload or draw signature</div>
+																	)}
+																</button>
+															</DialogTrigger>
 															</FormControl>
 															<DialogContent>
-																<DialogHeader>
-																	<DialogTitle>Signature</DialogTitle>
-																	<DialogClose />
-																</DialogHeader>
-																<DialogDescription>Please sign below</DialogDescription>
-																<div className="w-full h-[200px] border-2 border-gray-300 rounded-md">
-																	<SignaturePad
-																		// @ts-ignore
-																		ref={approvalSigCanvas}
-																		canvasProps={{
-																			className: "w-full h-full",
-																		}}
-																	/>
-																</div>
-																<DialogFooter>
-																	<Button variant="outline" onClick={() => approvalSigClear(field)}>
-																		Clear
-																	</Button>
-																	<DialogClose asChild>
-																		<Button
-																			onClick={() => {
-																				//@ts-ignore
-																				if (approvalSigCanvas.current.isEmpty()) {
-																					toast.error("Please sign the form");
-																				} else {
-																					setApprovalImageURL(
-																						approvalSigCanvas.current
-																							//@ts-ignore
-																							.getTrimmedCanvas()
-																							.toDataURL("image/png"),
-																					);
-																					field.onChange(
-																						approvalSigCanvas.current
-																							//@ts-ignore
-																							.getTrimmedCanvas()
-																							.toDataURL("image/png"),
-																					);
+																<Tabs defaultValue="upload">
+																	<TabsList className="grid w-full grid-cols-2 my-3">
+																		<TabsTrigger value="upload">Upload</TabsTrigger>
+																		<TabsTrigger value="draw">Draw</TabsTrigger>
+																	</TabsList>
+																	<TabsContent value="upload">
+																		<DialogHeader>
+																			<DialogTitle className="mb-4">Upload Signature Image</DialogTitle>
+																		</DialogHeader>
+																		<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+																			<div className="flex flex-col items-center justify-center pt-5 pb-6">
+																				<svg
+																					className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+																					aria-hidden="true"
+																					xmlns="http://www.w3.org/2000/svg"
+																					fill="none"
+																					viewBox="0 0 20 16"
+																				>
+																					<path
+																						stroke="currentColor"
+																						strokeLinecap="round"
+																						strokeLinejoin="round"
+																						strokeWidth="2"
+																						d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+																					/>
+																				</svg>
+																				<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
+																					<span className="font-semibold">Click or drag to upload</span>
+																					<div className="font-semibold">Format: JPG, PNG, JPEG</div>
+																				</p>
+																				{field?.value instanceof File && (
+																					<p className="mt-2 text-xl text-slate-700">Image Uploaded</p>
+																				)}
+																			</div>
+																			<FormControl className="absolute">
+																				<Input
+																					className="absolute w-full h-full opacity-0 cursor-pointer"
+																					type="file"
+																					accept="image/*"
+																					onChange={event => {
+																						if (event.target.files) {
+																							field.onChange(event.target.files[0]);
+																							form.trigger("approval_signature");
 
-																					field.value =
-																						approvalSigCanvas.current
-																							//@ts-ignore
-																							.getTrimmedCanvas()
-																							.toDataURL("image/png") ?? "";
-																				}
-																			}}>
-																			Save
-																		</Button>
-																	</DialogClose>
-																</DialogFooter>
+																							setApprovalImageURL(URL.createObjectURL(event.target.files[0]));
+
+																							setApprovalSignatureDialogOpen(false)
+																						}
+																					}}
+																				/>
+																			</FormControl>
+																		</FormLabel>
+																	</TabsContent>
+																	<TabsContent value="draw">
+																		<DialogHeader className="my-3">
+																			<DialogTitle>Draw Signature</DialogTitle>
+																		</DialogHeader>
+																		<DialogDescription className="mb-4">Please sign below</DialogDescription>
+																		<div className="w-full h-[200px] border-2 border-gray-300 rounded-md relative">
+																			<SignaturePad
+																				// @ts-ignore
+																				ref={approvalSigCanvas}
+																				canvasProps={{
+																					className: "w-full h-full",
+																				}}
+																			/>
+																		</div>
+																		<DialogFooter className="mt-8">
+																			<Button variant="outline" onClick={approvalSigClear}>
+																				Clear
+																			</Button>
+																			<DialogClose asChild>
+																				<Button
+																					onClick={() => {
+																						setApprovalImageURL(
+																							approvalSigCanvas.current
+																								//@ts-ignore
+																								.getTrimmedCanvas()
+																								.toDataURL("image/png"),
+																						);
+																						field.onChange(
+																							approvalSigCanvas.current
+																								// @ts-ignore
+																								.getTrimmedCanvas()
+																								.toDataURL("image/png"),
+																						);
+																					}}
+																				>
+																					Save
+																				</Button>
+																			</DialogClose>
+																		</DialogFooter>
+																	</TabsContent>
+																</Tabs>
 															</DialogContent>
 															<FormMessage />
 														</Dialog>
@@ -2854,7 +2998,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<DialogTitle>Please confirm your action.</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to REJECT this Nominations/ Travelling Form, is this correct?
+															You are now REJECTING this Nominations/ Travelling Form. Please confirm your action by filling the reject reason and clicking the REJECT button.
 														</DialogDescription>
 														<FormField
 															control={form.control}
@@ -2895,8 +3039,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<DialogTitle>Please confirm your action.</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to SUBMIT this Nominations/ Travelling Form FOR FURTHER REVIEW, is this
-															correct?
+															You are now SUBMITTING this Nominations/ Travelling Form FOR FURTHER REVIEW. Please confirm your action by clicking the SUBMIT button.
 														</DialogDescription>
 														<DialogFooter>
 															<DialogClose asChild>
@@ -2931,7 +3074,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<DialogTitle>Please confirm your action.</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to REJECT this Nominations/ Travelling Form, is this correct?
+															You are now REJECTING this Nominations/ Travelling Form. Please confirm your action by filling the reason and clicking the REJECT button.
 														</DialogDescription>
 														<FormField
 															control={form.control}
@@ -2972,7 +3115,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<DialogTitle>Please confirm your action.</DialogTitle>
 														</DialogHeader>
 														<DialogDescription>
-															You are trying to APPROVE this Nominations/ Travelling Form, is this correct?
+															You are now APPROVING this Nominations/ Travelling Form. Please confirm your action by clicking the SUBMIT button.
 														</DialogDescription>
 														<DialogFooter>
 															<DialogClose asChild>

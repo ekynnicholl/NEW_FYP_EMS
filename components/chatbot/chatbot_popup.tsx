@@ -49,7 +49,7 @@ const Chatbot = () => {
     }, [openChat, isInitialMessage]);
 
     const openai = new OpenAI({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+        apiKey: "123445",
         // apiKey: process.env.OPENAI_API_KEY,
         dangerouslyAllowBrowser: true
     });
