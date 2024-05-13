@@ -77,19 +77,48 @@ const columnDisplayNames: { [key in keyof FeedbackDataType]: string } = {
     fbFullName: 'Full Name',
     fbEmailAddress: 'Email Address',
 };
+const sectionColumnMapping: { [key: number]: string } = {
+    7: 'Course Quality',
+    12: 'Training Experience',
+    15: 'Duration',
+    16: 'Recommendation',
+    18: 'Suggestions/Comments',
+    21: 'Verification',
+};
 
 const convertToXLSX = async (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
-    const headerRow1 = sectionColumnMapping;
-    for (let i = 0; i <= 5; i++) {
-        headerRow1.unshift('');
-    }
     const headerRow2 = Object.keys(columnMapping).map((key) => columnMapping[key]);
 
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Feedback Form');
 
+    // Add the first header row
+    const headerRow1 = [];
+    for (let i = 0; i < headerRow2.length; i++) {
+        headerRow1.push('');
+    }
     worksheet.addRow(headerRow1);
+
+    // Add the second header row
     worksheet.addRow(headerRow2);
+
+    // Apply background color and bold text to the first and second rows
+    worksheet.getRow(1).eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'ffbdd7ee' }, // blue accent 5 lighter 60%
+        };
+        cell.font = { bold: true };
+    });
+    worksheet.getRow(2).eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'ffbdd7ee' }, // blue accent 5 lighter 60%
+        };
+        cell.font = { bold: true };
+    });
 
     data.forEach((row) => {
         const newRow: any = { ...row };
@@ -98,21 +127,28 @@ const convertToXLSX = async (data: FeedbackDataType[], columnMapping: ColumnMapp
         worksheet.addRow(Object.keys(columnMapping).map((key) => newRow[key as keyof FeedbackDataType]));
     });
 
+    // Merge cells in the first header row
     const merges = [
-        { s: { r: 1, c: headerRow1.indexOf('Course Quality') }, e: { r: 1, c: headerRow1.indexOf('Course Quality') + 4 } },
-        { s: { r: 1, c: headerRow1.indexOf('Training Experience') }, e: { r: 1, c: headerRow1.indexOf('Training Experience') + 3 } },
-        { s: { r: 1, c: headerRow1.indexOf('Suggestions/Comments') }, e: { r: 1, c: headerRow1.indexOf('Suggestions/Comments') + 2 } },
-        { s: { r: 1, c: headerRow1.indexOf('Verification') }, e: { r: 1, c: headerRow1.indexOf('Verification') + 1 } }
+        { s: { r: 0, c: 7 }, e: { r: 0, c: 11 } }, // Merge cells for 'Course Quality'
+        { s: { r: 0, c: 12 }, e: { r: 0, c: 15 } }, // Merge cells for 'Training Experience'
+        { s: { r: 0, c: 16 }, e: { r: 0, c: 16 } }, // Merge cell for 'Duration'
+        { s: { r: 0, c: 17 }, e: { r: 0, c: 17 } }, // Merge cell for 'Recommendation'
+        { s: { r: 0, c: 18 }, e: { r: 0, c: 20 } }, // Merge cells for 'Suggestions/Comments'
+        { s: { r: 0, c: 21 }, e: { r: 0, c: 22 } } // Merge cells for 'Verification'
     ];
-
     merges.forEach((merge) => {
         worksheet.mergeCells(merge.s.r, merge.s.c, merge.e.r, merge.e.c);
+    });
+
+    // Set values for merged cells in the first header row
+    Object.entries(sectionColumnMapping).forEach(([startColumn, sectionHeader]) => {
+        const startColumnIndex = parseInt(startColumn, 10);
+        worksheet.getCell(1, startColumnIndex + 1).value = sectionHeader;
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer;
 };
-
 // const convertToCSV = (data: FeedbackDataType[], columnMapping: ColumnMapping) => {
 //     const header = Object.keys(columnMapping).map((key) => columnMapping[key]).join(',');
 //     const body = data.map((row) => {
@@ -186,7 +222,7 @@ const columnMapping: ColumnMapping = {
     fbSectionA1: 'A1',
     fbSectionA2: 'A2',
     fbSectionA3: 'A3',
-    fbSectionA4: 'A5',
+    fbSectionA4: 'A4',
     fbSectionA5: 'A5',
     fbSectionB1: 'B1',
     fbSectionB2: 'B2',
@@ -200,8 +236,6 @@ const columnMapping: ColumnMapping = {
     fbFullName: 'Full Name',
     fbEmailAddress: 'Email Address',
 };
-
-const sectionColumnMapping = ['Course Quality', '', '', '', '', 'Training Experience', '', '', '', 'Duration', 'Recommendation', 'Suggestions/Comments', '', '', 'Verification'];
 
 const ratingDescriptions: { [key: string]: string } = {
     1: "Strongly Disagree",
