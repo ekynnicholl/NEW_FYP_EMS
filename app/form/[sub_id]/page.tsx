@@ -16,7 +16,6 @@ type Info = {
 	attFormsStaffID: string;
 	attFormsStaffEmail: string;
 	attFormsFacultyUnit: string;
-	attFormsSecSchoolName: string;
 	attFormsYearofStudy: string;
 };
 
@@ -198,7 +197,6 @@ export default function AttendanceForm() {
 			info.attFormsFacultyUnit = 'Visitor';
 		} else if (userType == 'secondary') {
 			info.attFormsStaffID = '1';
-			info.attFormsFacultyUnit = 'Secondary';
 		}
 		else {
 			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !info.attFormsStaffEmail) {
@@ -247,7 +245,6 @@ export default function AttendanceForm() {
 						attFormsStaffEmail: info.attFormsStaffEmail,
 						attFormsStaffID: attFormsStaffID,
 						attFormsFacultyUnit: info.attFormsFacultyUnit,
-						attFormsSecSchoolName: info.attFormsSecSchoolName,
 						attFormsYearofStudy: info.attFormsYearofStudy,
 					},
 				])
@@ -911,7 +908,7 @@ export default function AttendanceForm() {
 													placeholder="e.g., Lodge International School"
 													style={{ paddingLeft: "5px" }}
 													onChange={event =>
-														setInfo({ ...info, attFormsSecSchoolName: event.target.value })
+														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 													}
 												/>
 											</div>
@@ -972,13 +969,13 @@ export default function AttendanceForm() {
 											) : userType === 'secondary' ? (
 												<button
 													type="submit"
-													className={`${info.attFormsStaffName && info.attFormsSecSchoolName && info.attFormsYearofStudy && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													className={`${info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
-														if (info.attFormsStaffName && info.attFormsSecSchoolName && info.attFormsYearofStudy && !formSubmitted && !isSubmitting) {
+														if (info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !formSubmitted && !isSubmitting) {
 															handleSubmit();
 														}
 													}}
-													disabled={!info.attFormsStaffName || !info.attFormsSecSchoolName || !info.attFormsSecSchoolName || formSubmitted || isSubmitting}>
+													disabled={!info.attFormsStaffName || !info.attFormsFacultyUnit || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
 													Submit
 												</button>
 											) : (
