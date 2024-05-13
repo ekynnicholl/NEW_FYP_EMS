@@ -824,19 +824,22 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 										<Button
 											type="button"
 											onClick={() => {
-												const old = form.getValues("logistic_arrangement") ?? [];
-												old.push({
-													flight_date: null,
-													flight_time: null,
-													flight_number: "",
-													destination_from: "",
-													destination_to: "",
-													hotel_name: "",
-													check_in_date: null,
-													check_out_date: null,
-												});
-												form.setValue("logistic_arrangement", old);
-												console.log(form.getValues("logistic_arrangement"));
+												if (useOwnTransport === null) {
+													toast.error("Please select a transport type first");
+												} else {
+													const old = form.getValues("logistic_arrangement") ?? [];
+													old.push({
+														flight_date: null,
+														flight_time: null,
+														flight_number: "",
+														destination_from: "",
+														destination_to: "",
+														hotel_name: "",
+														check_in_date: null,
+														check_out_date: null,
+													});
+													form.setValue("logistic_arrangement", old);
+												}
 											}}
 										>
 											Add Hotel
@@ -1894,6 +1897,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																	</svg>
 																	<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
 																		<span className="font-semibold">Click or drag to upload</span>
+																		<div className="font-semibold">Format: JPG, PNG, JPEG</div>
 																	</p>
 																	{field?.value instanceof File && (
 																		<p className="mt-2 text-xl text-slate-700">Image Uploaded</p>
