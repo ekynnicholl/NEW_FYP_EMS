@@ -174,7 +174,6 @@ export default function AttendanceForm() {
 	// Define a state variable to track form submission status
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-
 	// Handle data submission
 	const handleSubmit = async () => {
 		// e.preventDefault();
@@ -228,6 +227,11 @@ export default function AttendanceForm() {
 			.eq("attFSubEventID", sub_id)
 			.eq("attFormsStaffID", attFormsStaffID);
 
+		// Capitalize function
+		const capitalize = (str: string) => {
+			return str.replace(/\b\w/g, char => char.toUpperCase());
+		};
+
 		if (existingForms && existingForms.length > 0 && userType != 'visitor' && userType != 'secondary') {
 			setShowModalFailure(true);
 			// toast.error("Your Staff/ Student ID cannot be 0.");
@@ -235,17 +239,20 @@ export default function AttendanceForm() {
 			return;
 		}
 		else if (userType == 'secondary') {
+			const capitalizedStaffName = capitalize(info.attFormsStaffName);
+			const capitalizedFacultyUnit = capitalize(info.attFormsFacultyUnit);
+			const capitalizedYearofStudy = capitalize(info.attFormsYearofStudy);
 
 			const { data: oldForms, error } = await supabase
 				.from("attendance_forms")
 				.upsert([
 					{
 						attFSubEventID: sub_id,
-						attFormsStaffName: info.attFormsStaffName,
+						attFormsStaffName: capitalizedStaffName,
 						attFormsStaffEmail: info.attFormsStaffEmail,
 						attFormsStaffID: attFormsStaffID,
-						attFormsFacultyUnit: info.attFormsFacultyUnit,
-						attFormsYearofStudy: info.attFormsYearofStudy,
+						attFormsFacultyUnit: capitalizedFacultyUnit,
+						attFormsYearofStudy: capitalizedYearofStudy,
 					},
 				])
 				.select();
