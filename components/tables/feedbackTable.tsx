@@ -334,7 +334,6 @@ const FeedbackList: React.FC<Props> = ({ feedbackData, mainEvent }) => {
         return capturedImages.filter((image) => image !== null) as string[];
     };
 
-// Inside the FeedbackList component
 
 const downloadXLSX = async (data: FeedbackDataType[]) => {
     setActiveTab('graph'); // Set the active tab to 'graph'
@@ -351,18 +350,18 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
   
       // Create separate sheets for each chart
       const sectionTitles = [
-        `Section A: Course Quality (${feedbackData.length} Responses)`,
-        `Section B: Training Experience (${feedbackData.length} Responses)`,
-        `Section C: Duration (${feedbackData.length} Responses)`,
-        `Section D: Recommendation (${feedbackData.length} Responses)`
+        'Section A: Course Quality',
+        'Section B: Training Experience',
+        'Section C: Duration',
+        'Section D: Recommendation'
       ];
   
       chartImages.forEach((imageData, index) => {
         // Create a new sheet for each chart with the corresponding section name
-        const graphSheet = workbook.addWorksheet(`Section ${String.fromCharCode(65 + index)}`);
+        const graphSheet = workbook.addWorksheet(sectionTitles[index]);
   
         // Add the section title
-        graphSheet.getCell('A1').value = sectionTitles[index];
+        graphSheet.getCell('A1').value = `${sectionTitles[index]} (${feedbackData.length} Responses)`;
   
         // Add the chart image
         const imageId = workbook.addImage({
@@ -398,6 +397,8 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
       setActiveTab('summary');
     }, 500); // Delay of 500 milliseconds (adjust as needed)
   };
+
+// ... (rest of the code remains the same)
   
     useEffect(() => {
         // Iterate through each row of data
