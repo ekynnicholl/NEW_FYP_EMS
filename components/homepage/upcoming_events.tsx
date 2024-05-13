@@ -9,6 +9,11 @@ import { FaArrowCircleRight } from "react-icons/fa";
 import { PiTriangleBold } from "react-icons/pi";
 import { useSpring, animated, config, useTransition } from '@react-spring/web';
 
+type mainEvent = {
+    intFID: string;
+    intFEventHidden: boolean;
+};
+
 const UpcomingEventsLanding = () => {
     const supabase = createClientComponentClient();
     const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
@@ -16,6 +21,30 @@ const UpcomingEventsLanding = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
     const [numCardsToShow, setNumCardsToShow] = useState(3);
+
+    const [mainEvent, setMainEvent] = useState<mainEvent[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('internal_events')
+                    .select('*');
+
+                if (error) {
+                    throw error;
+                }
+
+                if (data) {
+                    setMainEvent(data);
+                }
+            } catch (error) {
+                // console.error('Error fetching data:', error.message);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const FetchEvents = async () => {
         const { data, error } = await supabase
@@ -152,25 +181,51 @@ const UpcomingEventsLanding = () => {
                             : event.intFEventDescription;
 
                         return (
-                            <div key={index} className={`${cardStyles(index)}`}>
-                                <div className="image-container w-full">
-                                    <Image
-                                        src="/swinburne_logo.png"
-                                        alt="Event Manager"
-                                        className="object-cover w-full rounded-t"
-                                        width={150}
-                                        height={50}
-                                    />
-                                </div>
-                                <div className={`content-container lg:pl-6 lg:pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
-                                    <h2 className="text-base lg:text-lg font-bold text-justify">{event.intFEventName}</h2>
-                                    <p className={`mt-3 lg:mt-0 text-sm lg:text-base text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
-                                    <div className="flex mt-4">
-                                        <HiMiniCalendarDays className="text-[22px] lg:text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
-                                        <p className="text-xs lg:text-sm font-bold mt-[3px] lg:mt-1">{event.intFEventStartDate}</p>
+                            <>
+                                <div key={index} className={`${cardStyles(index)}`}>
+                                    <div className="image-container w-full">
+                                        <Image
+                                            src="/swinburne_logo.png"
+                                            alt="Event Manager"
+                                            className="object-cover w-full rounded-t"
+                                            width={150}
+                                            height={50}
+                                        />
+                                    </div>
+                                    <div className={`content-container lg:pl-6 lg:pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
+                                        <h2 className="text-base lg:text-lg font-bold text-justify">{event.intFEventName}</h2>
+                                        <p className={`mt-3 lg:mt-0 text-sm lg:text-base text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
+                                        <div className="flex mt-4">
+                                            <HiMiniCalendarDays className="text-[22px] lg:text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+                                            <p className="text-xs lg:text-sm font-bold mt-[3px] lg:mt-1">{event.intFEventStartDate}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                {/* {mainEvent
+                                    .filter(event => !event.intFEventHidden) // Filter out events where intFEventHidden is true
+                                    .map((event, index) => (
+                                        <div key={index} className={`${cardStyles(index)}`}>
+                                            <div className="image-container w-full">
+                                                <Image
+                                                    src="/swinburne_logo.png"
+                                                    alt="Event Manager"
+                                                    className="object-cover w-full rounded-t"
+                                                    width={150}
+                                                    height={50}
+                                                />
+                                            </div>
+                                            <div className={`content-container lg:pl-6 lg:pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
+                                                <h2 className="text-base lg:text-lg font-bold text-justify">{event.intFEventName}</h2>
+                                                <p className={`mt-3 lg:mt-0 text-sm lg:text-base text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
+                                                <div className="flex mt-4">
+                                                    <HiMiniCalendarDays className="text-[22px] lg:text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
+                                                    <p className="text-xs lg:text-sm font-bold mt-[3px] lg:mt-1">{event.intFEventStartDate}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))} */}
+                            </>
                         );
                     })}
                 </div>

@@ -101,6 +101,7 @@ type mainEvent = {
 	intFTrainerName: string;
 	intFTrainingProvider: string;
 	intFTotalHours: string;
+	intFEventHidden: boolean;
 };
 
 type AttendanceDataType = {
@@ -187,6 +188,7 @@ export default function Homepage() {
 		intFTrainerName: "",
 		intFTrainingProvider: "",
 		intFTotalHours: "",
+		intFEventHidden: "",
 		sub_eventsID: "",
 		sub_eventsMainID: "",
 		sub_eventsName: "",
@@ -259,7 +261,7 @@ export default function Homepage() {
 			const { data: mainEventData, error: internalError } = await supabase
 				.from("internal_events")
 				.select(
-					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFDurationCourse, intFTrainerName, intFTrainingProvider, intFTotalHours",
+					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFDurationCourse, intFTrainerName, intFTrainingProvider, intFTotalHours, intFEventHidden",
 				)
 				.gte("intFEventEndDate", new Date().toLocaleString("en-US", { timeZone: malaysiaTimezone }))
 				.order("intFEventStartDate", { ascending: true })
@@ -458,7 +460,7 @@ export default function Homepage() {
 			const { data: mainEventData, error: internalError } = await supabase
 				.from("internal_events")
 				.select(
-					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFTotalHours, intFDurationCourse, intFTrainingProvider, intFTrainerName",
+					"intFID, intFEventName, intFEventDescription, intFEventStartDate, intFEventEndDate, intFTotalHours, intFDurationCourse, intFTrainingProvider, intFTrainerName, intFEventHidden",
 				)
 				.order("intFEventStartDate", { ascending: true })
 				.eq("intFIsHidden", 0);
@@ -575,6 +577,7 @@ export default function Homepage() {
 		intFTrainerName: "",
 		intFTrainingProvider: "",
 		intFTotalHours: "",
+		intFEventHidden: false,
 	});
 
 	const openModal = async (
@@ -588,6 +591,7 @@ export default function Homepage() {
 		event_trainer_name: string,
 		event_training_provider: string,
 		event_total_hours: string,
+		event_hidden: string,
 		sub_event_id: string,
 		sub_eventMain_id: string,
 		sub_event_name: string,
@@ -611,6 +615,7 @@ export default function Homepage() {
 			intFTrainerName: event_trainer_name,
 			intFTrainingProvider: event_training_provider,
 			intFTotalHours: event_total_hours,
+			intFEventHidden: event_hidden,
 			sub_eventsID: sub_event_id,
 			sub_eventsMainID: sub_eventMain_id,
 			sub_eventsName: sub_event_name,
@@ -759,13 +764,14 @@ export default function Homepage() {
 			.from("internal_events")
 			.upsert({
 				intFEventName: mainEvent.intFEventName,
-				intFEventDescription:formattedEventDescription, // Use the formatted description
+				intFEventDescription: formattedEventDescription, // Use the formatted description
 				intFEventStartDate: mainEvent.intFEventStartDate,
 				intFEventEndDate: mainEvent.intFEventEndDate,
 				intFDurationCourse: calculateDays(),
 				intFTrainerName: mainEvent.intFTrainerName,
 				intFTrainingProvider: mainEvent.intFTrainingProvider,
 				intFTotalHours: mainEvent.intFTotalHours,
+				intFEventHidden: mainEvent.intFEventHidden,
 			})
 			.select();
 
@@ -784,6 +790,7 @@ export default function Homepage() {
 				intFTrainerName: mainEvent.intFTrainerName,
 				intFTrainingProvider: mainEvent.intFTrainingProvider,
 				intFTotalHours: mainEvent.intFTotalHours,
+				intFEventHidden: mainEvent.intFEventHidden,
 			},
 		]);
 
@@ -1424,7 +1431,7 @@ export default function Homepage() {
 						isVisible={showCreateEventModal}
 						onClose={() => setShowCreateEventModal(false)}
 						startDate={selectedDate} // Pass the selectedDate as the startDate prop
-						>
+					>
 						<form onSubmit={handleSubmitCreateEvent}>
 							<div className="ml-1 lg:ml-4 mb-[0px] lg:mb-[70px] dark:bg-dark_mode_card">
 								<h3 className="text-[14px] lg:text-[20px] font-semibold text-slate-700 -mb-[7px] lg:-mb-1 mt-[9px] ml-[2px] dark:text-dark_text2">
@@ -1596,6 +1603,26 @@ export default function Homepage() {
 											})
 										}
 									/>
+
+									<p className="text-[11px] lg:text-[14px] text-mb-7 mb-[2px] font-normal text-slate-500 mt-2 ml-[2px] dark:text-dark_textbox_title">
+										Testing? (Please tick if yes)
+										<span className="text-[12px] lg:text-[14px] text-red-500 dark:text-red-600 ml-[2px]">*</span>
+									</p>
+									<div className="flex items-center">
+										<input
+											className="ml-[2px] mr-[6px] appearance-none checked:bg-blue-600 checked:border-transparent h-4 w-4 rounded border border-gray-300 focus:outline-none focus:ring-0"
+											type="checkbox"
+											id="testing_checkbox"
+											name="testing_checkbox"
+											onChange={e =>
+												setMainEvent({
+													...mainEvent,
+													intFEventHidden: e.target.checked,
+												})
+											}
+										/>
+										<label htmlFor="testing_checkbox" className="text-[12px] lg:text-[14px] text-gray-700 dark:text-gray-300">Yes</label>
+									</div>
 								</div>
 
 								{eventDetails.map((detail, index) => (
@@ -2773,6 +2800,7 @@ export default function Homepage() {
 											latestEvent[0]?.intFTrainerName,
 											latestEvent[0]?.intFTrainingProvider,
 											latestEvent[0]?.intFTotalHours,
+											latestEvent[0]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -2796,6 +2824,7 @@ export default function Homepage() {
 											latestEvent[0]?.intFTrainerName,
 											latestEvent[0]?.intFTrainingProvider,
 											latestEvent[0]?.intFTotalHours,
+											latestEvent[0]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -3060,6 +3089,7 @@ export default function Homepage() {
 											latestEvent[1]?.intFTrainerName,
 											latestEvent[1]?.intFTrainingProvider,
 											latestEvent[1]?.intFTotalHours,
+											latestEvent[1]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -3083,6 +3113,7 @@ export default function Homepage() {
 											latestEvent[1]?.intFTrainerName,
 											latestEvent[1]?.intFTrainingProvider,
 											latestEvent[1]?.intFTotalHours,
+											latestEvent[1]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -3347,6 +3378,7 @@ export default function Homepage() {
 											latestEvent[2]?.intFTrainerName,
 											latestEvent[2]?.intFTrainingProvider,
 											latestEvent[2]?.intFTotalHours,
+											latestEvent[2]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -3370,6 +3402,7 @@ export default function Homepage() {
 											latestEvent[2]?.intFTrainerName,
 											latestEvent[2]?.intFTrainingProvider,
 											latestEvent[2]?.intFTotalHours,
+											latestEvent[2]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -3634,6 +3667,7 @@ export default function Homepage() {
 											latestEvent[3]?.intFTrainerName,
 											latestEvent[3]?.intFTrainingProvider,
 											latestEvent[3]?.intFTotalHours,
+											latestEvent[3]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -3657,6 +3691,7 @@ export default function Homepage() {
 											latestEvent[3]?.intFTrainerName,
 											latestEvent[3]?.intFTrainingProvider,
 											latestEvent[3]?.intFTotalHours,
+											latestEvent[3]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -3920,6 +3955,7 @@ export default function Homepage() {
 											latestEvent[4]?.intFTrainerName,
 											latestEvent[4]?.intFTrainingProvider,
 											latestEvent[4]?.intFTotalHours,
+											latestEvent[4]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -3943,6 +3979,7 @@ export default function Homepage() {
 											latestEvent[4]?.intFTrainerName,
 											latestEvent[4]?.intFTrainingProvider,
 											latestEvent[4]?.intFTotalHours,
+											latestEvent[4]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -4206,6 +4243,7 @@ export default function Homepage() {
 											latestEvent[5]?.intFTrainerName,
 											latestEvent[5]?.intFTrainingProvider,
 											latestEvent[5]?.intFTotalHours,
+											latestEvent[5]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -4229,6 +4267,7 @@ export default function Homepage() {
 											latestEvent[5]?.intFTrainerName,
 											latestEvent[5]?.intFTrainingProvider,
 											latestEvent[5]?.intFTotalHours,
+											latestEvent[5]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -4495,6 +4534,7 @@ export default function Homepage() {
 											latestEvent[0]?.intFTrainerName,
 											latestEvent[0]?.intFTrainingProvider,
 											latestEvent[0]?.intFTotalHours,
+											latestEvent[0]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -4518,6 +4558,7 @@ export default function Homepage() {
 											latestEvent[0]?.intFTrainerName,
 											latestEvent[0]?.intFTrainingProvider,
 											latestEvent[0]?.intFTotalHours,
+											latestEvent[0]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -4725,6 +4766,7 @@ export default function Homepage() {
 											latestEvent[1]?.intFTrainerName,
 											latestEvent[1]?.intFTrainingProvider,
 											latestEvent[1]?.intFTotalHours,
+											latestEvent[1]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -4748,6 +4790,7 @@ export default function Homepage() {
 											latestEvent[1]?.intFTrainerName,
 											latestEvent[1]?.intFTrainingProvider,
 											latestEvent[1]?.intFTotalHours,
+											latestEvent[1]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -4955,6 +4998,7 @@ export default function Homepage() {
 											latestEvent[2]?.intFTrainerName,
 											latestEvent[2]?.intFTrainingProvider,
 											latestEvent[2]?.intFTotalHours,
+											latestEvent[2]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -4978,6 +5022,7 @@ export default function Homepage() {
 											latestEvent[2]?.intFTrainerName,
 											latestEvent[2]?.intFTrainingProvider,
 											latestEvent[2]?.intFTotalHours,
+											latestEvent[2]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -5185,6 +5230,7 @@ export default function Homepage() {
 											latestEvent[3]?.intFTrainerName,
 											latestEvent[3]?.intFTrainingProvider,
 											latestEvent[3]?.intFTotalHours,
+											latestEvent[3]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -5208,6 +5254,7 @@ export default function Homepage() {
 											latestEvent[3]?.intFTrainerName,
 											latestEvent[3]?.intFTrainingProvider,
 											latestEvent[3]?.intFTotalHours,
+											latestEvent[3]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -5415,6 +5462,7 @@ export default function Homepage() {
 											latestEvent[4]?.intFTrainerName,
 											latestEvent[4]?.intFTrainingProvider,
 											latestEvent[4]?.intFTotalHours,
+											latestEvent[4]?.intFEventHidden.toString(),
 											filteredSubEvent.sub_eventsID,
 											filteredSubEvent.sub_eventsMainID,
 											filteredSubEvent.sub_eventsName,
@@ -5438,6 +5486,7 @@ export default function Homepage() {
 											latestEvent[4]?.intFTrainerName,
 											latestEvent[4]?.intFTrainingProvider,
 											latestEvent[4]?.intFTotalHours,
+											latestEvent[4]?.intFEventHidden.toString(),
 											"default_sub_eventsID",
 											"default_sub_eventsMainID",
 											"default_sub_eventsName",
@@ -5701,6 +5750,7 @@ export default function Homepage() {
 													event.intFTrainerName,
 													event.intFTrainingProvider,
 													event.intFTotalHours,
+													event.intFEventHidden,
 													filteredSubEvent.sub_eventsID,
 													filteredSubEvent.sub_eventsMainID,
 													filteredSubEvent.sub_eventsName,
@@ -5812,6 +5862,7 @@ export default function Homepage() {
 													event.intFTrainerName,
 													event.intFTrainingProvider,
 													event.intFTotalHours,
+													event.intFEventHidden,
 													filteredSubEvent.sub_eventsID,
 													filteredSubEvent.sub_eventsMainID,
 													filteredSubEvent.sub_eventsName,
@@ -5922,6 +5973,7 @@ export default function Homepage() {
 													event.intFTrainerName,
 													event.intFTrainingProvider,
 													event.intFTotalHours,
+													event.intFEventHidden,
 													filteredSubEvent.sub_eventsID,
 													filteredSubEvent.sub_eventsMainID,
 													filteredSubEvent.sub_eventsName,

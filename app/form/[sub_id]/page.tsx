@@ -16,7 +16,6 @@ type Info = {
 	attFormsStaffID: string;
 	attFormsStaffEmail: string;
 	attFormsFacultyUnit: string;
-	attFormsSecSchoolName: string;
 	attFormsYearofStudy: string;
 };
 
@@ -175,7 +174,6 @@ export default function AttendanceForm() {
 	// Define a state variable to track form submission status
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-
 	// Handle data submission
 	const handleSubmit = async () => {
 		// e.preventDefault();
@@ -195,10 +193,8 @@ export default function AttendanceForm() {
 
 		if (userType == 'visitor') {
 			info.attFormsStaffID = '0';
-			info.attFormsFacultyUnit = 'Visitor';
 		} else if (userType == 'secondary') {
 			info.attFormsStaffID = '1';
-			info.attFormsFacultyUnit = 'Secondary';
 		}
 		else {
 			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !info.attFormsStaffEmail) {
@@ -230,6 +226,11 @@ export default function AttendanceForm() {
 			.eq("attFSubEventID", sub_id)
 			.eq("attFormsStaffID", attFormsStaffID);
 
+		// Capitalize function
+		const capitalize = (str: string) => {
+			return str.replace(/\b\w/g, char => char.toUpperCase());
+		};
+
 		if (existingForms && existingForms.length > 0 && userType != 'visitor' && userType != 'secondary') {
 			setShowModalFailure(true);
 			// toast.error("Your Staff/ Student ID cannot be 0.");
@@ -237,18 +238,20 @@ export default function AttendanceForm() {
 			return;
 		}
 		else if (userType == 'secondary') {
+			const capitalizedStaffName = capitalize(info.attFormsStaffName);
+			const capitalizedFacultyUnit = capitalize(info.attFormsFacultyUnit);
+			const capitalizedYearofStudy = capitalize(info.attFormsYearofStudy);
 
 			const { data: oldForms, error } = await supabase
 				.from("attendance_forms")
 				.upsert([
 					{
 						attFSubEventID: sub_id,
-						attFormsStaffName: info.attFormsStaffName,
+						attFormsStaffName: capitalizedStaffName,
 						attFormsStaffEmail: info.attFormsStaffEmail,
 						attFormsStaffID: attFormsStaffID,
-						attFormsFacultyUnit: info.attFormsFacultyUnit,
-						attFormsSecSchoolName: info.attFormsSecSchoolName,
-						attFormsYearofStudy: info.attFormsYearofStudy,
+						attFormsFacultyUnit: capitalizedFacultyUnit,
+						attFormsYearofStudy: capitalizedYearofStudy,
 					},
 				])
 				.select();
@@ -909,9 +912,9 @@ export default function AttendanceForm() {
 													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 													required
 													placeholder="e.g., Lodge International School"
-													style={{ paddingLeft: "5px" }}
+													style={{ paddingLeft: "5px"}}
 													onChange={event =>
-														setInfo({ ...info, attFormsSecSchoolName: event.target.value })
+														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 													}
 												/>
 											</div>
@@ -939,6 +942,34 @@ export default function AttendanceForm() {
 												/>
 											</div>
 										</div>
+									</div>
+								)}
+
+								{userType === 'visitor' && (
+									<div>
+										<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+											<div className="ml-1">
+												<label
+													htmlFor="organization"
+													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+													Organization
+													<span className="text-red-500"> *</span>
+												</label>
+												<input
+													type="text"
+													name="organization"
+													id="organization"
+													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+													required
+													placeholder="e.g., SCCS"
+													style={{ paddingLeft: "5px"}}
+													onChange={event =>
+														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+													}
+												/>
+											</div>
+										</div>
+
 									</div>
 								)}
 
@@ -972,13 +1003,13 @@ export default function AttendanceForm() {
 											) : userType === 'secondary' ? (
 												<button
 													type="submit"
-													className={`${info.attFormsStaffName && info.attFormsSecSchoolName && info.attFormsYearofStudy && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													className={`${info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
-														if (info.attFormsStaffName && info.attFormsSecSchoolName && info.attFormsYearofStudy && !formSubmitted && !isSubmitting) {
+														if (info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !formSubmitted && !isSubmitting) {
 															handleSubmit();
 														}
 													}}
-													disabled={!info.attFormsStaffName || !info.attFormsSecSchoolName || !info.attFormsSecSchoolName || formSubmitted || isSubmitting}>
+													disabled={!info.attFormsStaffName || !info.attFormsFacultyUnit || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
 													Submit
 												</button>
 											) : (
