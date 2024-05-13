@@ -79,7 +79,7 @@ const UpcomingEventsLanding = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.scrollY;
-            const isScrolled = currentScrollPos > 1000 || currentScrollPos < prevScrollPos;
+            const isScrolled = currentScrollPos > 1250 || currentScrollPos < prevScrollPos;
 
             if (isScrolled !== isVisible) {
                 setIsVisible(isScrolled);
@@ -136,10 +136,10 @@ const UpcomingEventsLanding = () => {
 
     return (
         <div className="flex flex-col items-center justify-center">
-            <div className="flex items-center justify-center mb-4">
+            {/* <div className="flex items-center justify-center mb-4">
                 <PiTriangleBold className="transform -rotate-90 text-[23px] lg:text-[38px]" />
                 <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
-            </div>
+            </div> */}
             <animated.div style={fadeIn_Text1}>
                 <p className="text-center font-bold text-[22px] lg:text-[26px]">Upcoming Event(s)</p>
                 <p className="mt-2 lg:mt-0 text-sm lg:text-[18px] text-center">Are you looking for event&apos;s to partake in? We got you covered!</p>

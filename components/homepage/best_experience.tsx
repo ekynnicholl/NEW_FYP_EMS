@@ -78,10 +78,10 @@ const BestExperience = () => {
     return (
         <Element name="section2">
             <div className="flex flex-col items-center justify-center mb-10">
-                <animated.div style={fadeIn_Top1} className="flex items-center justify-center mb-4">
+                {/* <animated.div style={fadeIn_Top1} className="flex items-center justify-center mb-4">
                     <PiTriangleBold className="transform -rotate-90 text-[23px] lg:text-[38px]" />
                     <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
-                </animated.div>
+                </animated.div> */}
                 <animated.div style={fadeIn_Top2}>
                     <p className="text-center font-bold text-[22px] lg:text-[26px]">We are setting the best experience in Swinburne University.</p>
                 </animated.div>
