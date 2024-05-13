@@ -576,7 +576,7 @@ export default function Homepage() {
 		intFTrainerName: "",
 		intFTrainingProvider: "",
 		intFTotalHours: "",
-		intFEventHidden: "",
+		intFEventHidden: false,
 	});
 
 	const openModal = async (
