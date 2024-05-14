@@ -94,38 +94,79 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
 
     const columns: ColumnDef<ExternalForm>[] = [
         {
+            accessorKey: "no",
+            sortingFn: "text",
+            header: ({ column }) => (
+                <Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    No.
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => {
+                return <div className="text-left capitalize">{row.index + 1}</div>;
+            },
+        },
+        {
             accessorKey: "full_name",
             sortingFn: "text",
             header: ({ column }) => (
-                <Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Name (Staff ID)
+                <Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Staff Name
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => {
+                const fullName = row.original.full_name;
+
+                return <div className="text-left capitalize">{fullName}</div>;
+            },
+        },
+        {
+            accessorKey: "staff_id",
+            sortingFn: "text",
+            header: ({ column }) => (
+                <Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Staff ID
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             ),
             cell: ({ row }) => {
                 const staffID = row.original.staff_id;
-                const fullName = row.original.full_name;
-                const displayText = staffID ? `${fullName} (${staffID})` : fullName;
 
-                return <div className="capitalize">{displayText}</div>;
+                return <div className="text-left capitalize w-40">{staffID}</div>;
+            },
+        },
+        {
+            accessorKey: "faculty",
+            sortingFn: "text",
+            header: ({ column }) => (
+                <Button variant="ghost" className="text-left capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Faculty
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => {
+                const faculty = row.original.faculty;
+
+                return <div className="text-left capitalize">{faculty}</div>;
             },
         },
         {
             accessorKey: "program_title",
             sortingFn: "text",
             header: ({ column }) => (
-                <Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Program Title
+                <Button variant="ghost" className="capitalize pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Program Title/ Event
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             ),
-            cell: ({ row }) => <div className="capitalize">{row.getValue("program_title")}</div>,
+            cell: ({ row }) => <div className="capitalize text-left">{row.getValue("program_title")}</div>,
         },
         {
             accessorKey: "formStage",
             sortingFn: "auto",
             header: ({ column }) => (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                <Button variant="ghost" className="pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
                     Form Status
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -134,17 +175,17 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 const formStage = row.original.formStage;
 
                 if (formStage === 1) {
-                    return <div className="uppercase text-red-500 font-bold">Reverted to Staff</div>;
+                    return <div className="uppercase text-left text-red-500 font-bold">Reverted to Staff</div>;
                 } else if (formStage === 2) {
-                    return <div className="uppercase text-blue-500 font-bold">Reviewing by AAO</div>;
+                    return <div className="uppercase text-left text-blue-500 font-bold">Reviewing by AAO</div>;
                 } else if (formStage === 3) {
-                    return <div className="uppercase text-blue-500 font-bold">Reviewing by HOS/ ADCR/ MGR</div>;
+                    return <div className="uppercase text-left text-blue-500 font-bold">Reviewing by HOS/ ADCR/ MGR</div>;
                 } else if (formStage === 4) {
-                    return <div className="uppercase text-blue-500 font-bold">Reviewing by HMU/ Dean</div>;
+                    return <div className="uppercase text-left text-blue-500 font-bold">Reviewing by HMU/ Dean</div>;
                 } else if (formStage === 5) {
-                    return <div className="uppercase text-green-500 font-bold">Approved</div>;
+                    return <div className="uppercase text-left text-green-500 font-bold">Approved</div>;
                 } else if (formStage === 6) {
-                    return <div className="uppercase text-red-500 font-bold">Rejected</div>;
+                    return <div className="uppercase text-left text-red-500 font-bold">Rejected</div>;
                 } else {
                     return <div className="uppercase">Unknown</div>;
                 }
@@ -158,7 +199,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 return (
                     <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
                         Last Updated
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="text-left ml-2 h-4 w-4" />
                     </Button>
                 );
             },
@@ -171,7 +212,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 // const formattedDate = `${day}-${month}-${year}`;
                 const lastUpdated = row.original.last_updated;
 
-                return <div className="lowercase">{lastUpdated}</div>;
+                return <div className="lowercase text-left ml-4">{lastUpdated}</div>;
             },
         },
         // Update the last_updated column to now() once they remind.
@@ -299,7 +340,8 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                     className="max-w-sm mr-5"
                 />
 
-                {/* <Popover>
+                <div className="ml-auto flex gap-2">
+                    {/* <Popover>
                     <PopoverTrigger asChild>
                         <Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal text-muted-foreground")}>
                             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -318,33 +360,78 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                     </PopoverContent>
                 </Popover> */}
 
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto dark:text-dark_text">
-                            Columns <ChevronDown className="ml-2 h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter(column => column.getCanHide())
-                            .map(column => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={value => column.toggleVisibility(!!value)}
-                                    >
-                                        {column.id
-                                            .split("_")
-                                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                            .join(" ")}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-auto dark:text-dark_text">
+                                Form Status <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    table.getColumn("formStage")?.setFilterValue(undefined);
+                                }}>
+                                View All
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    table.getColumn("formStage")?.setFilterValue(1);
+                                }}>
+                                Reverted to Staff
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    table.getColumn("formStage")?.setFilterValue(3);
+                                }}>
+                                Reviewing by HOS/ ADCR/ MGR
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    table.getColumn("formStage")?.setFilterValue(4);
+                                }}>
+                                Reviewing by HMU/ Dean
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-auto dark:text-dark_text">
+                                Columns <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {table
+                                .getAllColumns()
+                                .filter(column => column.getCanHide())
+                                .map(column => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={value => column.toggleVisibility(!!value)}>
+                                            {column.id === "no"
+                                                ? "No."
+                                                : column.id === "full_name"
+                                                    ? "Name"
+                                                    : column.id === "staff_id"
+                                                        ? "Staff ID"
+                                                        : column.id === "faculty"
+                                                            ? "Faculty"
+                                                            : column.id === "program_title"
+                                                                ? "Program Title/ Event"
+                                                                : column.id === "formStage"
+                                                                    ? "Form Status"
+                                                                    : column.id === "last_updated"
+                                                                        ? "Last Updated"
+                                                                        : column.id}
+                                        </DropdownMenuCheckboxItem>
+                                    );
+                                })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
             <div className="mb-2 flex items-end justify-end">
                 <Dialog open={confirmOpenAll} onOpenChange={setConfirmOpenAll}>
@@ -384,7 +471,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map(header => {
                                     return (
-                                        <TableHead key={header.id} className="text-center bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1]">
+                                        <TableHead key={header.id} className="text-left bg-gray-100 dark:bg-[#1D2021] dark:text-[#B1ABA1]">
                                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                         </TableHead>
                                     );
@@ -402,7 +489,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                                                 // router.push(`/external/${row.original.id}`);
                                             }}
                                             data-state={row.getIsSelected() && "selected"}
-                                            className="cursor-pointer text-center dark:bg-dark_mode_card dark:text-dark_text"
+                                            className="cursor-pointer text-center pl-0 dark:bg-dark_mode_card dark:text-dark_text"
                                         >
                                             {row.getVisibleCells().map(cell => (
                                                 <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
