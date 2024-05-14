@@ -48,7 +48,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     const [attendanceMainEventID, setAttendanceMainEventID] = useState("");
     const [subEventsForAttendance, setSubEventsForAttendance] = useState<SubEventsDataType[]>([]);
     const [filteredAttendanceData, setFilteredAttendanceData] = useState<AttendanceDataType[]>([]);
-    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
+    const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor' | 'secondary'>('all');
     const [searchAttendanceQuery, setSearchAttendanceQuery] = useState("");
 
     // This is for attendance table in homepage pagination,
@@ -378,15 +378,17 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         filterAttendanceData(activeTab, query);
     };
 
-    const filterAttendanceData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
+    const filterAttendanceData = (tab: 'all' | 'staff' | 'student' | 'visitor' | 'secondary', query: string) => {
         let filteredData = attendanceData;
 
         if (tab === 'staff') {
             filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
         } else if (tab === 'student') {
-            filteredData = attendanceData.filter((item) => item.attFormsStaffID !== '0' && !item.attFormsStaffID.startsWith('SS'));
+            filteredData = attendanceData.filter((item) => item.attFormsStaffID !== '0' && !item.attFormsStaffID.startsWith('SS') && item.attFormsStaffID !== '1');
         } else if (tab === 'visitor') {
             filteredData = attendanceData.filter((item) => item.attFormsStaffID === '0');
+        } else if (tab === 'secondary') {
+            filteredData = attendanceData.filter((item) => item.attFormsStaffID === '1');
         }
 
         // Apply search filter
@@ -502,6 +504,13 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 >
                                     Visitor
                                 </button>
+                                <button
+                                    className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 mb-3.5 shadow-sm md:inline-flex ${activeTab === 'secondary' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'
+                                        }`}
+                                    onClick={() => setActiveTab('secondary')}
+                                >
+                                    Secondary
+                                </button>
                             </div>
                             <div className="hidden lg:block">
                                 <label htmlFor="itemsPerPageSelect">Show entries:</label>
@@ -540,7 +549,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 ) : (
                                     <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                 )} */}
-                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} />
+                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={activeTab} attendanceMainEventID={attendanceMainEventID} />
                             </div>
                         </div>
                     ) : (

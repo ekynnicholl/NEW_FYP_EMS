@@ -193,6 +193,9 @@ export default function AttendanceForm() {
 
 		if (userType == 'visitor') {
 			info.attFormsStaffID = '0';
+			if (!info.attFormsFacultyUnit || info.attFormsFacultyUnit.length === 0) {
+				info.attFormsFacultyUnit = 'N/A'
+			}
 		} else if (userType == 'secondary') {
 			info.attFormsStaffID = '1';
 		}
@@ -226,32 +229,22 @@ export default function AttendanceForm() {
 			.eq("attFSubEventID", sub_id)
 			.eq("attFormsStaffID", attFormsStaffID);
 
-		// Capitalize function
-		const capitalize = (str: string) => {
-			return str.replace(/\b\w/g, char => char.toUpperCase());
-		};
-
 		if (existingForms && existingForms.length > 0 && userType != 'visitor' && userType != 'secondary') {
 			setShowModalFailure(true);
 			// toast.error("Your Staff/ Student ID cannot be 0.");
 			setIsSubmitting(false);
 			return;
-		}
-		else if (userType == 'secondary') {
-			const capitalizedStaffName = capitalize(info.attFormsStaffName);
-			const capitalizedFacultyUnit = capitalize(info.attFormsFacultyUnit);
-			const capitalizedYearofStudy = capitalize(info.attFormsYearofStudy);
-
+		} else if (userType == 'secondary') {
 			const { data: oldForms, error } = await supabase
 				.from("attendance_forms")
 				.upsert([
 					{
 						attFSubEventID: sub_id,
-						attFormsStaffName: capitalizedStaffName,
-						attFormsStaffEmail: info.attFormsStaffEmail,
+						attFormsStaffName: info.attFormsStaffName.trim().toUpperCase(),
+						attFormsStaffEmail: info.attFormsStaffEmail.trim(),
 						attFormsStaffID: attFormsStaffID,
-						attFormsFacultyUnit: capitalizedFacultyUnit,
-						attFormsYearofStudy: capitalizedYearofStudy,
+						attFormsFacultyUnit: info.attFormsFacultyUnit.trim().toUpperCase(),
+						attFormsYearofStudy: info.attFormsYearofStudy.trim().toUpperCase(),
 					},
 				])
 				.select();
@@ -261,17 +254,16 @@ export default function AttendanceForm() {
 			} else {
 				// console.log("Data inserted successfully:", data);
 			}
-		}
-		else {
+		} else {
 			const { data: oldForms, error } = await supabase
 				.from("attendance_forms")
 				.upsert([
 					{
 						attFSubEventID: sub_id,
-						attFormsStaffName: info.attFormsStaffName,
-						attFormsStaffEmail: info.attFormsStaffEmail,
-						attFormsStaffID: attFormsStaffID,
-						attFormsFacultyUnit: info.attFormsFacultyUnit,
+						attFormsStaffName: info.attFormsStaffName.trim(),
+						attFormsStaffEmail: info.attFormsStaffEmail.trim(),
+						attFormsStaffID: attFormsStaffID.trim(),
+						attFormsFacultyUnit: info.attFormsFacultyUnit.trim(),
 					},
 				])
 				.select();
@@ -714,7 +706,7 @@ export default function AttendanceForm() {
 										<label
 											htmlFor="name"
 											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Name
+											Name {userType === 'secondary' ? "(In FULL as per IC)" : ""}
 											<span className="text-red-500"> *</span>
 										</label>
 										<input
@@ -912,7 +904,7 @@ export default function AttendanceForm() {
 													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 													required
 													placeholder="e.g., Lodge International School"
-													style={{ paddingLeft: "5px"}}
+													style={{ paddingLeft: "5px" }}
 													onChange={event =>
 														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 													}
@@ -925,7 +917,7 @@ export default function AttendanceForm() {
 												<label
 													htmlFor="year_of_study"
 													className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-													Year of Study
+													Year of Study (F4/F5)
 													<span className="text-red-500"> *</span>
 												</label>
 												<input
@@ -934,7 +926,7 @@ export default function AttendanceForm() {
 													id="year_of_study"
 													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 													required
-													placeholder="e.g., F4/F5"
+													placeholder="e.g., F4/ F5"
 													style={{ paddingLeft: "5px" }}
 													onChange={event =>
 														setInfo({ ...info, attFormsYearofStudy: event.target.value })
@@ -962,7 +954,7 @@ export default function AttendanceForm() {
 													className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
 													required
 													placeholder="e.g., SCCS"
-													style={{ paddingLeft: "5px"}}
+													style={{ paddingLeft: "5px" }}
 													onChange={event =>
 														setInfo({ ...info, attFormsFacultyUnit: event.target.value })
 													}
