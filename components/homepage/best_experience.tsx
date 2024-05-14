@@ -83,11 +83,11 @@ const BestExperience = () => {
                     <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
                 </animated.div> */}
                 <animated.div style={fadeIn_Top2}>
-                    <p className="text-center font-bold text-[22px] lg:text-[26px]">We are setting the best experience in Swinburne University.</p>
+                    <p className="text-center font-bold text-[22px] lg:text-[26px]">Designed to optimize and simplify user experience for Swinburne University.</p>
                 </animated.div>
                 <div className="cards-container flex items-center justify-center overflow-hidden mt-4 relative w-full sm:w-7/12">
                     <div className="slider flex flex-col sm:flex-row items-center justify-center">
-                        <animated.div style={fadeIn_Card1} className={`h-[520px] card bg-white lg:rounded-lg lg:shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
+                        <animated.div style={fadeIn_Card1} className={`h-[550px] card bg-white lg:rounded-lg lg:mt-0 lg:shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
                             <div className="flex items-center justify-center">
                                 <Image
                                     src="/images/appointment-booking-with-calendar_23-2148553115.png"
@@ -97,12 +97,12 @@ const BestExperience = () => {
                                     height={50}
                                 />
                             </div>
-                            <h2 className="text-base lg:text-lg font-bold text-center">Past Attended Event(s)</h2>
-                            <p className="text-gray-600 text-center text-sm lg:text-base -mt-2 lg:mt-0">Track your past attended events with our unified platform! </p>
+                            <h2 className="text-base lg:text-lg font-bold text-center">Past Attended Event</h2>
+                            <p className="text-gray-600 text-center text-sm lg:text-base -mt-2 lg:mt-0">Track the status of your Nomination/ Travelling application or the total training hours from past events.</p>
                             <div className="flex flex-col items-center justify-center space-y-2">
                                 <Link legacyBehavior href={`${origin}/attended_events`}>
                                     <Button>
-                                        Go
+                                        View
                                     </Button>
                                 </Link>
                                 <p>or,</p>
@@ -111,7 +111,7 @@ const BestExperience = () => {
                                 </div>
                             </div>
                         </animated.div>
-                        <animated.div style={fadeIn_Card2} className={`mt-1 lg:mt-0 h-[520px] pb-5 card bg-white rounded-lg lg:shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4 my-auto`}>
+                        <animated.div style={fadeIn_Card2} className={`mt-1 lg:mt-0 h-[550px] pb-5 card bg-white rounded-lg lg:shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4 my-auto`}>
                             <div className="flex items-center justify-center my-auto -mb-6 lg:mb-0">
                                 <Image
                                     src="/images/work-chat-concept-illustration_114360-1229.png"
@@ -121,13 +121,13 @@ const BestExperience = () => {
                                     height={50}
                                 />
                             </div>
-                            <h2 className="text-base lg:text-lg font-bold text-center ">Upcoming Event(s)</h2>
-                            <p className="text-gray-600 text-center text-sm lg:text-base">Keep updated with the upcoming events in the university!</p>
+                            <h2 className="text-base lg:text-lg font-bold text-center ">Upcoming Events</h2>
+                            <p className="text-gray-600 text-center text-sm lg:text-base">Stay tuned for upcoming events within our university!</p>
                             <div className="flex mt-4">
                                 <p className="text-sm font-bold mt-1"></p>
                             </div>
                         </animated.div>
-                        <animated.div style={fadeIn_Card3} className={`-mt-[260px] lg:mt-0 lg:h-[520px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
+                        <animated.div style={fadeIn_Card3} className={`-mt-[260px] lg:mt-0 lg:h-[550px] card bg-white rounded-lg shadow-lg border-1 border-black-500 w-full sm:w-1/3 sm:m-4 space-y-4 pl-4 pt-4 pr-4`}>
                             <div className="flex items-center justify-center">
                                 <Image
                                     src="/images/happy-boy-with-casual-clothes-smartphone_24640-46929.png"
@@ -137,12 +137,12 @@ const BestExperience = () => {
                                     height={50}
                                 />
                             </div>
-                            <h2 className="text-base lg:text-lg font-bold text-center">Nominations/ Travelling Form(s)</h2>
-                            <p className="text-gray-600 text-center text-sm lg:text-base">Submit your forms online to easily keep track on the updates!</p>
+                            <h2 className="text-base lg:text-lg font-bold text-center">Nominations/ Travelling Forms</h2>
+                            <p className="text-gray-600 text-center text-sm lg:text-base">Online submission has just become easier. KEep track of your application status here.</p>
                             <div className="flex flex-col items-center justify-center space-y-2">
                                 <Link legacyBehavior href={`${origin}/form/external`}>
                                     <Button>
-                                        Go
+                                        View
                                     </Button>
                                 </Link>
                                 <p>or,</p>

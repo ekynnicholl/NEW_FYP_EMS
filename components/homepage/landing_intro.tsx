@@ -144,24 +144,24 @@ const LandingIntro = () => {
             <div className="flex justify-center items-center w-full sm:w-1/2 lg:-ml-10 mb-8 sm:mb-0">
                 <div>
                     <animated.div style={fadeIn_Text1}>
-                        <h1 className="text-[50px] lg:text-[72px] text-black font-bold"><span className="italic">{eventsCount}</span> Event(s)</h1>
+                        <h1 className="text-[50px] lg:text-[72px] text-black font-bold"><span className="italic">{eventsCount}</span> Events</h1>
                     </animated.div>
                     <animated.div style={fadeIn_Text2}>
                         <h1 className="text-[50px] lg:text-[72px] text-black font-bold -mt-5 lg:mt-0">Created</h1>
                     </animated.div>
                     <animated.div style={fadeIn_Text3}>
-                        <p className="text-[20px] lg:text-[30px] mb-4"><span className="italic">{attendanceCount}</span> participants recorded so far!</p>
+                        <p className="text-[20px] lg:text-[30px] mb-4">With <span className="font-bold italic">{attendanceCount} submissions</span> recorded in our database!</p>
                     </animated.div>
                     <animated.div style={fadeIn_Text4}>
                         <Link href="#upcomingEvents">
                             <Button>
-                                View Upcoming Event(s)
+                                View Upcoming Events
                             </Button>
                         </Link>
                     </animated.div>
                 </div>
             </div>
-            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 hidden lg:block">
+            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 lg:block">
                 <Image
                     src="/images/man-planning-on-calendar-vector.png"
                     alt="Event Manager"

@@ -10,6 +10,7 @@ import LandingIntro from "@/components/homepage/landing_intro";
 import PastAttended from "@/components/homepage/past_attended";
 import { useEffect, useState, useRef } from "react";
 import { FaCircleArrowUp } from "react-icons/fa6";
+import PastEventsLanding from "@/components/homepage/past_events";
 
 export default function LandingPage() {
     const [showScrollButton, setShowScrollButton] = useState(false);
@@ -55,17 +56,43 @@ export default function LandingPage() {
         });
     };
 
-
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
 
+    const [dropdownEvents, setDropdownEvents] = useState(false);
+    const [dropdownApply, setDropdownApply] = useState(false);
+    const [dropdownRequest, setDropdownRequest] = useState(false);
+
+    const handleEventsHover = () => {
+        setDropdownEvents(true);
+    };
+
+    const handleEventsLeave = () => {
+        setDropdownEvents(false);
+    };
+
+    const handleApplyHover = () => {
+        setDropdownApply(true);
+    };
+
+    const handleApplyLeave = () => {
+        setDropdownApply(false);
+    };
+
+    const handleRequestHover = () => {
+        setDropdownRequest(true);
+    };
+
+    const handleRequestLeave = () => {
+        setDropdownRequest(false);
+    };
 
     return (
         <div>
             <div className="scroll-smooth p-2 lg:p-0">
 
                 <nav className="text-black font-bold flex flex-col lg:flex-row justify-between items-center px-4 py-2 mt-2">
-                    <div className="flex items-center lg:ml-28 mb-4 lg:mb-0 hidden lg:block">
+                    <div className="flex items-center lg:ml-28 mb-4 lg:mb-0 lg:block">
                         <Image
                             src="/swinburne_logo.png"
                             alt="Swinburne Logo"
@@ -73,18 +100,55 @@ export default function LandingPage() {
                             height={50}
                         />
                     </div>
-                    <div className="hidden lg:flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-6 lg:mr-10 text-center lg:text-left">
-                        <Link legacyBehavior href="#upcomingEvents">
-                            <a className="hover:text-slate-500">Upcoming Event(s)</a>
+                    <div className="hidden lg:flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-14 lg:mr-10 text-center lg:text-left">
+                        <Link legacyBehavior href="#">
+                            <a className="hover:text-slate-500">Home</a>
                         </Link>
-                        <Link legacyBehavior href="#pastAttended">
-                            <a className="hover:text-slate-500">Past Attended Event(s)</a>
-                        </Link>
-                        <Link legacyBehavior href="/form/external">
-                            <a className="hover:text-slate-500" target="_blank">
-                                Nominations/ Travelling Form
-                            </a>
-                        </Link>
+                        <div
+                            className="relative"
+                            onMouseEnter={handleEventsHover}
+                            onMouseLeave={handleEventsLeave}
+                        >
+                            <button className="hover:text-slate-500 focus:outline-none">Events</button>
+                            {dropdownEvents && (
+                                <div className="absolute top-full left-0 text-[14px] bg-white border border-gray-200 rounded-lg shadow-sm z-10 w-max">
+                                    <Link legacyBehavior href="#upcomingEvents">
+                                        <a className="block py-2 px-4 hover:bg-gray-100">Upcoming Events</a>
+                                    </Link>
+                                    <Link legacyBehavior href="#pastEvents">
+                                        <a className="block py-2 px-4 hover:bg-gray-100">Past Events</a>
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                        <div
+                            className="relative"
+                            onMouseEnter={handleApplyHover}
+                            onMouseLeave={handleApplyLeave}
+                        >
+                            <button className="hover:text-slate-500 focus:outline-none">Apply</button>
+                            {dropdownApply && (
+                                <div className="absolute top-full left-0 bg-white text-[14px] border border-gray-200 rounded-lg shadow-sm z-10">
+                                    <Link legacyBehavior href="/form/external">
+                                        <a className="block py-2 px-4 hover:bg-gray-100">Nominations/ Travelling Form</a>
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                        <div
+                            className="relative"
+                            onMouseEnter={handleRequestHover}
+                            onMouseLeave={handleRequestLeave}
+                        >
+                            <button className="hover:text-slate-500 focus:outline-none">Request</button>
+                            {dropdownRequest && (
+                                <div className="absolute top-full left-0 bg-white border text-[14px] border-gray-200 rounded-lg shadow-sm z-10">
+                                    <Link legacyBehavior href="#pastAttended">
+                                        <a className="block py-2 px-4 hover:bg-gray-100">Nominations/ Travelling Form Status & Attendance Summary</a>
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                         <Link legacyBehavior href="/login">
                             <Button className="bg-white text-black border-2 border-black-500 font-bold hover:bg-slate-200 transition-all ease-in-out whitespace-nowrap">
                                 Login as Admin
@@ -182,8 +246,12 @@ export default function LandingPage() {
                     <div className="inset-0 transform skew-y-3 h-8 lg:h-20 bg-[#ededed]"></div>
                 </div>
 
-                <div id="upcomingEvents">
+                <div id="upcomingEvents" className="my-8">
                     <UpcomingEventsLanding />
+                </div>
+
+                <div id="pastEvents" className="my-8">
+                    <PastEventsLanding />
                 </div>
 
                 <div className="my-8 sm:my-32">

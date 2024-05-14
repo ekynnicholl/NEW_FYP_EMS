@@ -14,9 +14,9 @@ type mainEvent = {
     intFEventHidden: boolean;
 };
 
-const UpcomingEventsLanding = () => {
+const PastEventsLanding = () => {
     const supabase = createClientComponentClient();
-    const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+    const [pastEvents, setPastEvents] = useState<any[]>([]);
     const [startIndex, setStartIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
@@ -47,11 +47,14 @@ const UpcomingEventsLanding = () => {
     }, []);
 
     const FetchEvents = async () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1); // Get yesterday's date
+
         const { data, error } = await supabase
             .from("internal_events")
             .select("*")
-            .gte("intFEventEndDate", new Date().toISOString())
-            .order("intFEventEndDate", { ascending: true })
+            .lte("intFEventEndDate", yesterday.toISOString())
+            .order("intFEventEndDate", { ascending: false })
             .eq("intFIsHidden", 0)
             .eq("intFEventHidden", false)
             .limit(20);
@@ -61,7 +64,7 @@ const UpcomingEventsLanding = () => {
             return null;
         }
 
-        setUpcomingEvents(data);
+        setPastEvents(data);
     }
 
     useEffect(() => {
@@ -70,7 +73,7 @@ const UpcomingEventsLanding = () => {
 
     const nextSlide = () => {
         setStartIndex((prevIndex) => {
-            if (prevIndex + 3 >= upcomingEvents.length) {
+            if (prevIndex + 3 >= pastEvents.length) {
                 return 0;
             }
             return prevIndex + 1;
@@ -80,7 +83,7 @@ const UpcomingEventsLanding = () => {
     const prevSlide = () => {
         setStartIndex((prevIndex) => {
             if (prevIndex === 0) {
-                return upcomingEvents.length - 3;
+                return pastEvents.length - 3;
             }
             return prevIndex - 1;
         });
@@ -110,7 +113,7 @@ const UpcomingEventsLanding = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.scrollY;
-            const isScrolled = currentScrollPos > 1250 || currentScrollPos < prevScrollPos;
+            const isScrolled = currentScrollPos > 1700 || currentScrollPos < prevScrollPos;
 
             if (isScrolled !== isVisible) {
                 setIsVisible(isScrolled);
@@ -158,7 +161,7 @@ const UpcomingEventsLanding = () => {
         }
     };
 
-    const transitions = useTransition(upcomingEvents[startIndex], {
+    const transitions = useTransition(pastEvents[startIndex], {
         from: { opacity: 0, transform: 'translateX(-100%)' },
         enter: { opacity: 1, transform: 'translateX(0%)' },
         leave: { opacity: 0, transform: 'translateX(100%)' },
@@ -172,14 +175,16 @@ const UpcomingEventsLanding = () => {
                 <PiTriangleBold className="transform rotate-90 text-[23px] lg:text-[38px]" />
             </div> */}
             <animated.div style={fadeIn_Text1}>
-                <p className="text-center font-bold text-[22px] lg:text-[26px]">Upcoming Events</p>
+                <p className="text-center font-bold text-[22px] lg:text-[26px]">Past Events</p>
             </animated.div>
             <animated.div style={fadeIn_Card} className="cards-container overflow-visible mt-4 relative w-full sm:w-3/4 px-4 sm:px-0">
                 <div className="slider flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0">
-                    {upcomingEvents.slice(startIndex, startIndex + numCardsToShow).map((event, index) => {
-                        const truncatedDescription = event.intFEventDescription.length > 100
-                            ? `${event.intFEventDescription.substring(0, 100)}...`
-                            : event.intFEventDescription;
+                    {pastEvents.slice(startIndex, startIndex + numCardsToShow).map((event, index) => {
+                        // const truncatedDescription = event.intFEventDescription.length > 100
+                        //     ? `${event.intFEventDescription.substring(0, 100)}...`
+                        //     : event.intFEventDescription;
+
+                        const truncatedDescription = `${event.intFEventDescription.substring(0, 100)}...`
 
                         return (
                             <>
@@ -232,7 +237,7 @@ const UpcomingEventsLanding = () => {
                 </div>
             </animated.div>
             <animated.div style={fadeIn_Arrows}>
-                {upcomingEvents.length > 3 && (
+                {pastEvents.length > 3 && (
                     <div className="slider-controls flex space-x-4 cursor-pointer mt-5">
                         <FaArrowCircleLeft onClick={prevSlide} className="text-3xl lg:text-3xl" />
                         <FaArrowCircleRight onClick={nextSlide} className="text-3xl lg:text-3xl" />
@@ -243,4 +248,4 @@ const UpcomingEventsLanding = () => {
     )
 }
 
-export default UpcomingEventsLanding;
+export default PastEventsLanding;
