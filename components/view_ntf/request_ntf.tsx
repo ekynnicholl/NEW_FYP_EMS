@@ -122,7 +122,7 @@ const RequestNTF = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <div className="lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-1/2 w-11/12">
+            <div className="lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-3/4 w-11/12">
                 {!submissionStatus ? (
                     <div className="p-5">
                         <div className="text-left pl-5 pr-5">
