@@ -38,7 +38,7 @@ export default async function Important() {
 		.order("last_updated", { ascending: true })
 		.eq("isHidden", 0)
 		.lt("last_updated", adjustedDateString)
-		.not("formStage", "eq", 1) // 
+		// .not("formStage", "eq", 1) 
 		.not("formStage", "eq", 2)
 		.not("formStage", "eq", 5)
 		.not("formStage", "eq", 6);

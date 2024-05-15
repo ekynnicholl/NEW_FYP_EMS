@@ -643,18 +643,18 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 											{column.id === "no"
 												? "No."
 												: column.id === "full_name"
-												? "Name"
-												: column.id === "staff_id"
-												? "Staff ID"
-												: column.id === "faculty"
-												? "Faculty"
-												: column.id === "program_title"
-												? "Program Title/ Event"
-												: column.id === "formStage"
-												? "Form Status"
-												: column.id === "created_at"
-												? "Submitted At"
-												: column.id}
+													? "Name"
+													: column.id === "staff_id"
+														? "Staff ID"
+														: column.id === "faculty"
+															? "Faculty"
+															: column.id === "program_title"
+																? "Program Title/ Event"
+																: column.id === "formStage"
+																	? "Form Status"
+																	: column.id === "created_at"
+																		? "Submitted At"
+																		: column.id}
 										</DropdownMenuCheckboxItem>
 									);
 								})}

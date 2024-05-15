@@ -82,7 +82,7 @@ const convertDateToLocale = (utcDate: string) => {
 const columnMapping: ColumnMapping = {
     attFormsStaffID: 'Staff/ Student ID',
     attFormsStaffName: 'Staff Name',
-    attFormsFacultyUnit: 'Faculty/ Unit',
+    attFormsFacultyUnit: 'Unit/ Organization',
     sub_eventName: 'Session',
     attDateSubmitted: 'Date Submitted',
 };

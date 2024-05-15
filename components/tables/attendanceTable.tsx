@@ -53,7 +53,7 @@ type FacultyUnit = {
 interface Props {
     attendanceData: AttendanceDataType[];
     itemsPerPage: number;
-    isAllTabActive: boolean;
+    isAllTabActive: string;
     attendanceMainEventID: string;
 }
 
@@ -502,7 +502,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     <DialogTrigger>
                                         <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
                                             <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
-                                                <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[14px] p-[6px] dark:text-[#C1C7C1]">
+                                                <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[15px] p-[5px] dark:text-[#C1C7C1]">
                                                     {/* Confirm Selection */}
                                                     Distribute Certificates
                                                 </span>
@@ -602,9 +602,9 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                         Name
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                        Faculty/ Unit
+                                        Unit/ Organization
                                     </th>
-                                    {isAllTabActive && hasMultipleSubEvents && (
+                                    {isAllTabActive !== 'all' && hasMultipleSubEvents && (
                                         <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
                                             Sub-Event
                                         </th>
@@ -670,7 +670,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </td>
-                                            {isAllTabActive && (
+                                            {isAllTabActive !== 'all' && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
@@ -707,10 +707,24 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                         rel="noopener noreferrer"
                                                         className="text-blue-500 hover:underline"
                                                     >
-                                                        {attendanceItem.attFormsStaffID}
+                                                        {isAllTabActive === 'visitor'
+                                                            ? 'Visitor'
+                                                            : isAllTabActive === 'secondary'
+                                                                ? 'Secondary'
+                                                                : attendanceItem.attFormsStaffID}
                                                     </a>
                                                 ) : (
-                                                    attendanceItem.attFormsStaffID
+                                                    <>
+                                                        {isAllTabActive === 'visitor'
+                                                            ? 'Visitor'
+                                                            : isAllTabActive === 'secondary'
+                                                                ? 'Secondary'
+                                                                : attendanceItem.attFormsStaffID === '0'
+                                                                    ? 'Visitor'
+                                                                    : attendanceItem.attFormsStaffID === '1'
+                                                                        ? 'Secondary'
+                                                                        : attendanceItem.attFormsStaffID}
+                                                    </>
                                                 )}
                                             </td>
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
@@ -719,7 +733,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsFacultyUnit}
                                             </td>
-                                            {isAllTabActive && hasMultipleSubEvents && (
+                                            {isAllTabActive !== 'all' && hasMultipleSubEvents && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
