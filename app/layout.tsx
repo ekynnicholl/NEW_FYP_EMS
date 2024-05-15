@@ -14,9 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<title>Event Management System</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<body>
-				{children}
-				<ProgressBar height="4px" color="#ab0c12" options={{ showSpinner: false }} shallowRouting />
 				<Toaster position="top-right" />
+				<ProgressBar height="4px" color="#ab0c12" shallowRouting />
+				{children}
 			</body>
 		</html>
 	);

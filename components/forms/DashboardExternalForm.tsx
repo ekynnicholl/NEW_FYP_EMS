@@ -83,13 +83,22 @@ const Document = ({ documents }: { documents?: string[] }) => {
 	);
 };
 
+const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
+const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
+
 export default function DashboardExternalForm({ data, faculties, auditLog }: { data: ExternalForm; faculties: string[]; auditLog: AuditLog[] }) {
+	console.log("rendered")
 	const supabase = createClientComponentClient();
 	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
 	const [auditLogs, setAuditLogs] = useState<AuditLog[]>(auditLog);
-	console.log(data.transport === "aeroplane")
-	const [useOwnTransport, setUseOwnTransport] = useState(data.transport === "aeroplane");
-	const [group, setGroup] = useState(false);
+	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(
+		data && data.transport ? (data.transport === "aeroplane" ? false : true) : null,
+	);
+
+	const [nonFlightLogistic, setNonFlightLogistic] = useState<any[]>(data && data.transport !== "aeroplane" ? data.logistic_arrangement || [] : []);
+	const [flightLogistic, setFlightLogistic] = useState<any[]>(data && data.transport === "aeroplane" ? data.logistic_arrangement || [] : []);
+
+	const [group, setGroup] = useState(data && data.travelling === "group" ? true : false);
 	const [emails, setEmails] = useState<any[]>([]);
 	const [revertOpen, setRevertOpen] = useState(false);
 	const [undoOpen, setUndoOpen] = useState(false);
@@ -99,30 +108,18 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	const [forwardSaveLoading, setForwardSaveLoading] = useState(false);
 	const [revertSaveLoading, setRevertSaveLoading] = useState(false);
 
-	const [courseFee, setCourseFee] = useState(0);
-	const [airfareFee, setAirfareFee] = useState(0);
-	const [accommodationFee, setAccommodationFee] = useState(0);
-	const [perDiemFee, setPerDiemFee] = useState(0);
-	const [transportationFee, setTransportationFee] = useState(0);
-	const [travelInsuranceFee, setTravelInsuranceFee] = useState(0);
-	const [otherFees, setOtherFees] = useState(0);
+	const [courseFee, setCourseFee] = useState(externalForm?.course_fee || 0);
+	const [airfareFee, setAirfareFee] = useState(externalForm?.airfare_fee || 0);
+	const [accommodationFee, setAccommodationFee] = useState(externalForm?.accommodation_fee || 0);
+	const [perDiemFee, setPerDiemFee] = useState(externalForm?.per_diem_fee || 0);
+	const [transportationFee, setTransportationFee] = useState(externalForm?.transportation_fee || 0);
+	const [travelInsuranceFee, setTravelInsuranceFee] = useState(externalForm?.travel_insurance_fee || 0);
+	const [otherFees, setOtherFees] = useState(externalForm?.other_fees || 0);
 	const [grandTotal, setGrandTotal] = useState(0);
-
+	
 	useEffect(() => {
 		setGrandTotal(courseFee + airfareFee + accommodationFee + perDiemFee + transportationFee + travelInsuranceFee + otherFees);
 	}, [courseFee, airfareFee, accommodationFee, perDiemFee, transportationFee, travelInsuranceFee, otherFees]);
-
-	useEffect(() => {
-		if (externalForm) {
-			setCourseFee(externalForm.course_fee!);
-			setAirfareFee(externalForm.airfare_fee!);
-			setAccommodationFee(externalForm.accommodation_fee!);
-			setPerDiemFee(externalForm.per_diem_fee!);
-			setTransportationFee(externalForm.transportation_fee!);
-			setTravelInsuranceFee(externalForm.travel_insurance_fee!);
-			setOtherFees(externalForm.other_fees!);
-		}
-	}, [externalForm]);
 
 	useEffect(() => {
 		const fetchEmails = async () => {
@@ -175,9 +172,10 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		},
 	});
 
-	useEffect(() => {
-		console.log(forwardForm.formState.errors);
-	}, [forwardForm.formState.errors]);
+	// Enable this to see the form errors
+	// useEffect(() => {
+	// 	console.log(forwardForm.formState.errors);
+	// }, [forwardForm.formState.errors]);
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
@@ -400,16 +398,6 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		setForwardSaveLoading(false);
 	}
 
-	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
-	const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
-
-	// console.log(externalForm);
-	// console.log(form.getValues("logistic_arrangement"));
-
-	useEffect(() => {
-		console.log(form.formState.errors);
-	}, [form.formState.errors]);
-
 	return (
 		<>
 			<div className="flex-1">
@@ -472,6 +460,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											className="flex items-center gap-2 shadow-[0_0_0_2px_#EFEFEF_inset] border-none px-5 h-12 text-[15px] rounded-xl font-bold"
 											onClick={() => {
 												setEdit(false);
+												form.reset();
 											}}
 										>
 											Cancel
@@ -480,7 +469,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 											variant="default"
 											className="px-5 h-12 text-[15px] rounded-xl font-bold"
 											type="submit"
-											disabled={editSaveLoading}
+											disabled={editSaveLoading || !form.formState.isDirty}
 										>
 											Save / Update
 										</Button>
@@ -659,20 +648,28 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														field.onChange(e);
 														if (e === "own transport" || e === "company vehicle") {
 															setUseOwnTransport(true);
-															form.setValue("logistic_arrangement", null);
+															if (nonFlightLogistic.length > 0) {
+																form.setValue("logistic_arrangement", nonFlightLogistic);
+															} else {
+																form.setValue("logistic_arrangement", null);
+															}
 														} else {
 															setUseOwnTransport(false);
-															const logisticObject = {
-																flight_date: null,
-																flight_time: null,
-																flight_number: "",
-																destination_from: "",
-																destination_to: "",
-																hotel_name: "",
-																check_in_date: null,
-																check_out_date: null,
-															};
-															form.setValue("logistic_arrangement", [logisticObject, logisticObject]);
+															if (flightLogistic.length > 0) {
+																form.setValue("logistic_arrangement", flightLogistic);
+															} else {
+																const logisticObject = {
+																	flight_date: null,
+																	flight_time: null,
+																	flight_number: "",
+																	destination_from: "",
+																	destination_to: "",
+																	hotel_name: "",
+																	check_in_date: null,
+																	check_out_date: null,
+																};
+																form.setValue("logistic_arrangement", [logisticObject, logisticObject]);
+															}
 														}
 													}}
 													value={field.value}
@@ -738,7 +735,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													Name of other staff / student traveling together in group <span className="text-red-500"> *</span>
 												</FormLabel>
 												<FormControl>
-													<Input {...field} />
+													<Input disabled={!edit} {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -969,14 +966,15 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 						<section className="section-3 bg-white rounded-lg p-4 dark:bg-dark_mode_card">
 							<div className="flex gap-3 mb-8">
 								<div className="rounded-sm bg-purple-300 w-4 h-8"></div>
-								<div className="mb-4 flex justify-between">
-									<h2 className="text-xl font-semibold">3. Logistic Arrangement</h2>
+								<div className="flex justify-between w-full">
+									<h2 className="text-xl font-semibold">Logistic Arrangement</h2>
 									{useOwnTransport !== null && useOwnTransport === false ? (
 										<Button
+											disabled={!edit}
 											type="button"
 											onClick={() => {
 												const old = form.getValues("logistic_arrangement") ?? [];
-												old.push({
+												const newLogistic = {
 													flight_date: null,
 													flight_time: null,
 													flight_number: "",
@@ -985,38 +983,43 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 													hotel_name: "",
 													check_in_date: null,
 													check_out_date: null,
-												});
+												};
+												old.push(newLogistic);
+												setFlightLogistic(old);
 												form.setValue("logistic_arrangement", old);
 											}}
 										>
 											Add Flight
 										</Button>
 									) : (
-										<>
-											<Button
-												type="button"
-												onClick={() => {
-													if (useOwnTransport === null) {
-														toast.error("Please select a transport type first");
-													} else {
-														const old = form.getValues("logistic_arrangement") ?? [];
-														old.push({
-															flight_date: null,
-															flight_time: null,
-															flight_number: "",
-															destination_from: "",
-															destination_to: "",
-															hotel_name: "",
-															check_in_date: null,
-															check_out_date: null,
-														});
-														form.setValue("logistic_arrangement", old);
+										<Button
+											disabled={!edit}
+											type="button"
+											onClick={() => {
+												if (useOwnTransport === null) {
+													toast.error("Please select a transport type first");
+												} else {
+													const old = form.getValues("logistic_arrangement") ?? [];
+													const newLogistic = {
+														flight_date: null,
+														flight_time: null,
+														flight_number: "",
+														destination_from: "",
+														destination_to: "",
+														hotel_name: "",
+														check_in_date: null,
+														check_out_date: null,
 													}
-												}}
-											>
-												Add Hotel
-											</Button>
-										</>
+													
+													old.push(newLogistic);
+													nonFlightLogistic.push(newLogistic);
+													form.setValue("logistic_arrangement", old);
+													setNonFlightLogistic(old);
+												}
+											}}
+										>
+											Add Hotel
+										</Button>
 									)}
 								</div>
 							</div>
@@ -1074,11 +1077,15 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																		selected={field.value?.[i]?.flight_date!}
 																		onSelect={date => {
 																			if (date !== undefined) {
-																				date.setHours(date.getHours() + 8);
 																				field.onChange(
 																					field.value?.map((item, index) =>
 																						index === i ? { ...item, flight_date: date } : item,
 																					),
+																				);
+																				setFlightLogistic(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, flight_date: date } : item,
+																					) || [],
 																				);
 																			}
 																		}}
@@ -1111,6 +1118,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			index === i ? { ...item, flight_time: e.target.value } : item,
 																		);
 																		field.onChange(newValue);
+																		setFlightLogistic(
+																			field.value?.map((item, index) =>
+																				index === i ? { ...item, flight_time: e.target.value } : item,
+																			) || [],
+																		);
 																	}}
 																/>
 															</FormControl>
@@ -1133,6 +1145,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			index === i ? { ...item, flight_number: e.target.value } : item,
 																		);
 																		field.onChange(newValue);
+																		setFlightLogistic(
+																			field.value?.map((item, index) =>
+																				index === i ? { ...item, flight_number: e.target.value } : item,
+																			) || [],
+																		);
 																	}}
 																/>
 															</FormControl>
@@ -1155,6 +1172,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			index === i ? { ...item, destination_from: e.target.value } : item,
 																		);
 																		field.onChange(newValue);
+																		setFlightLogistic(
+																			field.value?.map((item, index) =>
+																				index === i ? { ...item, destination_from: e.target.value } : item,
+																			) || [],
+																		);
 																	}}
 																/>
 															</FormControl>
@@ -1177,6 +1199,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			index === i ? { ...item, destination_to: e.target.value } : item,
 																		);
 																		field.onChange(newValue);
+																		setFlightLogistic(
+																			field.value?.map((item, index) =>
+																				index === i ? { ...item, destination_to: e.target.value } : item,
+																			) || [],
+																		);
 																	}}
 																/>
 															</FormControl>
@@ -1200,6 +1227,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																			index === i ? { ...item, hotel_name: e.target.value } : item,
 																		);
 																		field.onChange(newValue);
+																		setFlightLogistic(
+																			field.value?.map((item, index) =>
+																				index === i ? { ...item, hotel_name: e.target.value } : item,
+																			) || [],
+																		);
 																	}}
 																/>
 															</FormControl>
@@ -1247,6 +1279,11 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					field.value?.map((item, index) =>
 																						index === i ? { ...item, check_in_date: date } : item,
 																					),
+																				);
+																				setFlightLogistic(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, check_in_date: date } : item,
+																					) || [],
 																				);
 																			}
 																		}}
@@ -1305,14 +1342,20 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																						index === i ? { ...item, check_out_date: date } : item,
 																					),
 																				);
+																				setFlightLogistic(
+																					field.value?.map((item, index) =>
+																						index === i ? { ...item, check_out_date: date } : item,
+																					) || [],
+																				);
 																			}
 																		}}
 																		disabled={date => {
-																			let today = form.getValues("logistic_arrangement")?.[i].check_out_date;
-																			if (today === undefined) {
+																			let today = form.getValues("logistic_arrangement")?.[i].check_in_date;
+																			if (!today) {
 																				today = new Date();
 																				today.setHours(0, 0, 0, 0);
-																			} else {
+																			} else if (typeof today === "string") {
+																				today = new Date(today);
 																				today?.setHours(0, 0, 0, 0);
 																			}
 																			return date < today!;
@@ -1340,6 +1383,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 															}
 															if (Array.isArray(values) && i >= 0 && i < values.length) {
 																values.splice(i, 1);
+																setFlightLogistic(values);
 																form.setValue("logistic_arrangement", values);
 																form.trigger("logistic_arrangement");
 																console.log(form.getValues("logistic_arrangement"));
@@ -1382,6 +1426,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					index === i ? { ...item, hotel_name: e.target.value } : item,
 																				);
 																				field.onChange(newValue);
+																				setNonFlightLogistic(prevState => prevState.map((item, index) =>
+																					index === i ? { ...item, hotel_name: e.target.value } : item
+																				));
 																			}}
 																		/>
 																	</FormControl>
@@ -1402,7 +1449,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					disabled={!edit}
 																					variant={"outline"}
 																					className={cn(
-																						"w-full text-left font-normal rounded-none border-none pl-2 disabled:opacity-100",
+																						"w-full text-center font-normal rounded-none border-none pl-2 disabled:opacity-100",
 																						!field.value && "text-muted-foreground",
 																					)}
 																				>
@@ -1424,8 +1471,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																				}
 																				onSelect={date => {
 																					if (date !== undefined) {
-																						date.setHours(date.getHours() + 8);
-																						console.log(new Date(date));
+																						// date.setHours(date.getHours() + 8);
 																						field.onChange(
 																							field.value?.map((item, index) =>
 																								index === i
@@ -1433,6 +1479,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																									: item,
 																							),
 																						);
+																						setNonFlightLogistic(prevState => prevState.map((item, index) =>
+																							index === i ? { ...item, check_in_date: new Date(date) } : item
+																						));
 																					}
 																				}}
 																				disabled={date => {
@@ -1486,7 +1535,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																				}
 																				onSelect={date => {
 																					if (date !== undefined) {
-																						date.setHours(date.getHours() + 8);
+																						// date.setHours(date.getHours() + 8);
 																						field.onChange(
 																							field.value?.map((item, index) =>
 																								index === i
@@ -1494,17 +1543,18 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																									: item,
 																							),
 																						);
+																						setNonFlightLogistic(prevState => prevState.map((item, index) =>
+																							index === i ? { ...item, check_out_date: new Date(date) } : item
+																						));
 																					}
 																				}}
 																				disabled={date => {
-																					let today = new Date(
-																						form.getValues("logistic_arrangement")?.[i].check_out_date ??
-																							"",
-																					);
-																					if (today === undefined) {
+																					let today = form.getValues("logistic_arrangement")?.[i].check_in_date;
+																					if (!today) {
 																						today = new Date();
 																						today.setHours(0, 0, 0, 0);
-																					} else {
+																					} else if (typeof today === "string") {
+																						today = new Date(today);
 																						today?.setHours(0, 0, 0, 0);
 																					}
 																					return date < today!;
@@ -1528,6 +1578,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																	const values = form.getValues("logistic_arrangement");
 																	if (Array.isArray(values) && i >= 0 && i < values.length) {
 																		values.splice(i, 1);
+																		setNonFlightLogistic(values);
 																		form.setValue("logistic_arrangement", values);
 																		form.trigger("logistic_arrangement");
 																	}

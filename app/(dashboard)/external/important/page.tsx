@@ -2,7 +2,7 @@ import ImportantForms from "@/components/ntf/important_forms";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/supabase";
-import { useState } from "react";
+import Tabs from "../Tabs";
 
 export default async function Important() {
 	const cookieStore = cookies()
@@ -44,7 +44,9 @@ export default async function Important() {
 		.not("formStage", "eq", 6);
 
 	return (
-		<div className="h-screen w-full grid justify-items-center p-5">
+		<>
+			<Tabs />
+			<div className="h-screen w-full grid justify-items-center p-5">
 			<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
 				{aaoDuration !== 0 ? (
 					<>
@@ -60,5 +62,7 @@ export default async function Important() {
 				)}
 			</div>
 		</div>
+		</>
+		
 	);
 }

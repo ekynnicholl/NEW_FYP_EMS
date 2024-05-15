@@ -60,16 +60,37 @@ const showSuccessToast = (message: string) => {
 
 let files: File[] = [];
 
+const savedForm = sessionStorage.getItem("form");
+const parsedForm = savedForm ? JSON.parse(savedForm) : null;
+if (parsedForm) {
+	if (parsedForm.logistic_arrangement) {
+		parsedForm.logistic_arrangement = parsedForm.logistic_arrangement.map((arrangement: any) => {
+			if (arrangement.check_in_date) {
+				arrangement.check_in_date = new Date(arrangement.check_in_date);
+			}
+			if (arrangement.check_out_date) {
+				arrangement.check_out_date = new Date(arrangement.check_out_date);
+			}
+			if (arrangement.flight_date) {
+				arrangement.flight_date = new Date(arrangement.flight_date);
+			}
+			return arrangement;
+		});
+	}
+}
+
+
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const supabase = createClientComponentClient();
 	const router = useRouter();
-	const [key, setKey] = useState(0);
 
 	const [open, setOpen] = useState(false);
 	const [imageURL, setImageURL] = useState<any>();
 
 	const [group, setGroup] = useState(false);
-	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(null);
+	const [useOwnTransport, setUseOwnTransport] = useState<boolean | null>(
+		parsedForm && parsedForm.transport ? (parsedForm.transport === "aeroplane" ? false : true) : null,
+	);
 
 	const [courseFee, setCourseFee] = useState(0);
 	const [airfareFee, setAirfareFee] = useState(0);
@@ -94,67 +115,66 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 	const form = useForm<z.infer<typeof externalFormSchema>>({
 		resolver: zodResolver(externalFormSchema),
-		defaultValues: {
-			formStage: 2,
-			full_name: "",
-			email: "",
-			staff_id: "",
-			course: "",
-			faculty: "",
-			transport: "",
-			travelling: "",
-			other_members: "",
+		defaultValues: savedForm
+			? {
+					...parsedForm,
+					commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
+					completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
+					applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
+			  }
+			: {
+					formStage: 2,
+					full_name: "",
+					email: "",
+					staff_id: "",
+					course: "",
+					faculty: "",
+					transport: "",
+					travelling: "",
+					other_members: "",
 
-			program_title: "",
-			program_description: "",
-			commencement_date: null,
-			completion_date: null,
-			organiser: "",
-			venue: "",
-			hrdf_claimable: "",
+					program_title: "",
+					program_description: "",
+					commencement_date: null,
+					completion_date: null,
+					organiser: "",
+					venue: "",
+					hrdf_claimable: "",
 
-			logistic_arrangement: null,
+					logistic_arrangement: null,
 
-			course_fee: 0,
-			airfare_fee: 0,
-			accommodation_fee: 0,
-			per_diem_fee: 0,
-			transportation_fee: 0,
-			travel_insurance_fee: 0,
-			other_fees: 0,
-			grand_total_fees: 0,
-			staff_development_fund: "",
-			consolidated_pool_fund: "",
-			research_fund: "",
-			travel_fund: "",
-			student_council_fund: "",
-			other_funds: "",
-			expenditure_cap: "No",
-			expenditure_cap_amount: 0,
+					course_fee: 0,
+					airfare_fee: 0,
+					accommodation_fee: 0,
+					per_diem_fee: 0,
+					transportation_fee: 0,
+					travel_insurance_fee: 0,
+					other_fees: 0,
+					grand_total_fees: 0,
+					staff_development_fund: "",
+					consolidated_pool_fund: "",
+					research_fund: "",
+					travel_fund: "",
+					student_council_fund: "",
+					other_funds: "",
+					expenditure_cap: "No",
+					expenditure_cap_amount: 0,
 
-			supporting_documents: null,
+					supporting_documents: null,
 
-			applicant_declaration_signature: "",
-			applicant_declaration_name: "",
-			applicant_declaration_position_title: "",
-			applicant_declaration_date: new Date(),
-		},
+					applicant_declaration_signature: "",
+					applicant_declaration_name: "",
+					applicant_declaration_position_title: "",
+					applicant_declaration_date: new Date(),
+			  },
 	});
-
-	// Load form content from session storage
 	useEffect(() => {
-		const savedForm = sessionStorage.getItem("form");
-		if (savedForm) {
-			const parsedForm = JSON.parse(savedForm);
-			form.reset(parsedForm);
-			form.setValue("commencement_date", parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null);
-			form.setValue("completion_date", parsedForm.completion_date ? new Date(parsedForm.completion_date) : null);
-			form.setValue("applicant_declaration_date", new Date(parsedForm.applicant_declaration_date));
-			setUseOwnTransport(parsedForm.transport === "own transport" || parsedForm.transport === "company vehicle");
-			setKey(prev => prev + 1);
+		if (parsedForm) {
 			toast.success("Form content loaded from previous session");
 		}
 	}, []);
+	// print the form values to the console
+	console.log(form.getValues());
 
 	const checkFormStatus = () => {
 		setOpen(false);
@@ -230,18 +250,17 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			applicant_declaration_position_title: "",
 			applicant_declaration_date: new Date(),
 		});
+
 		setImageURL("");
 		sessionStorage.removeItem("form");
-		router.refresh();
 	};
 
 	// save form content to session storage
 	useEffect(() => {
-		console.log("Save");
 		if (form.formState.isDirty) {
 			sessionStorage.setItem("form", JSON.stringify(form.getValues()));
 		}
-	}, [form, form.formState]);
+	}, [form.formState]);
 
 	async function onSubmit(values: z.infer<typeof externalFormSchema>) {
 		toast.loading("Submitting form...");
@@ -376,6 +395,11 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		setApplicantPosition(form.getValues("course"));
 	}, [form.getValues("full_name"), form.getValues("course")]);
 
+	// Enable this for debugging purposes only
+	// useEffect(() => {
+	// 	console.log(form.formState.errors);
+	// }, [form.formState.errors]);
+
 	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
 	const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
 
@@ -385,7 +409,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			<Separator className="mt-8" />
 			<div className="grid gap-8 place-items-center">
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8" key={key}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
 						<section className="section-1" id="Personal Details">
 							<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 							<div className="grid gap-8">
@@ -506,7 +530,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 														field.onChange(e);
 														if (e === "own transport" || e === "company vehicle") {
 															setUseOwnTransport(true);
-															form.setValue("logistic_arrangement", null);
+															form.setValue("logistic_arrangement", []);
 														} else {
 															const logisticObject = {
 																flight_date: null,
@@ -808,6 +832,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												check_out_date: null,
 											});
 											form.setValue("logistic_arrangement", old);
+											form.trigger("logistic_arrangement");
 										}}
 									>
 										Add Flight
@@ -832,6 +857,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 														check_out_date: null,
 													});
 													form.setValue("logistic_arrangement", old);
+													form.trigger("logistic_arrangement");
 												}
 											}}
 										>
@@ -878,9 +904,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				variant={"outline"}
 																				className={cn("w-full text-left font-normal border-none")}
 																			>
-																				{field.value &&
-																				field.value[i] &&
-																				field.value[i].flight_date ? (
+																				{field.value && field.value[i] && field.value[i].flight_date ? (
 																					format(new Date(field.value[i].flight_date!), "PPP")
 																				) : (
 																					<span>Pick a date</span>
@@ -1042,9 +1066,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																					!field.value && "text-muted-foreground",
 																				)}
 																			>
-																				{field.value &&
-																				field.value[i] &&
-																				field.value[i].check_in_date ? (
+																				{field.value && field.value[i] && field.value[i].check_in_date ? (
 																					format(new Date(field.value?.[i].check_in_date!), "PPP")
 																				) : (
 																					<span>Pick a date</span>
@@ -1057,12 +1079,12 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			mode="single"
 																			selected={
 																				field.value && field.value[i]
-																					? (field.value[i].check_in_date as Date)
+																					? new Date(field.value[i].check_in_date!)
 																					: undefined
 																			}
 																			onSelect={date => {
 																				if (date !== undefined) {
-																					date.setHours(date.getHours() + 8);
+																					// date.setHours(date.getHours() + 8);
 																					field.onChange(
 																						field.value?.map((item, index) =>
 																							index === i ? { ...item, check_in_date: date } : item,
@@ -1097,9 +1119,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																					"w-full text-left font-normal rounded-none border-none pl-2",
 																				)}
 																			>
-																				{field.value &&
-																				field.value[i] &&
-																				field.value[i].check_out_date ? (
+																				{field.value && field.value[i] && field.value[i].check_out_date ? (
 																					format(new Date(field.value?.[i].check_out_date!), "PPP")
 																				) : (
 																					<span>Pick a date</span>
@@ -1115,7 +1135,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				field.value[i] &&
 																				field.value[i].check_out_date !== null &&
 																				field.value[i].check_out_date
-																					? (field.value[i].check_out_date as Date)
+																					? new Date(field.value[i].check_out_date!)
 																					: undefined
 																			}
 																			onSelect={date => {
@@ -1129,12 +1149,12 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				}
 																			}}
 																			disabled={date => {
-																				let today = form.getValues("logistic_arrangement")?.[i]
-																					.check_out_date;
-																				if (today === undefined) {
+																				let today = form.getValues("logistic_arrangement")?.[i].check_in_date;
+																				if (!today) {
 																					today = new Date();
 																					today.setHours(0, 0, 0, 0);
-																				} else {
+																				} else if (typeof today === "string") {
+																					today = new Date(today);
 																					today?.setHours(0, 0, 0, 0);
 																				}
 																				return date < today!;
@@ -1180,7 +1200,10 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												</div>
 												<div className="rounded-xl shadow-[0_0_0_2px_#EFEFEF_inset] p-2 divide-y-2 divide-solid divide-[#EFEFEF]">
 													{[...Array(form.watch("logistic_arrangement")?.length)].map((_, i) => (
-														<div key={i} className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}>
+														<div
+															key={i}
+															className={colHotelClass + " divide-x-2 divide-solid divide-[#EFEFEF] [&>*]:my-2 " + i}
+														>
 															<FormField
 																control={form.control}
 																name="logistic_arrangement"
@@ -1221,7 +1244,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																					>
 																						{field.value &&
 																						field.value[i] &&
-																						field.value[i].check_in_date instanceof Date ? (
+																						field.value[i].check_in_date ? (
 																							format(new Date(field.value?.[i].check_in_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1239,7 +1262,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																					}
 																					onSelect={date => {
 																						if (date !== undefined) {
-																							date.setHours(date.getHours() + 8);
+																							// date.setHours(date.getHours() + 8);
 																							field.onChange(
 																								field.value?.map((item, index) =>
 																									index === i
@@ -1278,7 +1301,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																					>
 																						{field.value &&
 																						field.value[i] &&
-																						field.value[i].check_out_date instanceof Date ? (
+																						field.value[i].check_out_date ? (
 																							format(new Date(field.value?.[i].check_out_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1290,16 +1313,13 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				<Calendar
 																					mode="single"
 																					selected={
-																						field.value &&
-																						field.value[i] &&
-																						field.value[i].check_out_date !== null &&
-																						field.value[i].check_out_date instanceof Date
-																							? (field.value[i].check_out_date as Date)
+																						field.value && field.value[i] && field.value[i].check_out_date
+																							? new Date(field.value[i].check_out_date!)
 																							: undefined
 																					}
 																					onSelect={date => {
 																						if (date !== undefined) {
-																							date.setHours(date.getHours() + 8);
+																							// date.setHours(date.getHours() + 8);
 																							field.onChange(
 																								field.value?.map((item, index) =>
 																									index === i
@@ -1311,11 +1331,12 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																					}}
 																					disabled={date => {
 																						let today = form.getValues("logistic_arrangement")?.[i]
-																							.check_out_date;
-																						if (today === undefined) {
+																							.check_in_date;
+																						if (!today) {
 																							today = new Date();
 																							today.setHours(0, 0, 0, 0);
-																						} else {
+																						} else if (typeof today === "string") {
+																							today = new Date(today);
 																							today?.setHours(0, 0, 0, 0);
 																						}
 																						return date < today!;
@@ -1900,13 +1921,11 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																	<Input
 																		className="absolute w-full h-full opacity-0 cursor-pointer"
 																		type="file"
-																		accept="image/*"
+																		accept=".png,.jpg,.jpeg"
 																		onChange={event => {
 																			if (event.target.files) {
-																				console.log(event.target.files[0]);
 																				field.onChange(event.target.files[0]);
 																				form.trigger("applicant_declaration_signature");
-																				console.log(form.getValues("applicant_declaration_signature"));
 																			}
 																		}}
 																	/>
@@ -1974,7 +1993,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 						</section>
 
 						<div className="flex justify-end items-end gap-4">
-							<Button type="reset" onClick={formReset}>
+							<Button variant="outline" type="reset" onClick={formReset}>
 								Reset
 							</Button>
 

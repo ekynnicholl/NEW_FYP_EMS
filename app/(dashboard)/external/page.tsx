@@ -2,6 +2,7 @@ import ExternalTable from "@/components/tables/externalTable";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/supabase";
+import Tabs from "./Tabs";
 
 export default async function ExternalPage() {
 	const cookieStore = cookies()
@@ -29,10 +30,14 @@ export default async function ExternalPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-slate-100 grid justify-items-center p-5">
-			<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
-				<ExternalTable data={data ? data : []} />
+		<div>
+			<Tabs />
+			<div className="min-h-screen bg-slate-100 grid justify-items-center p-5">
+				<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
+					<ExternalTable data={data ? data : []} />
+				</div>
 			</div>
 		</div>
+
 	);
 }

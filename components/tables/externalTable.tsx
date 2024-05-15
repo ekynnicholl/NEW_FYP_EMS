@@ -49,7 +49,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { QRCodeCanvas } from "qrcode.react";
 import { LiaQrcodeSolid } from "react-icons/lia";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 import { sendContactForm } from "@/lib/api";
 import { getAuth } from "firebase/auth";
 
@@ -683,6 +683,7 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								<ContextMenu key={row.id}>
 									<ContextMenuTrigger asChild>
 										<TableRow
+											data-prevent-nprogress={true}
 											onClick={e => {
 												e.preventDefault();
 												router.push(`/external/${row.original.id}`);
