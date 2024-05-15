@@ -62,7 +62,7 @@ const PastAttended = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.scrollY;
-            const isScrolled = currentScrollPos > 2250 || currentScrollPos < prevScrollPos;
+            const isScrolled = currentScrollPos > 2350 || currentScrollPos < prevScrollPos;
 
             if (isScrolled !== isVisible) {
                 setIsVisible(isScrolled);

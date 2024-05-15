@@ -113,7 +113,7 @@ const PastEventsLanding = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.scrollY;
-            const isScrolled = currentScrollPos > 1700 || currentScrollPos < prevScrollPos;
+            const isScrolled = currentScrollPos > 1800 || currentScrollPos < prevScrollPos;
 
             if (isScrolled !== isVisible) {
                 setIsVisible(isScrolled);

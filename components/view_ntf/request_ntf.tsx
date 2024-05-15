@@ -122,33 +122,32 @@ const RequestNTF = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <div className="lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-max w-11/12">
+            <div className="lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card lg:w-1/2 w-11/12">
                 {!submissionStatus ? (
                     <div className="p-5">
                         <div className="text-left pl-5 pr-5">
                             <p className="text-[20px] font-bold">
-                            Request to view Nomination/Travelling Forms Status & Staff Attendance Summary
+                                Request to View Nominations/ Travelling Forms Status & Staff Attendance Summary
                             </p>
                             <div className="border-t border-gray-300 my-2"></div>
                             <div className="text-justify">
                                 <p>
-                                    To view the status of your current or previous Nomination/Traveling forms application or the summary of your Attendance record for past
-events, <br></br> please refer to the guidelines below.<br></br>Please note that you will receive an email notification including an access token for additional
-authorization purposes.
+                                    View the status of your current or previous Nominations/ Travelling Forms application or the summary of your Attendance Record for past events below.
+                                    You will receive an email notification including an access token for additional authorization purposes.
                                 </p>
                             </div>
                             <p className="text-base font-bold mt-3 underline">
-                            Please follow the guidelines below when filling out the form, if you are logging in via:
+                                Please follow the guidelines below when filling out the form, if you are logging in via:
                             </p>
                             <div className="text-justify">
                                 <p>
-                                    <span className="font-bold">Staff/Student Access Card ID: </span> Please ensure that you have entered your ID correctly including all the alphanumerical based on your Staff/ Student access card.  
+                                    <span className="font-bold">Staff/ Student Access Card ID: </span> Please ensure that you have entered your ID correctly including all the alphanumerical as how it is shown in your Staff/ Student access card.
                                     <br />
-                                    <span className="font-bold">Email address:</span> Please ensure that you have entered your email address in the correct format and based on what you have entered in the event registration form previously.
+                                    <span className="font-bold">Email Address:</span> Please ensure that you have entered your email address in the correct format and based on what you have entered in the event registration form previously.
                                 </p>
                             </div>
                             <p className="text-base italic mt-3 text-red-600">
-                            Invalid or mistyped information will result in email delivery failure; therefore, please abide to the above guidelines. <br></br>Thank you for your cooperation.
+                                Invalid or mistyped information will result in email delivery failure; therefore, please abide to the above guidelines. <br></br>Thank you for your cooperation.
                             </p>
                         </div>
                         <div className="pl-5 pr-5">
@@ -159,7 +158,7 @@ authorization purposes.
                                         type="text"
                                         id="staffEmailID"
                                         name="staffEmailID"
-                                        placeholder="Name"
+                                        placeholder="123456789/ SS001/ abc@swinburne.edu.my/ 12345678@students.swinburne.edu.my"
                                         value={staffEmailID}
                                         onChange={(e) => setStaffEmailID(e.target.value)}
                                         className="w-full border-[1px] p-3 rounded-md focus:outline-none text-sm lg:text-base dark:text-black-500"
