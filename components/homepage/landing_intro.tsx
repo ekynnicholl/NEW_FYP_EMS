@@ -161,7 +161,7 @@ const LandingIntro = () => {
                     </animated.div>
                 </div>
             </div>
-            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 lg:block">
+            <animated.div style={fadeIn_ImageRight} className="flex justify-center items-center w-full sm:w-1/2 hidden lg:block">
                 <Image
                     src="/images/man-planning-on-calendar-vector.png"
                     alt="Event Manager"

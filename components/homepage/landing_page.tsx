@@ -92,7 +92,7 @@ export default function LandingPage() {
             <div className="scroll-smooth p-2 lg:p-0">
 
                 <nav className="text-black font-bold flex flex-col lg:flex-row justify-between items-center px-4 py-2 mt-2">
-                    <div className="flex items-center lg:ml-28 mb-4 lg:mb-0 lg:block">
+                    <div className="flex items-center lg:ml-28 mb-4 lg:mb-0 hidden lg:block">
                         <Image
                             src="/swinburne_logo.png"
                             alt="Swinburne Logo"
