@@ -6,12 +6,14 @@ import Image from "next/image";
 import ReCAPTCHA from "react-google-recaptcha";
 import toast from 'react-hot-toast';
 import { sendNTFAccess } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const RequestNTF = () => {
     const supabase = createClientComponentClient();
-    const [submissionStatus, setSubmissionStatus] = useState(false);
+    const [submissionStatus, setSubmissionStatus] = useState(true);
     const [staffEmailID, setStaffEmailID] = useState('');
     const [captcha, setCaptcha] = useState<string | null>();
+    const router = useRouter();
     const isCompact = typeof window !== 'undefined' && window.innerWidth <= 640;
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -120,6 +122,10 @@ const RequestNTF = () => {
         }
     };
 
+    const handleReturnHome = () => {
+        router.push('/');
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center">
             <div className={`lg:p-4 p-0 bg-white rounded-lg shadow-lg dark:bg-dark_mode_card ${submissionStatus ? 'lg:w-1/4' : 'lg:w-3/4'} w-11/12`}>
@@ -194,18 +200,24 @@ const RequestNTF = () => {
                                 className="mx-auto -mt-[39px] lg:-mt-[45px]"
                             />
                             <h3 className="text-2xl lg:text-3xl font-medium text-gray-600 mb-5 text-center -mt-8">
-                                Please check your email.
+                                Your request has been submitted successfully.
                             </h3>
                             <div className="lg:w-96">
                                 <p className="text-base text-[14px] lg:text-[16px] lg:text-mb-7 mb-5 lg:mb-5 font-normal text-justify">
-                                    If there are records of any Nominations/ Travelling Forms for the given staff ID/ email, we will send you a link to the said email. <br /> <br />Please check your junk/ spam folder as well.
+                                    You can check the status or view past record (s) of your Nomination/Traveling Forms application or Attendance Summary via the access token in the email. Please check your spam/junk folder if the email does not appear in your inbox.
                                 </p>
                             </div>
-                            <div className="w-1/6 items-center flex justify-center mx-auto">
+                            <div className="items-center flex justify-center mx-auto space-x-4">
                                 <div className="rounded-lg px-[16px] py-[10px] lg:px-[18px] lg:py-[11px] bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900">
                                     <button
                                         onClick={() => setSubmissionStatus(false)}>
-                                        Return
+                                        Go Back
+                                    </button>
+                                </div>
+                                <div className="rounded-lg px-[16px] py-[10px] lg:px-[18px] lg:py-[11px] bg-slate-800 text-slate-100 text-[12px] lg:text-[15px] hover:bg-slate-900 focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900">
+                                    <button
+                                        onClick={handleReturnHome}>
+                                        Return Home
                                     </button>
                                 </div>
                             </div>

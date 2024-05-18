@@ -85,10 +85,6 @@ function generateEmailHTML(process: string, formID: string, type: number, option
 
     // Reminder to AAO,
     else if (type == 2) {
-        let aaoLink = `
-        
-        `
-
         return `
         <html>
             <head>
@@ -119,6 +115,74 @@ function generateEmailHTML(process: string, formID: string, type: number, option
                     <p class="no-p-m"><span style="font-weight:bold;">Link: </span><a href="${linkforAAO}">${linkforAAO}</a> </p>
                     <br/>
                     <p class="no-p-m">Should the action above have been resolved, please note that you will no longer receive any reminders. Please email to fypemsmaster369@gmail.com if you encounter any issues with the link above.</p>
+                    <br/>
+                    <span style="font-weight: bold;">Process Level:</span> ${process}
+                    <br/>
+                    <br/>
+                    <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    </p>
+                </div>
+            </body>
+        </html>
+        `;
+    }
+
+
+
+    // Reminder to staff reverted.
+    else if (type == 3) {
+        let securityKeySentence = "";
+        let securityKey = "";
+
+        if (optionalFields && optionalFields.trim() !== "") {
+            securityKeySentence = `
+                <p class="no-p-m"><span style="font-weight: bold;">[IMPORTANT!]</span> This link contains a security key, please <span style="font-weight: bold;">DO NOT CHANGE</span> the link: <br/><span style="font-weight: bold;">Link: <a href="${link}?secKey=${optionalFields}">${link}?secKey=${optionalFields}</a></span></p>
+                <br/>
+                <p class="no-p-m">Please take note that the following Security Key is sent solely to your email and will be rendered expired immediately after usage.</p>
+            `;
+
+            securityKey = `
+                <p class="no-p-m" style="font-weight: bold;">Security Key: ${optionalFields} </p>
+            `;
+        } else {
+            securityKeySentence = 'Security key not found. Please refer to user manual for more assistance (ERRR_T1).'
+
+            securityKey = securityKeySentence;
+        }
+
+        return `
+        <html>
+            <head>
+                <style>
+                    .email-container {
+                        padding: 20px;
+                        max-width: 1400px; 
+                        margin: 0 auto;
+                    }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
+
+                    body{
+                        text-align: justify;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="email-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
+                    
+                    <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
+                    <br/>
+                    <p class="no-p-m">Your Nominations/ Travelling Form application: <span style="font-weight: bold;"> ${optionalFields2}</span>, is still awaiting for your further action, and an Academic Administration Officer has triggered a manual email reminder to you. Please click the link below for your next action.</p>
+                    <br/>
+                    ${securityKeySentence}
+                    ${securityKey}
+                    <br/>
+                    <p class="no-p-m">Should the action above have been resolved, please note that you will no longer receive any reminders. Please email to ${optionalFields3} if you encounter any issues with the link above.</p>
                     <br/>
                     <span style="font-weight: bold;">Process Level:</span> ${process}
                     <br/>
@@ -171,23 +235,30 @@ export async function POST(request: Request) {
         if (formStage == 2) {
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - Reminder] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - Reminder] ${staffName} (${staffID})`,
                 text: "[Academic Admin Office Level: Review and Approval Reminder to Academic Administration Office]",
                 html: generateEmailHTML("[Academic Admin Office Level: Review and Approval Reminder to Academic Administration Office]", formID, 2, formDetails)
             });
         } else if (formStage == 3) {
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - To Verify and Support Reminder] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - To Verify and Support Reminder] ${staffName} (${staffID})`,
                 text: "[Verifier Level: Review & Approval Reminder to HOS/ACDR/MGR]",
                 html: generateEmailHTML("[Verifier Level: Review & Approval Reminder to HOS/ACDR/MGR]", formID, 1, securityKey, formDetails, aaoEmail)
             });
         } else if (formStage == 4) {
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - Final Review & Approval Reminder to Dean/HMU] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - Final Review & Approval Reminder to Dean/HMU] ${staffName} (${staffID})`,
                 text: "[Approver Level: Final Review & Approval Reminder to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
                 html: generateEmailHTML("[Approver Level: Final Review & Approval Reminder to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, securityKey, formDetails, aaoEmail)
+            });
+        } else if (formStage == 1) {
+            await transporter.sendMail({
+                ...mailOptionsCopy,
+                subject: `[NTF - Action Required Reminder] ${staffName} (${staffID})`,
+                text: "[Applicant Level: Action Required Reminder to Applicant]",
+                html: generateEmailHTML("[Applicant Level: Action Required Reminder to Applicant]", formID, 3, securityKey, formDetails, aaoEmail)
             });
         }
 

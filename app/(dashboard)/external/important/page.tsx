@@ -31,6 +31,8 @@ export default async function Important() {
 	const adjustedDate = new Date(today.getTime() - aaoDuration * 24 * 60 * 60 * 1000);
 	const adjustedDateString = adjustedDate.toISOString().split('T')[0];
 
+	console.log(adjustedDateString);
+
 	// Fetch data where last_updated is not equal to today's date
 	const { data, error } = await supabase
 		.from("external_forms")
@@ -47,22 +49,22 @@ export default async function Important() {
 		<>
 			<Tabs />
 			<div className="h-screen w-full grid justify-items-center p-5">
-			<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
-				{aaoDuration !== 0 ? (
-					<>
+				<div className="w-full bg-white p-5 dark:bg-dark_mode_card">
+					{aaoDuration !== 0 ? (
+						<>
+							<div>
+								<h1 className="font-bold text-[26px]">Important!</h1>
+								<p>These form&apos;s have not been updated for {aaoDuration} day(s) - this can be changed in the Settings Page. You may manually trigger an email to the relevant party.</p>
+							</div>
+							<ImportantForms data={data ? data : []} /></>
+					) : (
 						<div>
-							<h1 className="font-bold text-[26px]">Important!</h1>
-							<p>These form&apos;s have not been updated for {aaoDuration} day(s) - this can be changed in the Settings Page. You may manually trigger an email to the relevant party.</p>
+							<p>This feature has been disabled. To re-enable this feature, please change the duration for Academic Administration Office under Nominations/ Travelling Forms Reminder in <span className="font-bold">Settings Page</span>.</p>
 						</div>
-						<ImportantForms data={data ? data : []} /></>
-				) : (
-					<div>
-						<p>This feature has been disabled. To re-enable this feature, please change the duration for Academic Administration Office under Nominations/ Travelling Forms Reminder in <span className="font-bold">Settings Page</span>.</p>
-					</div>
-				)}
+					)}
+				</div>
 			</div>
-		</div>
 		</>
-		
+
 	);
 }

@@ -117,56 +117,56 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		resolver: zodResolver(externalFormSchema),
 		defaultValues: savedForm
 			? {
-					...parsedForm,
-					commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
-					completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
-					applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
-			  }
+				...parsedForm,
+				commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
+				completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
+				applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
+			}
 			: {
-					formStage: 2,
-					full_name: "",
-					email: "",
-					staff_id: "",
-					course: "",
-					faculty: "",
-					transport: "",
-					travelling: "",
-					other_members: "",
+				formStage: 2,
+				full_name: "",
+				email: "",
+				staff_id: "",
+				course: "",
+				faculty: "",
+				transport: "",
+				travelling: "",
+				other_members: "",
 
-					program_title: "",
-					program_description: "",
-					commencement_date: null,
-					completion_date: null,
-					organiser: "",
-					venue: "",
-					hrdf_claimable: "",
+				program_title: "",
+				program_description: "",
+				commencement_date: null,
+				completion_date: null,
+				organiser: "",
+				venue: "",
+				hrdf_claimable: "",
 
-					logistic_arrangement: null,
+				logistic_arrangement: null,
 
-					course_fee: 0,
-					airfare_fee: 0,
-					accommodation_fee: 0,
-					per_diem_fee: 0,
-					transportation_fee: 0,
-					travel_insurance_fee: 0,
-					other_fees: 0,
-					grand_total_fees: 0,
-					staff_development_fund: "",
-					consolidated_pool_fund: "",
-					research_fund: "",
-					travel_fund: "",
-					student_council_fund: "",
-					other_funds: "",
-					expenditure_cap: "No",
-					expenditure_cap_amount: 0,
+				course_fee: 0,
+				airfare_fee: 0,
+				accommodation_fee: 0,
+				per_diem_fee: 0,
+				transportation_fee: 0,
+				travel_insurance_fee: 0,
+				other_fees: 0,
+				grand_total_fees: 0,
+				staff_development_fund: "",
+				consolidated_pool_fund: "",
+				research_fund: "",
+				travel_fund: "",
+				student_council_fund: "",
+				other_funds: "",
+				expenditure_cap: "No",
+				expenditure_cap_amount: 0,
 
-					supporting_documents: null,
+				supporting_documents: null,
 
-					applicant_declaration_signature: "",
-					applicant_declaration_name: "",
-					applicant_declaration_position_title: "",
-					applicant_declaration_date: new Date(),
-			  },
+				applicant_declaration_signature: "",
+				applicant_declaration_name: "",
+				applicant_declaration_position_title: "",
+				applicant_declaration_date: new Date(),
+			},
 	});
 	useEffect(() => {
 		if (parsedForm) {
@@ -1132,9 +1132,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			mode="single"
 																			selected={
 																				field.value &&
-																				field.value[i] &&
-																				field.value[i].check_out_date !== null &&
-																				field.value[i].check_out_date
+																					field.value[i] &&
+																					field.value[i].check_out_date !== null &&
+																					field.value[i].check_out_date
 																					? new Date(field.value[i].check_out_date!)
 																					: undefined
 																			}
@@ -1243,8 +1243,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																						)}
 																					>
 																						{field.value &&
-																						field.value[i] &&
-																						field.value[i].check_in_date ? (
+																							field.value[i] &&
+																							field.value[i].check_in_date ? (
 																							format(new Date(field.value?.[i].check_in_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1300,8 +1300,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																						)}
 																					>
 																						{field.value &&
-																						field.value[i] &&
-																						field.value[i].check_out_date ? (
+																							field.value[i] &&
+																							field.value[i].check_out_date ? (
 																							format(new Date(field.value?.[i].check_out_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1680,6 +1680,14 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 							<h1 className="text-2xl font-bold mb-4">
 								5. Supporting Documents <span className="text-red-500"> *</span>
 							</h1>
+							<p className="text-blue-400 font-medium italic">
+								Please submit the following relevant supporting documents (if there’s any): <br /><br />
+								• Nomination/Traveling Form <br />
+								• Travel Itinerary (Airfare/Accommodation) <br />
+								• Course/Registration Fees <br />
+								• Conference/Workshop/Training Brochure <br />
+								• Conference/Workshop/Training Program Schedule <br /><br />
+							</p>
 							<FormField
 								control={form.control}
 								name="supporting_documents"
@@ -1878,19 +1886,19 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																className="w-[300px] h-fit"
 															/>
 														) : (
-															<div>Click to upload or draw signature</div>
+															<div>Click to Upload or Draw Signature</div>
 														)}
 													</div>
 												</DialogTrigger>
 												<DialogContent>
 													<Tabs defaultValue="upload">
 														<TabsList className="grid w-full grid-cols-2 my-3">
-															<TabsTrigger value="upload">Upload</TabsTrigger>
-															<TabsTrigger value="draw">Draw</TabsTrigger>
+															<TabsTrigger value="upload">Upload Signature</TabsTrigger>
+															<TabsTrigger value="draw">Draw Signature</TabsTrigger>
 														</TabsList>
 														<TabsContent value="upload">
 															<DialogHeader>
-																<DialogTitle className="mb-4">Upload Signature Image</DialogTitle>
+																<DialogTitle className="mb-4">Format (PNG, JPG, JPEG)</DialogTitle>
 															</DialogHeader>
 															<FormLabel className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
 																<div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -1945,9 +1953,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 														</TabsContent>
 														<TabsContent value="draw">
 															<DialogHeader className="my-3">
-																<DialogTitle>Draw Signature</DialogTitle>
+																{/* <DialogTitle>Draw Signature</DialogTitle> */}
 															</DialogHeader>
-															<DialogDescription className="mb-4">Please sign below</DialogDescription>
+															{/* <DialogDescription className="mb-4">Please sign below</DialogDescription> */}
 															<div className="w-full h-[200px] border-2 border-gray-300 rounded-md relative">
 																<SignaturePad
 																	// @ts-ignore

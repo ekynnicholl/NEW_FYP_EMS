@@ -452,14 +452,14 @@ export async function POST(request: Request) {
                 if (i == 0) {
                     await transporter.sendMail({
                         ...mailOptionsCopy,
-                        subject: `[NTF - To Review by AAO] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                        subject: `[NTF - To Review by AAO] ${staffName} (${staffID})`,
                         text: "[Academic Admin Office Level: Staff to Academic Administration Office]",
                         html: generateEmailHTML("[Academic Admin Office Level: Staff to Academic Administration Office]", formID, formIDForRecipient, '', formDetails)
                     });
                 } else {
                     await transporter.sendMail({
                         ...mailOptionsCopy,
-                        subject: `[NTF - Under Review] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                        subject: `[NTF - Under Review] ${staffName} (${staffID})`,
                         text: "[Applicant Level: Academic Administration Office to Staff]",
                         html: generateEmailHTML("[Applicant Level: Academic Administration Office to Staff]", formID, formIDForRecipient, '', formDetails)
                     });
@@ -472,7 +472,7 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + verificationEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - To Verify and Support] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - To Verify and Support] ${staffName} (${staffID})`,
                 text: "[Approver Level: Final Review & Approval to Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
                 html: generateEmailHTML("[Verifier Level: Review & Approval by HOS/ACDR/MGR]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
             });
@@ -484,7 +484,7 @@ export async function POST(request: Request) {
             // console.log("Started sending email process: " + approvalEmail)
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - Approval] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - Final Review & Approval Dean/ HMU] ${staffName} (${staffID})`,
                 text: "[Approver Level: Final Review & Approval by Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]",
                 html: generateEmailHTML("[Approver Level: Final Review & Approval by Head of School/ Associate Dean of Research/ Manager to Head of Management Unit/ Dean]", formID, 1, requestData.securityKey, formDetails, aaoEmail)
             });
@@ -495,7 +495,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF - Rejected Application] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - Rejected Application] ${staffName} (${staffID})`,
                     text: "[Applicant Level: Rejected Nomination/Traveling Form Application]",
                     html: generateEmailHTML("[Applicant Level: Rejected Nomination/Traveling Form Application]", formID, 2, requestData.revertComment, aaoEmail)
                 });
@@ -507,7 +507,7 @@ export async function POST(request: Request) {
             // console.log("Debugging reverted comment: " + requestData.revertComment);
             await transporter.sendMail({
                 ...mailOptionsCopy,
-                subject: `[NTF - Reverted to Staff] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                subject: `[NTF - Reverted to Staff] ${staffName} (${staffID})`,
                 text: "[Applicant Level: Academic Administration Office to Staff]",
                 html: generateEmailHTML("[Applicant Level: Academic Administration Office to Staff]", formID, 4, requestData.revertComment, requestData.securityKey, aaoEmail)
             });
@@ -518,7 +518,7 @@ export async function POST(request: Request) {
                 mailOptionsCopy.to = recipient;
                 await transporter.sendMail({
                     ...mailOptionsCopy,
-                    subject: `[NTF - Approved] ${staffName} (${staffID}) - Nominations Travelling Form`,
+                    subject: `[NTF - Approved] ${staffName} (${staffID})`,
                     text: "[Applicant Level: Approved Nomination/Traveling Form Application]",
                     html: generateEmailHTML("[Applicant Level: Approved Nomination/Traveling Form Application]", formID, 3)
                 });
