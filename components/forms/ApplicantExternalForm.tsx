@@ -396,9 +396,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	}, [form.getValues("full_name"), form.getValues("course")]);
 
 	// Enable this for debugging purposes only
-	// useEffect(() => {
-	// 	console.log(form.formState.errors);
-	// }, [form.formState.errors]);
+	useEffect(() => {
+		console.log(form.formState.errors);
+	}, [form.formState.errors]);
 
 	const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_150px_50px]";
 	const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
@@ -869,7 +869,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 							<div className="grid">
 								{useOwnTransport !== null && useOwnTransport === false ? (
 									<>
-										<div className={colFlightClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+										<div className={colFlightClass + " p-3 pl-5 bg-amber-100 rounded-xl mb-6 [&>*]:mx-3"}>
 											<div>
 												Flight Date <span className="text-red-500"> *</span>
 											</div>
@@ -931,11 +931,11 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				today.setHours(0, 0, 0, 0);
 																				return date < today;
 																			}}
+																			{...field}
 																			initialFocus
 																		/>
 																	</PopoverContent>
 																</Popover>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -957,7 +957,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		}}
 																	/>
 																</FormControl>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -979,7 +978,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		}}
 																	/>
 																</FormControl>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -1001,7 +999,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		}}
 																	/>
 																</FormControl>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -1023,7 +1020,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		}}
 																	/>
 																</FormControl>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -1046,7 +1042,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		}}
 																	/>
 																</FormControl>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -1101,7 +1096,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		/>
 																	</PopoverContent>
 																</Popover>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -1163,7 +1157,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																		/>
 																	</PopoverContent>
 																</Popover>
-																<FormMessage />
 															</FormItem>
 														)}
 													/>
@@ -1193,7 +1186,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 									<>
 										{form.getValues("logistic_arrangement") && form.getValues("logistic_arrangement")?.length! > 0 ? (
 											<>
-												<div className={colHotelClass + " p-3 pl-5 bg-amber-50 rounded-xl mb-6 [&>*]:mx-3"}>
+												<div className={colHotelClass + " p-3 pl-5 bg-amber-100 rounded-xl mb-6 [&>*]:mx-3"}>
 													<div>Hotel Name</div>
 													<div>Check In</div>
 													<div>Check Out</div>
@@ -1222,7 +1215,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				}}
 																			/>
 																		</FormControl>
-																		<FormMessage />
 																	</FormItem>
 																)}
 															/>
@@ -1281,7 +1273,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				/>
 																			</PopoverContent>
 																		</Popover>
-																		<FormMessage />
 																	</FormItem>
 																)}
 															/>
@@ -1345,7 +1336,6 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																				/>
 																			</PopoverContent>
 																		</Popover>
-																		<FormMessage />
 																	</FormItem>
 																)}
 															/>
@@ -1380,6 +1370,11 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 									</>
 								)}
 							</div>
+							{form.getFieldState("logistic_arrangement")?.error && (
+								<FormMessage className="text-red-500">
+									{form.getFieldState("logistic_arrangement")?.error?.message}
+								</FormMessage>
+							)}
 						</section>
 
 						<Separator className="my-8" />

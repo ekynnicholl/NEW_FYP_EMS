@@ -16,6 +16,12 @@ const LogisticArrangement = z.object({
 	check_out_date: z.date().nullable(),
 });
 
+function message() {
+	return "Hello World";
+}
+
+let a = message();
+
 const externalFormSchema = z
 	.object({
 		// Additional Fields,
@@ -60,7 +66,18 @@ const externalFormSchema = z
 		hrdf_claimable: z.string().nonempty({ message: "Please select one of the option." }),
 
 		// Section 3
-		logistic_arrangement: z.array(LogisticArrangement).nullable(),
+		logistic_arrangement: z.array(
+			z.object({
+				flight_date: z.date().nullable(),
+				flight_time: z.string().nullable(),
+				flight_number: z.string().optional(),
+				destination_from: z.string().optional(),
+				destination_to: z.string().optional(),
+				hotel_name: z.string().optional(),
+				check_in_date: z.date().nullable(),
+				check_out_date: z.date().nullable(),
+			}))
+			.nullable(),
 
 		// Section 4
 		course_fee: z
@@ -151,7 +168,6 @@ const externalFormSchema = z
 		applicant_declaration_signature: z.any(),
 	})
 	// if commencement date is before completion date, then return true
-	// else return false
 	.refine(
 		data => {
 			if (data.commencement_date && data.completion_date) {
@@ -165,7 +181,6 @@ const externalFormSchema = z
 		},
 	)
 	// if travelling is in group, then other members is required
-	// else return true
 	.refine(
 		data => {
 			if (data.travelling === "group") {
@@ -177,6 +192,30 @@ const externalFormSchema = z
 			message: "Other members is required.",
 			path: ["other_members"],
 		},
-	);
+	)
+	.refine(data => {
+		if (data.logistic_arrangement) {
+			if (data.transport === "aeroplane") {
+				for (let i = 0; i < data.logistic_arrangement.length; i++) {
+					if (
+						!data.logistic_arrangement[i].flight_date ||
+						!data.logistic_arrangement[i].flight_time ||
+						!data.logistic_arrangement[i].flight_number ||
+						!data.logistic_arrangement[i].destination_from ||
+						!data.logistic_arrangement[i].destination_to
+					) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+		},
+		{
+			message: a,
+			path: ["logistic_arrangement", 1, "flight_date"],
+		},
+	)
+
 
 export default externalFormSchema;

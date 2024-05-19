@@ -165,6 +165,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
         {
             accessorKey: "formStage",
             sortingFn: "auto",
+			filterFn: "equals",
             header: ({ column }) => (
                 <Button variant="ghost" className="pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
                     Form Status
