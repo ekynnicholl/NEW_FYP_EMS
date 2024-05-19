@@ -58,11 +58,12 @@ const showSuccessToast = (message: string) => {
 	});
 };
 
-let files: File[] = [];
+// let files: File[] = [];
 
 const savedForm = sessionStorage.getItem("form");
 const parsedForm = savedForm ? JSON.parse(savedForm) : null;
 if (parsedForm) {
+	parsedForm.supporting_documents = null;
 	if (parsedForm.logistic_arrangement) {
 		parsedForm.logistic_arrangement = parsedForm.logistic_arrangement.map((arrangement: any) => {
 			if (arrangement.check_in_date) {
@@ -78,7 +79,6 @@ if (parsedForm) {
 		});
 	}
 }
-
 
 export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const supabase = createClientComponentClient();
@@ -104,6 +104,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 	const [applicantName, setApplicantName] = useState("");
 	const [applicantPosition, setApplicantPosition] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [files, setFiles] = useState<File[]>([]); // Assuming you have a state variable like this
 
 	const sigCanvas = useRef({});
 	//@ts-ignore
@@ -117,64 +118,62 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		resolver: zodResolver(externalFormSchema),
 		defaultValues: savedForm
 			? {
-				...parsedForm,
-				commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
-				completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
-				applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
-			}
+					...parsedForm,
+					commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
+					completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
+					applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
+			  }
 			: {
-				formStage: 2,
-				full_name: "",
-				email: "",
-				staff_id: "",
-				course: "",
-				faculty: "",
-				transport: "",
-				travelling: "",
-				other_members: "",
+					formStage: 2,
+					full_name: "",
+					email: "",
+					staff_id: "",
+					course: "",
+					faculty: "",
+					transport: "",
+					travelling: "",
+					other_members: "",
 
-				program_title: "",
-				program_description: "",
-				commencement_date: null,
-				completion_date: null,
-				organiser: "",
-				venue: "",
-				hrdf_claimable: "",
+					program_title: "",
+					program_description: "",
+					commencement_date: null,
+					completion_date: null,
+					organiser: "",
+					venue: "",
+					hrdf_claimable: "",
 
-				logistic_arrangement: null,
+					logistic_arrangement: null,
 
-				course_fee: 0,
-				airfare_fee: 0,
-				accommodation_fee: 0,
-				per_diem_fee: 0,
-				transportation_fee: 0,
-				travel_insurance_fee: 0,
-				other_fees: 0,
-				grand_total_fees: 0,
-				staff_development_fund: "",
-				consolidated_pool_fund: "",
-				research_fund: "",
-				travel_fund: "",
-				student_council_fund: "",
-				other_funds: "",
-				expenditure_cap: "No",
-				expenditure_cap_amount: 0,
+					course_fee: 0,
+					airfare_fee: 0,
+					accommodation_fee: 0,
+					per_diem_fee: 0,
+					transportation_fee: 0,
+					travel_insurance_fee: 0,
+					other_fees: 0,
+					grand_total_fees: 0,
+					staff_development_fund: "",
+					consolidated_pool_fund: "",
+					research_fund: "",
+					travel_fund: "",
+					student_council_fund: "",
+					other_funds: "",
+					expenditure_cap: "No",
+					expenditure_cap_amount: 0,
 
-				supporting_documents: null,
+					supporting_documents: null,
 
-				applicant_declaration_signature: "",
-				applicant_declaration_name: "",
-				applicant_declaration_position_title: "",
-				applicant_declaration_date: new Date(),
-			},
+					applicant_declaration_signature: "",
+					applicant_declaration_name: "",
+					applicant_declaration_position_title: "",
+					applicant_declaration_date: new Date(),
+			  },
 	});
 	useEffect(() => {
 		if (parsedForm) {
 			toast.success("Form content loaded from previous session");
 		}
 	}, []);
-	// print the form values to the console
-	console.log(form.getValues());
 
 	const checkFormStatus = () => {
 		setOpen(false);
@@ -202,6 +201,25 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
 			toast.error("Please enter the name of other members traveling together");
 		}
+		
+		// if (form.getValues("transport") === "aeroplane") {
+		// 	let hasError = false;
+		// 	for (let i = 0; i < (form.getValues("logistic_arrangement")?.length ?? 0); i++) {
+		// 		if (
+		// 			!form.getValues("logistic_arrangement")?.[i]?.flight_date ||
+		// 			!form.getValues("logistic_arrangement")?.[i]?.flight_time ||
+		// 			!form.getValues("logistic_arrangement")?.[i]?.flight_number ||
+		// 			!form.getValues("logistic_arrangement")?.[i]?.destination_from ||
+		// 			!form.getValues("logistic_arrangement")?.[i]?.destination_to
+		// 		) {
+		// 			hasError = true;
+		// 			break
+		// 		}
+		// 	}
+		// 	if (hasError) {
+		// 		toast.error("Please fill in all the fields in the logistic arrangement section.");
+		// 	}
+		// }
 	};
 
 	const formReset = () => {
@@ -386,6 +404,10 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		}
 	}
 
+	async function onError(error: any) {
+		console.log("Wrong");
+	}
+
 	useEffect(() => {
 		setGrandTotal(courseFee + airfareFee + accommodationFee + perDiemFee + transportationFee + travelInsuranceFee + otherFees);
 	}, [courseFee, airfareFee, accommodationFee, perDiemFee, transportationFee, travelInsuranceFee, otherFees]);
@@ -397,6 +419,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 
 	// Enable this for debugging purposes only
 	useEffect(() => {
+		if (Object.keys(form.formState.errors).length > 0) {
+			toast.error("Please fill in all the required fields");
+		}
 		console.log(form.formState.errors);
 	}, [form.formState.errors]);
 
@@ -409,7 +434,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 			<Separator className="mt-8" />
 			<div className="grid gap-8 place-items-center">
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+					<form onSubmit={form.handleSubmit(onSubmit, onError)} className="mt-8 space-y-8">
 						<section className="section-1" id="Personal Details">
 							<h2 className="text-2xl font-bold mb-4">1. Personal Details</h2>
 							<div className="grid gap-8">
@@ -1126,9 +1151,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			mode="single"
 																			selected={
 																				field.value &&
-																					field.value[i] &&
-																					field.value[i].check_out_date !== null &&
-																					field.value[i].check_out_date
+																				field.value[i] &&
+																				field.value[i].check_out_date !== null &&
+																				field.value[i].check_out_date
 																					? new Date(field.value[i].check_out_date!)
 																					: undefined
 																			}
@@ -1235,8 +1260,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																						)}
 																					>
 																						{field.value &&
-																							field.value[i] &&
-																							field.value[i].check_in_date ? (
+																						field.value[i] &&
+																						field.value[i].check_in_date ? (
 																							format(new Date(field.value?.[i].check_in_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1291,8 +1316,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																						)}
 																					>
 																						{field.value &&
-																							field.value[i] &&
-																							field.value[i].check_out_date ? (
+																						field.value[i] &&
+																						field.value[i].check_out_date ? (
 																							format(new Date(field.value?.[i].check_out_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1371,9 +1396,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 								)}
 							</div>
 							{form.getFieldState("logistic_arrangement")?.error && (
-								<FormMessage className="text-red-500">
-									{form.getFieldState("logistic_arrangement")?.error?.message}
-								</FormMessage>
+								<FormMessage className="text-red-500">{form.getFieldState("logistic_arrangement")?.error?.message}</FormMessage>
 							)}
 						</section>
 
@@ -1676,12 +1699,14 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 								5. Supporting Documents <span className="text-red-500"> *</span>
 							</h1>
 							<p className="text-blue-400 font-medium italic">
-								Please submit the following relevant supporting documents (if there’s any): <br /><br />
+								Please submit the following relevant supporting documents (if there’s any): <br />
+								<br />
 								• Nomination/Traveling Form <br />
 								• Travel Itinerary (Airfare/Accommodation) <br />
 								• Course/Registration Fees <br />
 								• Conference/Workshop/Training Brochure <br />
-								• Conference/Workshop/Training Program Schedule <br /><br />
+								• Conference/Workshop/Training Program Schedule <br />
+								<br />
 							</p>
 							<FormField
 								control={form.control}
@@ -1708,7 +1733,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 												<p className="mb-2 text-base text-gray-500 dark:text-gray-400">
 													<span className="font-semibold">Click or drag to upload</span>
 												</p>
-												<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 5MB)</p>
+												<p className="text-sm text-gray-500 dark:text-gray-400">PDF (maximum 50MB)</p>
 												{field?.value?.length! > 0 && (
 													<p className="mt-2 text-xl text-slate-700">{field.value?.length} File Uploaded</p>
 												)}
@@ -1724,19 +1749,22 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 													})}
 													onChange={event => {
 														if (event.target.files) {
-															console.log(event.target.files);
 															const newFiles = Array.from(event.target.files as FileList);
+															let updatedFiles = [...files];
+
 															newFiles.forEach(newFile => {
-																if (!files.some(file => file.name === newFile.name)) {
-																	files.push(newFile);
+																if (!updatedFiles.some(file => file.name === newFile.name)) {
+																	updatedFiles.push(newFile);
 																} else {
 																	toast.error("File already exists");
 																}
 															});
-															field.onChange(files);
+
+															setFiles(updatedFiles);
+															field.onChange(updatedFiles);
 															form.trigger("supporting_documents");
-															console.log(form.getValues("supporting_documents"));
 														}
+														event.target.value = "";
 													}}
 												/>
 											</FormControl>

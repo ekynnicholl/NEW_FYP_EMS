@@ -3,7 +3,7 @@ import * as z from "zod";
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 5 MB in bytes
 
 const LogisticArrangement = z.object({
 	flight_date: z.date().nullable(),
@@ -145,16 +145,17 @@ const externalFormSchema = z
 			.refine(
 				fileList => {
 					if (fileList) {
+						let totalSize = 0;
 						for (let i = 0; i < fileList.length; i++) {
-							if (fileList[i].size! > MAX_FILE_SIZE) {
-								return false;
-							}
+							totalSize += fileList[i].size!;
 						}
+
+						return totalSize <= MAX_FILE_SIZE;
 					}
 					return true;
 				},
 				{
-					message: "All files must be smaller than 5MB.",
+					message: "Total files size must be smaller than 50MB.",
 				},
 			),
 
@@ -212,8 +213,8 @@ const externalFormSchema = z
 		return true;
 		},
 		{
-			message: a,
-			path: ["logistic_arrangement", 1, "flight_date"],
+			message: "Please fill in all the fields in the logistic arrangement section.",
+			path: ["logistic_arrangement"],
 		},
 	)
 
