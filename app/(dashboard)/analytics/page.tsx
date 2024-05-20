@@ -159,7 +159,7 @@ export default function Home() {
 							id="startDate"
 							name="startDate"
 							value={startDate}
-							// onChange={handleDateChange}
+							onChange={handleDateChange}
 							className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 						/>
 					</div>
@@ -173,7 +173,7 @@ export default function Home() {
 							id="endDate"
 							name="endDate"
 							value={endDate}
-							// onChange={handleDateChange}
+							onChange={handleDateChange}
 							className="h-full rounded-md border bg-white border-gray-400 mb-5 text-gray-700 py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:border-[#484E51] dark:bg-dark_mode_card dark:text-dark_text2"
 						/>
 					</div>
