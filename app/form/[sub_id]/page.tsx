@@ -1,12 +1,13 @@
 "use client";
 
-import { Fragment, useState, useEffect, SetStateAction } from "react";
+import { Fragment, useState, useEffect, SetStateAction, JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import loadingGIF from "@/public/loading_bird.gif";
 import { getAuth } from "firebase/auth";
 import Image from "next/image";
+import Linkify from 'react-linkify';
 
 import Failure_Modal from "@/components/Failure_Modal";
 
@@ -570,6 +571,12 @@ export default function AttendanceForm() {
 
 	const [showModalFailure, setShowModalFailure] = useState(false);
 
+	const linkDecorator = (decoratedHref: string | undefined, decoratedText: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | PromiseLikeOfReactNode | null | undefined, key: Key | null | undefined) => (
+		<a href={decoratedHref} key={key} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">
+			{decoratedText}
+		</a>
+	);
+
 	return (
 		<>
 			{isLoaded ? (
@@ -610,7 +617,14 @@ export default function AttendanceForm() {
 											{eventData && (
 												<div>
 													<p>Event Name: <span className="font-bold">{eventData.intFEventName} - {eventData.sub_eventsName}</span></p>
-													<p>Description: <span className="font-bold">{eventData.intFEventDescription}</span></p>
+													<p>
+														Description:{" "}
+														<span className="font-bold">
+															<Linkify componentDecorator={linkDecorator}>
+																{eventData.intFEventDescription}
+															</Linkify>
+														</span>
+													</p>
 													<p>Organizer: <span className="font-bold">{eventData.sub_eventsOrganizer}</span></p>
 													<p>Trainer&apos;s Name: <span className="font-bold">{eventData.intFTrainerName}</span></p>
 													<p>
