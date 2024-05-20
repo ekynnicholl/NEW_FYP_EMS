@@ -796,7 +796,7 @@ export default function Home() {
 									</div>
 								</div>
 								<div className="flex items-center">
-									{dataResults ? (
+									{dataResults.length > 0 ? (
 										<span className="text-sm lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
 											1-{entriesToShow} of {dataResults?.length} entries
 										</span>

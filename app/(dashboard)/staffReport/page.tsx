@@ -158,7 +158,7 @@ export default function Home() {
 		setSelectedFilterStudent("");
 	};
 
-	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor'>('all');
+	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor' | 'secondary'>('all');
 
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
@@ -377,7 +377,7 @@ export default function Home() {
 		return options;
 	}
 
-	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor', query: string) => {
+	const filterUserData = (tab: 'all' | 'staff' | 'student' | 'visitor' | 'secondary', query: string) => {
 
 		// Clear the data results
 		setDataResults([]);
@@ -412,6 +412,10 @@ export default function Home() {
 			filteredUserData = filteredUserData.filter((item) => item.staffID === '0');
 			setCurrentPage(1);
 
+		} else if (tab === 'secondary') {
+			filteredUserData = filteredUserData.filter((item) => item.staffID === '1');
+			setCurrentPage(1);
+
 		} else if (tab === 'all') {
 			filteredUserData = [...aggregatedInfo];
 			if (selectedFacultyUnit.length > 0) {
@@ -420,7 +424,7 @@ export default function Home() {
 			setSelectedFilterStaff('');
 			setSelectedFilterStudent('');
 			setCurrentPage(1);
-		}
+		} 
 
 		if (query) {
 			filteredUserData = filteredUserData.filter(
@@ -685,6 +689,13 @@ export default function Home() {
 										onClick={() => { setActiveTab('visitor') }}
 									>
 										Visitor
+									</button>
+									<button
+										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'secondary' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
+											}`}
+										onClick={() => { setActiveTab('secondary') }}
+									>
+										Secondary
 									</button>
 								</div>
 
