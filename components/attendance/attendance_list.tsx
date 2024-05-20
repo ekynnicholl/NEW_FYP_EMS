@@ -549,7 +549,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 ) : (
                                     <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                 )} */}
-                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={activeTab} attendanceMainEventID={attendanceMainEventID} />
+                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} categoryTab={activeTab} />
                             </div>
                         </div>
                     ) : (

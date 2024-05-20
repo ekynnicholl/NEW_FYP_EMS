@@ -53,8 +53,9 @@ type FacultyUnit = {
 interface Props {
     attendanceData: AttendanceDataType[];
     itemsPerPage: number;
-    isAllTabActive: string;
+    isAllTabActive: boolean;
     attendanceMainEventID: string;
+    categoryTab: string;
 }
 
 // const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
@@ -100,7 +101,7 @@ interface Props {
 //     window.URL.revokeObjectURL(url);
 // };
 
-const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID }) => {
+const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID, categoryTab }) => {
     const supabase = createClientComponentClient();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -670,7 +671,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </td>
-                                            {isAllTabActive !== 'all' && (
+                                            {isAllTabActive && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
@@ -707,17 +708,17 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                         rel="noopener noreferrer"
                                                         className="text-blue-500 hover:underline"
                                                     >
-                                                        {isAllTabActive === 'visitor'
+                                                        {categoryTab === 'visitor'
                                                             ? 'Visitor'
-                                                            : isAllTabActive === 'secondary'
+                                                            : categoryTab === 'secondary'
                                                                 ? 'Secondary'
                                                                 : attendanceItem.attFormsStaffID}
                                                     </a>
                                                 ) : (
                                                     <>
-                                                        {isAllTabActive === 'visitor'
+                                                        {categoryTab === 'visitor'
                                                             ? 'Visitor'
-                                                            : isAllTabActive === 'secondary'
+                                                            : categoryTab === 'secondary'
                                                                 ? 'Secondary'
                                                                 : attendanceItem.attFormsStaffID === '0'
                                                                     ? 'Visitor'
@@ -733,7 +734,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsFacultyUnit}
                                             </td>
-                                            {isAllTabActive !== 'all' && hasMultipleSubEvents && (
+                                            {isAllTabActive && hasMultipleSubEvents && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
