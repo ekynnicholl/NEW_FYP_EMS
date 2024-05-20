@@ -59,10 +59,14 @@ const BarChart: React.FC<BarChartProps> = ({ startDate, endDate, category }) => 
             .gte("attDateSubmitted", formattedStartDate)
             .lte("attDateSubmitted", formattedEndDate);
 
-        if (category === "student") {
-            query = query.not("attFormsStaffID", "like", "SS%").not("attFormsStaffID", "eq", "0");;
+        if (category === "swinburne") {
+            query = query.not("attFormsStaffID", "like", "SS%").not("attFormsStaffID", "eq", "0").not("attFormsStaffID", "eq", "1");
         } else if (category === "staff") {
             query = query.like("attFormsStaffID", "SS%");
+        } else if (category === "secondary") {
+            query = query.eq("attFormsStaffID", "1");
+        } else if (category === "visitor") {
+            query = query.eq("attFormsStaffID", "0");
         }
 
         const { data, error } = await query;
