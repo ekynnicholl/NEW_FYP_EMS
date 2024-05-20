@@ -11,6 +11,26 @@ export default function AuditLog({ auditLogs, externalForm }: { auditLogs: Audit
 		<div>
 			{auditLogs?.map((log, index) => (
 				<div key={index} className="my-3">
+					{log.type?.toLocaleLowerCase() === "appeal" && (
+						<div>
+							<p className="font-semibold">Appealed By:</p>
+							<span>
+								{log.username} ({log.email})
+							</span>
+							<p>Time: {formatDateAndTime(log.created_at)}</p>
+						</div>
+					)}
+
+					{log.type?.toLocaleLowerCase() === "edit" && (
+						<div>
+							<p className="font-semibold">Edited By:</p>
+							<span>
+								{log.username} ({log.email})
+							</span>
+							<p>Time: {formatDateAndTime(log.created_at)}</p>
+						</div>
+					)}
+
 					{log.type?.toLocaleLowerCase() === "create" && (
 						<div>
 							<p className="font-semibold">Created By:</p>

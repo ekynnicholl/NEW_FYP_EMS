@@ -43,7 +43,8 @@ export default async function Important() {
 		// .not("formStage", "eq", 1) 
 		.not("formStage", "eq", 2)
 		.not("formStage", "eq", 5)
-		.not("formStage", "eq", 6);
+		.not("formStage", "eq", 6)
+		.not("formStage", "eq", 7);
 
 	return (
 		<>

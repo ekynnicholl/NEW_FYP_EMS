@@ -2,14 +2,28 @@
 
 import { Document, Page } from "react-pdf";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+} from "@/components/ui/dialog";
+import toast from "react-hot-toast";
+import { sendContactForm } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function NTFPDF({ id }: { id: string }) {
 	const supabase = createClientComponentClient();
 	const [formDetails, setFormDetails] = useState<ExternalForm[]>([]);
 	const [auditLog, setAuditLog] = useState<AuditLog[]>([]);
+	const [appealOpen, setAppealOpen] = useState(false);
 
 	const [numPagesArray, setNumPagesArray] = useState<(number | null)[]>([]);
 
@@ -85,6 +99,79 @@ export default function NTFPDF({ id }: { id: string }) {
 		return `${day} ${month} ${date.getFullYear()}, ${time}`;
 	};
 
+	const [appealComment, setAppealComment] = useState('');
+	// const router = useRouter();
+
+	const handleInputChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+		setAppealComment(event.target.value);
+	};
+
+	const submitAppeal = async () => {
+		if (appealComment.length == 0 && !appealComment) {
+			toast.error("You need to provide a reason for this appeal!");
+			return;
+		}
+
+		const { data, error } = await supabase
+			.from("external_forms")
+			.update([
+				{
+					formStage: 7,
+					last_updated: new Date(),
+					revertComment: appealComment
+				},
+			])
+			.eq("id", formDetails[0].id);
+
+		if (error) {
+			toast.error("Failed to submit appeal. Please directly contact Academic Administration Office.");
+			return;
+		} else {
+			toast.success("Successfully appealed. You should receive an email regarding this.");
+			setAppealOpen(!appealOpen);
+
+			const notifDesc = `${formDetails[0].full_name} (${formDetails[0].staff_id}) has requested for an appeal for their Nominations/ Travelling Forms: ${formDetails[0].program_title}.`;
+			const notifType = "Nominations/ Travelling Form";
+			const notifLink = `/external/${formDetails[0].id}`;
+
+			const { data: notificationData, error: notificationError } = await supabase
+				.from("notifications")
+				.insert([
+					{
+						notifDesc,
+						notifType,
+						notifLink,
+					},
+				]);
+
+			if (notificationError) {
+				toast.error("Unable to create notifications. Proceeding anyway...");
+			} else {
+				await supabase.from("audit_log").insert([
+					{
+						ntf_id: formDetails[0].id,
+						type: "Appeal",
+						username: formDetails[0].full_name,
+						email: formDetails[0].email,
+					},
+				]);
+
+				const { data: updatedForms, error: updatedFormsError } = await supabase
+					.from("external_forms")
+					.select("*")
+					.eq("id", formDetails[0].id);
+
+				if (updatedFormsError) {
+					toast.error("Unable to send email but the form status has already changed...");
+					return;
+				}
+
+				sendContactForm(updatedForms);
+				location.reload();
+			}
+		}
+	}
+
 	return (
 		<div className="bg-white w-full">
 			<div className="m-auto bg-white w-a4">
@@ -118,9 +205,8 @@ export default function NTFPDF({ id }: { id: string }) {
 									Full Name in CAPITAL LETTERS &#40;as per I.C. / Passport&#41;
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${(details.full_name?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.full_name}
 								</p>
@@ -132,18 +218,16 @@ export default function NTFPDF({ id }: { id: string }) {
 									Designation / Course
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${(details.course?.length ?? 0) >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.course}
 								</p>
 
 								<label className="col-span-2 p-1 border border-slate-950 border-t-0 flex items-center">Faculty / School / Unit</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
-										details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.faculty && details.faculty.length >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.faculty}
 								</p>
@@ -164,9 +248,8 @@ export default function NTFPDF({ id }: { id: string }) {
 									Name of other staff / student travelling together in group<sup>1</sup>
 								</label>
 								<p
-									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${
-										details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-6 row-span-1 border-r border-slate-950 bg-white flex items-center ${details.other_members?.length ?? 0 >= 96 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{(details && details.other_members?.length) ?? 0 > 0 ? details.other_members : ""}
 								</p>
@@ -212,18 +295,16 @@ export default function NTFPDF({ id }: { id: string }) {
 									Organiser
 								</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${
-										details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-slate-950 bg-white flex items-center ${details?.organiser?.length ?? 0 >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details && details.organiser?.length ? details.organiser : ""}
 								</p>
 
 								<label className="col-span-2 p-1 bg-gray-200 border border-slate-950 border-t-0 flex items-center">Venue</label>
 								<p
-									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${
-										details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
-									}`}
+									className={`col-span-2 row-span-1 border-b border-r border-slate-950 bg-white flex items-center ${details.venue && details.venue.length >= 26 ? "px-2 py-1" : "p-2"
+										}`}
 								>
 									{details.venue}
 								</p>
@@ -348,7 +429,7 @@ export default function NTFPDF({ id }: { id: string }) {
 											<div className="col-span-3 border border-slate-950 border-t-0 py-2"></div>
 										</div>
 									</>
-									
+
 								)}
 
 								{/* <div className="grid grid-cols-2 normal-case bg-gray-200 text-[12px] font-semibold leading-3">
@@ -728,13 +809,44 @@ export default function NTFPDF({ id }: { id: string }) {
 								</p>
 							</div>
 
-							<Button
-								variant="destructive"
-								onClick={handlePrint}
-								className="hover:bg-blue-700 duration-300 text-white font-semibold py-2 px-4 text-sm mt-2 rounded print-button"
-							>
-								Print
-							</Button>
+							<div className="space-x-4">
+								{details.formStage == 6 &&
+									<Dialog open={appealOpen} onOpenChange={setAppealOpen}>
+										<DialogTrigger asChild>
+											<Button className="mt-5 print-button" type="button">
+												Appeal
+											</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Appeal</DialogTitle>
+												<DialogDescription>
+													You are about to request for an appeal for your Nominations/ Travelling Forms. The Administration Academic Office will have the final say in this. Please input the reason for this appeal below:
+												</DialogDescription>
+												<textarea
+													className="w-full p-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 focus:outline-none focus:border-gray-400 focus:bg-white mt-1 text-sm lg:text-base dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
+													value={appealComment}
+													onChange={handleInputChange}
+												/>
+											</DialogHeader>
+											<DialogFooter>
+												<DialogClose asChild>
+													<Button variant="outline">Cancel</Button>
+												</DialogClose>
+												<Button onClick={submitAppeal}>
+													Yes
+												</Button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
+								}
+								<Button
+									onClick={handlePrint}
+									className="hover:bg-slate-700 duration-300 text-white font-semibold py-2 px-4 text-sm mt-2 rounded-lg print-button"
+								>
+									Print
+								</Button>
+							</div>
 						</form>
 					))}
 				</div>
@@ -742,6 +854,26 @@ export default function NTFPDF({ id }: { id: string }) {
 				<div className="py-4">
 					{auditLog.map((log, index) => (
 						<div key={index} className="my-3">
+							{log.type?.toLocaleLowerCase() === "appeal" && (
+								<div>
+									<p className="font-semibold">Appealed By:</p>
+									<span>
+										{log.username} ({log.email})
+									</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
+							{log.type?.toLocaleLowerCase() === "edit" && (
+								<div>
+									<p className="font-semibold">Edited By:</p>
+									<span>
+										{log.username} ({log.email})
+									</span>
+									<p>Time: {formatDateAndTime(log.created_at)}</p>
+								</div>
+							)}
+
 							{log.type?.toLocaleLowerCase() === "create" && (
 								<div>
 									<p className="font-semibold">Created By:</p>

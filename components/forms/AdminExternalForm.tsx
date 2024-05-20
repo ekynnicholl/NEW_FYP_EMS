@@ -754,7 +754,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 		<div>
 			{/* TO-DO: ADD 3 MORE ADDITIONAL FIELDS. I DON'T THINK THIS EXIST IN THE DATABASE YET. */}
 			{/* 1. STAFF EMAIL (INPUT FIELD WITH EMAIL VALIDATION), 2. HOS/ MGR/ ADCR EMAIL (DROPDOWN SELECT), 3. HMU/ DEAN EMAIL (DROPDOWN SELECT) */}
-			{externalForm.formStage !== 5 && externalForm.formStage !== 6 ? (
+			{externalForm.formStage !== 5 && externalForm.formStage !== 6 && externalForm.formStage !== 7 ? (
 				<div className="mx-auto max-w-6xl px-8 my-8 mt-6 mb-[200px]">
 					<div className="ml-10">
 						<div className="flex ml-[13px]">
@@ -2764,7 +2764,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<span className="mr-2">Security Key</span>
 																<TooltipIcon />
 															</span>
-															<span className="bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
+															<span className="z-[999] bg-slate-100 pointer-events-none absolute ml-2 rounded-md w-[200px] text-justify opacity-0 transition-opacity group-hover:opacity-100 p-3 border-2">
 																This is to ensure that you are the appropriate individual for the authorization or
 																rejection of this form. It can be found in your email.
 															</span>

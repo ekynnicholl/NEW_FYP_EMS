@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { getAuth } from "firebase/auth";
 import { sendContactForm } from "@/lib/api";
 import { v4 as uuidv4 } from "uuid";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 import AuditLog from "@/components/ntf/AuditLog";
 import { BsFiletypePdf } from "react-icons/bs";
@@ -116,7 +117,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 	const [travelInsuranceFee, setTravelInsuranceFee] = useState(externalForm?.travel_insurance_fee || 0);
 	const [otherFees, setOtherFees] = useState(externalForm?.other_fees || 0);
 	const [grandTotal, setGrandTotal] = useState(0);
-	
+
 	useEffect(() => {
 		setGrandTotal(courseFee + airfareFee + accommodationFee + perDiemFee + transportationFee + travelInsuranceFee + otherFees);
 	}, [courseFee, airfareFee, accommodationFee, perDiemFee, transportationFee, travelInsuranceFee, otherFees]);
@@ -261,7 +262,21 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 			toast.error("Error updating external form");
 			return;
 		} else {
-			toast.success("External form updated successfully");
+			toast.success("External form updated successfully!");
+
+			const { data: auditLogData, error: auditLogError } = await supabase
+				.from("audit_log")
+				.insert({
+					ntf_id: externalForm.id,
+					type: "Edit",
+					username: user?.displayName,
+					email: user?.email,
+				})
+				.select();
+
+			if (!auditLogError) {
+				setAuditLogs([...auditLogs, auditLogData![0]]);
+			}
 		}
 	}
 
@@ -448,6 +463,12 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 									<div className="flex gap-3 text-red-500 items-center">
 										<CircleX size={20} />
 										<h1 className="text-xl font-semibold">Rejected</h1>
+									</div>
+								)}
+								{externalForm.formStage === 7 && (
+									<div className="flex gap-3 text-red-500 items-center">
+										<AiOutlineExclamationCircle size={26} />
+										<h1 className="text-xl font-semibold">Requested for Appeal</h1>
 									</div>
 								)}
 							</div>
@@ -1010,7 +1031,7 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 														check_in_date: null,
 														check_out_date: null,
 													}
-													
+
 													old.push(newLogistic);
 													nonFlightLogistic.push(newLogistic);
 													form.setValue("logistic_arrangement", old);
@@ -1328,9 +1349,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																		mode="single"
 																		selected={
 																			field.value &&
-																			field.value[i] &&
-																			field.value[i].check_out_date !== null &&
-																			field.value[i].check_out_date
+																				field.value[i] &&
+																				field.value[i].check_out_date !== null &&
+																				field.value[i].check_out_date
 																				? (field.value[i].check_out_date as Date)
 																				: undefined
 																		}
@@ -1371,9 +1392,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 												<div className="grid place-items-center">
 													<X
-														className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${
-															edit ? "cursor-pointer" : "cursor-not-allowed"
-														}`}
+														className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${edit ? "cursor-pointer" : "cursor-not-allowed"
+															}`}
 														onClick={() => {
 															if (!edit) return;
 															const values = form.getValues("logistic_arrangement");
@@ -1513,8 +1533,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																					)}
 																				>
 																					{field.value &&
-																					field.value[i] &&
-																					field.value[i].check_out_date ? (
+																						field.value[i] &&
+																						field.value[i].check_out_date ? (
 																						format(new Date(field.value?.[i].check_out_date!), "PPP")
 																					) : (
 																						<span>Pick a date</span>
@@ -1527,9 +1547,9 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 																				mode="single"
 																				selected={
 																					field.value &&
-																					field.value[i] &&
-																					field.value[i].check_out_date !== null &&
-																					field.value[i].check_out_date
+																						field.value[i] &&
+																						field.value[i].check_out_date !== null &&
+																						field.value[i].check_out_date
 																						? (field.value[i].check_out_date as Date)
 																						: undefined
 																				}
@@ -1570,9 +1590,8 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 
 														<div className="grid place-items-center">
 															<X
-																className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${
-																	edit ? "cursor-pointer" : "cursor-not-allowed"
-																}`}
+																className={`text-red-500 hover:text-red-600 transition-all hover:scale-125 ${edit ? "cursor-pointer" : "cursor-not-allowed"
+																	}`}
 																onClick={() => {
 																	if (!edit) return;
 																	const values = form.getValues("logistic_arrangement");

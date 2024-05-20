@@ -396,7 +396,126 @@ function generateEmailHTML(process: string, formID: string, type: number, option
             </body>
         </html>
         `;
-    } else {
+    }
+
+
+
+
+
+
+    // Request for appeal to AAO,
+    else if (type == 7) {
+        let staffDetails = "";
+        let appealComment = "";
+
+        if (optionalFields && optionalFields.trim() !== "") {
+            staffDetails = optionalFields;
+        } else {
+            staffDetails = "Staff details not found. Please refer to user manual for more assistance (ERRNTF_1_T6)."
+        }
+
+        if (optionalFields2 && optionalFields2.trim() !== "") {
+            appealComment = optionalFields2;
+        } else {
+            appealComment = "Appeal comment not found."
+        }
+
+        return `
+        <html>
+            <head>
+                <style>
+                    .email-container {
+                        padding: 20px;
+                        max-width: 1400px; 
+                        margin: 0 auto;
+                    }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
+                    body{
+                        text-align: justify;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="email-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
+                    <h2 class="no-p-m">Dear Academic Administration Office Staff,</h2>
+                    <br/>
+                    <p class="no-p-m">An appeal has been submitted for the <span style="font-weight:bold;">Nominations/ Travelling Form application</span>: ${staffDetails}. You may view the forms via the Event Management System or you can click the link below to take the next action:</p>
+                    <br/>
+                    <p class="no-p-m">${linkForAAO}</p>
+                    <br/>
+                    <p class="no-p-m" style="font-weight:bold;">The request attached to the appeal:</p>
+                    <p class="no-p-m" style="font-weight:bold;">${appealComment}</p>
+                    <br/>
+                    <span style="font-weight:bold;">Process Level: </span> ${process}
+                    <br/>
+                    <br/>
+                    <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    </p>
+                </div>
+            </body>
+        </html>
+        `;
+    }
+
+
+    // Appeal request received to staff,
+    else if (type == 8) {
+        let aaoEmail = "";
+
+        if (optionalFields2 && optionalFields2.trim() !== "") {
+            aaoEmail = `<a href='mailto:${optionalFields2}'>${optionalFields2}</a>`;
+        } else {
+            aaoEmail = "Appeal comment not found."
+        }
+
+        return `
+        <html>
+            <head>
+                <style>
+                    .email-container {
+                        padding: 20px;
+                        max-width: 1400px; 
+                        margin: 0 auto;
+                    }
+                    .no-p-m{
+                        margin: 0px;
+                        padding: 0px;
+                    }
+                    body{
+                        text-align: justify;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="email-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
+                    <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
+                    <br/>
+                    <p class="no-p-m">Please be informed that your <span style="font-weight:bold;">Nominations/ Travelling Form application</span> appeal has been received. Please allow us some time to process within 2 to 3 working days.</p>
+                    <br/>
+                    <p class="no-p-m">You will receive an email notification regarding your application status if your appeal is successful.</p>
+                    <br/>
+                    <p class="no-p-m">If you have any questions, you may contact the staff handling your application: ${aaoEmail}</p>
+                    <br/>
+                    <span style="font-weight:bold;">Process Level: </span> ${process}
+                    <br/>
+                    <br/>
+                    <p class="no-p-m">We're committed to ensuring your user experience is as seamless and hassle free as possible. Thank you for using our system.</p>
+                    <br/>
+                    <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                    </p>
+                </div>
+            </body>
+        </html>
+        `;
+    }
+    else {
         return `
         <html>
             <head>
@@ -522,6 +641,36 @@ export async function POST(request: Request) {
                     text: "[Applicant Level: Approved Nomination/Traveling Form Application]",
                     html: generateEmailHTML("[Applicant Level: Approved Nomination/Traveling Form Application]", formID, 3)
                 });
+            }
+        } else if (formStage === 7) {
+            const recipients = ['swinburneacademicoffice@gmail.com', staffEmail];
+            // const recipients = ['jadpichoo@outlook.com', staffEmail];
+            const formIDs = [7, 8];
+            // Debugging statements,
+            // console.log("Started sending email process: ")
+
+            for (let i = 0; i < recipients.length; i++) {
+                const mailOptionsCopy = { ...mailOptions };
+                mailOptionsCopy.to = recipients[i];
+
+                const formIDForRecipient = formIDs[i];
+
+                // It sends to AAO first, then to the staff,
+                if (i == 0) {
+                    await transporter.sendMail({
+                        ...mailOptionsCopy,
+                        subject: `[NTF - Appeal Request] ${staffName} (${staffID})`,
+                        text: "[Academic Admin Office Level: Staff to Academic Administration Office]",
+                        html: generateEmailHTML("[Academic Admin Office Level: Staff to Academic Administration Office]", formID, formIDForRecipient, formDetails, requestData.revertComment)
+                    });
+                } else {
+                    await transporter.sendMail({
+                        ...mailOptionsCopy,
+                        subject: `[NTF - Appeal Request] ${staffName} (${staffID})`,
+                        text: "[Applicant Level: Academic Administration Office to Staff]",
+                        html: generateEmailHTML("[Applicant Level: Academic Administration Office to Staff]", formID, formIDForRecipient, formDetails, aaoEmail)
+                    });
+                }
             }
         }
 

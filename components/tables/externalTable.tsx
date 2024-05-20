@@ -275,6 +275,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 					return <div className="uppercase text-green-500 font-bold text-left">Approved</div>;
 				} else if (formStage === 6) {
 					return <div className="uppercase text-red-500 font-bold text-left">Rejected</div>;
+				} else if (formStage === 7) {
+					return <div className="uppercase text-red-500 font-bold text-left">Requested for Appeal</div>;
 				} else {
 					return <div className="uppercase">Unknown</div>;
 				}
@@ -395,6 +397,8 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 			formStage = "Approved";
 		} else if (stage === "6") {
 			formStage = "Rejected";
+		} else if (stage === "7") {
+			formStage = "Requested for Appeal";
 		} else {
 			formStage = "Unknown";
 		}
@@ -619,6 +623,12 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 									table.getColumn("formStage")?.setFilterValue(6);
 								}}>
 								Rejected
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									table.getColumn("formStage")?.setFilterValue(7);
+								}}>
+								Requested for Appeal
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
