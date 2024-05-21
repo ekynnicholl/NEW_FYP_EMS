@@ -605,7 +605,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Unit/ Organization
                                     </th>
-                                    {isAllTabActive !== 'all' && hasMultipleSubEvents && (
+                                    {isAllTabActive && hasMultipleSubEvents && (
                                         <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
                                             Sub-Event
                                         </th>
