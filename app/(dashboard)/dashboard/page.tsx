@@ -26,7 +26,7 @@ import { Chart, registerables } from "chart.js/auto";
 import 'chartjs-plugin-datalabels';
 
 import Image from "next/image";
-import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent } from "react";
+import { useState, useEffect, SyntheticEvent, useRef, ChangeEvent, JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal } from "react";
 import Link from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
