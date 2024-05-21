@@ -15,6 +15,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import Success_AddSubEventModal from "@/components/Modal";
 import QRCodeIcon from "@/components/icons/QRCodeIcon";
 import swinburneLogo from "@/public/images/swinburne_logo.png";
+import Linkify from 'react-linkify';
 
 import Success_EditEventModal from "@/components/Modal";
 import Success_EditSubEventModal from "@/components/Modal";
@@ -919,6 +920,12 @@ export default function Homepage() {
 			});
 		}
 	};
+
+	const linkDecorator = (decoratedHref: string | undefined, decoratedText: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | PromiseLikeOfReactNode | null | undefined, key: Key | null | undefined) => (
+		<a href={decoratedHref} key={key} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">
+			{decoratedText}
+		</a>
+	);
 
 	const handleEditSubEventSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -1879,7 +1886,11 @@ export default function Homepage() {
 									About This Event
 								</h3>
 								<p className="text-[11px] lg:text-[15px] text-mb-7 mb-1 lg:mb-5 font-normal text-slate-500 mt-[5px] lg:mt-[10px] dark:text-[#7B756B]">
-									{selectedEvent.intFEventDescription} ({selectedEvent.intFDurationCourse} days, {selectedEvent.intFTotalHours}{" "}
+									<Linkify componentDecorator={linkDecorator}>
+										{selectedEvent.intFEventDescription}
+									</Linkify>
+									<br />
+									({selectedEvent.intFDurationCourse} days, {selectedEvent.intFTotalHours}{" "}
 									hours)
 								</p>
 
@@ -1897,8 +1908,8 @@ export default function Homepage() {
 											{index === 0 && <div className="-mt-4"></div>}
 
 											<div className="flex items-center gap-[0px] lg:gap-[6px] mt-1 lg:mt-0">
-												<p className="text-[13px] lg:text-[18px] font-semibold text-slate-700 lg:mb-2 mt-[22px] dark:text-dark_text2">
-													‣ Session {index + 1}
+												<p className="text-[13px] lg:text-[18px] font-semibold text-slate-700 lg:mb-2 mt-[22px] dark:text-dark_text2 w-full">
+													‣ {subEvent.sub_eventsName}
 												</p>
 
 												<button

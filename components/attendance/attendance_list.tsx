@@ -75,7 +75,8 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
             const { data: subEvents, error: subEventsError } = await supabase
                 .from("sub_events")
                 .select()
-                .eq("sub_eventsMainID", event_id);
+                .eq("sub_eventsMainID", event_id)
+                .eq("sub_eventsIsHidden", 0);
 
             if (subEventsError) {
                 // console.error("Error fetching sub_events:", subEventsError);
