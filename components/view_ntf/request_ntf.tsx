@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 const RequestNTF = () => {
     const supabase = createClientComponentClient();
-    const [submissionStatus, setSubmissionStatus] = useState(true);
+    const [submissionStatus, setSubmissionStatus] = useState(false);
     const [staffEmailID, setStaffEmailID] = useState('');
     const [captcha, setCaptcha] = useState<string | null>();
     const router = useRouter();
