@@ -18,6 +18,7 @@ const Chatbot = () => {
     const [isInitialMessage, setIsInitialMessage] = useState<boolean>(true);
     const supabase = createClientComponentClient();
     const [eventNames, setAllEventNames] = useState<any[]>([]);
+    const Groq = require("groq-sdk");
 
     useEffect(() => {
         const storedMessages = localStorage.getItem('chatMessages');
@@ -42,9 +43,14 @@ const Chatbot = () => {
         sendInitialMessage();
     }, []);
 
-    const openai = new OpenAI({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
-        // apiKey: process.env.OPENAI_API_KEY,
+    // const openai = new OpenAI({
+    //     apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+    //     // apiKey: process.env.OPENAI_API_KEY,
+    //     dangerouslyAllowBrowser: true
+    // });
+
+    const groq = new Groq({
+        apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
         dangerouslyAllowBrowser: true
     });
 
@@ -267,7 +273,7 @@ const Chatbot = () => {
             let reply = '';
 
             while (!validFormat) {
-                const response = await getOpenAIResponse(eventQuestion);
+                const response = await getGroqResponse(eventQuestion);
 
                 if (response) {
                     const [startStr, endStr] = response
@@ -384,18 +390,17 @@ const Chatbot = () => {
 
             return reply;
         } else {
-            const response = await getOpenAIResponse(question);
+            const response = await getGroqResponse(question);
             return response;
         }
     };
 
-    const getOpenAIResponse = async (input: string) => {
-        const completion = await openai.chat.completions.create({
+    const getGroqResponse = async (input: string) => {
+        const completion = await groq.chat.completions.create({
             messages: [{ role: "user", content: input }],
-            model: "gpt-3.5-turbo",
+            model: "llama3-8b-8192",
         });
-        // console.log(completion);
-        return completion.choices[0].message.content;
+        return completion.choices[0]?.message?.content || "";
     };
 
     return (
