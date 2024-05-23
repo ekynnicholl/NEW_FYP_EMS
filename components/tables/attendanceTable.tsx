@@ -680,11 +680,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </td>
-                                            {isAllTabActive && (
+                                            {/* {isAllTabActive && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
-                                            )}
+                                            )} */}
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {formatDate(attendanceItem.attDateSubmitted).date}
                                                 <br />
