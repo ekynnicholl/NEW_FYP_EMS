@@ -304,6 +304,31 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
         fetchFacultyUnits();
     }, []);
 
+    const selectFacultyUnit = () => {
+        return  (
+            <>
+                {facultyOptions.map((faculty, index) => (
+                    <option key={index} value={faculty}>
+                        {faculty}
+                    </option>
+                ))}
+                {facultyStudents.map((faculty) => (
+                    categories
+                        .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
+                        .map((cat) => (
+                            cat.subcategories
+                                .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
+                                .map((subcategory, index) => (
+                                    <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
+                                        {faculty.facultyName} - {subcategory.name}
+                                    </option>
+                                ))))
+
+                ))}
+            </>
+        )
+    }
+
 
     const handleEdit = (attFormsID: string, attFormsStaffID: string, attFormsStaffName: string, attFormsFacultyUnit: string) => {
         setEditOption(attFormsID);
@@ -622,21 +647,21 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                 {currentData.map((attendanceItem) => (
                                     attendanceItem.attFormsID === editOption && updateOption && !cancelOptionUpdate ? (
                                         <tr key={attendanceItem.attFormsID}>
-                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            <td className="flex-1 px-6 lg:px-1 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <input type="text"
                                                     placeholder="Enter Staff / Student ID..."
                                                     className="border-2 ml-3 px-2 py-1 text-base w-28"
                                                     value={editedStaffID}
                                                     onChange={e => setEditedStaffID(e.target.value)} />
                                             </td>
-                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            <td className="flex-1 px-6 lg:px-1 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <input type="text"
                                                     placeholder="Enter Staff / Student Name..."
                                                     className="border-2 ml-3 px-2 py-1 text-base w-28"
                                                     value={editedStaffName}
                                                     onChange={e => setEditedStaffName(e.target.value)} />
                                             </td>
-                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                            <td className="flex-1 px-6 lg:px-1 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <select
                                                     name="facultyUnit"
                                                     id="facultyUnit"
@@ -650,24 +675,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     <option value="" disabled>
                                                         Select Faculty/ Unit
                                                     </option>
-                                                    {facultyOptions.map((faculty, index) => (
-                                                        <option key={index} value={faculty}>
-                                                            {faculty}
-                                                        </option>
-                                                    ))}
-                                                    {facultyStudents.map((faculty) => (
-                                                        categories
-                                                            .filter(category => category.category === faculty.facultyCategory || (category.category === 0 && (faculty.facultyCategory === 1 || faculty.facultyCategory === 2)))
-                                                            .map((cat) => (
-                                                                cat.subcategories
-                                                                    .filter(subcategory => faculty.facultyCategory === subcategory.facultyUnit || subcategory.facultyUnit === 3)
-                                                                    .map((subcategory, index) => (
-                                                                        <option key={index} value={`${faculty.facultyName} - ${subcategory.name}`}>
-                                                                            {faculty.facultyName} - {subcategory.name}
-                                                                        </option>
-                                                                    ))))
-
-                                                    ))}
+                                                    {selectFacultyUnit()}
+                                                    
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </td>
