@@ -46,8 +46,13 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ onDateChange, sub
     return null;
   };
 
-  // Adjust isEventDate function to use the local date string for comparison
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set today's time to midnight for accurate comparison
+
   const isEventDate = (date: Date): boolean => {
+    if (date < today) {
+      return false; // Exclude dates before today
+    }
     const formattedDate = toLocalDateString(date);
     return subEventDates.includes(formattedDate);
   };
