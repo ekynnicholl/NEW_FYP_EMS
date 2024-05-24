@@ -629,15 +629,17 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Unit/ Organization
-                                    </th>
-                                    {isAllTabActive && hasMultipleSubEvents && (
+                                    </th>                                    
+                                    {!updateOption && isAllTabActive && hasMultipleSubEvents && (
                                         <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
                                             Sub-Event
                                         </th>
                                     )}
+                                    {!updateOption && (
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Date Submitted
                                     </th>
+                                    )}
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Action
                                     </th>
@@ -650,14 +652,14 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             <td className="flex-1 px-6 lg:px-1 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <input type="text"
                                                     placeholder="Enter Staff / Student ID..."
-                                                    className="border-2 ml-3 px-2 py-1 text-base w-28"
+                                                    className="border-2 ml-3 px-2 py-1 text-base w-48"
                                                     value={editedStaffID}
                                                     onChange={e => setEditedStaffID(e.target.value)} />
                                             </td>
                                             <td className="flex-1 px-6 lg:px-1 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <input type="text"
                                                     placeholder="Enter Staff / Student Name..."
-                                                    className="border-2 ml-3 px-2 py-1 text-base w-28"
+                                                    className="border-2 ml-3 px-2 py-1 text-base w-48"
                                                     value={editedStaffName}
                                                     onChange={e => setEditedStaffName(e.target.value)} />
                                             </td>
@@ -666,7 +668,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     name="facultyUnit"
                                                     id="facultyUnit"
                                                     defaultValue={editedFacultyUnit}
-                                                    className="w-28 px-4 py-2 border border-gray-300 focus:outline-none mt-1 text-xs lg:text-base"
+                                                    className="w-48 px-4 py-2 border border-gray-300 focus:outline-none mt-1 text-xs lg:text-base"
                                                     required
                                                     onChange={event => { setEditedFacultyUnit(event.target.value); }
                                                     }
@@ -679,17 +681,17 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     
                                                     <option value="Other">Other</option>
                                                 </select>
-                                            </td>
+                                            </td>                                            
                                             {/* {isAllTabActive && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
-                                            )} */}
+                                            )}
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {formatDate(attendanceItem.attDateSubmitted).date}
                                                 <br />
                                                 {formatDate(attendanceItem.attDateSubmitted).time}
-                                            </td>
+                                            </td> */}
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <button
                                                     className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
@@ -701,7 +703,8 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                 </button>
                                                 <button
                                                     className="border-[0.5px] rounded-md bg-slate-100 mt-2 px-3 py-2 hover:bg-slate-200 duration-300 ease-in-out"
-                                                    onClick={() => { setCancelOptionUpdate(true); }}
+                                                    // onClick={() => { setCancelOptionUpdate(true); }}
+                                                    onClick={() => { setUpdateOption(false); }}
                                                 >
                                                     Cancel
                                                 </button>
@@ -743,16 +746,18 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {attendanceItem.attFormsFacultyUnit}
                                             </td>
-                                            {isAllTabActive && hasMultipleSubEvents && (
+                                            {!updateOption && isAllTabActive && hasMultipleSubEvents && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
                                                 </td>
                                             )}
+                                            {!updateOption && (
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 {formatDate(attendanceItem.attDateSubmitted).date}
                                                 <br />
                                                 {formatDate(attendanceItem.attDateSubmitted).time}
                                             </td>
+                                            )}
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <button
                                                     onClick={() => handleEdit(attendanceItem.attFormsID, attendanceItem.attFormsStaffID, attendanceItem.attFormsStaffName, attendanceItem.attFormsFacultyUnit)}>
