@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 
 interface NTFListProps {
     atIdentifier: string | null;
+    atIdentifier2: string | null;
 }
 
 interface Form {
@@ -96,7 +97,7 @@ interface Form {
     last_updated: string;
 }
 
-const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
+const NTFList: React.FC<NTFListProps> = ({ atIdentifier, atIdentifier2 }) => {
     const supabase = createClientComponentClient();
     const [forms, setForms] = useState<Form[]>([]);
     const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
@@ -190,24 +191,24 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
 
     const fetchData = async () => {
         try {
-            if (atIdentifier) {
-                const isEmail = /@/.test(atIdentifier);
-                let searchQuery = atIdentifier;
+            let combinedData: any[] | ((prevState: Form[]) => Form[]) = [];
+
+            const fetchFormsData = async (identifier: string) => {
+                const isEmail = /@/.test(identifier);
+                let searchQuery = identifier;
 
                 if (!isEmail) {
-                    searchQuery = atIdentifier.startsWith('SS') ? atIdentifier : `SS${atIdentifier}`;
+                    searchQuery = identifier.startsWith('SS') ? identifier : `SS${identifier}`;
                 }
 
                 const { data, error } = await (isEmail
                     ? supabase
                         .from('external_forms')
-                        // .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature, verification_name, verification_position_title, verification_date, verification_signature, approval_name, approval_position_title, approval_date, approval_signature, revertComment')
                         .select('*')
                         .eq('email', searchQuery)
                         .order('formStage')
                     : supabase
                         .from('external_forms')
-                        // .select('id, email, program_title, program_description, commencement_date, completion_date, organiser, venue, hrdf_claimable, formStage, full_name, staff_id, course, faculty, transport, travelling, other_members, total_members, flight_number, flight_date, flight_time, destination_from, destination_to, hotel_name, check_in_date, check_out_date, course_fee, airfare_fee, accommodation_fee, per_diem_fee, transportation_fee, travel_insurance_fee, other_fees, grand_total_fees, staff_development_fund, consolidated_pool_fund, research_fund, travel_fund, student_council_fund, other_funds, expenditure_cap, expenditure_cap_amount, applicant_declaration_name, applicant_declaration_position_title, applicant_declaration_date, applicant_declaration_signature, verification_name, verification_position_title, verification_date, verification_signature, approval_name, approval_position_title, approval_date, approval_signature, revertComment')
                         .select('*')
                         .eq('staff_id', searchQuery)
                         .order('formStage'));
@@ -215,28 +216,45 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                 if (error) {
                     console.error('Error querying external_forms:', error);
                     toast.error('Error fetching forms');
-                    return;
+                    return null;
                 }
 
-                setForms(data || []);
+                return data;
+            };
 
-                // If data is not empty, set the corresponding values for each form
-                if (data && data.length > 0) {
-                    const sumTotalHours = data.reduce((total, ntf) => {
-                        const hoursToAdd = parseFloat(ntf.total_hours) || 0;
-                        return total + hoursToAdd;
-                    }, 0);
-                    setTotalHours(sumTotalHours);
+            if (atIdentifier) {
+                const data1 = await fetchFormsData(atIdentifier);
+                if (data1) {
+                    combinedData = [...combinedData, ...data1];
                 }
             }
+
+            if (atIdentifier2) {
+                const data2 = await fetchFormsData(atIdentifier2);
+                if (data2) {
+                    combinedData = [...combinedData, ...data2];
+                }
+            }
+
+            setForms(combinedData);
+
+            if (combinedData.length > 0) {
+                const sumTotalHours = combinedData.reduce((total, ntf) => {
+                    const hoursToAdd = parseFloat(ntf.total_hours) || 0;
+                    return total + hoursToAdd;
+                }, 0);
+                setTotalHours(sumTotalHours);
+            } else {
+                setTotalHours(0);
+            }
         } catch (e) {
-            // console.error('Error in fetchData:', e);
+            console.error('Error in fetchData:', e);
         }
     };
 
     useEffect(() => {
         fetchData();
-    }, [atIdentifier, supabase]);
+    }, [atIdentifier, atIdentifier2, supabase]);
 
     const isRemindButtonEnabled = (lastUpdatedDate: string) => {
         const lastUpdated = new Date(lastUpdatedDate);
