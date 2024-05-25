@@ -22,11 +22,10 @@ const RequestNTF = () => {
         if (!staffEmailID) {
             // Empty input,
             return;
-        } else if (staffEmailID == '0') {
-            toast.error("If you're a visitor, you may only opt to use the email that you've used in the attence forms.")
+        } else if (staffEmailID == '0' || staffEmailID == '1') {
+            toast.error("This ID is reserved. Please use your email instead.")
             return;
         }
-
 
         if (!captcha) {
             toast.error('Please verify you are not a robot... Are you... a... robot?!');

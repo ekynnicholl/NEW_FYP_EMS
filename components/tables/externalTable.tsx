@@ -264,19 +264,33 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 				const formStage = row.original.formStage;
 
 				if (formStage === 1) {
-					return <div className="uppercase text-red-500 font-bold text-left">Reverted to Staff</div>;
+					return <div className="uppercase bg-red-400 text-white p-2 rounded-lg">
+						Reverted to Staff
+					</div>;
 				} else if (formStage === 2) {
-					return <div className="uppercase text-blue-500 font-bold text-left">Reviewing by AAO</div>;
+					return <div className="uppercase bg-blue-400 text-left text-white p-2 rounded-lg">
+						Reviewing by AAO
+					</div>;
 				} else if (formStage === 3) {
-					return <div className="uppercase text-blue-500 font-bold text-left">Reviewing by HOS/ ADCR/ MGR</div>;
+					return <div className="uppercase bg-blue-400 text-white p-2 rounded-lg">
+						Reviewing by HOS/ ADCR/ MGR
+					</div>;
 				} else if (formStage === 4) {
-					return <div className="uppercase text-blue-500 font-bold text-left">Reviewing by HMU/ Dean</div>;
+					return <div className="uppercase bg-blue-400 text-white p-2 rounded-lg">
+						Reviewing by HMU/ Dean
+					</div>;
 				} else if (formStage === 5) {
-					return <div className="uppercase text-green-500 font-bold text-left">Approved</div>;
+					return <div className="uppercase bg-green-400 text-white p-2 rounded-lg">
+						Approved
+					</div>;
 				} else if (formStage === 6) {
-					return <div className="uppercase text-red-500 font-bold text-left">Rejected</div>;
+					return <div className="uppercase bg-red-400 text-white p-2 rounded-lg">
+						Rejected
+					</div>;
 				} else if (formStage === 7) {
-					return <div className="uppercase text-red-500 font-bold text-left">Requested for Appeal</div>;
+					return <div className="uppercase bg-red-400 text-white p-2 rounded-lg">
+						Requested for Appeal
+					</div>;
 				} else {
 					return <div className="uppercase">Unknown</div>;
 				}

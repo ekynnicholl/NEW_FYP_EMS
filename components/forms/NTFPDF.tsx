@@ -118,7 +118,8 @@ export default function NTFPDF({ id }: { id: string }) {
 				{
 					formStage: 7,
 					last_updated: new Date(),
-					revertComment: appealComment
+					revertComment: appealComment,
+					hasAppealed: true,
 				},
 			])
 			.eq("id", formDetails[0].id);
@@ -170,6 +171,10 @@ export default function NTFPDF({ id }: { id: string }) {
 				location.reload();
 			}
 		}
+	}
+
+	const closeAppeal = () => {
+		setAppealOpen(false);
 	}
 
 	return (
@@ -810,7 +815,7 @@ export default function NTFPDF({ id }: { id: string }) {
 							</div>
 
 							<div className="space-x-4">
-								{details.formStage == 6 &&
+								{(details.formStage == 6 && details.hasAppealed == false) &&
 									<Dialog open={appealOpen} onOpenChange={setAppealOpen}>
 										<DialogTrigger asChild>
 											<Button className="mt-5 print-button" type="button">
@@ -821,7 +826,7 @@ export default function NTFPDF({ id }: { id: string }) {
 											<DialogHeader>
 												<DialogTitle>Appeal</DialogTitle>
 												<DialogDescription>
-													You are about to request for an appeal for your Nominations/ Travelling Forms. The Administration Academic Office will have the final say in this. Please input the reason for this appeal below:
+													You are about to request for an appeal for your Nominations/ Travelling Forms. <span className="font-bold">You are only able to appeal once.</span> The Administration Academic Office will have the final say in this. Please input the reason for this appeal below:
 												</DialogDescription>
 												<textarea
 													className="w-full p-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 focus:outline-none focus:border-gray-400 focus:bg-white mt-1 text-sm lg:text-base dark:bg-[#1D2021] dark:border-[#363B3D] placeholder:[#5C5A53] dark:text-slate-300 dark:focus:bg-[#1D2021]"
@@ -834,7 +839,29 @@ export default function NTFPDF({ id }: { id: string }) {
 													<Button variant="outline">Cancel</Button>
 												</DialogClose>
 												<Button onClick={submitAppeal}>
-													Yes
+													Confirm
+												</Button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
+								}
+								{(details.formStage == 6 && details.hasAppealed == true) &&
+									<Dialog open={appealOpen} onOpenChange={setAppealOpen}>
+										<DialogTrigger asChild>
+											<Button className="mt-5 print-button" type="button">
+												Appeal
+											</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Appeal</DialogTitle>
+												<DialogDescription>
+													Sorry. We have reviewed your form and have decided to reject your appeal. Please contact {details.aao_email} for further information.
+												</DialogDescription>
+											</DialogHeader>
+											<DialogFooter>
+												<Button onClick={closeAppeal}>
+													Understood
 												</Button>
 											</DialogFooter>
 										</DialogContent>

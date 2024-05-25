@@ -413,8 +413,31 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		setForwardSaveLoading(false);
 	}
 
+	const [appealOpen, setAppealOpen] = useState(true);
+
+	const closeAppeal = () => {
+		setAppealOpen(false);
+	}
+
 	return (
 		<>
+			{externalForm.formStage === 7 && (
+				<Dialog open={appealOpen} onOpenChange={setAppealOpen}>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>NOTE</DialogTitle>
+							<DialogDescription>
+								This form is in the appeal stage. To re-open the form, please use the &apos;Undo Action&apos; feature to revert back to staff or to any other parties. Otherwise, you may reject this form once more and they will not be able to appeal again.
+							</DialogDescription>
+						</DialogHeader>
+						<DialogFooter>
+							<Button onClick={closeAppeal}>
+								Understood
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			)}
 			<div className="flex-1">
 				<Form {...form}>
 					<form className="space-y-4" onSubmit={form.handleSubmit(onSaveSubmit)}>
