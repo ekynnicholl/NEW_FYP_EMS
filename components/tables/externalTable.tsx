@@ -347,13 +347,13 @@ export default function DataTable({ data }: { data: ExternalForm[] }) {
 								}}>
 								Undo Action
 							</DropdownMenuItem>
-							<DropdownMenuItem
+							{/* <DropdownMenuItem
 								onClick={e => {
 									e.stopPropagation();
 									sendContactForm([row.original]);
 								}}>
 								Send
-							</DropdownMenuItem>
+							</DropdownMenuItem>  */}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);
