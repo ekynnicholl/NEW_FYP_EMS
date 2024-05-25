@@ -123,19 +123,19 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
         setShowModalViewNTF(true);
     };
 
-      
-      const getFormStatus = (formStage: number) => {
+
+    const getFormStatus = (formStage: number) => {
         if (formStage === 1) {
-          return "Reverted to Staff";
+            return "Reverted to Staff";
         } else if (formStage >= 2 && formStage <= 4) {
-          return "Under Review";
+            return "Under Review";
         } else if (formStage === 5) {
-          return "Approved";
+            return "Approved";
         } else if (formStage === 6) {
-          return "Rejected";
+            return "Rejected";
         }
         return "Unknown";
-      };
+    };
 
     const sendReminder = async (row: Form) => {
         const today = new Date();
@@ -181,12 +181,12 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
     const filteredForms = forms.filter((form) => {
         const formYear = new Date(form.commencement_date).getFullYear();
         const formStatus = getFormStatus(form.formStage);
-      
+
         return (
-          (selectedYear === null || formYear === selectedYear) &&
-          (selectedFormStatus === null || formStatus === selectedFormStatus)
+            (selectedYear === null || formYear === selectedYear) &&
+            (selectedFormStatus === null || formStatus === selectedFormStatus)
         );
-      });
+    });
 
     const fetchData = async () => {
         try {
@@ -301,46 +301,46 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
             <div className="flex items-center justify-end space-x-2 py-4">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                        Year <ChevronDown className="ml-2 h-4 w-4" />
-                    </Button>
+                        <Button variant="outline">
+                            Year <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setSelectedYear(null)}>
-                        View All
-                    </DropdownMenuItem>
-                    {Array.from(new Set(forms.map((form) => new Date(form.commencement_date).getFullYear()))).map(
-                        (year) => (
-                            <DropdownMenuItem key={year} onClick={() => setSelectedYear(year)}>
-                            {year}
-                            </DropdownMenuItem>
-                        )
+                        <DropdownMenuItem onClick={() => setSelectedYear(null)}>
+                            View All
+                        </DropdownMenuItem>
+                        {Array.from(new Set(forms.map((form) => new Date(form.commencement_date).getFullYear()))).map(
+                            (year) => (
+                                <DropdownMenuItem key={year} onClick={() => setSelectedYear(year)}>
+                                    {year}
+                                </DropdownMenuItem>
+                            )
                         )}
                     </DropdownMenuContent>
-                    </DropdownMenu>
+                </DropdownMenu>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                        Form Status <ChevronDown className="ml-2 h-4 w-4" />
-                    </Button>
+                        <Button variant="outline">
+                            Form Status <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setSelectedFormStatus(null)}>
-                        View All
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Reverted to Staff")}>
-                        Reverted to Staff
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Under Review")}>
-                        Under Review
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Approved")}>
-                        Approved
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedFormStatus("Rejected")}>
-                        Rejected
-                    </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedFormStatus(null)}>
+                            View All
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedFormStatus("Reverted to Staff")}>
+                            Reverted to Staff
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedFormStatus("Under Review")}>
+                            Under Review
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedFormStatus("Approved")}>
+                            Approved
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedFormStatus("Rejected")}>
+                            Rejected
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
@@ -351,28 +351,28 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                         <table className="table-auto w-full">
                             <thead>
                                 <tr>
-                                <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Program Title
+                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
+                                        Program Title
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Commencement Date
+                                        Commencement Date
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Completion Date
+                                        Completion Date
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Organiser
+                                        Organiser
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Venue
+                                        Venue
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Status
+                                        Status
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/7">
-                                    Action
-                                    </th>                                         
-                                     </tr>
+                                        Action
+                                    </th>
+                                </tr>
                             </thead>
 
                             <tbody>
@@ -397,17 +397,17 @@ const NTFList: React.FC<NTFListProps> = ({ atIdentifier }) => {
                                             {(() => {
                                                 switch (form.formStage) {
                                                     case 1:
-                                                        return <div className="uppercase text-red-500">Reverted to Staff</div>;
+                                                        return <div className="uppercase bg-red-500 text-white p-2 rounded-lg">Reverted to Staff</div>;
                                                     case 2:
-                                                        return <div className="uppercase text-blue-500">Reviewing by AAO</div>;
+                                                        return <div className="uppercase bg-blue-500 text-white p-2 rounded-lg">Reviewing by AAO</div>;
                                                     case 3:
-                                                        return <div className="uppercase text-blue-500">Reviewing by HOS/ ADCR/ MGR</div>;
+                                                        return <div className="uppercase bg-blue-500 text-white p-2 rounded-lg">Reviewing by HOS/ ADCR/ MGR</div>;
                                                     case 4:
-                                                        return <div className="uppercase text-blue-500">Reviewing by HMU/ Dean</div>;
+                                                        return <div className="uppercase bg-blue-500 text-white p-2 rounded-lg">Reviewing by HMU/ Dean</div>;
                                                     case 5:
-                                                        return <div className="uppercase text-green-500">Approved</div>;
+                                                        return <div className="uppercase bg-green-500 text-white p-2 rounded-lg">Approved</div>;
                                                     case 6:
-                                                        return <div className="uppercase text-red-500">Rejected</div>;
+                                                        return <div className="uppercase bg-red-500 text-white p-2 rounded-lg">Rejected</div>;
                                                     default:
                                                         return <div className="uppercase">Unknown</div>;
                                                 }

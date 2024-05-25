@@ -165,7 +165,7 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
         {
             accessorKey: "formStage",
             sortingFn: "auto",
-			filterFn: "equals",
+            filterFn: "equals",
             header: ({ column }) => (
                 <Button variant="ghost" className="pl-0" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
                     Form Status
@@ -176,17 +176,17 @@ export default function ImportantForms({ data }: { data: ExternalForm[] }) {
                 const formStage = row.original.formStage;
 
                 if (formStage === 1) {
-                    return <div className="uppercase text-left text-red-500 font-bold">Reverted to Staff</div>;
+                    return <div className="uppercase text-left bg-red-400 text-white p-2 rounded-lg">Reverted to Staff</div>;
                 } else if (formStage === 2) {
-                    return <div className="uppercase text-left text-blue-500 font-bold">Reviewing by AAO</div>;
+                    return <div className="uppercase text-left bg-blue-400 text-white p-2 rounded-lg">Reviewing by AAO</div>;
                 } else if (formStage === 3) {
-                    return <div className="uppercase text-left text-blue-500 font-bold">Reviewing by HOS/ ADCR/ MGR</div>;
+                    return <div className="uppercase text-left bg-blue-400 text-white p-2 rounded-lg">Reviewing by HOS/ ADCR/ MGR</div>;
                 } else if (formStage === 4) {
-                    return <div className="uppercase text-left text-blue-500 font-bold">Reviewing by HMU/ Dean</div>;
+                    return <div className="uppercase text-left bg-blue-400 text-white p-2 rounded-lg">Reviewing by HMU/ Dean</div>;
                 } else if (formStage === 5) {
-                    return <div className="uppercase text-left text-green-500 font-bold">Approved</div>;
+                    return <div className="uppercase text-left bg-green-400 text-white p-2 rounded-lg">Approved</div>;
                 } else if (formStage === 6) {
-                    return <div className="uppercase text-left text-red-500 font-bold">Rejected</div>;
+                    return <div className="uppercase text-left bg-red-400 text-white p-2 rounded-lg">Rejected</div>;
                 } else {
                     return <div className="uppercase">Unknown</div>;
                 }
