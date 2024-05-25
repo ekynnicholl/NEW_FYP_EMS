@@ -20,6 +20,7 @@ import Link from "next/link";
 type Info = {
 	staffID: string;
 	staffName: string;
+	staffEmail: string;
 	staffFaculty: string;
 	totalSubEvents: number;
 	allEventsAttended: {
@@ -81,53 +82,54 @@ export default function Home() {
 		if (externalEventsError) {
 			// console.error("Error fetching sub_events:", subEventsError);
 			return;
-		}
+		}		
 
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 		const groupedData = staffData.reduce((result, form) => {
 
-			const uniqueStaffID = form.attFormsStaffID;
+				const uniqueStaffID = form.attFormsStaffEmail;
+				
+				if (!result[uniqueStaffID]) {
+					result[uniqueStaffID] = {
+						staffID: form.attFormsStaffID,
+						staffName: form.attFormsStaffName,
+						staffEmail: form.attFormsStaffEmail,
+						staffFaculty: form.attFormsFacultyUnit,
+						totalSubEvents: 0,
+						allEventsAttended: [],
+						grandTotalHours: 0,
+					};
 
-			if (!result[uniqueStaffID]) {
-				result[uniqueStaffID] = {
-					staffID: form.attFormsStaffID,
-					staffName: form.attFormsStaffName,
-					staffFaculty: form.attFormsFacultyUnit,
-					totalSubEvents: 0,
-					allEventsAttended: [],
-					grandTotalHours: 0,
-				};
+					result[uniqueStaffID].allEventsAttended.push(
+						...externalEvents
+							.filter(event => event.staff_id === uniqueStaffID)
+							.map(event => ({
+								programName: event.program_title,
+								totalHours: event.total_hours,
+								startDate: event.commencement_date,
+								endDate: event.completion_date,
+							}))
+					)
+				}
+
+				result[uniqueStaffID].totalSubEvents++;
 
 				result[uniqueStaffID].allEventsAttended.push(
-					...externalEvents
-						.filter(event => event.staff_id === uniqueStaffID)
+					...mainEvents
+						.filter(event => {
+							const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
+							return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
+						})
 						.map(event => ({
-							programName: event.program_title,
-							totalHours: event.total_hours,
-							startDate: event.commencement_date,
-							endDate: event.completion_date,
+							programName: event.intFEventName,
+							totalHours: event.intFTotalHours,
+							startDate: event.intFEventStartDate,
+							endDate: event.intFEventEndDate,
 						}))
 				)
-			}
 
-			result[uniqueStaffID].totalSubEvents++;
-
-			result[uniqueStaffID].allEventsAttended.push(
-				...mainEvents
-					.filter(event => {
-						const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
-						return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
-					})
-					.map(event => ({
-						programName: event.intFEventName,
-						totalHours: event.intFTotalHours,
-						startDate: event.intFEventStartDate,
-						endDate: event.intFEventEndDate,
-					}))
-			)
-
-			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
-			result[uniqueStaffID].grandTotalHours = totalHours;
+				const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
+				result[uniqueStaffID].grandTotalHours = totalHours;
 
 			return result;
 
@@ -213,7 +215,7 @@ export default function Home() {
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
-		if (page >= 1 && page <= Math.ceil(aggregatedInfo.length / entriesToShow)) {
+		if (page >= 1 && page <= Math.ceil(dataResults.length / entriesToShow)) {
 			setCurrentPage(page);
 		}
 	};
@@ -388,7 +390,7 @@ export default function Home() {
 			}
 		}
 
-		let filteredUserData = [...aggregatedInfo];
+		let filteredUserData = aggregatedInfo;
 
 		if (tab === 'staff') {
 			filteredUserData = filteredUserData.filter((item) => item.staffID.startsWith('SS'));
@@ -400,7 +402,7 @@ export default function Home() {
 			setCurrentPage(1);
 
 		} else if (tab === 'student') {
-			filteredUserData = filteredUserData.filter((item) => item.staffID !== '0' && !item.staffID.startsWith('SS'));
+			filteredUserData = filteredUserData.filter((item) => item.staffID !== '0' && item.staffID !== '1' && !item.staffID.startsWith('SS'));
 			if (selectedFilterStudent.length > 0) {
 				filterByFacultyUnit(selectedFilterStudent);
 			}
@@ -408,7 +410,8 @@ export default function Home() {
 			setSelectedFilterStaff('');
 			setCurrentPage(1);
 
-		} else if (tab === 'visitor') {
+		} 
+		else if (tab === 'visitor') {
 			filteredUserData = filteredUserData.filter((item) => item.staffID === '0');
 			setCurrentPage(1);
 
@@ -416,8 +419,9 @@ export default function Home() {
 			filteredUserData = filteredUserData.filter((item) => item.staffID === '1');
 			setCurrentPage(1);
 
-		} else if (tab === 'all') {
-			filteredUserData = [...aggregatedInfo];
+		} 
+		else if (tab === 'all') {
+			filteredUserData = aggregatedInfo;
 			if (selectedFacultyUnit.length > 0) {
 				filterByFacultyUnit(selectedFacultyUnit);
 			}
@@ -439,11 +443,12 @@ export default function Home() {
 		}
 
 		setDataResults(filteredUserData);
+		console.log("filter:",filteredUserData);
 	};
 
 	useEffect(() => {
 		filterUserData(activeTab, searchQuery);
-		setCurrentPage(1);
+		// setCurrentPage(1);
 	}, [activeTab, searchQuery, selectedFacultyUnit, selectedFilterStudent, selectedFilterStaff, aggregatedInfo]);
 
 	// Show Sort Options
@@ -475,7 +480,6 @@ export default function Home() {
 	// Modify the sorting logic based on the selected option and sort order
 	// const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
 	const sortedData = (dataResults)
-		.slice()
 		.sort((a, b) => {
 			if (sortBy === "staffid") {
 				// Sort by ID
@@ -686,14 +690,14 @@ export default function Home() {
 									<button
 										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 											}`}
-										onClick={() => { setActiveTab('visitor') }}
+										onClick={() => { setActiveTab('visitor')}}
 									>
 										Visitor
 									</button>
 									<button
 										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'secondary' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 											}`}
-										onClick={() => { setActiveTab('secondary') }}
+										onClick={() => { setActiveTab('secondary')}}
 									>
 										Secondary
 									</button>
@@ -835,7 +839,7 @@ export default function Home() {
 													)
 													.map((info, index) => (
 														<tr
-															key={info.staffID}
+															key={info.staffEmail}
 															className="flex"
 															onClick={() => {
 																openModal(info.allEventsAttended);
@@ -854,7 +858,7 @@ export default function Home() {
 																<div className="-ml-3 lg:-ml-5">{info.staffName}</div>
 															</td>
 															<td className="flex-1 px-6 lg:-ml-9 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="-ml-5 lg:-ml-0">{info.staffID}</div>
+																<div className="-ml-5 lg:-ml-0">{info.staffID}</div>															
 															</td>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<div className="lg:-ml-1">{info.staffFaculty}</div>
