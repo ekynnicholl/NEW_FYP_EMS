@@ -82,54 +82,54 @@ export default function Home() {
 		if (externalEventsError) {
 			// console.error("Error fetching sub_events:", subEventsError);
 			return;
-		}		
+		}
 
 		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
 		const groupedData = staffData.reduce((result, form) => {
 
-				const uniqueStaffID = form.attFormsStaffEmail;
-				
-				if (!result[uniqueStaffID]) {
-					result[uniqueStaffID] = {
-						staffID: form.attFormsStaffID,
-						staffName: form.attFormsStaffName,
-						staffEmail: form.attFormsStaffEmail,
-						staffFaculty: form.attFormsFacultyUnit,
-						totalSubEvents: 0,
-						allEventsAttended: [],
-						grandTotalHours: 0,
-					};
+			const uniqueStaffID = form.attFormsStaffEmail;
 
-					result[uniqueStaffID].allEventsAttended.push(
-						...externalEvents
-							.filter(event => event.staff_id === uniqueStaffID)
-							.map(event => ({
-								programName: event.program_title,
-								totalHours: event.total_hours,
-								startDate: event.commencement_date,
-								endDate: event.completion_date,
-							}))
-					)
-				}
-
-				result[uniqueStaffID].totalSubEvents++;
+			if (!result[uniqueStaffID]) {
+				result[uniqueStaffID] = {
+					staffID: form.attFormsStaffID,
+					staffName: form.attFormsStaffName,
+					staffEmail: form.attFormsStaffEmail,
+					staffFaculty: form.attFormsFacultyUnit,
+					totalSubEvents: 0,
+					allEventsAttended: [],
+					grandTotalHours: 0,
+				};
 
 				result[uniqueStaffID].allEventsAttended.push(
-					...mainEvents
-						.filter(event => {
-							const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
-							return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
-						})
+					...externalEvents
+						.filter(event => event.staff_id === uniqueStaffID)
 						.map(event => ({
-							programName: event.intFEventName,
-							totalHours: event.intFTotalHours,
-							startDate: event.intFEventStartDate,
-							endDate: event.intFEventEndDate,
+							programName: event.program_title,
+							totalHours: event.total_hours,
+							startDate: event.commencement_date,
+							endDate: event.completion_date,
 						}))
 				)
+			}
 
-				const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
-				result[uniqueStaffID].grandTotalHours = totalHours;
+			result[uniqueStaffID].totalSubEvents++;
+
+			result[uniqueStaffID].allEventsAttended.push(
+				...mainEvents
+					.filter(event => {
+						const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
+						return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
+					})
+					.map(event => ({
+						programName: event.intFEventName,
+						totalHours: event.intFTotalHours,
+						startDate: event.intFEventStartDate,
+						endDate: event.intFEventEndDate,
+					}))
+			)
+
+			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
+			result[uniqueStaffID].grandTotalHours = totalHours;
 
 			return result;
 
@@ -186,6 +186,9 @@ export default function Home() {
 		const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
 		const body = data.map((row) => {
 			const newRow: any = { ...row };
+
+			newRow.attFormsStaffID = newRow.attFormsStaffID === '0' ? 'Visitor' : newRow.attFormsStaffID === '1' ? 'Secondary Student' : newRow.attFormsStaffID;
+
 			return Object.keys(columnMapping).map((key) => newRow[key as keyof Info]);
 		});
 
@@ -410,7 +413,7 @@ export default function Home() {
 			setSelectedFilterStaff('');
 			setCurrentPage(1);
 
-		} 
+		}
 		else if (tab === 'visitor') {
 			filteredUserData = filteredUserData.filter((item) => item.staffID === '0');
 			setCurrentPage(1);
@@ -419,7 +422,7 @@ export default function Home() {
 			filteredUserData = filteredUserData.filter((item) => item.staffID === '1');
 			setCurrentPage(1);
 
-		} 
+		}
 		else if (tab === 'all') {
 			filteredUserData = aggregatedInfo;
 			if (selectedFacultyUnit.length > 0) {
@@ -428,7 +431,7 @@ export default function Home() {
 			setSelectedFilterStaff('');
 			setSelectedFilterStudent('');
 			setCurrentPage(1);
-		} 
+		}
 
 		if (query) {
 			filteredUserData = filteredUserData.filter(
@@ -443,7 +446,7 @@ export default function Home() {
 		}
 
 		setDataResults(filteredUserData);
-		console.log("filter:",filteredUserData);
+		console.log("filter:", filteredUserData);
 	};
 
 	useEffect(() => {
@@ -690,14 +693,14 @@ export default function Home() {
 									<button
 										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 											}`}
-										onClick={() => { setActiveTab('visitor')}}
+										onClick={() => { setActiveTab('visitor') }}
 									>
 										Visitor
 									</button>
 									<button
 										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'secondary' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 											}`}
-										onClick={() => { setActiveTab('secondary')}}
+										onClick={() => { setActiveTab('secondary') }}
 									>
 										Secondary
 									</button>
@@ -807,7 +810,7 @@ export default function Home() {
 										{/* Table Header */}
 										<thead>
 											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
-											<th className="w-20 flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+												<th className="w-20 flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
 													<div className="ml-2 lg:ml-10">No</div>
 												</th>
 												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 lg:-ml-24 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
@@ -846,19 +849,21 @@ export default function Home() {
 															}}
 														>
 															<td className="w-20 flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
-															<div className="flex items-center">
-																<div className="ml-6">
-																<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
-																	{(currentPage - 1) * entriesToShow + index + 1}
-																</p>
+																<div className="flex items-center">
+																	<div className="ml-6">
+																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
+																			{(currentPage - 1) * entriesToShow + index + 1}
+																		</p>
+																	</div>
 																</div>
-															</div>
 															</td>
 															<td className="flex-1 px-6 lg:-ml-28 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<div className="-ml-3 lg:-ml-5">{info.staffName}</div>
 															</td>
 															<td className="flex-1 px-6 lg:-ml-9 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="-ml-5 lg:-ml-0">{info.staffID}</div>															
+																<div className="-ml-5 lg:-ml-0">
+																	{info.staffID == '0' ? 'Visitor' : info.staffID == '1' ? 'Secondary Student' : info.staffID}
+																</div>
 															</td>
 															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
 																<div className="lg:-ml-1">{info.staffFaculty}</div>
