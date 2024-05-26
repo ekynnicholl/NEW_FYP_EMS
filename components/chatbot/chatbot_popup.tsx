@@ -152,14 +152,23 @@ const Chatbot = () => {
         setIsInitialMessage(true);
     };
 
-    const findMostSimilarEvent = (userInput: string, eventNames: string[], threshold: number) => {
-        const matches = stringSimilarity.findBestMatch(userInput, eventNames);
+    const findMostSimilarEvent = (userInput: string, eventNames: any[], threshold: number) => {
+        const lowerCaseUserInput = userInput.toLowerCase();
+        const lowerCaseEventNames = eventNames.map(event => event.toLowerCase());
+        const eventNameMapping = eventNames.reduce((acc, event) => {
+            acc[event.toLowerCase()] = event;
+            return acc;
+        }, {});
+
+        const matches = stringSimilarity.findBestMatch(lowerCaseUserInput, lowerCaseEventNames);
         const bestMatchRating = matches.bestMatch.rating;
 
         const similarEvents = matches.ratings.filter(event => event.rating >= 0.2);
-        const similarEventNames = similarEvents.map(event => event.target);
+        const similarEventNames = similarEvents.map(event => eventNameMapping[event.target]);
 
-        return { list: similarEventNames, target: bestMatchRating >= threshold ? matches.bestMatch.target : null };
+        const bestMatchTarget = bestMatchRating >= threshold ? eventNameMapping[matches.bestMatch.target] : null;
+
+        return { list: similarEventNames, target: bestMatchTarget };
     };
 
     const fetchAttendanceList = async (eventID: string) => {
@@ -364,7 +373,7 @@ const Chatbot = () => {
 
                         data?.forEach((attendanceForm, index) => {
                             if (index < 15) {
-                                reply += `\n${index + 1}. ${attendanceForm.attFormsStaffName} (${attendanceForm.attFormsStaffID}) from ${attendanceForm.attFormsFacultyUnit}.`;
+                                reply += `${index + 1}. ${attendanceForm.attFormsStaffName} (${attendanceForm.attFormsStaffID == '0' ? 'Visitor' : attendanceForm.attFormsStaffID == '1' ? 'Secondary Student' : attendanceForm.attFormsStaffID}) from ${attendanceForm.attFormsFacultyUnit}.\n`;
                             }
                         });
 
