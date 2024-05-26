@@ -32,7 +32,7 @@ const PageNotFound = () => {
                         <p className="text-slate-800 text-xl lg:text-3xl font-bold">THANK YOU!</p>
                         <div className="text-sm lg:text-base font-normal mb-6 lg:mb-8 text-slate-700">
                             You have successfully updated the form! You may now close this tab/ page.<br />
-                            If you mistakenly did your action, please contact/ email us at: <br /> <span className="font-bold">{aao}</span> <br /><br /> Thank you for choosing to use our system! <br /> - EMAT Developer Team
+                            If you mistakenly did your action, please contact/ email us at: <br /> <span className="font-bold">{aao !== 'null' ? aao : "fypemsmaster369@gmail.com"}</span> <br /><br /> Thank you for choosing to use our system! <br /> - EMAT Developer Team
                         </div>
                         {auth.currentUser && (
                             <div>
