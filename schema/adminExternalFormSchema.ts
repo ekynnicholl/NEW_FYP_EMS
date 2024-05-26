@@ -20,6 +20,7 @@ export const LogisticArrangement = z.object({
 const adminExternalFormSchema = z
 	.object({
 		// Additional Fields,
+		isAdminEdit: z.boolean().optional(),
 		revertComment: z.string().optional(),
 		formStage: z.number().optional(),
 		securityKey: z.string().optional(),
@@ -224,7 +225,7 @@ const adminExternalFormSchema = z
 	// else return true
 	.refine(
 		data => {
-			if (data.formStage === 3) {
+			if (data.formStage === 3 && !data.isAdminEdit) {
 				return (
 					data.verification_name !== "" &&
 					data.verification_position_title !== "" &&
@@ -244,7 +245,7 @@ const adminExternalFormSchema = z
 	// else return true
 	.refine(
 		data => {
-			if (data.formStage === 4) {
+			if (data.formStage === 4 && !data.isAdminEdit) {
 				return (
 					data.approval_name !== "" &&
 					data.approval_position_title !== "" &&

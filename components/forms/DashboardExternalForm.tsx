@@ -88,7 +88,6 @@ const colFlightClass = "grid grid-cols-[150px_120px_120px_150px_150px_1fr_150px_
 const colHotelClass = "grid grid-cols-[1fr_200px_200px_50px]";
 
 export default function DashboardExternalForm({ data, faculties, auditLog }: { data: ExternalForm; faculties: string[]; auditLog: AuditLog[] }) {
-	console.log("rendered")
 	const supabase = createClientComponentClient();
 	const [externalForm, setExternalForm] = useState<ExternalForm>(data);
 	const [auditLogs, setAuditLogs] = useState<AuditLog[]>(auditLog);
@@ -173,14 +172,12 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		},
 	});
 
-	// Enable this to see the form errors
-	// useEffect(() => {
-	// 	console.log(forwardForm.formState.errors);
-	// }, [forwardForm.formState.errors]);
+
 
 	const form = useForm<z.infer<typeof adminExternalFormSchema>>({
 		resolver: zodResolver(adminExternalFormSchema),
 		defaultValues: {
+			isAdminEdit: true,
 			revertComment: externalForm.revertComment ?? "",
 			formStage: externalForm.formStage!,
 			verification_email: externalForm.verification_email!,
@@ -243,10 +240,16 @@ export default function DashboardExternalForm({ data, faculties, auditLog }: { d
 		},
 	});
 
+	// Enable this to see the form errors
+	// useEffect(() => {
+	// 	console.log(form.formState.errors);
+	// }, [form.formState.errors]);
+
 	async function onSaveSubmit(values: z.infer<typeof adminExternalFormSchema>) {
 		setEditSaveLoading(true);
 		const { verification_email, approval_email, ...rest } = values;
 		const updatedExternalForm = { ...externalForm, ...rest };
+		delete updatedExternalForm.isAdminEdit;
 
 		const { error } = await supabase
 			.from("external_forms")
