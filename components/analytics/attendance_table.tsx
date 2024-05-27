@@ -98,7 +98,7 @@ const AttendanceList: React.FC<Props> = ({ staffDetails }) => {
 
     return (
         <div>
-            <div className="lg:flex lg:flex-row relative h-[90vh]">
+            <div className="lg:flex lg:flex-row relative h-fit">
                 <div className="w-full">
                     <div className="flex items-start justify-start text-text text-[20px] text-center">
                         <PencilNoteIcon />{" "}
