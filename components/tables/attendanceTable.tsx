@@ -305,7 +305,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     }, []);
 
     const selectFacultyUnit = () => {
-        return  (
+        return (
             <>
                 {facultyOptions.map((faculty, index) => (
                     <option key={index} value={faculty}>
@@ -629,16 +629,16 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     </th>
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Unit/ Organization
-                                    </th>                                    
+                                    </th>
                                     {!updateOption && isAllTabActive && hasMultipleSubEvents && (
                                         <th className={`flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider`}>
                                             Sub-Event
                                         </th>
                                     )}
                                     {!updateOption && (
-                                    <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                                        Date Submitted
-                                    </th>
+                                        <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                            Date Submitted
+                                        </th>
                                     )}
                                     <th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                                         Action
@@ -678,10 +678,10 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                         Select Faculty/ Unit
                                                     </option>
                                                     {selectFacultyUnit()}
-                                                    
+
                                                     <option value="Other">Other</option>
                                                 </select>
-                                            </td>                                            
+                                            </td>
                                             {/* {isAllTabActive && (
                                                 <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                     {attendanceItem.sub_eventName}
@@ -724,7 +724,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                             ? 'Visitor'
                                                             : categoryTab === 'secondary'
                                                                 ? 'Secondary'
-                                                                : attendanceItem.attFormsStaffID}
+                                                                : attendanceItem.attFormsStaffID === '0'
+                                                                    ? 'Visitor'
+                                                                    : attendanceItem.attFormsStaffID === '1'
+                                                                        ? 'Secondary'
+                                                                        : attendanceItem.attFormsStaffID}
                                                     </a>
                                                 ) : (
                                                     <>
@@ -752,11 +756,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                 </td>
                                             )}
                                             {!updateOption && (
-                                            <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                {formatDate(attendanceItem.attDateSubmitted).date}
-                                                <br />
-                                                {formatDate(attendanceItem.attDateSubmitted).time}
-                                            </td>
+                                                <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                                                    {formatDate(attendanceItem.attDateSubmitted).date}
+                                                    <br />
+                                                    {formatDate(attendanceItem.attDateSubmitted).time}
+                                                </td>
                                             )}
                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                 <button
