@@ -50,7 +50,7 @@ export async function POST(request: Request) {
             const { data: storageData, error: storageError } = await supabase
                 .storage
                 .from('attFormsCertofParticipation')
-                .upload(`${atStaffName}_Certificate of Participation_${uniqueName}.pdf`, pdfBuffer, {
+                .upload(`${atStaffName}_Certificate of Attendance_${uniqueName}.pdf`, pdfBuffer, {
                     cacheControl: '3600',
                     upsert: false,
                 });
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
                 throw new Error('Recipient email address not specified.');
             }
 
-            const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Participation.pdf`;
+            const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Attendance.pdf`;
 
             await transporter.sendMail({
                 ...mailOptionsCopy,
