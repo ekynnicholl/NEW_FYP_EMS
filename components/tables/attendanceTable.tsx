@@ -582,6 +582,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                 />
                                                 <span>Display name of sub-event attended?</span>
                                             </div>
+                                            <div className="h-[2px] border border-black m-3"></div>
                                             {hasMultipleSubEvents && (
                                                 <div className="flex items-center mb-2">
                                                     <input
