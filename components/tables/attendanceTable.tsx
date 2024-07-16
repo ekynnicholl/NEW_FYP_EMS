@@ -457,6 +457,11 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     const [isDistributeOpen, setDistributeOpen] = useState(false);
     const [selectedAttendanceData, setSelectedAttendanceData] = useState<boolean[]>([]);
     const [selectedEligibleAttendance, setSelectedEligibleAttendance] = useState<boolean[]>([]);
+    const [displaySubEventNames, setDisplaySubEventNames] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setDisplaySubEventNames(prevState => !prevState);
+    };
 
     const distributeCertificates = async () => {
         try {
@@ -469,6 +474,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
             const selectedAttendanceWithEventName = selectedAttendance.map(attendanceItem => ({
                 ...attendanceItem,
                 eventName: eventName,
+                showSubName: displaySubEventNames,
             }));
 
             // console.log(selectedAttendanceWithEventName.length)
@@ -555,7 +561,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                         </DialogHeader>
                                         <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 text-center dark:text-slate-200">
                                             Please confirm you are about to distribute certificates to these emails:
-                                            <div className="flex items-center mb-2">
+                                            <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedAttendanceData.every(Boolean)}
@@ -566,6 +572,15 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                     className="mr-3 ml-5"
                                                 />
                                                 <span>Select/ Deselect All</span>
+                                            </div>
+                                            <div className="flex items-center mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={displaySubEventNames}
+                                                    onChange={handleCheckboxChange}
+                                                    className="mr-3 ml-5"
+                                                />
+                                                <span>Display name of sub-event attended?</span>
                                             </div>
                                             {hasMultipleSubEvents && (
                                                 <div className="flex items-center mb-2">
