@@ -29,7 +29,7 @@ const convertToXLSX = (data: AttendanceDataType[], columnMapping: ColumnMapping)
             }
         });
 
-        newRow.attFormsStaffID = newRow.attFormsStaffID === '0' ? 'Visitor' : newRow.attFormsStaffID === '1' ? 'Secondary Student' : newRow.attFormsStaffID;
+        newRow.attFormsStaffID = newRow.attFormsStaffID === '0' ? 'External Visitor' : newRow.attFormsStaffID === '1' ? 'Secondary Student' : newRow.attFormsStaffID === '2' ? 'Teacher' : newRow.attFormsStaffID;
 
         return Object.keys(columnMapping).map((key) => newRow[key as keyof AttendanceDataType]);
     });

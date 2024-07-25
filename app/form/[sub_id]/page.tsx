@@ -192,6 +192,7 @@ export default function AttendanceForm() {
 			return;
 		}
 
+		// 0 = External Visitor, 1 = Secondary Students, 2 = Teacher
 		if (userType == 'visitor') {
 			info.attFormsStaffID = '0';
 			if (!info.attFormsFacultyUnit || info.attFormsFacultyUnit.length === 0) {
@@ -199,8 +200,12 @@ export default function AttendanceForm() {
 			}
 		} else if (userType == 'secondary') {
 			info.attFormsStaffID = '1';
-		}
-		else {
+		} else if (userType == 'teacher') {
+			info.attFormsStaffID = '2';
+			if (!info.attFormsFacultyUnit || info.attFormsFacultyUnit.length === 0) {
+				info.attFormsFacultyUnit = 'N/A'
+			}
+		} else {
 			if (!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !info.attFormsStaffEmail) {
 				if (info.attFormsStaffID == '0') {
 					toast.error("Your Staff/ Student ID cannot be 0.");
@@ -661,7 +666,7 @@ export default function AttendanceForm() {
 										<label
 											htmlFor="name"
 											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Are you a Staff, Swinburne Student, Secondary School Student or a Visitor?
+											Are you a Staff, Swinburne Student, Secondary School Student, Secondary School Teacher or an External Visitor?
 											<span className="text-red-500"> *</span>
 										</label>
 										<div>
@@ -698,6 +703,18 @@ export default function AttendanceForm() {
 													onChange={handleUserTypeChange}
 												/>
 												<span className="ml-2 font-medium text-sm lg:text-base">Secondary School Student</span>
+											</label>
+										</div>
+										<div className="mt-2">
+											<label className="ml-1">
+												<input
+													type="radio"
+													name="userType"
+													value="teacher"
+													checked={userType === 'teacher'}
+													onChange={handleUserTypeChange}
+												/>
+												<span className="ml-2 font-medium text-sm lg:text-base">Teacher</span>
 											</label>
 										</div>
 										<div className="mt-2">
@@ -979,6 +996,31 @@ export default function AttendanceForm() {
 									</div>
 								)}
 
+								{userType === 'teacher' && (
+									<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+										<div className="ml-1">
+											<label
+												htmlFor="name_of_school"
+												className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
+												Name of School
+												<span className="text-red-500"> *</span>
+											</label>
+											<input
+												type="text"
+												name="name_of_school"
+												id="name_of_school"
+												className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+												required
+												placeholder="e.g., Lodge International School"
+												style={{ paddingLeft: "5px" }}
+												onChange={event =>
+													setInfo({ ...info, attFormsFacultyUnit: event.target.value })
+												}
+											/>
+										</div>
+									</div>
+								)}
+
 								<Fragment>
 									<div className="flex justify-end">
 										{auth.currentUser?.uid && (
@@ -994,12 +1036,12 @@ export default function AttendanceForm() {
 										)}
 
 										<div>
-											{userType === 'visitor' ? (
+											{userType === 'visitor' || userType === 'teacher' ? (
 												<button
 													type="submit"
-													className={`${info.attFormsStaffName && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													className={`${info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
-														if (info.attFormsStaffName && !formSubmitted && !isSubmitting) {
+														if (info.attFormsStaffName && info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
 															handleSubmit();
 														}
 													}}

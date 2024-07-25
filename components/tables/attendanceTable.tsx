@@ -737,26 +737,36 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                                         className="text-blue-500 hover:underline"
                                                     >
                                                         {categoryTab === 'visitor'
-                                                            ? 'Visitor'
+                                                            ? 'External Visitor'
                                                             : categoryTab === 'secondary'
                                                                 ? 'Secondary'
-                                                                : attendanceItem.attFormsStaffID === '0'
-                                                                    ? 'Visitor'
-                                                                    : attendanceItem.attFormsStaffID === '1'
-                                                                        ? 'Secondary'
-                                                                        : attendanceItem.attFormsStaffID}
+                                                                : categoryTab === 'teacher'
+                                                                    ? 'Teacher'
+                                                                    : attendanceItem.attFormsStaffID === '0'
+                                                                        ? 'External Visitor'
+                                                                        : attendanceItem.attFormsStaffID === '1'
+                                                                            ? 'Secondary'
+                                                                            : attendanceItem.attFormsStaffID === '2'
+                                                                                ? 'Teacher' :
+                                                                                attendanceItem.attFormsStaffID
+                                                        }
                                                     </a>
                                                 ) : (
                                                     <>
                                                         {categoryTab === 'visitor'
-                                                            ? 'Visitor'
+                                                            ? 'External Visitor'
                                                             : categoryTab === 'secondary'
                                                                 ? 'Secondary'
-                                                                : attendanceItem.attFormsStaffID === '0'
-                                                                    ? 'Visitor'
-                                                                    : attendanceItem.attFormsStaffID === '1'
-                                                                        ? 'Secondary'
-                                                                        : attendanceItem.attFormsStaffID}
+                                                                : categoryTab === 'teacher'
+                                                                    ? 'Teacher'
+                                                                    : attendanceItem.attFormsStaffID === '0'
+                                                                        ? 'External Visitor'
+                                                                        : attendanceItem.attFormsStaffID === '1'
+                                                                            ? 'Secondary'
+                                                                            : attendanceItem.attFormsStaffID === '2'
+                                                                                ? 'Teacher' :
+                                                                                attendanceItem.attFormsStaffID
+                                                        }
                                                     </>
                                                 )}
                                             </td>

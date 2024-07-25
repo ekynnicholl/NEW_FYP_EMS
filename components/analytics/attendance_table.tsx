@@ -188,7 +188,7 @@ const AttendanceList: React.FC<Props> = ({ staffDetails }) => {
                                                                 )}
                                                             </td>
                                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                                                {attendanceItem.staffID == '0' ? 'Visitor' : attendanceItem.staffID == '1' ? 'Secondary Students' : attendanceItem.staffID}
+                                                                {attendanceItem.staffID == '0' ? 'External Visitor' : attendanceItem.staffID == '1' ? 'Secondary Students' : attendanceItem.staffID == '2' ? 'Teacher' : attendanceItem.staffID}
                                                             </td>
                                                             <td className="flex-1 px-6 lg:px-8 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                                                 {formatDate(attendanceItem.dateSubmitted).date} - {formatDate(attendanceItem.dateSubmitted).time}
