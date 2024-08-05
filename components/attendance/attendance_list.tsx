@@ -385,7 +385,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         if (tab === 'staff') {
             filteredData = attendanceData.filter((item) => item.attFormsStaffID.startsWith('SS'));
         } else if (tab === 'student') {
-            filteredData = attendanceData.filter((item) => item.attFormsStaffID !== '0' && !item.attFormsStaffID.startsWith('SS') && item.attFormsStaffID !== '1');
+            filteredData = attendanceData.filter((item) => item.attFormsStaffID !== '0' && !item.attFormsStaffID.startsWith('SS') && item.attFormsStaffID !== '1' && item.attFormsStaffID !== '2');
         } else if (tab === 'visitor') {
             filteredData = attendanceData.filter((item) => item.attFormsStaffID === '0');
         } else if (tab === 'secondary') {
