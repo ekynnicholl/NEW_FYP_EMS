@@ -175,6 +175,13 @@ export default function AttendanceForm() {
 	// Define a state variable to track form submission status
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
+	const validateName = (input: string) => {
+		// Regular expression to match only alphabets and white spaces
+		const regex = /^[A-Za-zÀ-ÿ\s-]+$/;
+
+		return regex.test(input);
+	}
+
 	// Handle data submission
 	const handleSubmit = async () => {
 		// e.preventDefault();
@@ -185,9 +192,16 @@ export default function AttendanceForm() {
 		setIsSubmitting(true); // Set form submission status to true
 
 		const isValidEmail = validateEmail(info.attFormsStaffEmail);
+		const isValidName = validateName(info.attFormsStaffName);
 
 		if (!isValidEmail) {
 			toast.error("Please input the email in a valid format.")
+			setIsSubmitting(false);
+			return;
+		}
+
+		if (!isValidName) {
+			toast.error("Your name MUST be in alphabets A-Z.")
 			setIsSubmitting(false);
 			return;
 		}
@@ -235,7 +249,7 @@ export default function AttendanceForm() {
 			.eq("attFSubEventID", sub_id)
 			.eq("attFormsStaffID", attFormsStaffID);
 
-		if (existingForms && existingForms.length > 0 && userType != 'visitor' && userType != 'secondary') {
+		if (existingForms && existingForms.length > 0 && userType != 'visitor' && userType != 'secondary' && userType != 'teacher') {
 			setShowModalFailure(true);
 			// toast.error("Your Staff/ Student ID cannot be 0.");
 			setIsSubmitting(false);
@@ -737,7 +751,8 @@ export default function AttendanceForm() {
 										<label
 											htmlFor="name"
 											className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]">
-											Name {userType === 'secondary' ? "(In FULL as per IC)" : ""}
+											{/* Name {userType === 'secondary' ? "(In FULL as per IC)" : ""} */}
+											Full Name (as per NRIC)
 											<span className="text-red-500"> *</span>
 										</label>
 										<input
@@ -1038,7 +1053,7 @@ export default function AttendanceForm() {
 										<div>
 											{userType === 'visitor' || userType === 'teacher' ? (
 												<button
-													type="submit"
+													type="button"
 													className={`${info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
 														if (info.attFormsStaffName && info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
@@ -1050,7 +1065,7 @@ export default function AttendanceForm() {
 												</button>
 											) : userType === 'secondary' ? (
 												<button
-													type="submit"
+													type="button"
 													className={`${info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
 														if (info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !formSubmitted && !isSubmitting) {
@@ -1062,7 +1077,7 @@ export default function AttendanceForm() {
 												</button>
 											) : (
 												<button
-													type="submit"
+													type="button"
 													className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
 														if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
