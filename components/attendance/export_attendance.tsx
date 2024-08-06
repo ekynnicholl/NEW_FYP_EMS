@@ -11,6 +11,7 @@ type AttendanceDataType = {
     sub_eventName: string;
     sub_eventVenue: string;
     attFormsStaffEmail: string;
+    attFormsYearofStudy: string;
 };
 
 const convertToXLSX = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
@@ -29,7 +30,7 @@ const convertToXLSX = (data: AttendanceDataType[], columnMapping: ColumnMapping)
             }
         });
 
-        newRow.attFormsStaffID = newRow.attFormsStaffID === '0' ? 'External Visitor' : newRow.attFormsStaffID === '1' ? 'Secondary Student' : newRow.attFormsStaffID === '2' ? 'Teacher' : newRow.attFormsStaffID;
+        newRow.attFormsStaffID = newRow.attFormsStaffID === '0' ? 'External Visitor' : newRow.attFormsStaffID === '1' ? `Secondary Student (${newRow.attFormsYearofStudy})` : newRow.attFormsStaffID === '2' ? 'Teacher' : newRow.attFormsStaffID;
 
         return Object.keys(columnMapping).map((key) => newRow[key as keyof AttendanceDataType]);
     });
@@ -83,7 +84,8 @@ const convertDateToLocale = (utcDate: string) => {
 
 const columnMapping: ColumnMapping = {
     attFormsStaffID: 'Staff/ Student ID',
-    attFormsStaffName: 'Staff Name',
+    attFormsStaffName: 'Name',
+    attFormsStaffEmail: 'Email',
     attFormsFacultyUnit: 'Unit/ Organization',
     sub_eventName: 'Session',
     attDateSubmitted: 'Date Submitted',
