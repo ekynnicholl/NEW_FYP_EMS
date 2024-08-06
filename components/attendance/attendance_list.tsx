@@ -33,6 +33,7 @@ type AttendanceDataType = {
     sub_eventName: string;
     sub_eventVenue: string;
     attFormsStaffEmail: string;
+    attFormsYearofStudy: string;
 };
 
 interface Props {
@@ -427,8 +428,8 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
 
     return (
         <div>
-            <div className="lg:flex lg:flex-row relative h-[90vh] overflow-y-auto">
-                <div className={`${attendanceData && attendanceData.length > 0 ? 'w-full lg:w-1/2 lg:h-[700px] h-[1650px]' : 'w-full lg:h-[450px] h-[300px]'}`}>
+            <div className="lg:flex lg:flex-row h-[90vh] overflow-y-auto">
+                <div className={`${attendanceData && attendanceData.length > 0 ? 'lg:w-full lg:h-[700px] h-[1650px]' : 'w-full lg:h-[450px] h-[300px]'}`}>
                     <div className="flex items-start justify-start text-text text-[20px] text-center">
                         <PencilNoteIcon />{" "}
                         <span className="ml-5 lg:-mt-1 lg:text-[20px] text-[16px]">Attendance List</span>
@@ -569,7 +570,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                     )}
                 </div>
                 {filteredAttendanceData && filteredAttendanceData.length > 0 ? (
-                    <div className="w-full h-full lg:w-1/2 lg:flex lg:flex-col lg:items-center lg:justify-center mt-24">
+                    <div className="lg:flex lg:flex-col lg:items-center lg:justify-center mt-24 pr-5 pl-5">
                         <div className="text-center font-bold lg:text-[16px] text-[14px]">Number of Attendees Each Faculty/ Unit</div>
                         <div className="w-[400px] h-[400px] lg:w-[650px] lg:h-[750px] mt-5">
                             <canvas id="attendanceFacultyPieChart" ref={chartContainer} />
