@@ -182,9 +182,9 @@ export default function Home() {
 		eventStartDate: 'Event Start Date',
 		eventEndDate: 'Event End Date',
 		// subEventsCount: 'Event Count',
-		totalSubEvents: 'Total Event(s) Attended',
 		totalHours: 'Training Hours (H)',
-		grandTotalHours: 'Total Hours (H)'
+		grandTotalHours: 'Total Hours (H)',
+		totalSubEvents: 'Total Event(s) Attended',
 	};
 
 	const convertToXLSX = (data: Info[], columnMapping: ColumnMapping) => {
@@ -208,8 +208,8 @@ export default function Home() {
 					eventProgramName: event.programName,
 					eventStartDate: event.startDate,
 					eventEndDate: event.endDate,
-					totalSubEvents: staffMap.has(staffID) ? null : totalSubEvents,
 					grandTotalHours: staffMap.has(staffID) ? null : grandTotalHours, // Include grandTotalHours only once
+					totalSubEvents: staffMap.has(staffID) ? null : totalSubEvents,
 				};
 
 				// Mark that staff details and grandTotalHours have been included for this staffID
@@ -434,26 +434,28 @@ export default function Home() {
 
 		const filterByYear = (year: string) => {
 			if (year && year !== 'all') {
-				console.log('Filtering by year:', year);
-				filteredUserData = filteredUserData.map((item) => {
-					// Filter events for the selected year
-					const filteredEvents = item.allEventsAttended.filter(event => {
-						const eventYear = new Date(event.startDate).getFullYear().toString();
-						return eventYear === year;
-					});
+				console.log('testing called', year);
 
-					// Return the item only if it has events in the selected year
-					if (filteredEvents.length > 0) {
-						return {
-							...item,
-							allEventsAttended: filteredEvents,
-							totalSubEvents: filteredEvents.length, // Update the totalSubEvents if needed
-							grandTotalHours: filteredEvents.reduce((acc, event) => acc + event.totalHours, 0), // Update grandTotalHours if needed
-						};
-					} else {
-						return null; // Exclude items with no events in the selected year
-					}
-				}).filter(item => item !== null); // Remove any null entries
+				// Filter the data while excluding null values
+				filteredUserData = filteredUserData
+					.map((item) => {
+						if (!item) return null;
+
+						// Create a copy of the item to avoid mutating the original data
+						const newItem = { ...item };
+
+						// Filter events for the selected year
+						newItem.allEventsAttended = newItem.allEventsAttended.filter((event) => {
+							const eventYear = new Date(event.startDate).getFullYear().toString();
+							return eventYear === year;
+						});
+
+						// Return the item only if it has events in the selected year
+						return newItem.allEventsAttended.length > 0 ? newItem : null;
+					})
+					.filter((item): item is Info => item !== null); // Type guard to filter out nulls
+
+				// You should now have an array of Info type
 			}
 		};
 
