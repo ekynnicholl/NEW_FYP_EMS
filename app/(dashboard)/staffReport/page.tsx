@@ -178,23 +178,61 @@ export default function Home() {
 		staffID: 'Staff/ Student ID',
 		staffName: 'Full Name',
 		staffFaculty: 'Faculty / Unit',
+		eventProgramName: 'Event Program Name',
+		eventStartDate: 'Event Start Date',
+		eventEndDate: 'Event End Date',
+		// subEventsCount: 'Event Count',
 		totalSubEvents: 'Total Event(s) Attended',
-		grandTotalHours: 'Training Hours',
+		totalHours: 'Training Hours (H)',
+		grandTotalHours: 'Total Hours (H)'
 	};
 
 	const convertToXLSX = (data: Info[], columnMapping: ColumnMapping) => {
 		const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
-		const body = data.map((row) => {
-			const newRow: any = { ...row };
 
-			newRow.attFormsStaffID = newRow.attFormsStaffID === '0' ? 'Visitor' : newRow.attFormsStaffID === '1' ? 'Secondary Student' : newRow.attFormsStaffID;
+		// Prepare the body with events included
+		const body: any[] = [];
+		const staffMap = new Map<string, boolean>(); // To track if staff details have been added for a staffID
 
-			return Object.keys(columnMapping).map((key) => newRow[key as keyof Info]);
+		data.forEach((row) => {
+			const { staffID, staffName, staffFaculty, totalSubEvents, grandTotalHours, allEventsAttended } = row;
+
+			allEventsAttended.forEach((event) => {
+				// Create a new row for each event
+				const newRow: any = {
+					staffID: staffMap.has(staffID) ? null : staffID, // Include staffID only once
+					staffName: staffMap.has(staffID) ? null : staffName, // Include staffName only once
+					staffFaculty: staffMap.has(staffID) ? null : staffFaculty, // Include staffFaculty only once
+					// subEventsCount: '1',
+					totalHours: event.totalHours,
+					eventProgramName: event.programName,
+					eventStartDate: event.startDate,
+					eventEndDate: event.endDate,
+					totalSubEvents: staffMap.has(staffID) ? null : totalSubEvents,
+					grandTotalHours: staffMap.has(staffID) ? null : grandTotalHours, // Include grandTotalHours only once
+				};
+
+				// Mark that staff details and grandTotalHours have been included for this staffID
+				if (!staffMap.has(staffID)) {
+					staffMap.set(staffID, true);
+				}
+
+				// Handle the attFormsStaffID mapping
+				newRow.attFormsStaffID = staffID === '0' ? 'External Visitor' :
+					staffID === '1' ? 'Secondary Student' :
+						staffID === '2' ? 'Teacher' :
+							staffID;
+
+				body.push(newRow);
+			});
 		});
 
-		const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
+		// Map each row to the order specified in columnMapping
+		const formattedBody = body.map((row) => Object.keys(columnMapping).map((key) => row[key as keyof typeof row]));
+
+		const ws = XLSX.utils.aoa_to_sheet([header, ...formattedBody]);
 		const wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, 'staff_attendance_data');
+		XLSX.utils.book_append_sheet(wb, ws, `Staff Attendance Data`);
 
 		const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Change type to 'array'
 
@@ -370,6 +408,7 @@ export default function Home() {
 	}, []);
 
 	const [selectedYear, setSelectedYear] = useState("");
+	const [selectedYearForReport, setSelectedYearForReport] = useState("");
 
 	const generateYearOptions = () => {
 		let startYear = 2023;
@@ -392,6 +431,31 @@ export default function Home() {
 				filteredUserData = filteredUserData.filter((item) => facultyUnit === item.staffFaculty);
 			}
 		}
+
+		const filterByYear = (year: string) => {
+			if (year && year !== 'all') {
+				console.log('Filtering by year:', year);
+				filteredUserData = filteredUserData.map((item) => {
+					// Filter events for the selected year
+					const filteredEvents = item.allEventsAttended.filter(event => {
+						const eventYear = new Date(event.startDate).getFullYear().toString();
+						return eventYear === year;
+					});
+
+					// Return the item only if it has events in the selected year
+					if (filteredEvents.length > 0) {
+						return {
+							...item,
+							allEventsAttended: filteredEvents,
+							totalSubEvents: filteredEvents.length, // Update the totalSubEvents if needed
+							grandTotalHours: filteredEvents.reduce((acc, event) => acc + event.totalHours, 0), // Update grandTotalHours if needed
+						};
+					} else {
+						return null; // Exclude items with no events in the selected year
+					}
+				}).filter(item => item !== null); // Remove any null entries
+			}
+		};
 
 		let filteredUserData = aggregatedInfo;
 
@@ -445,14 +509,46 @@ export default function Home() {
 			);
 		}
 
-		setDataResults(filteredUserData);
-		console.log("filter:", filteredUserData);
+		filterByYear(selectedYearForReport);
+
+		const sortedData = filteredUserData.sort((a, b) => {
+			if (sortBy === "staffid") {
+				if (sortOrder === "asc") {
+					return a.staffID.localeCompare(b.staffID, undefined, { sensitivity: 'base' });
+				} else {
+					return b.staffID.localeCompare(a.staffID, undefined, { sensitivity: 'base' });
+				}
+			} else if (sortBy === "name") {
+				if (sortOrder === "asc") {
+					return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
+				} else {
+					return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
+				}
+			} else if (sortBy === "eventattended") {
+				if (sortOrder === "asc") {
+					return b.totalSubEvents - a.totalSubEvents;
+				} else {
+					return a.totalSubEvents - b.totalSubEvents;
+				}
+			} else if (sortBy === "totalhours") {
+				if (sortOrder === "asc") {
+					return b.grandTotalHours - a.grandTotalHours;
+				} else {
+					return a.grandTotalHours - b.grandTotalHours;
+				}
+			}
+			return 0;
+		});
+
+		setDataResults(sortedData);
+
+		// console.log("filter:", filteredUserData);
 	};
 
 	useEffect(() => {
 		filterUserData(activeTab, searchQuery);
 		// setCurrentPage(1);
-	}, [activeTab, searchQuery, selectedFacultyUnit, selectedFilterStudent, selectedFilterStaff, aggregatedInfo]);
+	}, [activeTab, searchQuery, selectedFacultyUnit, selectedFilterStudent, selectedFilterStaff, aggregatedInfo, selectedYearForReport]);
 
 	// Show Sort Options
 	const handleSortButtonClick = () => {
@@ -482,36 +578,36 @@ export default function Home() {
 
 	// Modify the sorting logic based on the selected option and sort order
 	// const sortedData = (dataResults.length > 0 ? dataResults : aggregatedInfo)
-	const sortedData = (dataResults)
-		.sort((a, b) => {
-			if (sortBy === "staffid") {
-				// Sort by ID
-				if (sortOrder === "asc") {
-					return a.staffID.localeCompare(b.staffID, undefined, { sensitivity: 'base' });
-				} else {
-					return b.staffID.localeCompare(a.staffID, undefined, { sensitivity: 'base' });
-				}
-			} else if (sortBy === "name") {
-				if (sortOrder === "asc") {
-					return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
-				} else {
-					return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
-				}
-			} else if (sortBy === "eventattended") {
-				if (sortOrder === "asc") {
-					return b.totalSubEvents - a.totalSubEvents;
-				} else {
-					return a.totalSubEvents - b.totalSubEvents;
-				}
-			} else if (sortBy === "totalhours") {
-				if (sortOrder === "asc") {
-					return b.grandTotalHours - a.grandTotalHours;
-				} else {
-					return a.grandTotalHours - b.grandTotalHours;
-				}
-			}
-			return 0;
-		});
+	// const sortedData = (dataResults)
+	// 	.sort((a, b) => {
+	// 		if (sortBy === "staffid") {
+	// 			// Sort by ID
+	// 			if (sortOrder === "asc") {
+	// 				return a.staffID.localeCompare(b.staffID, undefined, { sensitivity: 'base' });
+	// 			} else {
+	// 				return b.staffID.localeCompare(a.staffID, undefined, { sensitivity: 'base' });
+	// 			}
+	// 		} else if (sortBy === "name") {
+	// 			if (sortOrder === "asc") {
+	// 				return b.staffName.localeCompare(a.staffName, undefined, { sensitivity: 'base' });
+	// 			} else {
+	// 				return a.staffName.localeCompare(b.staffName, undefined, { sensitivity: 'base' });
+	// 			}
+	// 		} else if (sortBy === "eventattended") {
+	// 			if (sortOrder === "asc") {
+	// 				return b.totalSubEvents - a.totalSubEvents;
+	// 			} else {
+	// 				return a.totalSubEvents - b.totalSubEvents;
+	// 			}
+	// 		} else if (sortBy === "totalhours") {
+	// 			if (sortOrder === "asc") {
+	// 				return b.grandTotalHours - a.grandTotalHours;
+	// 			} else {
+	// 				return a.grandTotalHours - b.grandTotalHours;
+	// 			}
+	// 		}
+	// 		return 0;
+	// 	});
 
 	const filterEventByYear = () => {
 		if (eventsAttended.length > 0) {
@@ -533,6 +629,27 @@ export default function Home() {
 	useEffect(() => {
 		filterEventByYear();
 	}, [selectedYear, eventsAttended])
+
+	// const filterReportByYear = () => {
+	// 	if (dataResults.length > 0) {
+	// 		let filteredEventsAttended = [...dataResults];
+	// 		if (selectedYearForReport.length > 0 && selectedYearForReport !== 'all') {
+	// 			filteredEventsAttended = dataResults.filter(
+	// 				event => {
+	// 					return (
+	// 						event..includes(selectedYear)
+	// 					);
+	// 				}
+	// 			);
+	// 		}
+
+	// 		setFilteredEventResults(filteredEventsAttended || []);
+	// 	}
+	// }
+
+	// useEffect(() => {
+	// 	filterReportByYear();
+	// }, [selectedYear, eventsAttended])
 
 	return (
 		<div>
@@ -655,7 +772,7 @@ export default function Home() {
 									<button
 										type="button"
 										className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
-										onClick={() => downloadXLSX(aggregatedInfo)}>
+										onClick={() => downloadXLSX(dataResults)}>
 										<img
 											src={exportCSV.src}
 											alt=""
@@ -709,7 +826,19 @@ export default function Home() {
 								<div className="flex flex-row">
 
 									{activeTab === "all" && (
-										<div>
+										<div className="flex space-x-2">
+											<div>
+												<select
+													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base"
+													id="year"
+													defaultValue=""
+													onChange={event => setSelectedYearForReport(event.target.value)}
+												>
+													<option value="" disabled>Year</option>
+													<option value="all">View All</option>
+													{generateYearOptions()}
+												</select>
+											</div>
 											<select
 												name="facultyUnit"
 												id="facultyUnit"
@@ -835,7 +964,7 @@ export default function Home() {
 											{dataResults.length === 0 ? (
 												<span className="lg:text-lg ml-4 mt-4">No data available.</span>
 											) : (
-												sortedData
+												dataResults
 													.slice(
 														(currentPage - 1) * entriesToShow,
 														currentPage * entriesToShow,
