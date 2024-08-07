@@ -28,6 +28,8 @@ type Info = {
 		totalHours: number;
 		startDate: string;
 		endDate: string;
+		subEventStartTime?: string;
+		subEventEndTime?: string;
 	}[];
 	grandTotalHours: number;
 }
@@ -114,19 +116,20 @@ export default function Home() {
 
 			result[uniqueStaffID].totalSubEvents++;
 
+			const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
+
 			result[uniqueStaffID].allEventsAttended.push(
 				...mainEvents
-					.filter(event => {
-						const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
-						return matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID;
-					})
+					.filter(event => matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID)
 					.map(event => ({
 						programName: event.intFEventName,
 						totalHours: event.intFTotalHours,
 						startDate: event.intFEventStartDate,
 						endDate: event.intFEventEndDate,
+						subEventStartTime: matchingSubEvents.find(e => e.sub_eventsMainID === event.intFID)?.sub_eventsStartTime ?? null,
+						subEventEndTime: matchingSubEvents.find(e => e.sub_eventsMainID === event.intFID)?.sub_eventsEndTime ?? null,
 					}))
-			)
+			);
 
 			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
 			result[uniqueStaffID].grandTotalHours = totalHours;
@@ -181,6 +184,8 @@ export default function Home() {
 		eventProgramName: 'Event Program Name',
 		eventStartDate: 'Event Start Date',
 		eventEndDate: 'Event End Date',
+		subEventStartTime: 'Event Start Time',
+		subEventEndTime: 'Event End Time',
 		// subEventsCount: 'Event Count',
 		totalHours: 'Training Hours (H)',
 		grandTotalHours: 'Total Hours (H)',
@@ -189,6 +194,7 @@ export default function Home() {
 
 	const convertToXLSX = (data: Info[], columnMapping: ColumnMapping) => {
 		const header = Object.keys(columnMapping).map((key) => columnMapping[key]);
+		console.log(data);
 
 		// Prepare the body with events included
 		const body: any[] = [];
@@ -208,6 +214,8 @@ export default function Home() {
 					eventProgramName: event.programName,
 					eventStartDate: event.startDate,
 					eventEndDate: event.endDate,
+					subEventStartTime: event.subEventStartTime,
+					subEventEndTime: event.subEventEndTime,
 					grandTotalHours: staffMap.has(staffID) ? null : grandTotalHours, // Include grandTotalHours only once
 					totalSubEvents: staffMap.has(staffID) ? null : totalSubEvents,
 				};
