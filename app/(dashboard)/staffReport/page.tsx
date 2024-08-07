@@ -450,12 +450,14 @@ export default function Home() {
 							return eventYear === year;
 						});
 
+						// Recalculate grandTotalHours and totalSubEvents after filtering
+						newItem.grandTotalHours = newItem.allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
+						newItem.totalSubEvents = newItem.allEventsAttended.length;
+
 						// Return the item only if it has events in the selected year
 						return newItem.allEventsAttended.length > 0 ? newItem : null;
 					})
-					.filter((item): item is Info => item !== null); // Type guard to filter out nulls
-
-				// You should now have an array of Info type
+					.filter((item): item is Info => item !== null);
 			}
 		};
 
