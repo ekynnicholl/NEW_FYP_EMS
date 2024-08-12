@@ -903,7 +903,7 @@ export default function Home() {
 										<div className="flex space-x-2">
 											<div>
 												<select
-													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base"
+													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base rounded-md"
 													id="year"
 													defaultValue=""
 													onChange={event => setSelectedYearForReport(event.target.value)}
@@ -917,7 +917,7 @@ export default function Home() {
 												name="facultyUnit"
 												id="facultyUnit"
 												value={selectedFacultyUnit}
-												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96 rounded-md"
 												required
 												onChange={event => setSelectedFacultyUnit(event.target.value)}
 											>
@@ -950,10 +950,10 @@ export default function Home() {
 									)}
 
 									{activeTab === "staff" && (
-										<div>
+										<div className="flex space-x-2">
 											<div>
 												<select
-													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base"
+													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base rounded-md"
 													id="year"
 													defaultValue=""
 													onChange={event => setSelectedYearForReport(event.target.value)}
@@ -967,7 +967,7 @@ export default function Home() {
 												name="facultyUnit"
 												id="facultyUnit"
 												value={selectedFilterStaff}
-												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96"
+												className="px-4 py-2 border border-gray-300 focus:outline-none text-xs lg:text-base w-full lg:w-96 rounded-md"
 												required
 												onChange={event => setSelectedFilterStaff(event.target.value)}
 											>
@@ -987,10 +987,10 @@ export default function Home() {
 									)}
 
 									{activeTab === "student" && (
-										<div className="flex flex-row">
+										<div className="flex space-x-2">
 											<div>
 												<select
-													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base"
+													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base rounded-md"
 													id="year"
 													defaultValue=""
 													onChange={event => setSelectedYearForReport(event.target.value)}
