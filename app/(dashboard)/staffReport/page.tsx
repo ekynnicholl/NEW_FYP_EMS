@@ -951,6 +951,18 @@ export default function Home() {
 
 									{activeTab === "staff" && (
 										<div>
+											<div>
+												<select
+													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base"
+													id="year"
+													defaultValue=""
+													onChange={event => setSelectedYearForReport(event.target.value)}
+												>
+													<option value="" disabled>Year</option>
+													<option value="all">View All</option>
+													{generateYearOptions()}
+												</select>
+											</div>
 											<select
 												name="facultyUnit"
 												id="facultyUnit"
@@ -976,6 +988,18 @@ export default function Home() {
 
 									{activeTab === "student" && (
 										<div className="flex flex-row">
+											<div>
+												<select
+													className="px-4 py-4 border border-gray-300 focus:outline-none text-xs lg:text-base"
+													id="year"
+													defaultValue=""
+													onChange={event => setSelectedYearForReport(event.target.value)}
+												>
+													<option value="" disabled>Year</option>
+													<option value="all">View All</option>
+													{generateYearOptions()}
+												</select>
+											</div>
 											<select
 												name="studentFacultyUnit"
 												id="studentFacultyUnit"
