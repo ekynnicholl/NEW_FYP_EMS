@@ -49,47 +49,91 @@ export default function Home() {
 	const [dataResults, setDataResults] = useState<Info[]>([]);
 	const [aggregatedInfo, setAggregatedInfo] = useState<Info[]>([]);
 
-	const fetchInfos = async () => {
-		const { data: staffData, error: attendedEventError } = await supabase
-			.from("attendance_forms")
-			.select("*");
+	const PAGE_SIZE = 1000;
 
-		if (attendedEventError) {
-			// console.error("Error fetching staff attendance data:", attendedEventError);
-			return;
+	const fetchInfos = async () => {
+		let staffData: any[] = [];
+		let page = 0;
+		let hasMore = true;
+
+		while (hasMore) {
+			const { data: fetchedData, error } = await supabase
+				.from("attendance_forms")
+				.select("*")
+				.not('attFormsStaffID', 'eq', 0)
+				.not('attFormsStaffID', 'eq', 1)
+				.not('attFormsStaffID', 'eq', 2)
+				.range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+			if (error) {
+				// console.error("Error fetching staff attendance data:", error);
+				return;
+			}
+
+			if (fetchedData.length < PAGE_SIZE) {
+				hasMore = false;
+			}
+
+			staffData = [...staffData, ...fetchedData];
+			page++;
 		}
 
+		// Fetch other data as usual
 		const { data: subEvents, error: subEventsError } = await supabase
 			.from("sub_events")
-			.select("*");
+			.select("*")
+			.eq("sub_eventsIsHidden", 0);
 
 		if (subEventsError) {
-			// console.error("Error fetching sub_events:", subEventsError);
+			console.error("Error fetching sub_events:", subEventsError);
 			return;
 		}
 
 		const { data: mainEvents, error: mainEventsError } = await supabase
 			.from("internal_events")
-			.select("*");
+			.select("*")
+			.eq("intFEventHidden", false)
+			.eq("intFIsHidden", 0);
 
 		if (mainEventsError) {
-			// console.error("Error fetching sub_events:", subEventsError);
+			console.error("Error fetching internal_events:", mainEventsError);
 			return;
 		}
 
 		const { data: externalEvents, error: externalEventsError } = await supabase
 			.from("external_forms")
-			.select("*");
+			.select("*")
+			.eq("isHidden", 0);
 
 		if (externalEventsError) {
-			// console.error("Error fetching sub_events:", subEventsError);
+			console.error("Error fetching external_forms:", externalEventsError);
 			return;
 		}
 
-		// Group the attendance forms by staff ID, store staff names, and calculate the total subevents attended
-		const groupedData = staffData.reduce((result, form) => {
+		// Main Event = 90ee4244-92b4-4dd3-889a-c1226e639419
+		// Sub Event = 7089bb42-865f-4aa8-a88a-b449cc46c81d
 
-			const uniqueStaffID = form.attFormsStaffEmail;
+		// Create a set of visible internal event IDs
+		const visibleInternalEventIDs = new Set(mainEvents.map(event => event.intFID));
+
+		// Filter sub-events to include only those linked to visible internal events
+		const visibleSubEvents = subEvents.filter(subEvent =>
+			visibleInternalEventIDs.has(subEvent.sub_eventsMainID)
+		);
+
+		// Filter attendance forms to include only those linked to visible sub-events
+		const visibleAttendanceForms = staffData.filter(staffDataFilter =>
+			visibleSubEvents.some(subEvent => subEvent.sub_eventsID === staffDataFilter.attFSubEventID)
+		);
+
+		// Log filtered data for debugging
+		console.log("Visible Sub Events:", visibleSubEvents);
+		console.log("Visible Events:", visibleInternalEventIDs);
+		// console.log("Visible Attendance Forms:", visibleAttendanceForms);
+
+		// Group the attendance forms by staff ID
+		const groupedData = visibleAttendanceForms.reduce((result, form) => {
+			const uniqueStaffID = form.attFormsStaffID;
 
 			if (!result[uniqueStaffID]) {
 				result[uniqueStaffID] = {
@@ -102,6 +146,7 @@ export default function Home() {
 					grandTotalHours: 0,
 				};
 
+				// Add external events (NTFs)
 				result[uniqueStaffID].allEventsAttended.push(
 					...externalEvents
 						.filter(event => event.staff_id === uniqueStaffID)
@@ -111,17 +156,27 @@ export default function Home() {
 							startDate: event.commencement_date,
 							endDate: event.completion_date,
 						}))
-				)
+				);
 			}
 
 			result[uniqueStaffID].totalSubEvents++;
 
-			const matchingSubEvents = subEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
+			// Find matching sub-events
+			const matchingSubEvents = visibleSubEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
 
-			result[uniqueStaffID].allEventsAttended.push(
-				...mainEvents
-					.filter(event => matchingSubEvents.length > 0 && event.intFID === matchingSubEvents[0].sub_eventsMainID)
-					.map(event => ({
+			if (uniqueStaffID == 'SS282') {
+				console.log(matchingSubEvents);
+				// console.log(form);
+			}
+
+			if (matchingSubEvents.length > 0) {
+				// Find related visible main events
+				const relatedMainEvents = mainEvents.filter(event =>
+					event.intFID === matchingSubEvents[0].sub_eventsMainID
+				);
+
+				result[uniqueStaffID].allEventsAttended.push(
+					...relatedMainEvents.map(event => ({
 						programName: event.intFEventName,
 						totalHours: event.intFTotalHours,
 						startDate: event.intFEventStartDate,
@@ -129,16 +184,21 @@ export default function Home() {
 						subEventStartTime: matchingSubEvents.find(e => e.sub_eventsMainID === event.intFID)?.sub_eventsStartTime ?? null,
 						subEventEndTime: matchingSubEvents.find(e => e.sub_eventsMainID === event.intFID)?.sub_eventsEndTime ?? null,
 					}))
-			);
+				);
+			}
 
-			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: number, event: { totalHours: number }) => total + event.totalHours, 0);
+			const totalHours = result[uniqueStaffID].allEventsAttended.reduce((total: any, event: { totalHours: any; }) => total + event.totalHours, 0);
 			result[uniqueStaffID].grandTotalHours = totalHours;
 
 			return result;
-
 		}, {});
+
+		// Log grouped data for debugging
+		// console.log("Grouped Data:", groupedData);
+
 		setAggregatedInfo(Object.values(groupedData));
 	};
+
 
 	// Fetch data from database
 	useEffect(() => {
@@ -163,7 +223,7 @@ export default function Home() {
 		setSelectedFilterStudent("");
 	};
 
-	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student' | 'visitor' | 'secondary'>('all');
+	const [activeTab, setActiveTab] = useState<'all' | 'staff' | 'student'>('staff');
 
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
@@ -819,6 +879,7 @@ export default function Home() {
 									>
 										Student
 									</button>
+									{/*
 									<button
 										className={`flex rounded-md items-center pt-2 pb-2 pl-3 pr-3 mr-3 font-bold hover:bg-red-200 dark:hover:bg-[#2F3335] mb-3.5 shadow-sm md:inline-flex ${activeTab === 'visitor' ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800 dark:bg-[#242729] dark:text-[#CCC7C1]'
 											}`}
@@ -832,7 +893,8 @@ export default function Home() {
 										onClick={() => { setActiveTab('secondary') }}
 									>
 										Secondary
-									</button>
+									</button> 
+									*/}
 								</div>
 
 								<div className="flex flex-row">
@@ -982,6 +1044,7 @@ export default function Home() {
 														currentPage * entriesToShow,
 													)
 													.map((info, index) => (
+														// (info.staffID !== "0" && info.staffID !== "1" && info.staffID !== "2") ? (
 														<tr
 															key={info.staffEmail}
 															className="flex"
@@ -1013,6 +1076,7 @@ export default function Home() {
 																<div className="-ml-5 lg:ml-7">{info.grandTotalHours}</div>
 															</td>
 														</tr>
+														// ) : null
 													))
 											)}
 
