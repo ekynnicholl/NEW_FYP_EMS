@@ -78,6 +78,8 @@ export default function Home() {
 			page++;
 		}
 
+		// console.log(staffData.length);
+
 		// Fetch other data as usual
 		const { data: subEvents, error: subEventsError } = await supabase
 			.from("sub_events")
@@ -127,8 +129,8 @@ export default function Home() {
 		);
 
 		// Log filtered data for debugging
-		console.log("Visible Sub Events:", visibleSubEvents);
-		console.log("Visible Events:", visibleInternalEventIDs);
+		// console.log("Visible Sub Events:", visibleSubEvents);
+		// console.log("Visible Events:", visibleInternalEventIDs);
 		// console.log("Visible Attendance Forms:", visibleAttendanceForms);
 
 		// Group the attendance forms by staff ID
@@ -163,11 +165,6 @@ export default function Home() {
 
 			// Find matching sub-events
 			const matchingSubEvents = visibleSubEvents.filter(e => e.sub_eventsID === form.attFSubEventID);
-
-			if (uniqueStaffID == 'SS282') {
-				console.log(matchingSubEvents);
-				// console.log(form);
-			}
 
 			if (matchingSubEvents.length > 0) {
 				// Find related visible main events
