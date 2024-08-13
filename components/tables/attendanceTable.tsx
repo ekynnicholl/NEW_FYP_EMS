@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import DoubleRightArrow from '@/components/icons/DoubleRightArrow';
 import DoubleLeftArrow from '@/components/icons/DoubleLeftArrow';
 import RightArrow from '@/components/icons/RightArrow';
@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
 import { downloadXLSX } from '@/components/attendance/export_attendance';
+import ImportAttendanceComponent from '../attendance/import_attendance';
 
 type AttendanceDataType = {
     attFormsCertofParticipation: string;
@@ -57,6 +58,7 @@ interface Props {
     isAllTabActive: boolean;
     attendanceMainEventID: string;
     categoryTab: string;
+    selectedSubEvent: string;
 }
 
 // const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
@@ -102,7 +104,7 @@ interface Props {
 //     window.URL.revokeObjectURL(url);
 // };
 
-const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID, categoryTab }) => {
+const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID, categoryTab, selectedSubEvent }) => {
     const supabase = createClientComponentClient();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -434,7 +436,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                 staffIdsToAutoSelect.has(item.attFormsStaffID)
             );
 
-            console.log("initial", updatedSelectedData.length)
+            // console.log("initial", updatedSelectedData.length)
             setSelectedAttendanceData(updatedSelectedData);
             setSelectedEligibleAttendance(updatedSelectedData);
         } else {
@@ -456,7 +458,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
     //     setSelectedAttendanceData(updatedSelectedData);
     // };
 
-    const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
+    // const [isDistributeSelected, setIsDistributeSelected] = useState<boolean>(true);
     const [isDistributeOpen, setDistributeOpen] = useState(false);
     const [selectedAttendanceData, setSelectedAttendanceData] = useState<boolean[]>([]);
     const [selectedEligibleAttendance, setSelectedEligibleAttendance] = useState<boolean[]>([]);
@@ -532,110 +534,112 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                             >
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Distribute Certificates</span>
                             </button> */}
-                            {isDistributeSelected ? (
-                                <Dialog open={isDistributeOpen} onOpenChange={setDistributeOpen}>
-                                    <DialogTrigger>
-                                        <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
-                                            <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
-                                                <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[15px] p-[5px] dark:text-[#C1C7C1]">
-                                                    {/* Confirm Selection */}
-                                                    Distribute Certificates
-                                                </span>
+                            {/* {isDistributeSelected ? ( */}
+                            <Dialog open={isDistributeOpen} onOpenChange={setDistributeOpen}>
+                                <DialogTrigger>
+                                    <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
+                                        <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+                                            <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[15px] p-[5px] dark:text-[#C1C7C1]">
+                                                {/* Confirm Selection */}
+                                                Distribute Certificates
                                             </span>
-                                        </button>
-                                    </DialogTrigger>
-                                    <DialogContent className="z-[9999]">
-                                        <DialogHeader>
-                                            <DialogTitle>
-                                                <div className="ml-3 mr-3">
-                                                    <div className="lg:text-md font-medium text-gray-600 -ml-[6px] mt-1 text-center dark:text-slate-200">
-                                                        <span>Certificate of Participation</span>
-                                                    </div>
-                                                    {hasMultipleSubEvents && (
-                                                        <div>
-                                                            <br />
-                                                            <span className="text-sm font-medium text-gray-600 mt-1 text-justify dark:text-slate-200">
-                                                                NOTE: There are {uniqueSubEventNames.size} day(s) for this event. Only those who attended all {uniqueSubEventNames.size} day(s) will be auto-selected. You may choose to manually select others.
-                                                            </span>
-                                                        </div>
-                                                    )}
+                                        </span>
+                                    </button>
+                                </DialogTrigger>
+                                <DialogContent className="z-[9999]">
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            <div className="ml-3 mr-3">
+                                                <div className="lg:text-md font-medium text-gray-600 -ml-[6px] mt-1 text-center dark:text-slate-200">
+                                                    <span>Certificate of Participation</span>
                                                 </div>
-                                            </DialogTitle>
-                                        </DialogHeader>
-                                        <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 text-center dark:text-slate-200">
-                                            Please confirm you are about to distribute certificates to these emails:
-                                            <div className="flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedAttendanceData.every(Boolean)}
-                                                    onChange={() => {
-                                                        const allSelected = selectedAttendanceData.every(Boolean);
-                                                        setSelectedAttendanceData(noDuplicateAttendance.map(() => !allSelected));
-                                                    }}
-                                                    className="mr-3 ml-5"
-                                                />
-                                                <span>Select/ Deselect All</span>
+                                                {hasMultipleSubEvents && (
+                                                    <div>
+                                                        <br />
+                                                        <span className="text-sm font-medium text-gray-600 mt-1 text-justify dark:text-slate-200">
+                                                            NOTE: There are {uniqueSubEventNames.size} day(s) for this event. Only those who attended all {uniqueSubEventNames.size} day(s) will be auto-selected. You may choose to manually select others.
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
+                                        </DialogTitle>
+                                    </DialogHeader>
+                                    <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 text-center dark:text-slate-200">
+                                        Please confirm you are about to distribute certificates to these emails:
+                                        <div className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedAttendanceData.every(Boolean)}
+                                                onChange={() => {
+                                                    const allSelected = selectedAttendanceData.every(Boolean);
+                                                    setSelectedAttendanceData(noDuplicateAttendance.map(() => !allSelected));
+                                                }}
+                                                className="mr-3 ml-5"
+                                            />
+                                            <span>Select/ Deselect All</span>
+                                        </div>
+                                        <div className="flex items-center mb-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={displaySubEventNames}
+                                                onChange={handleCheckboxChange}
+                                                className="mr-3 ml-5"
+                                            />
+                                            <span>Display name of sub-event attended?</span>
+                                        </div>
+                                        <div className="h-[2px] border border-black m-3"></div>
+                                        {hasMultipleSubEvents && (
                                             <div className="flex items-center mb-2">
                                                 <input
                                                     type="checkbox"
-                                                    checked={displaySubEventNames}
-                                                    onChange={handleCheckboxChange}
+                                                    checked={eligibleOnlyChecked}
+                                                    onChange={() => {
+                                                        const isEligibleOnlyChecked = !eligibleOnlyChecked;
+
+                                                        const updatedSelectedData = noDuplicateAttendance.map((item, index) => {
+                                                            return isEligibleOnlyChecked ? selectedEligibleAttendance[index] ?? false : false;
+                                                        });
+
+                                                        setSelectedAttendanceData(updatedSelectedData);
+                                                        setEligibleOnlyChecked(isEligibleOnlyChecked);
+                                                    }}
                                                     className="mr-3 ml-5"
                                                 />
-                                                <span>Display name of sub-event attended?</span>
+                                                <span>Eligible Only</span>
                                             </div>
-                                            <div className="h-[2px] border border-black m-3"></div>
-                                            {hasMultipleSubEvents && (
-                                                <div className="flex items-center mb-2">
+                                        )}
+                                        <div className="max-h-[200px] overflow-auto">
+                                            {noDuplicateAttendance.map((attendee, index) => (
+                                                <div key={index} className="flex items-center text-left">
                                                     <input
                                                         type="checkbox"
-                                                        checked={eligibleOnlyChecked}
-                                                        onChange={() => {
-                                                            const isEligibleOnlyChecked = !eligibleOnlyChecked;
-
-                                                            const updatedSelectedData = noDuplicateAttendance.map((item, index) => {
-                                                                return isEligibleOnlyChecked ? selectedEligibleAttendance[index] ?? false : false;
-                                                            });
-
-                                                            setSelectedAttendanceData(updatedSelectedData);
-                                                            setEligibleOnlyChecked(isEligibleOnlyChecked);
-                                                        }}
+                                                        checked={selectedAttendanceData[index]}
+                                                        onChange={() => toggleSelection(index)}
                                                         className="mr-3 ml-5"
                                                     />
-                                                    <span>Eligible Only</span>
+                                                    <span>
+                                                        {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
+                                                    </span>
                                                 </div>
-                                            )}
-                                            <div className="max-h-[200px] overflow-auto">
-                                                {noDuplicateAttendance.map((attendee, index) => (
-                                                    <div key={index} className="flex items-center text-left">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedAttendanceData[index]}
-                                                            onChange={() => toggleSelection(index)}
-                                                            className="mr-3 ml-5"
-                                                        />
-                                                        <span>
-                                                            {attendee.attFormsStaffName} - {attendee.attFormsStaffEmail}
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </DialogDescription>
-                                        <DialogFooter className="sm:justify-center">
-                                            <DialogClose asChild>
-                                                <Button variant="outline">Cancel</Button>
-                                            </DialogClose>
-                                            <Button onClick={() => {
-                                                distributeCertificates();
-                                                setDistributeOpen(false);
-                                            }}>
-                                                Confirm
-                                            </Button>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
-                            ) : null}
+                                            ))}
+                                        </div>
+                                    </DialogDescription>
+                                    <DialogFooter className="sm:justify-center">
+                                        <DialogClose asChild>
+                                            <Button variant="outline">Cancel</Button>
+                                        </DialogClose>
+                                        <Button onClick={() => {
+                                            distributeCertificates();
+                                            setDistributeOpen(false);
+                                        }}>
+                                            Confirm
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                            {/* }) : null} */}
+                            {selectedSubEvent != null && selectedSubEvent !== '' && <ImportAttendanceComponent selectedSubEvent={selectedSubEvent} />}
+
                         </div>
                         <table className="lg:w-full w-auto">
                             <thead>

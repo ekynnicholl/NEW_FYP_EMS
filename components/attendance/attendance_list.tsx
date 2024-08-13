@@ -243,7 +243,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
     ) => {
         if (chartContainer) {
             const ctx = chartContainer.getContext('2d');
-            console.log("test");
+            // console.log("test");
 
             if (ctx) {
                 if (chartInstanceRef.current) {
@@ -560,7 +560,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 ) : (
                                     <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                 )} */}
-                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} categoryTab={activeTab} />
+                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} categoryTab={activeTab} selectedSubEvent={selectedSubEvent} />
                             </div>
                         </div>
                     ) : (
