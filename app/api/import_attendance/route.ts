@@ -37,7 +37,7 @@ export async function POST(request: Request) {
             const date = excelDateToJSDate(item.timestamp);
 
             // Format date to Malaysian timezone
-            const formattedDate = formatDateToMalaysianTimeZone(date);
+            const formattedDate = date.toISOString();
 
             return {
                 attFSubEventID: selectedSubEvent,
