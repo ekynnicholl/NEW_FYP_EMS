@@ -53,7 +53,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Failed to insert data' }, { status: 500 });
         }
 
-        // console.log('Data inserted:', mappedData);
+        console.log('Data inserted:', mappedData);
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {

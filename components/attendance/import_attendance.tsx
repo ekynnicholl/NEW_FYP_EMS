@@ -150,7 +150,7 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
                 <DialogHeader>
                     <DialogTitle>
                         <div className="ml-3 mr-3">
-                            Import Attendance (.csv/ .xlsx)
+                            Import Attendance (.csv ONLY)
                         </div>
                     </DialogTitle>
                 </DialogHeader>
@@ -173,7 +173,7 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
                         <div className="border border-slate-500 border-dashed flex items-center justify-center p-6">
                             <input
                                 type="file"
-                                accept=".csv, .xlsx"
+                                accept=".csv"
                                 onChange={handleFileChange}
                                 className="mb-4"
                             />
