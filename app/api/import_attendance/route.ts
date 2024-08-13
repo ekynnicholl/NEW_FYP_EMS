@@ -7,17 +7,9 @@ const excelDateToJSDate = (serial: number) => {
     return new Date(baseDate.getTime() + serial * msPerDay);
 };
 
-const formatDateToMalaysianTimeZone = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Asia/Kuala_Lumpur',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    }).format(date);
+const convertToUTC = (date: Date) => {
+    // Convert the local date to UTC
+    return new Date(date.getTime() - (8 * 60 * 60 * 1000)).toISOString(); // Subtract 8 hours for GMT+8 to UTC
 };
 
 export async function POST(request: Request) {
@@ -37,7 +29,7 @@ export async function POST(request: Request) {
             const date = excelDateToJSDate(item.timestamp);
 
             // Format date to Malaysian timezone
-            const formattedDate = date.toISOString();
+            const formattedDate = convertToUTC(date);
 
             return {
                 attFSubEventID: selectedSubEvent,
