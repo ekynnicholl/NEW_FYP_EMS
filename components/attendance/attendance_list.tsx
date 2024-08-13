@@ -466,7 +466,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 pb-5">
                         <button
                             onClick={() => {
                                 // Handle the refresh button click here
