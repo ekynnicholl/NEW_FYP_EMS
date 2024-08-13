@@ -55,11 +55,11 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
 
                     // Define acceptable header formats and expected column count
                     const acceptableHeaders: string[][] = [
-                        ['Timestamp', 'Full Name', 'Staff ID / Student ID', 'School'],
-                        ['Timestamp', 'Full Name', 'Staff ID/ Student ID', 'School'],
-                        ['Timestamp', 'Full Name', 'Staff ID /Student ID', 'School']
+                        ['Timestamp', 'Full Name', 'Staff ID / Student ID', 'Email', 'School'],
+                        ['Timestamp', 'Full Name', 'Staff ID/ Student ID', 'Email', 'School'],
+                        ['Timestamp', 'Full Name', 'Staff ID /Student ID', 'Email', 'School']
                     ];
-                    const expectedColumnCount = 4; // The exact number of columns expected
+                    const expectedColumnCount = 5; // The exact number of columns expected
 
                     // Extract actual headers
                     const actualHeaders = rawData[0] as string[];
@@ -159,7 +159,7 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
                         <div className=" text-black-500">
                             Please ensure the .csv/ .xlsx follows the requirements: <br />
                             <ul className="list-disc p-5">
-                                <li>Your file MUST consist of only 4 columns: <br /> Timestamp, Full Name, Staff ID / Student ID, School.</li>
+                                <li>Your file MUST consist of only 4 columns: <br /> Timestamp, Full Name, Staff ID / Student ID, Email, School.</li>
                                 <li>
                                     If you&apos;re uploading for teachers, secondary students, or external visitors, ensure the Staff ID / Student ID columns are numbered as such:
                                     <br />

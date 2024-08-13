@@ -46,6 +46,7 @@ export async function POST(request: Request) {
                 attFormsStaffID: typeof item['staff id / student id'] === 'string'
                     ? removeAllWhitespace(item['staff id / student id'])
                     : removeAllWhitespace(item['staff id / student id']?.toString() || ''), // Handle number or string
+                attFormsStaffEmail: typeof item['email'] === 'string' ? item['email'].trim() : '', // Handle non-string data
                 attFormsFacultyUnit: typeof item.school === 'string' ? item.school.trim() : '' // Handle non-string data
             };
         });
