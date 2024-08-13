@@ -159,7 +159,7 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
                         <div className=" text-black-500">
                             Please ensure the .csv/ .xlsx follows the requirements: <br />
                             <ul className="list-disc p-5">
-                                <li>Your file MUST consist of only 4 columns: <br /> Timestamp, Full Name, Staff ID / Student ID, Email, School.</li>
+                                <li>Your file MUST consist of only 5 columns: <br /> Timestamp, Full Name, Staff ID / Student ID, Email, School.</li>
                                 <li>
                                     If you&apos;re uploading for teachers, secondary students, or external visitors, ensure the Staff ID / Student ID columns are numbered as such:
                                     <br />
