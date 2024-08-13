@@ -58,7 +58,6 @@ interface Props {
     isAllTabActive: boolean;
     attendanceMainEventID: string;
     categoryTab: string;
-    selectedSubEvent: string;
 }
 
 // const convertToCSV = (data: AttendanceDataType[], columnMapping: ColumnMapping) => {
@@ -104,7 +103,7 @@ interface Props {
 //     window.URL.revokeObjectURL(url);
 // };
 
-const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID, categoryTab, selectedSubEvent }) => {
+const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID, categoryTab }) => {
     const supabase = createClientComponentClient();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -638,7 +637,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                 </DialogContent>
                             </Dialog>
                             {/* }) : null} */}
-                            {selectedSubEvent != null && selectedSubEvent !== '' && <ImportAttendanceComponent selectedSubEvent={selectedSubEvent} />}
+                            {/* {selectedSubEvent != null && selectedSubEvent !== '' && <ImportAttendanceComponent selectedSubEvent={selectedSubEvent} />} */}
 
                         </div>
                         <table className="lg:w-full w-auto">

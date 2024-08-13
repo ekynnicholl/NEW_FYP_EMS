@@ -12,6 +12,7 @@ import { useState, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
+import { FaFileImport } from "react-icons/fa";
 
 interface RowData {
     [key: string]: string | number | null;
@@ -138,6 +139,7 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
             <DialogTrigger>
                 <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
                     <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+                        <FaFileImport />
                         <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[15px] p-[5px] dark:text-[#C1C7C1]">
                             Import Attendance
                         </span>
@@ -165,6 +167,7 @@ const ImportAttendanceComponent: React.FC<ImportAttendanceProps> = ({ selectedSu
                                     Secondary Students: 1 <br />
                                     Teachers: 2
                                 </li>
+                                <li>The system DOES NOT check for duplicates. Ensure the event is empty or cross-check for duplicates.</li>
                             </ul>
                         </div>
                         <div className="border border-slate-500 border-dashed flex items-center justify-center p-6">

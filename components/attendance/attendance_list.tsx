@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Chart, { registerables } from "chart.js/auto";
 import AttendanceTable from "@/components/tables/attendanceTable";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ImportAttendanceComponent from "./import_attendance";
 
 type SubEventsDataType = {
     sub_eventsMainID: string;
@@ -465,16 +466,20 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                             </div>
                         ))}
                     </div>
-                    <button
-                        onClick={() => {
-                            // Handle the refresh button click here
-                            fetchAttendanceList(attendanceMainEventID);
-                            setIsAllButtonActive(true);
-                        }}
-                        className="font-bold hidden lg:flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm mb-3.5 pt-2 pb-2 pl-3 pr-3 bg-slate-200 text-slate-800"
-                    >
-                        Refresh
-                    </button>
+                    <div className="flex items-center space-x-2">
+                        <button
+                            onClick={() => {
+                                // Handle the refresh button click here
+                                fetchAttendanceList(attendanceMainEventID);
+                                setIsAllButtonActive(true);
+                            }}
+                            className="font-bold hidden lg:flex items-center rounded-lg lg:text-[15px] text-[12px] hover:bg-red-200 shadow-sm px-4 py-2 bg-slate-200 text-slate-800"
+                        >
+                            Refresh
+                        </button>
+
+                        {selectedSubEvent != null && selectedSubEvent !== '' && <ImportAttendanceComponent selectedSubEvent={selectedSubEvent} />}
+                    </div>
 
                     {/* This is to loop through the attendance data. */}
                     {attendanceData && attendanceData.length > 0 ? (
@@ -560,7 +565,7 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                                 ) : (
                                     <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} />
                                 )} */}
-                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} categoryTab={activeTab} selectedSubEvent={selectedSubEvent} />
+                                <AttendanceTable attendanceData={filteredAttendanceData} itemsPerPage={itemsPerPage} isAllTabActive={isAllButtonActive} attendanceMainEventID={attendanceMainEventID} categoryTab={activeTab} />
                             </div>
                         </div>
                     ) : (
