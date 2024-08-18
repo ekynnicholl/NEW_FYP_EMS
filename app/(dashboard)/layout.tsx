@@ -1,6 +1,6 @@
 "use client";
 
-import SideBarDesktop from "@/components/layouts/SideBarDesktop";
+import SideBarDesktop from "@/components/layouts/SideBarDesktop_new";
 import ModifiedSideBarDesktop from "@/components/layouts/modified-sidebar";
 import SideBarMobile from "@/components/layouts/SideBarMobile";
 import TopBar from "@/components/layouts/TopBar";
