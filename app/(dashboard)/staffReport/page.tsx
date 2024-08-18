@@ -43,6 +43,7 @@ export default function Home() {
 	const [sortBy, setSortBy] = useState(""); // Initialize state for sorting
 	const [sortOrder, setSortOrder] = useState("asc"); // Initialize sort order (asc or desc)
 	const [showSortOptions, setShowSortOptions] = useState(false); // State to control dropdown visibility
+	const [isLoadingAttendanceData, setIsLoadingAttendanceData] = useState(true);
 
 	const [showModal, setShowModal] = useState(false);
 
@@ -194,6 +195,7 @@ export default function Home() {
 		// console.log("Grouped Data:", groupedData);
 
 		setAggregatedInfo(Object.values(groupedData));
+		setIsLoadingAttendanceData(false);
 	};
 
 
@@ -1028,212 +1030,219 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-								<div className="inline-block lg:w-full shadow rounded-sm ">
-									<table className="lg:w-full w-auto overflow-x-auto min-h-[500px] cursor-pointer">
-										{/* Table Header */}
-										<thead>
-											<tr className="flex border-b-2 border-gray-200 bg-gray-100">
-												<th className="w-20 flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<div className="ml-2 lg:ml-10">No</div>
-												</th>
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 lg:-ml-24 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<div className="ml-11 lg:ml-0">Name</div>
-												</th>
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<div className="ml-16 lg:ml-1">Staff / Student ID</div>
-												</th>
+							{isLoadingAttendanceData ? (
+								<div className="flex items-center justify-center space-x-4 m-10">
+									<div className="loader-type-one"></div>
+									<div className="italic">We&apos;re trying our best to fetch the data for you... Please wait!</div>
+								</div>
+							) : (
+								<div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+									<div className="inline-block lg:w-full shadow rounded-sm ">
+										<table className="lg:w-full w-auto overflow-x-auto min-h-[500px] cursor-pointer">
+											{/* Table Header */}
+											<thead>
+												<tr className="flex border-b-2 border-gray-200 bg-gray-100">
+													<th className="w-20 flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider text-left dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+														<div className="ml-2 lg:ml-10">No</div>
+													</th>
+													<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 lg:-ml-24 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+														<div className="ml-11 lg:ml-0">Name</div>
+													</th>
+													<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+														<div className="ml-16 lg:ml-1">Staff / Student ID</div>
+													</th>
 
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<div className="ml-1">Faculty / Unit</div>
-												</th>
+													<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+														<div className="ml-1">Faculty / Unit</div>
+													</th>
 
-												<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
-													<div className="lg:ml-10">Training Hours</div>
-												</th>
-											</tr>
-										</thead>
-
-										{/* Table Body */}
-										<tbody>
-											{dataResults.length === 0 ? (
-												<span className="lg:text-lg ml-4 mt-4">No data available.</span>
-											) : (
-												dataResults
-													.slice(
-														(currentPage - 1) * entriesToShow,
-														currentPage * entriesToShow,
-													)
-													.map((info, index) => (
-														// (info.staffID !== "0" && info.staffID !== "1" && info.staffID !== "2") ? (
-														<tr
-															key={info.staffEmail}
-															className="flex"
-															onClick={() => {
-																openModal(info.allEventsAttended);
-															}}
-														>
-															<td className="w-20 flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
-																<div className="flex items-center">
-																	<div className="ml-6">
-																		<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
-																			{(currentPage - 1) * entriesToShow + index + 1}
-																		</p>
-																	</div>
-																</div>
-															</td>
-															<td className="flex-1 px-6 lg:-ml-28 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="-ml-3 lg:-ml-5">{info.staffName}</div>
-															</td>
-															<td className="flex-1 px-6 lg:-ml-9 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="-ml-5 lg:-ml-0">
-																	{info.staffID == '0' ? 'Visitor' : info.staffID == '1' ? 'Secondary Student' : info.staffID}
-																</div>
-															</td>
-															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="lg:-ml-1">{info.staffFaculty}</div>
-															</td>
-															<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="-ml-5 lg:ml-7">{info.grandTotalHours}</div>
-															</td>
-														</tr>
-														// ) : null
-													))
-											)}
-
-											{/* pagination */}
-											{Array.from({
-												length: entriesToShow - aggregatedInfo.length,
-											}).map((_, index) => (
-												<tr className="flex invisible" key={index}>
-													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<div className="flex items-center">
-															<div className="ml-[14px]">
-																<div className="text-gray-900 whitespace-no-wrap"></div>
-															</div>
-														</div>											</td>
-													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<div className="text-gray-900 whitespace-no-wrap ml-3"></div>
-													</td>
-													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<div className="text-gray-900 whitespace-no-wrap"></div>
-													</td>
-													<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
-														<div className="text-gray-900 whitespace-no-wrap ml-1"></div>
-													</td>
-													<td
-														className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
-														<div
-															className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
-															<div
-																aria-hidden
-																className={`absolute inset-0 opacity-0 rounded-full`}></div>
-															<div className="relative"></div>
-														</div>
-													</td>
+													<th className="flex-1 px-12 lg:px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs lg:text-sm font-semibold whitespace-nowrap text-gray-600 uppercase tracking-wider dark:bg-[#1D2021] dark:border-[#363B3D] dark:text-[#B0AA9F]">
+														<div className="lg:ml-10">Training Hours</div>
+													</th>
 												</tr>
-											))}
-										</tbody>
-									</table>
+											</thead>
 
-									<div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
-										<div className=" items-center text-[14px] text-base hidden lg:flex">
-											<div className="mr-2 ml-3">
-												<span className="text-sm lg:text-base text-slate-800 dark:text-dark_text">Show</span>
-											</div>
+											{/* Table Body */}
+											<tbody>
+												{(dataResults.length === 0) ? (
+													<span className="lg:text-lg ml-4 mt-4">No data available.</span>
+												) : (
+													dataResults
+														.slice(
+															(currentPage - 1) * entriesToShow,
+															currentPage * entriesToShow,
+														)
+														.map((info, index) => (
+															// (info.staffID !== "0" && info.staffID !== "1" && info.staffID !== "2") ? (
+															<tr
+																key={info.staffEmail}
+																className="flex"
+																onClick={() => {
+																	openModal(info.allEventsAttended);
+																}}
+															>
+																<td className="w-20 flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D]">
+																	<div className="flex items-center">
+																		<div className="ml-6">
+																			<p className="text-gray-900 whitespace-no-wrap dark:text-dark_text text-left">
+																				{(currentPage - 1) * entriesToShow + index + 1}
+																			</p>
+																		</div>
+																	</div>
+																</td>
+																<td className="flex-1 px-6 lg:-ml-28 lg:px-10 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	<div className="-ml-3 lg:-ml-5">{info.staffName}</div>
+																</td>
+																<td className="flex-1 px-6 lg:-ml-9 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	<div className="-ml-5 lg:-ml-0">
+																		{info.staffID == '0' ? 'Visitor' : info.staffID == '1' ? 'Secondary Student' : info.staffID}
+																	</div>
+																</td>
+																<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	<div className="lg:-ml-1">{info.staffFaculty}</div>
+																</td>
+																<td className="flex-1 px-6 lg:px-6 py-5 border-b border-gray-200 bg-white text-sm text-left whitespace-nowrap dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	<div className="-ml-5 lg:ml-7">{info.grandTotalHours}</div>
+																</td>
+															</tr>
+															// ) : null
+														))
+												)}
 
-											{/* Filter By How Many Entries */}
-											<div className="relative mr-2">
-												<select
-													value={entriesToShow}
-													onChange={e =>
-														setEntriesToShow(parseInt(e.target.value))
-													}
-													className="appearance-none h-full rounded-l border block bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-dark_mode_card dark:border-[#484E51] dark:text-dark_text">
-													<option
-														value={5}
-														className="text-sm lg:text-base dark:text-dark_text">
-														5
-													</option>
-													<option
-														value={10}
-														className="text-sm lg:text-base dark:text-dark_text">
-														10
-													</option>
-													<option
-														value={20}
-														className="text-sm lg:text-base dark:text-dark_text">
-														20
-													</option>
-												</select>
-												<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-dark_text">
-													<svg
-														className="fill-current h-4 w-4"
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 20 20">
-														<path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-													</svg>
+												{/* pagination */}
+												{Array.from({
+													length: entriesToShow - aggregatedInfo.length,
+												}).map((_, index) => (
+													<tr className="flex invisible" key={index}>
+														<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+															<div className="flex items-center">
+																<div className="ml-[14px]">
+																	<div className="text-gray-900 whitespace-no-wrap"></div>
+																</div>
+															</div>											</td>
+														<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+															<div className="text-gray-900 whitespace-no-wrap ml-3"></div>
+														</td>
+														<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+															<div className="text-gray-900 whitespace-no-wrap"></div>
+														</td>
+														<td className="flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm">
+															<div className="text-gray-900 whitespace-no-wrap ml-1"></div>
+														</td>
+														<td
+															className={`flex-1 px-5 py-5 border-b border-gray-200 bg-white text-sm`}>
+															<div
+																className={`relative inline-block px-3 py-2 font-semibold text-gray-900 leading-tight`}>
+																<div
+																	aria-hidden
+																	className={`absolute inset-0 opacity-0 rounded-full`}></div>
+																<div className="relative"></div>
+															</div>
+														</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+
+										<div className="px-5 py-5 bg-white border-t flex items-center justify-between dark:bg-dark_mode_card dark:border-[#363B3D]">
+											<div className=" items-center text-[14px] text-base hidden lg:flex">
+												<div className="mr-2 ml-3">
+													<span className="text-sm lg:text-base text-slate-800 dark:text-dark_text">Show</span>
+												</div>
+
+												{/* Filter By How Many Entries */}
+												<div className="relative mr-2">
+													<select
+														value={entriesToShow}
+														onChange={e =>
+															setEntriesToShow(parseInt(e.target.value))
+														}
+														className="appearance-none h-full rounded-l border block bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm lg:text-base dark:bg-dark_mode_card dark:border-[#484E51] dark:text-dark_text">
+														<option
+															value={5}
+															className="text-sm lg:text-base dark:text-dark_text">
+															5
+														</option>
+														<option
+															value={10}
+															className="text-sm lg:text-base dark:text-dark_text">
+															10
+														</option>
+														<option
+															value={20}
+															className="text-sm lg:text-base dark:text-dark_text">
+															20
+														</option>
+													</select>
+													<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-dark_text">
+														<svg
+															className="fill-current h-4 w-4"
+															xmlns="http://www.w3.org/2000/svg"
+															viewBox="0 0 20 20">
+															<path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+														</svg>
+													</div>
+												</div>
+
+												<div>
+													<span className="text-sm lg:text-base dark:text-dark_text">
+														entries
+													</span>
 												</div>
 											</div>
-
-											<div>
-												<span className="text-sm lg:text-base dark:text-dark_text">
-													entries
+											<div className="ems-center hidden lg:flex">
+												<span className="text-sm mt-6 lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
+													1-{entriesToShow} of {dataResults?.length} entries
 												</span>
-											</div>
-										</div>
-										<div className="ems-center hidden lg:flex">
-											<span className="text-sm mt-6 lg:text-base lg:text-[14px] lg:text-gray-900 lg:mr-2 hidden md:inline">
-												1-{entriesToShow} of {dataResults?.length} entries
-											</span>
 
-											<div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
-												<button
-													className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-													onClick={() => handlePageChange(1)}
-													disabled={currentPage === 1}
-												>
-													<MdKeyboardDoubleArrowLeft className="text-3xl" />
-												</button>
-												<button
-													onClick={() => handlePageChange(currentPage - 1)}
-													disabled={currentPage === 1}
-													className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-												>
-													<MdKeyboardArrowLeft className="text-3xl" />
-												</button>
-
-												{/* Pagination Buttons */}
-												{generatePageNumbers().map((pageNumber, index) => (
+												<div className="pagination justify-end mt-5 pb-5 ems-center hidden lg:flex">
 													<button
-														key={index}
-														className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
-															}`}
-														onClick={() => handlePageChange(pageNumber)}
+														className={`px-1 ml-5 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+														onClick={() => handlePageChange(1)}
+														disabled={currentPage === 1}
 													>
-														{pageNumber === -1 ? '...' : pageNumber}
+														<MdKeyboardDoubleArrowLeft className="text-3xl" />
 													</button>
-												))}
+													<button
+														onClick={() => handlePageChange(currentPage - 1)}
+														disabled={currentPage === 1}
+														className={`px-1 ml-1 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													>
+														<MdKeyboardArrowLeft className="text-3xl" />
+													</button>
 
-												<button
-													onClick={() => handlePageChange(currentPage + 1)}
-													disabled={currentPage === pageCount}
-													className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-												>
-													<MdKeyboardArrowRight className="text-3xl" />
-												</button>
-												<button
-													className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
-													onClick={() => handlePageChange(pageCount)}
-													disabled={currentPage === pageCount}
-												>
-													<MdKeyboardDoubleArrowRight className="text-3xl" />
-												</button>
+													{/* Pagination Buttons */}
+													{generatePageNumbers().map((pageNumber, index) => (
+														<button
+															key={index}
+															className={`py-1 px-3 ml-5 rounded font-medium text-sm lg:text-[15px] ${currentPage === pageNumber ? "text-slate-100 bg-slate-900" : "text-slate-800 bg-slate-200"
+																}`}
+															onClick={() => handlePageChange(pageNumber)}
+														>
+															{pageNumber === -1 ? '...' : pageNumber}
+														</button>
+													))}
+
+													<button
+														onClick={() => handlePageChange(currentPage + 1)}
+														disabled={currentPage === pageCount}
+														className={`px-1 ml-5 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+													>
+														<MdKeyboardArrowRight className="text-3xl" />
+													</button>
+													<button
+														className={`px-1 ml-1 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+														onClick={() => handlePageChange(pageCount)}
+														disabled={currentPage === pageCount}
+													>
+														<MdKeyboardDoubleArrowRight className="text-3xl" />
+													</button>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							)}
 
 
 							{/*mobile view pagination */}
