@@ -415,6 +415,7 @@ export default function AttendanceForm() {
 
 
 	const [selectedOption, setSelectedOption] = useState('');
+	const [hasSelectedCourse, setHasSelectedCourse] = useState<boolean>(false);
 
 	const handleSelectChange = (event: { target: { value: SetStateAction<string>; }; }) => {
 		setSelectedOption(event.target.value);
@@ -422,6 +423,7 @@ export default function AttendanceForm() {
 
 	const handleAnotherSelectChange = (event: { target: { value: any; }; }) => {
 		const selectedCourse = event.target.value;
+		setHasSelectedCourse(true);
 		// Concatenate the faculty/unit and the selected course
 		const updatedSelectedOption = `${selectedOption} - ${selectedCourse}`;
 		setInfo({ ...info, attFormsFacultyUnit: updatedSelectedOption })
@@ -1073,6 +1075,18 @@ export default function AttendanceForm() {
 														}
 													}}
 													disabled={!info.attFormsStaffName || !info.attFormsFacultyUnit || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
+													Submit
+												</button>
+											) : userType === 'student' ? (
+												<button
+													type="button"
+													className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && hasSelectedCourse && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													onClick={() => {
+														if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && hasSelectedCourse && !formSubmitted && !isSubmitting) {
+															handleSubmit();
+														}
+													}}
+													disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !hasSelectedCourse || formSubmitted || isSubmitting}>
 													Submit
 												</button>
 											) : (
