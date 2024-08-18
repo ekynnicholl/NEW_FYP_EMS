@@ -563,8 +563,15 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                             </div>
                                         </DialogTitle>
                                     </DialogHeader>
-                                    <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 text-center dark:text-slate-200">
-                                        Please confirm you are about to distribute certificates to these emails:
+                                    <DialogDescription className="lg:text-sm text-gray-600 -ml-[6px] mb-3 text-left dark:text-slate-200">
+                                        <div className="ml-5 mr-2">
+                                            <div>
+                                                This list contains <span className="font-bold underline">{selectedAttendanceData.length} people</span>.
+                                            </div>
+                                            <div>
+                                                Please confirm you are about to distribute certificates to these emails:
+                                            </div>
+                                        </div>
                                         <div className="flex items-center">
                                             <input
                                                 type="checkbox"
