@@ -27,6 +27,9 @@ import Link from 'next/link';
 import * as XLSX from 'xlsx';
 import { downloadXLSX } from '@/components/attendance/export_attendance';
 import ImportAttendanceComponent from '../attendance/import_attendance';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import { FaDownload } from 'react-icons/fa';
 
 type AttendanceDataType = {
     attFormsCertofParticipation: string;
@@ -102,6 +105,56 @@ interface Props {
 
 //     window.URL.revokeObjectURL(url);
 // };
+
+const downloadCertificates = (attendanceData: any[]) => {
+    const zip = new JSZip();
+    let fetchCount = 0;
+    const totalCertificates = attendanceData.filter(item => item.attFormsCertofParticipation).length;
+
+    if (totalCertificates === 0) {
+        toast.error("There are no certificates to download. Please check again.");
+        return;
+    }
+
+    // Create a promise that resolves when all files are fetched and the ZIP is generated
+    const downloadPromise = new Promise<void>((resolve, reject) => {
+        attendanceData.forEach((item, index) => {
+            if (item.attFormsCertofParticipation) {
+                const certificateUrl = `https://chyamrnpbrtxhsvkqpry.supabase.co/storage/v1/object/public/attFormsCertofParticipation/${item.attFormsCertofParticipation}`;
+                const today = new Date().toISOString().split('T')[0];
+
+                fetch(certificateUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response failed.`);
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        zip.file(`${item.attFormsStaffName} (${item.attFormsStaffID}) - Certificate of Participation.pdf`, blob);
+                        fetchCount++;
+
+                        if (fetchCount === totalCertificates) {
+                            zip.generateAsync({ type: 'blob' }).then(content => {
+                                saveAs(content, `Certificates_${today}.zip`);
+                                resolve(); // Resolve the promise when ZIP generation is complete
+                            }).catch(error => reject(error));
+                        }
+                    })
+                    .catch(error => reject(error));
+            }
+        });
+    });
+
+    toast.promise(
+        downloadPromise,
+        {
+            loading: 'Downloading certificates...',
+            success: `${totalCertificates} certificates downloaded successfully!`,
+            error: 'Error downloading certificates.'
+        }
+    );
+};
 
 const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllTabActive, attendanceMainEventID, categoryTab }) => {
     const supabase = createClientComponentClient();
@@ -525,6 +578,14 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                     className="text-slate-800"
                                 />
                                 <span className="ml-2 text-slate-800 dark:text-dark_text">Export to Excel (XLSX)</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729] mr-3"
+                                onClick={() => downloadCertificates(attendanceData)}
+                            >
+                                <FaDownload />
+                                <span className="ml-2 text-slate-800 dark:text-dark_text">Download Certificates</span>
                             </button>
                             {/* <button
                                 type="button"
