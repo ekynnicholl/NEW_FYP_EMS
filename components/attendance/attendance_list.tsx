@@ -8,6 +8,8 @@ import Chart, { registerables } from "chart.js/auto";
 import AttendanceTable from "@/components/tables/attendanceTable";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import ImportAttendanceComponent from "./import_attendance";
+import { FaFilter } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
 type SubEventsDataType = {
     sub_eventsMainID: string;
@@ -400,8 +402,10 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         if (query) {
             filteredData = filteredData.filter((item) => {
                 return (
-                    item.attFormsStaffName.toLowerCase().includes(query.toLowerCase()) ||
-                    item.attFormsStaffID.toLowerCase().includes(query.toLowerCase())
+                    (selectedFilterOptions.name && item.attFormsStaffName.toLowerCase().includes(query.toLowerCase())) ||
+                    (selectedFilterOptions.id && item.attFormsStaffID.toLowerCase().includes(query.toLowerCase())) ||
+                    (selectedFilterOptions.email && item.attFormsStaffEmail.toLowerCase().includes(query.toLowerCase())) ||
+                    (selectedFilterOptions.school && item.attFormsFacultyUnit.toLowerCase().includes(query.toLowerCase()))
                 );
             });
         }
@@ -409,9 +413,30 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
         setFilteredAttendanceData(filteredData);
     };
 
+    const [filterIsOpen, setFilterIsOpen] = useState(false);
+
+    const [selectedFilterOptions, setSelectedFilterOptions] = useState({
+        name: true,
+        school: false,
+        email: true,
+        id: false,
+    });
+
+    const toggleFilterDropdown = () => {
+        setFilterIsOpen(!filterIsOpen);
+    };
+
+    const handleFilterCheckboxChange = (event: { target: { name: any; checked: any; }; }) => {
+        const { name, checked } = event.target;
+        setSelectedFilterOptions((prevOptions: any) => ({
+            ...prevOptions,
+            [name]: checked,
+        }));
+    };
+
     useEffect(() => {
         filterAttendanceData(activeTab, searchAttendanceQuery);
-    }, [activeTab, searchAttendanceQuery, attendanceData]);
+    }, [activeTab, searchAttendanceQuery, attendanceData, selectedFilterOptions]);
 
     useEffect(() => {
         setActiveTab('all');
@@ -544,20 +569,74 @@ const AttendanceList: React.FC<Props> = ({ event_id }) => {
                             </div>
 
                             {/* Search Input */}
-                            <div className="max-w-full relative float-right shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
-                                <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        className="h-4 w-4 fill-current text-gray-500">
-                                        <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                                    </svg>
-                                </span>
-                                <input
-                                    placeholder="Search here..."
-                                    className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
-                                    value={searchAttendanceQuery}
-                                    onChange={e => handleAttendanceSearch(e.target.value)}
-                                />
+                            <div className="max-w-full flex items-center justify-center relative float-right">
+                                <div className="shadow hover:shadow-sm border border-slate-300 rounded mr-3 hover:transition duration-300 transform hover:scale-105">
+                                    <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            className="h-4 w-4 fill-current text-gray-500">
+                                            <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                                        </svg>
+                                    </span>
+                                    <input
+                                        placeholder="Search Here..."
+                                        className="appearance-none rounded-md block pl-8 pr-6 py-2 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none dark:bg-dark_mode_card dark:border-[#2E3E50] dark:placeholder:text-[#484945]"
+                                        value={searchAttendanceQuery}
+                                        onChange={e => handleAttendanceSearch(e.target.value)}
+                                    />
+                                </div>
+                                <div className="hover:transition duration-300 transform hover:scale-110 cursor-pointer" onClick={toggleFilterDropdown}>
+                                    <FaFilter />
+                                </div>
+                                {filterIsOpen && (
+                                    <div className="absolute top-8 right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                                        <div className="flex items-end justify-end mt-3 mr-3 text-red-500 cursor-pointer" onClick={toggleFilterDropdown}>
+                                            <IoMdClose size={26} />
+                                        </div>
+                                        <div className="pl-5 pr-5 pb-3 z-[200]">
+                                            <label className="flex items-center space-x-3">
+                                                <input
+                                                    type="checkbox"
+                                                    name="name"
+                                                    checked={selectedFilterOptions.name}
+                                                    onChange={handleFilterCheckboxChange}
+                                                    className="form-checkbox"
+                                                />
+                                                <span>Name</span>
+                                            </label>
+                                            <label className="flex items-center space-x-3">
+                                                <input
+                                                    type="checkbox"
+                                                    name="email"
+                                                    checked={selectedFilterOptions.email}
+                                                    onChange={handleFilterCheckboxChange}
+                                                    className="form-checkbox"
+                                                />
+                                                <span>Email</span>
+                                            </label>
+                                            <label className="flex items-center space-x-3">
+                                                <input
+                                                    type="checkbox"
+                                                    name="school"
+                                                    checked={selectedFilterOptions.school}
+                                                    onChange={handleFilterCheckboxChange}
+                                                    className="form-checkbox"
+                                                />
+                                                <span>School</span>
+                                            </label>
+                                            <label className="flex items-center space-x-3">
+                                                <input
+                                                    type="checkbox"
+                                                    name="id"
+                                                    checked={selectedFilterOptions.id}
+                                                    onChange={handleFilterCheckboxChange}
+                                                    className="form-checkbox"
+                                                />
+                                                <span>ID</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                             <div className="h-[450px]">
                                 {/* {filteredAttendanceData && searchAttendanceQuery.length > 0 ? (
