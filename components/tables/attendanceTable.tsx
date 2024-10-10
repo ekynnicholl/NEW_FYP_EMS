@@ -598,7 +598,7 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                             <Dialog open={isDistributeOpen} onOpenChange={setDistributeOpen}>
                                 <DialogTrigger>
                                     <button className="flex items-center bg-slate-200 rounded-lg py-1 font-medium hover:bg-slate-300 shadow-sm dark:bg-[#242729] mr-5">
-                                        <span className="ml-2 lg:mt-[1px] text-slate-800 flex items-center mr-2">
+                                        <span className="ml-2 text-slate-800 flex items-center mr-2">
                                             <span className="ml-[3px] lg:ml-[5px] text-[11px] lg:text-[15px] p-[5px] dark:text-[#C1C7C1]">
                                                 {/* Confirm Selection */}
                                                 Distribute Certificates

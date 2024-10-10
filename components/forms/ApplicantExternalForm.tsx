@@ -118,56 +118,56 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		resolver: zodResolver(externalFormSchema),
 		defaultValues: savedForm
 			? {
-					...parsedForm,
-					commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
-					completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
-					applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
-			  }
+				...parsedForm,
+				commencement_date: parsedForm.commencement_date ? new Date(parsedForm.commencement_date) : null,
+				completion_date: parsedForm.completion_date ? new Date(parsedForm.completion_date) : null,
+				applicant_declaration_date: new Date(parsedForm.applicant_declaration_date),
+			}
 			: {
-					formStage: 2,
-					full_name: "",
-					email: "",
-					staff_id: "",
-					course: "",
-					faculty: "",
-					transport: "",
-					travelling: "",
-					other_members: "",
+				formStage: 2,
+				full_name: "",
+				email: "",
+				staff_id: "",
+				course: "",
+				faculty: "",
+				transport: "",
+				travelling: "",
+				other_members: "",
 
-					program_title: "",
-					program_description: "",
-					commencement_date: null,
-					completion_date: null,
-					organiser: "",
-					venue: "",
-					hrdf_claimable: "",
+				program_title: "",
+				program_description: "",
+				commencement_date: null,
+				completion_date: null,
+				organiser: "",
+				venue: "",
+				hrdf_claimable: "",
 
-					logistic_arrangement: null,
+				logistic_arrangement: null,
 
-					course_fee: 0,
-					airfare_fee: 0,
-					accommodation_fee: 0,
-					per_diem_fee: 0,
-					transportation_fee: 0,
-					travel_insurance_fee: 0,
-					other_fees: 0,
-					grand_total_fees: 0,
-					staff_development_fund: "",
-					consolidated_pool_fund: "",
-					research_fund: "",
-					travel_fund: "",
-					student_council_fund: "",
-					other_funds: "",
-					expenditure_cap: "No",
-					expenditure_cap_amount: 0,
+				course_fee: 0,
+				airfare_fee: 0,
+				accommodation_fee: 0,
+				per_diem_fee: 0,
+				transportation_fee: 0,
+				travel_insurance_fee: 0,
+				other_fees: 0,
+				grand_total_fees: 0,
+				staff_development_fund: "",
+				consolidated_pool_fund: "",
+				research_fund: "",
+				travel_fund: "",
+				student_council_fund: "",
+				other_funds: "",
+				expenditure_cap: "No",
+				expenditure_cap_amount: 0,
 
-					supporting_documents: null,
+				supporting_documents: null,
 
-					applicant_declaration_signature: "",
-					applicant_declaration_name: "",
-					applicant_declaration_position_title: "",
-					applicant_declaration_date: new Date(),
-			  },
+				applicant_declaration_signature: "",
+				applicant_declaration_name: "",
+				applicant_declaration_position_title: "",
+				applicant_declaration_date: new Date(),
+			},
 	});
 	useEffect(() => {
 		if (parsedForm) {
@@ -201,7 +201,7 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 		if (form.getValues("travelling") === "group" && form.getValues("other_members") === "") {
 			toast.error("Please enter the name of other members traveling together");
 		}
-		
+
 		// if (form.getValues("transport") === "aeroplane") {
 		// 	let hasError = false;
 		// 	for (let i = 0; i < (form.getValues("logistic_arrangement")?.length ?? 0); i++) {
@@ -1151,9 +1151,9 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																			mode="single"
 																			selected={
 																				field.value &&
-																				field.value[i] &&
-																				field.value[i].check_out_date !== null &&
-																				field.value[i].check_out_date
+																					field.value[i] &&
+																					field.value[i].check_out_date !== null &&
+																					field.value[i].check_out_date
 																					? new Date(field.value[i].check_out_date!)
 																					: undefined
 																			}
@@ -1260,8 +1260,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																						)}
 																					>
 																						{field.value &&
-																						field.value[i] &&
-																						field.value[i].check_in_date ? (
+																							field.value[i] &&
+																							field.value[i].check_in_date ? (
 																							format(new Date(field.value?.[i].check_in_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1316,8 +1316,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 																						)}
 																					>
 																						{field.value &&
-																						field.value[i] &&
-																						field.value[i].check_out_date ? (
+																							field.value[i] &&
+																							field.value[i].check_out_date ? (
 																							format(new Date(field.value?.[i].check_out_date!), "PPP")
 																						) : (
 																							<span>Pick a date</span>
@@ -1706,6 +1706,8 @@ export default function ExternalForm({ faculties }: { faculties: string[] }) {
 								• Course/Registration Fees <br />
 								• Conference/Workshop/Training Brochure <br />
 								• Conference/Workshop/Training Program Schedule <br />
+								<br />
+								NOTE: You may upload multiple files, however should you encounter any issues with e.g missing files etc., please inform AAO Office accordingly. Once submitted, you will receive a confirmation email with a link, which you can review the details of the form. <br />
 								<br />
 							</p>
 							<FormField
