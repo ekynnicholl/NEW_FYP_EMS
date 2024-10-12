@@ -16,6 +16,7 @@ const AttendanceSettings = () => {
 	type Email = {
 		extEID: string;
 		extEMail: string;
+		extEName: string;
 		extECategory: number;
 	}
 
@@ -28,7 +29,9 @@ const AttendanceSettings = () => {
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [updateOption, setUpdateOption] = useState(false);
 	const [newEmail, setNewEmail] = useState("");
+	const [newName, setNewName] = useState("");
 	const [editedEmail, setEditedEmail] = useState("");
+	const [editedName, setEditedName] = useState("");
 
 	const toggleExpansion = () => {
 		setIsExpanded(!isExpanded);
@@ -51,27 +54,29 @@ const AttendanceSettings = () => {
 		fetchEmails();
 	}, []);
 
-	const createNewEmail = async (newEmail: string, extECategory: number) => {
+	const createNewEmail = async (newEmail: string, extECategory: number, newName: string) => {
 		try {
 			const { error } = await supabase
 				.from('external_emails')
 				.insert({
 					extEMail: newEmail,
+					extEName: newName,
 					extECategory: extECategory
 				})
 
 			fetchEmails();
 			setNewEmail('');
+			setNewName('');
 		} catch (error) {
 
 		}
 	}
 
-	const handleUpdateEmail = async (extEID: string, updatedEmail: string) => {
+	const handleUpdateEmail = async (extEID: string, updatedEmail: string, updatedName: string) => {
 		try {
 			const { error } = await supabase
 				.from('external_emails')
-				.update({ extEMail: updatedEmail })
+				.update({ extEMail: updatedEmail, extEName: updatedName })
 				.eq('extEID', extEID)
 
 			if (error) {
@@ -86,17 +91,18 @@ const AttendanceSettings = () => {
 		}
 	}
 
-	const handleEditOption = (extEID: string, extEMail: string) => {
+	const handleEditOption = (extEID: string, extEMail: string, extEName: string) => {
 		setEditOption(extEID);
 		setUpdateOption(true);
 		setCancelOptionUpdate(!cancelOptionUpdate);
 		setEditedEmail(extEMail);
+		setEditedName(extEName);
 	}
 
-	const [deletingEmail, setDeletingEmail] = useState({ id: "", email: "" });;
+	const [deletingEmail, setDeletingEmail] = useState({ id: "", email: "", name: "" });;
 
-	const openDeleteModal = (extEID: string, extEMail: string) => {
-		setDeletingEmail({ id: extEID, email: extEMail });
+	const openDeleteModal = (extEID: string, extEMail: string, extEName: string) => {
+		setDeletingEmail({ id: extEID, email: extEMail, name: extEName });
 		setShowDeleteModal(!showDeleteModal);
 	}
 
@@ -165,237 +171,316 @@ const AttendanceSettings = () => {
 
 							<Tab.Panels>
 								<Tab.Panel>
+									<div className="flex space-x-10">
+										<table className="lg:w-3/4">
+											<thead>
+												<tr>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F] w-1/4">
+														No
+													</th>
 
-									<table className="lg:float-left">
-										<thead>
-											<tr>
-												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													No
-												</th>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F] w-1/4">
+														<p className="text-left">Name</p>
+													</th>
 
-												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													<p className="-ml-[125px] lg:-ml-56">Email</p>
-												</th>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F] w-1/4">
+														<p className="text-left">Email</p>
+													</th>
 
-												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													<div className="ml-8">Action</div>
-												</th>
-											</tr>
-										</thead>
-										<tbody>
-											{emails
-												.filter(emails => emails.extECategory === 1)
-												.map((emails, index) =>
-													emails.extEID === editOption && updateOption && !cancelOptionUpdate && 1 ? (
-														<tr key={index} className="">
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
-																{index + 1}
-															</td>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F] w-1/4">
+														<div className="ml-8">Action</div>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{emails
+													.filter(emails => emails.extECategory === 1)
+													.map((emails, index) =>
+														emails.extEID === editOption && updateOption && !cancelOptionUpdate && 1 ? (
+															<tr key={index} className="">
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
+																	{index + 1}
+																</td>
 
-															<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
-																<input
-																	type="text"
-																	placeholder="Enter Email..."
-																	className="border-2 ml-3 px-2 py-1 text-base w-full"
-																	value={editedEmail}
-																	onChange={e => setEditedEmail(e.target.value)}
-																/>
-															</td>
+																<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
+																	<input
+																		type="text"
+																		placeholder="Enter Name..."
+																		className="border-2 ml-3 px-2 py-1 text-base w-full"
+																		value={editedName}
+																		onChange={e => setEditedName(e.target.value)}
+																	/>
+																</td>
 
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-																<button
-																	className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
-																	onClick={() => {
-																		if (editedEmail.length > 0) {
-																			setEmails(prevEmail => {
-																				const updatedEmails = [...prevEmail];
-																				updatedEmails[index].extEMail = editedEmail;
-																				return updatedEmails;
-																			});
+																<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
+																	<input
+																		type="text"
+																		placeholder="Enter Email..."
+																		className="border-2 ml-3 px-2 py-1 text-base w-full"
+																		value={editedEmail}
+																		onChange={e => setEditedEmail(e.target.value)}
+																	/>
+																</td>
 
-																			handleUpdateEmail(emails.extEID, editedEmail);
-																		}
-
-																		setUpdateOption(!updateOption);
-																	}}
-																>
-																	Update
-																</button>
-																<button
-																	className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
-																	onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
-																>
-																	Cancel
-																</button>
-															</td>
-														</tr>
-													) : (
-														<tr key={index}>
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																{index + 1}
-															</td>
-
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<p className="lg:-ml-3">{emails.extEMail}</p>
-															</td>
-
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="flex ml-8">
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
 																	<button
+																		className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
 																		onClick={() => {
-																			handleEditOption(emails.extEID, emails.extEMail);
+																			if (editedEmail.length > 0 || editedName.length > 0) {
+																				setEmails(prevEmail => {
+																					const updatedEmails = [...prevEmail];
+																					updatedEmails[index].extEMail = editedEmail;
+																					return updatedEmails;
+																				});
+
+																				handleUpdateEmail(emails.extEID, editedEmail, editedName);
+																			}
+
+																			setUpdateOption(!updateOption);
 																		}}
 																	>
-																		<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		Update
 																	</button>
 																	<button
-																		onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
+																		className="border-[0.5px] rounded-md bg-slate-100 px-3 py-2 hover:bg-slate-200 duration-300 ease-in-out"
+																		onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
 																	>
-																		<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		Cancel
 																	</button>
-																</div>
-															</td>
-														</tr>
-													),
-												)}
-										</tbody>
-									</table>
+																</td>
+															</tr>
+														) : (
+															<tr key={index}>
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	{index + 1}
+																</td>
 
-									<div className="lg:float-right border-2 p-7 lg:mr-[550px] shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0">
-										<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Verifier Email</p>
-										<input type="text"
-											placeholder="e.g., hos@gmail.com"
-											value={newEmail}
-											className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
-											onChange={e => setNewEmail(e.target.value)}
-										/><br />
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	{emails.extEName}
+																</td>
 
-										<div className="flex justify-end">
-											<button
-												className={`mt-4 lg:mt-7 rounded-lg py-[9px] lg:py-3 px-[28px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
-												onClick={() => { createNewEmail(newEmail, 1); }}
-												disabled={!newEmail}
-											>
-												Add
-											</button>
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	{emails.extEMail}
+																</td>
+
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	<div className="flex ml-8">
+																		<button
+																			onClick={() => {
+																				handleEditOption(emails.extEID, emails.extEMail, emails.extEName);
+																			}}
+																		>
+																			<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		</button>
+																		<button
+																			onClick={() => openDeleteModal(emails.extEID, emails.extEMail, emails.extEName)}
+																		>
+																			<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		</button>
+																	</div>
+																</td>
+															</tr>
+														),
+													)}
+											</tbody>
+										</table>
+
+										<div className="lg:w-1/4 border-2 p-7 shadow-lg dark:bg-dark_mode_card mt-5 lg:mt-0 self-start">
+											<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Verifier Email</p>
+											<div className="flex flex-col">
+												<label htmlFor="nameInput" className="font-medium text-gray-700 text-sm lg:text-base dark:text-dark_text">
+													Full Name
+												</label>
+												<input
+													id="nameInput"
+													type="text"
+													placeholder="e.g., John Doe"
+													value={newName}
+													className="mb-3 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
+													onChange={e => setNewName(e.target.value)}
+												/>
+											</div>
+											<div className="flex flex-col">
+												<label htmlFor="emailInput" className="font-medium text-gray-700 text-sm lg:text-base dark:text-dark_text">
+													Email Address
+												</label>
+												<input
+													id="emailInput"
+													type="text"
+													placeholder="e.g., hos@gmail.com"
+													value={newEmail}
+													className="mb-3 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
+													onChange={e => setNewEmail(e.target.value)}
+												/>
+											</div>
+
+											<div className="flex justify-end">
+												<button
+													className={`mt-4 lg:mt-7 rounded-lg py-[9px] lg:py-3 px-[28px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer'}`}
+													onClick={() => { createNewEmail(newEmail, 1, newName); }}
+													disabled={!newEmail}
+												>
+													Add
+												</button>
+											</div>
 										</div>
 									</div>
 
 								</Tab.Panel>
 
 								<Tab.Panel>
-									<table className="lg:w-1/2 float-left mb-5 lg:mr-10">
-										<thead>
-											<tr>
-												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													No
-												</th>
+									<div className="flex space-x-10">
+										<table className="lg:w-3/4">
+											<thead>
+												<tr>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+														No
+													</th>
 
-												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													<p className="-ml-72">Email</p>
-												</th>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F] w-1/4">
+														<p className="text-left">Name</p>
+													</th>
 
-												<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
-													Action
-												</th>
-											</tr>
-										</thead>
-										<tbody>
-											{emails
-												.filter(emails => emails.extECategory === 2)
-												.map((emails, index) =>
-													emails.extEID === editOption && updateOption && !cancelOptionUpdate ? (
-														<tr key={index} className="">
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
-																{index + 1}
-															</td>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+														<p className="text-left">Email</p>
+													</th>
 
-															<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
-																<input
-																	type="text"
-																	placeholder="Enter Email..."
-																	className="border-2 ml-3 px-2 py-1 text-base w-full"
-																	value={editedEmail}
-																	onChange={e => setEditedEmail(e.target.value)}
-																/>
-															</td>
+													<th className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-gray-100 text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center dark:border-[#363B3D] dark:bg-[#1D2021] dark:text-[#B0AA9F]">
+														Action
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{emails
+													.filter(emails => emails.extECategory === 2)
+													.map((emails, index) =>
+														emails.extEID === editOption && updateOption && !cancelOptionUpdate ? (
+															<tr key={index} className="">
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-1/4 ">
+																	{index + 1}
+																</td>
 
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
-																<button
-																	className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
-																	onClick={() => {
-																		if (editedEmail.length > 0) {
-																			setEmails(prevEmail => {
-																				const updatedEmails = [...prevEmail];
-																				updatedEmails[index].extEMail = editedEmail;
-																				return updatedEmails;
-																			});
+																<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
+																	<input
+																		type="text"
+																		placeholder="Enter Name..."
+																		className="border-2 ml-3 px-2 py-1 text-base w-full"
+																		value={editedName}
+																		onChange={e => setEditedName(e.target.value)}
+																	/>
+																</td>
 
-																			handleUpdateEmail(emails.extEID, editedEmail);
-																		}
+																<td className="flex-1 lg:px-[33px] py-3s border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider w-1/4">
+																	<input
+																		type="text"
+																		placeholder="Enter Email..."
+																		className="border-2 ml-3 px-2 py-1 text-base w-full"
+																		value={editedEmail}
+																		onChange={e => setEditedEmail(e.target.value)}
+																	/>
+																</td>
 
-																		setUpdateOption(!updateOption);
-																	}}
-																>
-																	Update
-																</button>
-																<button
-																	className="border-[0.5px] rounded-md bg-slate-100 ml-4 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
-																	onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
-																>
-																	Cancel
-																</button>
-															</td>
-														</tr>
-													) : (
-														<tr key={index}>
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																{index + 1}
-															</td>
-
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<p className="lg:-ml-3">{emails.extEMail}</p>
-															</td>
-
-															<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
-																<div className="flex ml-8">
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-sm font-semibold text-gray-600 uppercase tracking-wider text-center w-3/4">
 																	<button
+																		className="border-[0.5px] rounded-md bg-slate-900 p-2 text-white hover:bg-red-600 duration-300 ease-in-out"
 																		onClick={() => {
-																			handleEditOption(emails.extEID, emails.extEMail);
+																			if (editedEmail.length > 0) {
+																				setEmails(prevEmail => {
+																					const updatedEmails = [...prevEmail];
+																					updatedEmails[index].extEMail = editedEmail;
+																					return updatedEmails;
+																				});
+
+																				handleUpdateEmail(emails.extEID, editedEmail, editedName);
+																			}
+
+																			setUpdateOption(!updateOption);
 																		}}
 																	>
-																		<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		Update
 																	</button>
 																	<button
-																		onClick={() => openDeleteModal(emails.extEID, emails.extEMail)}
+																		className="border-[0.5px] rounded-md bg-slate-100 px-3 py-2  hover:bg-slate-200 duration-300 ease-in-out"
+																		onClick={() => { setCancelOptionUpdate(!cancelOptionUpdate); }}
 																	>
-																		<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		Cancel
 																	</button>
-																</div>
-															</td>
-														</tr>
-													),
-												)}
-										</tbody>
-									</table>
+																</td>
+															</tr>
+														) : (
+															<tr key={index}>
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-1/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	{index + 1}
+																</td>
 
-									<div className="border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
-										<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Approver Email</p>
-										<input type="text"
-											placeholder="e.g., hmu@gmail.com"
-											value={newEmail}
-											className="mt-4 lg:mt-7 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
-											onChange={e => setNewEmail(e.target.value)}
-										/><br />
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	{emails.extEName}
+																</td>
 
-										<div className="flex justify-end">
-											<button
-												className={`-mt-2 lg:mt-2 rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
-												onClick={() => { createNewEmail(newEmail, 2); }}
-												disabled={!newEmail}
-											>
-												Add
-											</button>
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-left w-1/2 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	{emails.extEMail}
+																</td>
+
+																<td className="flex-1 lg:px-[33px] py-3 border-b-2 border-gray-200 bg-white text-xs lg:text-base font-semibold text-gray-600 tracking-wider text-center w-3/4 dark:bg-dark_mode_card dark:border-[#363B3D] dark:text-dark_text">
+																	<div className="flex ml-8">
+																		<button
+																			onClick={() => {
+																				handleEditOption(emails.extEID, emails.extEMail, emails.extEName);
+																			}}
+																		>
+																			<HiPencilAlt className="text-slate-700 hover:scale-105 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		</button>
+																		<button
+																			onClick={() => openDeleteModal(emails.extEID, emails.extEMail, emails.extEName)}
+																		>
+																			<BsFillTrash3Fill className="text-slate-700 hover:scale-105 ml-6 mt-[3px] lg:mt-[1px] text-[14px] lg:text-base dark:text-dark_text" />
+																		</button>
+																	</div>
+																</td>
+															</tr>
+														),
+													)}
+											</tbody>
+										</table>
+
+										<div className="lg:w-1/4 border-2 p-7 lg:mr-72 shadow-lg dark:bg-dark_mode_card flex flex-col">
+											<p className="font-bold text-md dark:text-dark_text text-sm lg:text-base">Add Approver Email</p>
+											<div className="flex flex-col">
+												<label htmlFor="nameInput" className="font-medium text-gray-700 text-sm lg:text-base dark:text-dark_text">
+													Full Name
+												</label>
+												<input
+													id="nameInput"
+													type="text"
+													placeholder="e.g., John Doe"
+													value={newName}
+													className="mb-3 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
+													onChange={e => setNewName(e.target.value)}
+												/>
+											</div>
+											<div className="flex flex-col">
+												<label htmlFor="emailInput" className="font-medium text-gray-700 text-sm lg:text-base dark:text-dark_text">
+													Email Address
+												</label>
+												<input
+													id="emailInput"
+													type="text"
+													placeholder="e.g., hmu@gmail.com"
+													value={newEmail}
+													className="mb-3 border-[1px] border-slate-200 rounded-sm w-full px-2 py-1 dark:border-[#27374C] dark:bg-dark_mode_card text-sm lg:text-base"
+													onChange={e => setNewEmail(e.target.value)}
+												/>
+											</div>
+
+											<div className="flex justify-end">
+												<button
+													className={`-mt-2 lg:mt-2 rounded-lg py-2 lg:py-3 px-[27px] lg:px-[25px] font-medium focus:shadow-outline focus:outline-none focus:ring-2 text-sm lg:text-base dark:text-dark_text dark:border-[#736B5E] ${!newEmail ? 'border bg-gray-200 text-slate-900 cursor-default duration-300 ease-out' : 'text-white  bg-slate-900 hover:bg-red-600 hover:text-slate-50 hover:transition duration-300 transform hover:scale-105 cursor-pointer '}`}
+													onClick={() => { createNewEmail(newEmail, 2, newName); }}
+													disabled={!newEmail}
+												>
+													Add
+												</button>
+											</div>
 										</div>
 									</div>
 
