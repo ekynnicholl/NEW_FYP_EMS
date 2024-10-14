@@ -66,6 +66,7 @@ export default function NTFPDF({ id }: { id: string }) {
 
 	const handlePrint = () => {
 		window.print();
+		return false;
 	};
 
 	const capitalizeFirstLetter = (str: string | null): string => {
@@ -869,6 +870,7 @@ export default function NTFPDF({ id }: { id: string }) {
 								}
 								<Button
 									onClick={handlePrint}
+									type="button"
 									className="hover:bg-slate-700 duration-300 text-white font-semibold py-2 px-4 text-sm mt-2 rounded-lg print-button"
 								>
 									Print
