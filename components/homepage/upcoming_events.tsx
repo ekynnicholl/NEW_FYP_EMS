@@ -176,10 +176,13 @@ const UpcomingEventsLanding = () => {
             </animated.div>
             <animated.div style={fadeIn_Card} className="cards-container overflow-visible mt-4 relative w-full sm:w-3/4 px-4 sm:px-0">
                 <div className="slider flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0">
+                    {upcomingEvents.length > 0 ? (
+                    <>
                     {upcomingEvents.slice(startIndex, startIndex + numCardsToShow).map((event, index) => {
                         const truncatedDescription = event.intFEventDescription.length > 100
                             ? `${event.intFEventDescription.substring(0, 100)}...`
                             : event.intFEventDescription;
+                            const truncatedTitle = `${event.intFEventName.substring(0, 50)}...`
 
                         return (
                             <>
@@ -194,7 +197,7 @@ const UpcomingEventsLanding = () => {
                                         />
                                     </div>
                                     <div className={`content-container lg:pl-6 lg:pr-6 ${numCardsToShow === 1 ? 'flex-grow overflow-hidden' : ''}`}>
-                                        <h2 className="text-base lg:text-lg font-bold text-justify">{event.intFEventName}</h2>
+                                        <h2 className="text-base lg:text-lg font-bold text-justify">{truncatedTitle}</h2>
                                         <p className={`mt-3 lg:mt-0 text-sm lg:text-base text-gray-600 text-justify ${numCardsToShow === 1 ? 'overflow-ellipsis overflow-hidden' : ''}`}>{truncatedDescription}</p>
                                         <div className="flex mt-4">
                                             <HiMiniCalendarDays className="text-[22px] lg:text-[29px] mr-2 text-slate-800 dark:text-dark_text" />
@@ -229,6 +232,12 @@ const UpcomingEventsLanding = () => {
                             </>
                         );
                     })}
+                    </>
+                    ): (
+                    <div className="font-bold">
+                        No events found.
+                    </div>
+                    )}
                 </div>
             </animated.div>
             <animated.div style={fadeIn_Arrows}>

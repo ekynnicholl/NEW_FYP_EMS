@@ -237,6 +237,10 @@ export default function Home() {
     const handleSearch = (query: string) => {
         setSearchQuery(query);
 
+        if(searchQuery.length != 0){
+			setCurrentPage(1);
+		}
+
         //Clear the data results
         setDataResults([]);
 
@@ -573,7 +577,8 @@ export default function Home() {
                                     type="button"
                                     className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
                                     onClick={() => downloadXLSX(mainEvents)}>
-                                    <img
+                                    <Image 
+                                        height={200} 
                                         src={exportCSV.src}
                                         alt=""
                                         width={20}

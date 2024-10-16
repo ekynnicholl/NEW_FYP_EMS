@@ -6,6 +6,7 @@ import Chart from 'chart.js/auto';
 import IndividualFeedback from '@/components/analytics/IndividualFeedback';
 import * as XLSX from 'xlsx';
 import { Workbook } from 'exceljs';
+import Image from "next/image";
 
 type FeedbackDataType = {
     fbID: string;
@@ -564,7 +565,8 @@ const downloadXLSX = async (data: FeedbackDataType[]) => {
                     type="button"
                     className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 font-medium hover:bg-slate-300 shadow-sm md:inline-flex hidden dark:bg-[#242729] mb-5"
                     onClick={() => downloadXLSX(feedbackData)}>
-                    <img
+                    <Image 
+                    height={200} 
                         src={exportCSV.src}
                         alt=""
                         width={20}

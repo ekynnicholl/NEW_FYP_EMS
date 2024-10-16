@@ -261,7 +261,9 @@ export default function FeedbackForm() {
 			<form onSubmit={handleSubmit} className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[50px]">
 				<div className="mb-4 bg-white rounded-md relative"
 					style={{ height: "200px" }}>
-					<img
+					<Image 
+						width={200} 
+						height={200} 
 						src="https://source.unsplash.com/600x300?social"
 						alt="Random"
 						className="w-full h-full object-cover rounded-lg"
