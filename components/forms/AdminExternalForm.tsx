@@ -825,7 +825,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 														<FormControl>
 															<Textarea
 																disabled={externalForm.formStage == 1}
-																className="disabled:text-black-500 disabled:opacity-100"
+																className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																{...field}
 															/>
 														</FormControl>
@@ -847,7 +847,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																/>
 															</FormControl>
@@ -865,7 +865,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -882,7 +882,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -899,7 +899,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -916,7 +916,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -935,7 +935,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	onValueChange={field.onChange}
 																	defaultValue={field.value}>
 																	<FormControl>
-																		<SelectTrigger className="disabled:opacity-100">
+																		<SelectTrigger className="disabled:opacity-100 disabled:bg-slate-100">
 																			<SelectValue placeholder="Please select an option" />
 																		</SelectTrigger>
 																	</FormControl>
@@ -967,7 +967,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																	}}
 																	defaultValue={field.value}>
 																	<FormControl>
-																		<SelectTrigger className="disabled:opacity-100">
+																		<SelectTrigger className="disabled:opacity-100 disabled:bg-slate-100">
 																			<SelectValue placeholder="Please select an option" />
 																		</SelectTrigger>
 																	</FormControl>
@@ -989,7 +989,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormItem>
 																<FormLabel>Name of other staff / student traveling together in group <span className="text-red-500"> *</span></FormLabel>
 																<FormControl>
-																	<Input className="disabled:text-black-500 disabled:opacity-100" {...field} />
+																	<Input className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100" {...field} />
 																</FormControl>
 																<FormMessage />
 															</FormItem>
@@ -1013,7 +1013,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																/>
 															</FormControl>
@@ -1030,7 +1030,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Textarea
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																/>
 															</FormControl>
@@ -1051,7 +1051,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			disabled={externalForm.formStage != 1}
 																			variant={"outline"}
 																			className={cn(
-																				"w-full pl-3 text-left font-normal disabled:opacity-100",
+																				"w-full pl-3 text-left font-normal disabled:opacity-100 disabled:bg-slate-100",
 																				!field.value && "text-muted-foreground",
 																			)}>
 																			{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
@@ -1094,7 +1094,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																			disabled={externalForm.formStage != 1}
 																			variant={"outline"}
 																			className={cn(
-																				"w-full pl-3 text-left font-normal disabled:opacity-100",
+																				"w-full pl-3 text-left font-normal disabled:opacity-100 disabled:bg-slate-100",
 																				!field.value && "text-muted-foreground",
 																			)}>
 																			{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
@@ -1133,7 +1133,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																/>
 															</FormControl>
@@ -1151,7 +1151,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 2}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																		onChange={(e) => {
 																			field.onChange(e);
@@ -1179,7 +1179,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	value={field.value || ""}
 																/>
@@ -1199,7 +1199,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																onValueChange={field.onChange}
 																defaultValue={field.value}>
 																<FormControl>
-																	<SelectTrigger className="disabled:opacity-100">
+																	<SelectTrigger className="disabled:opacity-100 disabled:bg-slate-100">
 																		<SelectValue placeholder="Please select an option" />
 																	</SelectTrigger>
 																</FormControl>
@@ -1716,7 +1716,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1736,7 +1736,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1756,7 +1756,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1776,7 +1776,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1796,7 +1796,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1816,7 +1816,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1836,7 +1836,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 															<FormControl>
 																<Input
 																	disabled={externalForm.formStage != 1}
-																	className="disabled:text-black-500 disabled:opacity-100"
+																	className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																	{...field}
 																	onChange={e => {
 																		field.onChange(Number(e.target.value));
@@ -1890,7 +1890,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -1907,7 +1907,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -1924,7 +1924,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -1941,7 +1941,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -1958,7 +1958,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -1975,7 +1975,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -2193,7 +2193,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
@@ -2210,7 +2210,7 @@ export default function AdminExternalForm({ data }: { data: ExternalForm }) {
 																<FormControl>
 																	<Input
 																		disabled={externalForm.formStage != 1}
-																		className="disabled:text-black-500 disabled:opacity-100"
+																		className="disabled:text-gray-100 disabled:opacity-100 disabled:bg-slate-100"
 																		{...field}
 																	/>
 																</FormControl>
