@@ -38,11 +38,11 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Install Puppeteer v19.8.0
 RUN yarn add puppeteer@19.8.0
 
-# Update npm to the latest version
-RUN npm install npm@latest -g
+# # Update npm to the latest version
+# RUN npm install npm@latest -g
 
-# Initialize a new Node.js project
-RUN npm init -y
+# # Initialize a new Node.js project
+# RUN npm init -y
 
 WORKDIR /app
 COPY package*.json ./
