@@ -39,10 +39,7 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Install Puppeteer v19.8.0
 RUN yarn add puppeteer@19.8.0
 
-RUN npm init
-
-# Update npm to the latest version
-RUN npm install npm@latest -g
+RUN npm init -y
 
 WORKDIR /app
 COPY package*.json ./
@@ -58,7 +55,7 @@ RUN npm install
 FROM base as builder
 WORKDIR /app
 COPY . .
-RUN echo "Building the application" && npm run build
+RUN npm run build
 
 FROM base as production
 WORKDIR /app
@@ -70,6 +67,7 @@ RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 USER nextjs
 
+RUN chown -R nextjs:nodejs /app
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
