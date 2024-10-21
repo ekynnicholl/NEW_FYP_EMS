@@ -3,12 +3,11 @@ services:
     image: emat
     build:
       context: ./
-      target: dev
       dockerfile: Dockerfile
     shm_size: '2gb'
     volumes:
-        - .:/app
-        - /app/node_modules
-        - /app/.next
+      - .:/app
+      - /app/node_modules
+      - /app/.next
     ports:
       - "3000:3000"
