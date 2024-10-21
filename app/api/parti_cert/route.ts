@@ -6,19 +6,13 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from 'uuid';
 
 const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
-    console.log("d1");
     const browser = await puppeteer.launch({
         headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
-        // devtools: false
+        devtools: false
     });
-    console.log("d2");
     const page = await browser.newPage();
-    console.log("d3");
     await page.setContent(html);
-    console.log("d4");
     const pdfBuffer = await page.pdf({ printBackground: true });
-    console.log("d5");
     await browser.close();
     return pdfBuffer;
 };
@@ -118,8 +112,6 @@ export async function POST(request: Request) {
 
             const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Attendance.pdf`;
 
-            console.log("type 3");
-
             await transporter.sendMail({
                 ...mailOptionsCopy,
                 subject: "Confirmation of Participation",
@@ -132,8 +124,6 @@ export async function POST(request: Request) {
                     },
                 ],
             });
-
-            console.log("type 4");
         };
 
         return NextResponse.json({ success: true, message: "Certificates generated and sent successfully." }, { status: 200 });
