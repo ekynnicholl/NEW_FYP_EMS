@@ -1,7 +1,4 @@
-# Stage 1: Base
 FROM node:18-alpine as base
-
-# Install dependencies
 RUN apk add --no-cache \
     g++ \
     make \
@@ -32,7 +29,10 @@ RUN apk add --no-cache \
     cairo \
     alsa-lib 
 
-# Tell Puppeteer to skip installing Chrome. We'll use the one from Alpine.
+# docker pull ghcr.io/puppeteer/puppeteer:latest # pulls the latest 
+# docker pull ghcr.io/puppeteer/puppeteer:16.1.0 # pulls the image that contains Puppeteer v16.1.0
+
+# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
@@ -42,22 +42,24 @@ RUN yarn add puppeteer@19.8.0
 WORKDIR /app
 COPY package*.json ./
 EXPOSE 3000
+# RUN npm install puppeteer \
+#     npm install puppeteer-core \
+#     npm install chromium \
+#     npx puppeteer browsers install chrome
+# Install Puppeteer and the specific version of Chromium
+RUN npm install 
+# && npx puppeteer install --revision=112.0.5614.0
 
-# Install node modules using yarn for consistency
-RUN yarn install
-
-# Stage 2: Build Stage
 FROM base as builder
 WORKDIR /app
 COPY . .
-RUN yarn run build
+RUN npm run build
 
-# Stage 3: Production Stage
 FROM base as production
 WORKDIR /app
 
 ENV NODE_ENV=production
-RUN yarn install --production
+RUN npm ci
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
@@ -68,11 +70,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-CMD ["yarn", "start"]
+CMD npm start
 
-# Stage 4: Development Stage
 FROM base as dev
 ENV NODE_ENV=development
-RUN yarn install
+RUN npm install 
 COPY . .
-CMD ["yarn", "dev"]
+CMD npm run dev
