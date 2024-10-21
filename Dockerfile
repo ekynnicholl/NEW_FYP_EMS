@@ -39,6 +39,8 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Install Puppeteer v19.8.0
 RUN yarn add puppeteer@19.8.0
 
+RUN npm init
+
 # Update npm to the latest version
 RUN npm install npm@latest -g
 
