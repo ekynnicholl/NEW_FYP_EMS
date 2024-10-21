@@ -60,12 +60,12 @@ RUN npm run build
 # Set environment to production
 ENV NODE_ENV=production
 
-# Change ownership of the application files
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001 && \
-    chown -R nextjs:nodejs /app
+# # Change ownership of the application files
+# RUN addgroup -g 1001 -S nodejs && \
+#     adduser -S nextjs -u 1001 && \
+#     chown -R nextjs:nodejs /app
 
-USER nextjs
+# USER nextjs
 
 # Start the application
 CMD npm start
