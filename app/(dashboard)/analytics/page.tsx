@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 
 export default function Home() {
-	console.log("Hello from Home");
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 
@@ -52,7 +51,7 @@ export default function Home() {
 		setTotalGrandTotal(total);
 	};
 
-	const [selectedCategory, setSelectedCategory] = useState("all");
+	const [selectedCategory, setSelectedCategory] = useState("staff");
 
 	const handleCategoryChange = (e: { target: { value: SetStateAction<string> } }) => {
 		setSelectedCategory(e.target.value);
