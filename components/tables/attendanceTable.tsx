@@ -44,6 +44,7 @@ type AttendanceDataType = {
     sub_eventVenue: string;
     attFormsStaffEmail: string;
     attFormsYearofStudy: string;
+    attFormsPhoneNumber: string;
 };
 
 type FacultyUnit = {
@@ -572,9 +573,9 @@ const AttendanceTable: React.FC<Props> = ({ attendanceData, itemsPerPage, isAllT
                                 className="flex rounded-md items-center py-[2px] lg:py-2 px-4 mr-3s font-medium hover:bg-slate-300 bg-slate-200 shadow-sm md:inline-flex dark:bg-[#242729] mr-3"
                                 onClick={() => downloadXLSX(attendanceData)}
                             >
-                                <Image 
-                                width={14} 
-                                height={200} 
+                                <Image
+                                    width={14}
+                                    height={200}
                                     src={exportCSV.src}
                                     alt=""
                                     className="text-slate-800"
