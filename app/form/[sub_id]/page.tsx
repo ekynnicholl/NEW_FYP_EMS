@@ -18,6 +18,7 @@ type Info = {
 	attFormsStaffEmail: string;
 	attFormsFacultyUnit: string;
 	attFormsYearofStudy: string;
+	attFormsPhoneNumber: string;
 };
 
 type FacultyUnit = {
@@ -206,6 +207,24 @@ export default function AttendanceForm() {
 			return;
 		}
 
+		if (userType !== 'staff') {
+			const phoneNumberPattern = /^[0-9()+\-\s]{7,}$/; // Pattern for allowed characters and minimum length of 7
+
+			// Trim the phone number if it is not empty
+			if (info.attFormsPhoneNumber) {
+				info.attFormsPhoneNumber = info.attFormsPhoneNumber.trim();
+			}
+
+			// Validate the phone number format
+			if (!phoneNumberPattern.test(info.attFormsPhoneNumber)) {
+				toast.error("Please input a valid phone number.");
+				setIsSubmitting(false);
+				return;
+			}
+		} else {
+			info.attFormsPhoneNumber = '';
+		}
+
 		// 0 = External Visitor, 1 = Secondary Students, 2 = Teacher
 		if (userType == 'visitor') {
 			info.attFormsStaffID = '0';
@@ -265,6 +284,7 @@ export default function AttendanceForm() {
 						attFormsStaffID: attFormsStaffID,
 						attFormsFacultyUnit: info.attFormsFacultyUnit.trim().toUpperCase(),
 						attFormsYearofStudy: info.attFormsYearofStudy.trim().toUpperCase(),
+						attFormsPhoneNumber: info.attFormsPhoneNumber
 					},
 				])
 				.select();
@@ -284,6 +304,7 @@ export default function AttendanceForm() {
 						attFormsStaffEmail: info.attFormsStaffEmail.trim(),
 						attFormsStaffID: attFormsStaffID.trim(),
 						attFormsFacultyUnit: info.attFormsFacultyUnit.trim(),
+						attFormsPhoneNumber: info.attFormsPhoneNumber
 					},
 				])
 				.select();
@@ -609,9 +630,9 @@ export default function AttendanceForm() {
 								className="px-4 w-full max-w-screen-xl lg:max-w-3xl mt-[20px] lg:mt-[50px]">
 								<div
 									className="mb-4 rounded-md relative block lg:hidden">
-									<Image 
-										width={200} 
-										height={200} 
+									<Image
+										width={200}
+										height={200}
 										src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
 										alt="Random"
 										className="object-cover rounded-lg h-full w-full"
@@ -621,9 +642,9 @@ export default function AttendanceForm() {
 
 								<div
 									className="mb-4 rounded-md relative hidden lg:block">
-									<Image 
-										width={200} 
-										height={200} 
+									<Image
+										width={200}
+										height={200}
 										src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png"
 										alt="Random"
 										className="object-cover rounded-lg h-1/2 w-1/2"
@@ -802,6 +823,35 @@ export default function AttendanceForm() {
 
 									</div>
 								</div>
+
+								{(userType && userType !== 'staff') && (
+									<div className="mb-4 p-2 pr-[100px] py-8 pl-5 bg-white rounded-lg">
+										<div className="ml-1">
+											<label
+												htmlFor="phoneNo"
+												className="block text-gray-700 text-sm lg:text-base font-medium mb-2 -mt-3 ml-[5px]"
+											>
+												Phone Number
+												<span className="text-red-500"> *</span>
+											</label>
+											<input
+												type="phoneNo"
+												name="phoneNo"
+												id="phoneNo"
+												className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none mt-3 text-sm lg:text-base"
+												required
+												placeholder="e.g., 012-345 6789 OR +6012-345 6789"
+												style={{ paddingLeft: "5px" }}
+												onChange={event => {
+													if (!formSubmitted) {
+														setInfo({ ...info, attFormsPhoneNumber: event.target.value });
+													}
+												}}
+											/>
+
+										</div>
+									</div>
+								)}
 
 								{userType === 'staff' && (
 									<div>
@@ -1060,37 +1110,37 @@ export default function AttendanceForm() {
 											{userType === 'visitor' || userType === 'teacher' ? (
 												<button
 													type="button"
-													className={`${info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													className={`${info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && info.attFormsPhoneNumber && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
-														if (info.attFormsStaffName && info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting) {
+														if (info.attFormsStaffName && info.attFormsStaffName && info.attFormsStaffEmail && info.attFormsFacultyUnit && !formSubmitted && !isSubmitting && info.attFormsPhoneNumber) {
 															handleSubmit();
 														}
 													}}
-													disabled={!info.attFormsStaffName || formSubmitted || isSubmitting}>
+													disabled={!info.attFormsStaffName || formSubmitted || isSubmitting || !info.attFormsPhoneNumber}>
 													Submit
 												</button>
 											) : userType === 'secondary' ? (
 												<button
 													type="button"
-													className={`${info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													className={`${info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && info.attFormsPhoneNumber && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
 														if (info.attFormsStaffName && info.attFormsFacultyUnit && info.attFormsYearofStudy && !formSubmitted && !isSubmitting) {
 															handleSubmit();
 														}
 													}}
-													disabled={!info.attFormsStaffName || !info.attFormsFacultyUnit || !info.attFormsFacultyUnit || formSubmitted || isSubmitting}>
+													disabled={!info.attFormsStaffName || !info.attFormsFacultyUnit || !info.attFormsFacultyUnit || formSubmitted || isSubmitting || !info.attFormsPhoneNumber}>
 													Submit
 												</button>
 											) : userType === 'student' ? (
 												<button
 													type="button"
-													className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && hasSelectedCourse && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
+													className={`${info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && info.attFormsPhoneNumber && hasSelectedCourse && !isSubmitting ? 'bg-slate-900' : 'bg-gray-400'} text-white font-bold py-[11px] lg:py-3 px-8 mb-10 rounded focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 text-sm lg:text-base`}
 													onClick={() => {
-														if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && hasSelectedCourse && !formSubmitted && !isSubmitting) {
+														if (info.attFormsStaffName && info.attFormsStaffID && info.attFormsFacultyUnit && hasSelectedCourse && !formSubmitted && !isSubmitting && info.attFormsPhoneNumber) {
 															handleSubmit();
 														}
 													}}
-													disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !hasSelectedCourse || formSubmitted || isSubmitting}>
+													disabled={!info.attFormsStaffName || !info.attFormsStaffID || !info.attFormsFacultyUnit || !hasSelectedCourse || formSubmitted || isSubmitting || !info.attFormsPhoneNumber}>
 													Submit
 												</button>
 											) : (

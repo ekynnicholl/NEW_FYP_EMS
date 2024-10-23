@@ -11,6 +11,7 @@ type AttendanceDataType = {
     sub_eventName: string;
     sub_eventVenue: string;
     attFormsStaffEmail: string;
+    attFormsPhoneNumber: string;
     attFormsYearofStudy: string;
 };
 
@@ -86,6 +87,7 @@ const columnMapping: ColumnMapping = {
     attFormsStaffID: 'Staff/ Student ID',
     attFormsStaffName: 'Name',
     attFormsStaffEmail: 'Email',
+    attFormsPhoneNumber: 'Phone Number',
     attFormsFacultyUnit: 'Unit/ Organization',
     sub_eventName: 'Session',
     attDateSubmitted: 'Date Submitted',
