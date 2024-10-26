@@ -10,7 +10,7 @@ import exportCSV from "@/public/images/export_csv.png";
 import { FaSortAlphaDown, FaSortNumericDown, FaSortAmountUp } from "react-icons/fa";
 import { IoMdRefresh, IoIosArrowBack } from "react-icons/io";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight, MdAccessTimeFilled } from "react-icons/md";
-import { Fragment, useState, useEffect, SetStateAction, useRef, use } from "react";
+import { Fragment, useState, useEffect, SetStateAction, useRef, use, useCallback } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ExpenditureUser from "@/components/tables/expenditureUser";
 import * as XLSX from 'xlsx';
@@ -52,7 +52,7 @@ export default function Home() {
 
 	const PAGE_SIZE = 1000;
 
-	const fetchInfos = async () => {
+	const fetchInfos = useCallback(async () => {
 		let staffData: any[] = [];
 		let page = 0;
 		let hasMore = true;
@@ -196,13 +196,13 @@ export default function Home() {
 
 		setAggregatedInfo(Object.values(groupedData));
 		setIsLoadingAttendanceData(false);
-	};
+	}, []);
 
 
 	// Fetch data from database
 	useEffect(() => {
 		fetchInfos();
-	}, [supabase]);
+	}, [supabase, fetchInfos]);
 
 	const [eventsAttended, setEventsAttended] = useState<{ programName: string; totalHours: number; startDate: string; endDate: string; }[]>([]);
 	const [filteredEventResults, setFilteredEventResults] = useState<{ programName: string; totalHours: number; startDate: string; endDate: string; }[]>([]);
@@ -844,7 +844,8 @@ export default function Home() {
 										type="button"
 										className="items-center justify-center bg-slate-200 rounded-lg py-2 px-4 ml-2 lg:ml-0 font-medium hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 shadow-sm inline-flex dark:bg-[#242729]"
 										onClick={() => downloadXLSX(dataResults)}>
-										<img
+										<Image 
+											height={200} 
 											src={exportCSV.src}
 											alt=""
 											width={20}

@@ -47,6 +47,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { signOut as signOutNext, useSession } from "next-auth/react";
 
 const User = () => {
 	return (
@@ -179,6 +180,7 @@ const TopBar: React.FC<TopBarProps> = ({ onViewModeChange, onIsDarkModeChange })
 			.catch(error => {
 				toast.error("Error signing out");
 			});
+		signOutNext();
 	};
 
 	const updateHomepageView = async (id: number) => {

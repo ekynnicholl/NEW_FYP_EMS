@@ -49,7 +49,7 @@ const NavigationBarDesktop = () => {
 				<div className="flex h-screen flex-col justify-between pt-2 pb-6">
 					<div>
 						<div className="w-max p-2.5">
-							<img src="https://tailus.io/images/logo.svg" className="w-32" alt="" />
+							<Image width={200} height={200} src="https://tailus.io/images/logo.svg" className="w-32" alt="" />
 						</div>
 						<ul className="mt-6 space-y-2 tracking-wide">
 							<li className="min-w-max">

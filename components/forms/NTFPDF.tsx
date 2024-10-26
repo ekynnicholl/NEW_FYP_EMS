@@ -683,7 +683,7 @@ export default function NTFPDF({ id }: { id: string }) {
 										{details && details.applicant_declaration_signature === null ? (
 											<></>
 										) : (
-											<img src={details.applicant_declaration_signature ?? ""} className="absolute w-6 h-6 ml-40 -mt-6" />
+											<Image width={200} height={200} alt="" src={details.applicant_declaration_signature ?? ""} className="absolute w-6 h-6 ml-40 -mt-6" />
 										)}
 
 										<input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" />
@@ -727,7 +727,7 @@ export default function NTFPDF({ id }: { id: string }) {
 										{details && details.verification_signature === null ? (
 											<></>
 										) : (
-											<img src={details.verification_signature ?? ""} className="absolute w-6 h-6 ml-40 -mt-6" />
+											<Image width={200} height={200} alt="" src={details.verification_signature ?? ""} className="absolute w-6 h-6 ml-40 -mt-6" />
 										)}
 										<input type="text" className="border-b border-slate-950 ml-2 w-60 bg-gray-200" />
 										<br />
@@ -785,7 +785,7 @@ export default function NTFPDF({ id }: { id: string }) {
 									{details && details.approval_signature === null ? (
 										<></>
 									) : (
-										<img src={details.approval_signature ?? ""} className="absolute w-9 h-9 ml-[575px] -mt-8" />
+										<Image width={200} height={200} alt="" src={details.approval_signature ?? ""} className="absolute w-9 h-9 ml-[575px] -mt-8" />
 									)}
 
 									<input type="text" className="border-b border-slate-950 ml-2 w-72 float-right mr-5 bg-gray-200" />

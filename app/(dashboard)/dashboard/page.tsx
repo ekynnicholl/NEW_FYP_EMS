@@ -3430,7 +3430,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image width={200} height={200} src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 								{latestEvent[2] && (
@@ -4007,7 +4007,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image width={200} height={200} src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 								{latestEvent[4] && (
@@ -5514,7 +5514,7 @@ export default function Homepage() {
 							>
 								<div className="w-full h-[300px] mb-4 relative">
 									<div className="absolute -inset-6">
-										<img src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
+										<Image width={200} height={200} src="/swinburne_logo.png" alt="Random" className="w-full h-full object-cover" />
 									</div>
 								</div>
 

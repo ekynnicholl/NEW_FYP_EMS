@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
 import officeGIF from "@/public/office_cartoon.gif";
 import { getAuth } from "firebase/auth";
+import Image from "next/image";
 
 const PageNotFound = () => {
     const searchParams = useSearchParams()
@@ -14,7 +15,7 @@ const PageNotFound = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900 p-5 -mt-12 lg:-mt-5">
-            <img src={officeGIF.src} alt="" className="w-[300px] lg:w-[420px]" />
+            <Image width={420} height={300} src={officeGIF.src} alt="" className="w-[300px] lg:w-[420px]" />
             <div className="max-w-[546px] mx-auto w-full mt-6">
                 {search == 're-submission-1f0e4020-ca9a-42d8-825a-3f8af95c1e39' ? (
                     <div>

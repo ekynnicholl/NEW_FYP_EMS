@@ -6,14 +6,16 @@ import image_401 from "@/public/images/401.jpg";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 const UnauthorizedAccessPage = () => {
 	const router = useRouter();
+	const { data: session, status } = useSession();
 
 	useEffect(() => {
 		const auth = getAuth();
 		onAuthStateChanged(auth, user => {
-			if (user) {
+			if (user || session) {
 				router.push("/dashboard");
 			}
 		});

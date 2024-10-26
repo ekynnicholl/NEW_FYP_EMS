@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Chatbot from "@/components/chatbot/chatbot_popup";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	const setViewMode = useViewModeStore(state => state.setViewMode);
@@ -19,20 +20,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(true);
+	const { data: session, status } = useSession();
 
 	useEffect(() => {
 		const auth = getAuth();
-		onAuthStateChanged(auth, user => {
-			// console.log("user", user);
-			if (!user) {
+		const checkAuthState = async () => {
+			const currentTime = new Date();
+			const sessionExpires = session?.expires ? new Date(session.expires) : null;
+
+			// Check if the session has expired
+			if (sessionExpires && currentTime > sessionExpires) {
+				await signOut();
 				router.push("/unauthorizedAccess");
 				setIsAuthenticated(false);
-			} else {
-				setIsAuthenticated(true);
+				setIsLoading(false);
+				return;
 			}
-			setIsLoading(false);
-		});
-	}, [router]);
+
+			// Check Firebase authentication state
+			onAuthStateChanged(auth, user => {
+				if (!user && !session) {
+					router.push("/unauthorizedAccess");
+					setIsAuthenticated(false);
+				} else {
+					setIsAuthenticated(true);
+				}
+				setIsLoading(false);
+			});
+		};
+
+		checkAuthState();
+	}, [router, session]);
 
 	const handleViewModeChange = (newViewMode: number) => {
 		setViewMode(newViewMode);

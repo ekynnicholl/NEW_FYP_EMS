@@ -13,7 +13,7 @@ const imageToBase64 = (path: string): string => {
     }
 };
 
-export const GenerateCertificateParticipation = (participantName: string, eventName: string, dateSubmitted: string, mainEventName: string, atVenue: string): string => {
+export const GenerateCertificateParticipation = (participantName: string, eventName: string, dateSubmitted: string, mainEventName: string, atVenue: string, showSubName: boolean): string => {
     const formattedDate = (dateString: string): string => {
         const date = new Date(dateString);
         const day = date.getDate().toString().padStart(2, '0');
@@ -27,6 +27,13 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
 
     const swinburneTextBase64 = imageToBase64(swinburneTextImagePath);
     const swinburneLogoBase64 = imageToBase64(swinburneLogoImagePath);
+
+    let eventNameDisplay;
+    if (showSubName) {
+        eventNameDisplay = `${mainEventName} - ${eventName}`;
+    } else {
+        eventNameDisplay = mainEventName;
+    }
 
     return `
         <!DOCTYPE html>
@@ -169,13 +176,14 @@ export const GenerateCertificateParticipation = (participantName: string, eventN
                     <div class="side-text">CERTIFICATE OF ATTENDANCE</div>
                     </div>
                     <div class="middle-div">
-                    <p class="title-font" style="margin-top: 20px; margin-bottom: 20px;">Presented to</p>
+                    <p class="title-font" style="margin-top: 30px; margin-bottom: 50px;">Presented to</p>
                     <h2 class="title-content-font">${participantName}</h2>
                     <p class="title-font">attended the</p>
-                    <h2 class="title-content-font">${mainEventName} - ${eventName}</h2>
+                    <h2 class="title-content-font">${eventNameDisplay}</h2>
                     <p class="title-font">which was held at</p>
                     <h2 class="title-content-font">${atVenue}</h2>
-                    <p class="title-font">on ${formattedDate(dateSubmitted)}</p>
+                    <p class="title-font">on this date</p>
+                    <h2 class="title-content-font">${formattedDate(dateSubmitted)}</h2>
                     <p class="title-font" style="margin-top: 80px;">This is a computer generated certificate and requires no signature.</p>
                     </div>
                     <div class="right-div">

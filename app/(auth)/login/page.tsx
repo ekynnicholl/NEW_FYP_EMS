@@ -14,6 +14,8 @@ import ReCAPTCHA from "react-google-recaptcha";
 import toast from 'react-hot-toast';
 import loadingGIF from "@/public/loading_bird.gif";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 type Info = {
 	id: string;
@@ -28,6 +30,7 @@ export default function Login() {
 	const isCompact = typeof window !== 'undefined' && window.innerWidth <= 640;
 	const [isLoading, setIsLoading] = useState(false);
 	const auth = getAuth();
+	const { data: session, status } = useSession();
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
@@ -43,11 +46,11 @@ export default function Login() {
 
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
-			if (user) {
+			if (user || session) {
 				router.push("/dashboard");
 			}
 		});
-	}, [auth, router]);
+	}, [auth, router, session]);
 
 	const handleGoogleSignIn = async (info: Info) => {
 		try {
@@ -255,6 +258,29 @@ export default function Login() {
 											<span className="mr-4 text-base lg:text-lg text-slate-200 dark:-mt-[3px]">Login</span>
 										</button>
 									</form>
+									<div className="max-w-xs mx-auto mt-4">
+										<div className="flex items-center justify-center space-x-4">
+											<div className="h-[2px] w-full border border-black"></div>
+											<span>OR</span>
+											<div className="h-[2px] w-full border border-black"></div>
+										</div>
+										<a href="/api/auth/signin">
+											<button
+												type="submit"
+												className="mt-3 lg:mt-5 tracking-wide font-semibold text-white bg-red-500 w-full py-[15px] lg:py-4 rounded-lg hover:bg-red-600 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:bg-slate-800">
+												<svg
+													className="w-6 h-6 -ml-2"
+													fill="none"
+													stroke="currentColor"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round">
+													{/* Submit SVG Path */}
+												</svg>
+												<span className="mr-4 text-base lg:text-lg dark:-mt-[3px]">Other Methods</span>
+											</button>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>

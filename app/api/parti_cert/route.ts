@@ -8,12 +8,17 @@ import { v4 as uuidv4 } from 'uuid';
 const generatePdfFromHtml = async (html: string): Promise<Buffer> => {
     const browser = await puppeteer.launch({
         headless: true,
-        devtools: false
+        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
     });
+    console.log("d1");
     const page = await browser.newPage();
+    console.log("d2");
     await page.setContent(html);
+    console.log("d3");
     const pdfBuffer = await page.pdf({ printBackground: true });
+    console.log("d4");
     await browser.close();
+    console.log("d5");
     return pdfBuffer;
 };
 
@@ -38,8 +43,9 @@ export async function POST(request: Request) {
             const atStaffName = requestData.attFormsStaffName;
             const atFormsID = requestData.attFormsID;
             const atVenue = requestData.sub_eventVenue;
+            const showSubName = requestData.showSubName;
 
-            const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atDateSubmitted, atEventName, atVenue);
+            const certificateContent = GenerateCertificateParticipation(atStaffName, atSubEventName, atDateSubmitted, atEventName, atVenue, showSubName);
 
             const pdfBuffer = await generatePdfFromHtml(certificateContent);
 
@@ -90,13 +96,13 @@ export async function POST(request: Request) {
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Logo_of_Swinburne_University_of_Technology.svg/1200px-Logo_of_Swinburne_University_of_Technology.svg.png" alt="Image Description" height="150px" width="300px">
                         
                         <h2 class="no-p-m">Dear Sir/ Ms/ Mdm,</h2>
-                        <p class="no-p-m">Thank you for attendance ${atEventName}! We hope you found the event to be informative and enjoyable. </p>
+                        <p class="no-p-m">Thank you for attending <strong>${atEventName}</strong>! We hope you found the event to be informative and enjoyable.</p>
                         <br/>
-                        <p class="no-p-m">Attached is a copy of your Certificate of Attendance.</p>
+                        <p class="no-p-m">Attached is a copy of your <strong>Certificate of Participation</strong>.</p>
                         <br/>
                         <p class="no-p-m">Thank you for using our system. We're committed to ensuring your user experience is as seamless and hassle free as possible.</p>
                         <br/>
-                        <p class="no-p-m">Regards, <br/> Event Management and Attendance Tracking (EMAT) Developer Team</p>
+                        <p class="no-p-m">Regards, <br/> <strong>Event Management and Attendance Tracking (EMAT) Developer Team</strong></p>
                         </p>
                     </div>
                 </body>
@@ -110,7 +116,7 @@ export async function POST(request: Request) {
                 throw new Error('Recipient email address not specified.');
             }
 
-            const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Attendance.pdf`;
+            const pdfFilename = `${atStaffName} (${atStaffID}) - Certificate of Participation.pdf`;
 
             await transporter.sendMail({
                 ...mailOptionsCopy,
